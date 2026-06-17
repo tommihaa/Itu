@@ -555,7 +555,7 @@ function rackToolsHtml(): string {
   const b = (key: string, label: string) => `<button class="sm-tool" data-sort="${key}">${label}</button>`;
   return `<div class="sm-rack-tools">
     <span class="sm-tools-label">Järjestä:</span>
-    ${b("haro", "Härö")}${b("abc", "Aakkoset")}${b("pts", "Pisteet")}${b("vow", "Vokaalit")}${b("harmony", "Sointu")}
+    ${b("haro", "Härö")}${b("abc", "Aakkoset")}${b("pts", "Pisteet")}${b("vow", "Vokaalit")}${b("harmony", "Vokaalisointu")}
   </div>`;
 }
 
