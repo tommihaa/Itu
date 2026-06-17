@@ -1,0 +1,243 @@
+:root {
+  --bg: #14110c;
+  --panel: #1e1a12;
+  --line: #3a3220;
+  --gold: #d8b25a;
+  --gold-dim: #8a7438;
+  --text: #ece3cf;
+  --muted: #9a8f76;
+  --valid: #2f7d4f;
+  --valid-bg: #14331f;
+  --invalid: #a23b3b;
+  --invalid-bg: #341515;
+  --tile: #2b2517;
+  --tile-edge: #4a3f24;
+  --cell: 2.5rem; /* ruudun/nopan koko; pienenee mobiilissa (media query) */
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+#app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+header.sm-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+header.sm-head h1 { margin: 0; color: var(--gold); font-size: 1.4rem; letter-spacing: 0.02em; }
+header.sm-head .sm-seed { color: var(--muted); font-size: 0.85rem; }
+
+.sm-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
+.sm-bar .sm-score { margin-left: auto; font-size: 1.05rem; color: var(--gold); }
+.sm-bar .sm-score b { color: var(--text); }
+.sm-timer {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--tile-edge);
+  border-radius: 0.4rem;
+  background: var(--tile);
+}
+
+/* --- Kierroksen loppunäkymä --- */
+.sm-result {
+  background: var(--panel);
+  border: 1px solid var(--gold-dim);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  max-width: 40rem;
+}
+.sm-result h2 { margin: 0 0 0.5rem; color: var(--gold); font-size: 1.2rem; }
+.sm-breakdown { max-width: 22rem; }
+.sm-sug { margin-top: 0.75rem; border-top: 1px solid var(--line); padding-top: 0.5rem; }
+.sm-sug h3 { margin: 0.5rem 0 0.25rem; font-size: 0.9rem; color: var(--muted); font-weight: 600; }
+.sm-sug h3 b { color: var(--gold); }
+.sm-sug p { margin: 0; line-height: 1.8; }
+.sm-sug-word {
+  display: inline-block;
+  background: var(--tile);
+  border: 1px solid var(--tile-edge);
+  border-radius: 0.3rem;
+  padding: 0.05rem 0.4rem;
+  margin: 0 0.15rem 0.15rem 0;
+  color: var(--valid);
+  font-size: 0.9rem;
+}
+.sm-result h2 small { color: var(--muted); font-weight: 400; font-size: 0.85rem; }
+.sm-breakdown { width: 100%; border-collapse: collapse; }
+.sm-breakdown td { padding: 0.2rem 0; }
+.sm-breakdown td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+.sm-breakdown .sm-total td { border-top: 1px solid var(--line); padding-top: 0.4rem; font-weight: 700; color: var(--gold); }
+
+button {
+  background: var(--tile);
+  color: var(--text);
+  border: 1px solid var(--tile-edge);
+  border-radius: 0.4rem;
+  padding: 0.45rem 0.8rem;
+  font: inherit;
+  cursor: pointer;
+}
+button:hover { border-color: var(--gold-dim); }
+button.sm-primary { background: var(--gold-dim); border-color: var(--gold); color: #1a160d; font-weight: 600; }
+
+/* --- Lauta --- */
+/* Näkymä rajaa; lauta skaalautuu sen sisällä (automaattinen kehystys, ks. frameBoard). */
+.sm-viewport {
+  position: relative;
+  width: 100%;
+  height: min(70vh, 34rem);
+  overflow: hidden;
+  border: 2px solid var(--line);
+  border-radius: 0.4rem;
+  margin-bottom: 1rem;
+  background: var(--bg);
+}
+.sm-board {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  background: var(--line);
+  padding: 2px;
+  width: max-content;
+  transform-origin: 0 0;
+  transition: transform 250ms ease;
+  will-change: transform;
+}
+.sm-cell {
+  width: var(--cell);
+  height: var(--cell);
+  background: var(--panel);
+  border-radius: 0.2rem;
+  position: relative;
+}
+.sm-cell.sm-drop { outline: 2px dashed var(--gold); outline-offset: -2px; }
+.sm-cell.sm-valid { background: var(--valid-bg); }
+.sm-cell.sm-invalid { background: var(--invalid-bg); }
+
+/* --- Noppa (tile) --- */
+.sm-tile {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--tile);
+  border: 1px solid var(--tile-edge);
+  border-radius: 0.2rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: grab;
+  user-select: none;
+  touch-action: none; /* kosketus nopan päällä = raahaus, ei sivun vieritys */
+}
+/* Kelluva haamulaatta osoitinraahauksessa (klooni nopasta, body:n alla). */
+.sm-ghost {
+  position: fixed;
+  inset: auto;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0.92;
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+.sm-cell.sm-valid .sm-tile { border-color: var(--valid); }
+.sm-cell.sm-invalid .sm-tile { border-color: var(--invalid); }
+.sm-tile .sm-val {
+  position: absolute;
+  right: 2px;
+  bottom: 0;
+  font-size: 0.55rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+.sm-tile.sm-joker { color: var(--gold); }
+.sm-tile.sm-dragging { opacity: 0.35; }
+
+/* --- Teline (rack) --- */
+.sm-rack-tools {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+.sm-tools-label { color: var(--muted); font-size: 0.85rem; margin-right: 0.15rem; }
+.sm-tool {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.85rem;
+  border-radius: 1rem;
+  background: var(--panel);
+}
+.sm-rack {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  min-height: 2.6rem;
+  background: var(--panel);
+  border: 1px dashed var(--line);
+  border-radius: 0.4rem;
+  padding: 4px;
+}
+.sm-rack.sm-drop { border-color: var(--gold); }
+.sm-rack .sm-slot { width: 2.1rem; height: 2.1rem; position: relative; }
+
+.sm-words { margin-top: 0.75rem; font-size: 0.9rem; }
+.sm-words .ok { color: var(--valid); }
+.sm-words .bad { color: var(--invalid); }
+.sm-words .pending { color: var(--muted); }
+
+/* --- Selkosäännöt --- */
+.sm-rules-doc { max-width: 46rem; line-height: 1.5; }
+.sm-rules-doc h2 { color: var(--gold); margin: 0 0 0.25rem; }
+.sm-rules-lead { color: var(--muted); margin-top: 0; }
+.sm-rule-section { border-top: 1px solid var(--line); padding-top: 0.75rem; margin-top: 1rem; }
+.sm-rule-section h3 { color: var(--gold); margin: 0 0 0.4rem; font-size: 1.1rem; }
+.sm-rule-groups { display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+.sm-rule-group { background: var(--panel); border: 1px solid var(--line); border-left-width: 4px; border-radius: 0.4rem; padding: 0.5rem 0.7rem; }
+.sm-rule-group.ok { border-left-color: var(--valid); }
+.sm-rule-group.bad { border-left-color: var(--invalid); }
+.sm-rule-group h4 { margin: 0 0 0.3rem; font-size: 0.95rem; }
+.sm-rule-group .sign { font-weight: 700; }
+.sm-rule-group.ok .sign { color: var(--valid); }
+.sm-rule-group.bad .sign { color: var(--invalid); }
+.sm-rule-group ul { margin: 0; padding-left: 1.1rem; }
+.sm-rule-group li { margin: 0.1rem 0; }
+.sm-rule-group .hint { color: var(--muted); font-size: 0.8rem; }
+
+/* --- Tulostus: vain säännöt, vaaleana paperille --- */
+@media print {
+  .sm-no-print { display: none !important; }
+  body { background: #fff; color: #111; }
+  #app { max-width: none; }
+  .sm-rules-doc h2, .sm-rule-section h3 { color: #000; }
+  .sm-rules-lead, .sm-rule-group .hint { color: #444; }
+  .sm-rule-group { background: #fff; border-color: #bbb; break-inside: avoid; }
+  .sm-rule-group.ok .sign { color: #1a7a3a; }
+  .sm-rule-group.bad .sign { color: #b22; }
+}
+
+/* --- Mobiili: pienennä ruutuja, jotta 15×15-lauta mahtuu paremmin --- */
+@media (max-width: 540px) {
+  :root { --cell: 1.85rem; }
+  #app { padding: 0.5rem; }
+  .sm-tile { font-size: 0.95rem; }
+  .sm-tile .sm-val { font-size: 0.5rem; }
+  .sm-bar .sm-score { width: 100%; margin-left: 0; }
+}

@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.vercel/
+*.local
+
+# Build-syötteet ja -välitulokset (EI shipata; DAWG public/dict on lopputuote)
+data/
+build/__pycache__/
+build/genrun.log
+build/genrun.err

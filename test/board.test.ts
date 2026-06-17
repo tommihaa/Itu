@@ -1,0 +1,79 @@
+import { describe, it, expect } from "vitest";
+import { cellKey, extractWords, isConnected, type PlacedTile } from "../src/domain/board";
+import { JOKER } from "../src/domain/dice";
+
+function tile(face: string, letter = face, dieIndex = 0): PlacedTile {
+  return { dieIndex, face, letter };
+}
+
+function boardOf(spec: Record<string, string>): Map<string, PlacedTile> {
+  const m = new Map<string, PlacedTile>();
+  let i = 0;
+  for (const [key, face] of Object.entries(spec)) m.set(key, tile(face, face, i++));
+  return m;
+}
+
+describe("extractWords", () => {
+  it("poimii vaakasanan", () => {
+    const cells = boardOf({
+      [cellKey(0, 0)]: "T",
+      [cellKey(0, 1)]: "A",
+      [cellKey(0, 2)]: "L",
+      [cellKey(0, 3)]: "O",
+    });
+    const words = extractWords(cells);
+    expect(words).toHaveLength(1);
+    expect(words[0]).toMatchObject({ dir: "H", text: "talo" });
+  });
+
+  it("poimii risteävät vaaka- ja pystysanat", () => {
+    // T A L O  (vaaka, rivi 0)
+    //     A    (L:n alle 'ala' pysty: L,A,...) -> tehdään pysty L-A-T
+    const cells = boardOf({
+      [cellKey(0, 0)]: "T",
+      [cellKey(0, 1)]: "A",
+      [cellKey(0, 2)]: "L",
+      [cellKey(1, 2)]: "A",
+      [cellKey(2, 2)]: "T",
+    });
+    const words = extractWords(cells);
+    const texts = words.map((w) => w.text).sort();
+    expect(texts).toEqual(["lat", "tal"]);
+  });
+
+  it("ei poimi yksittäistä irrallista noppaa", () => {
+    const cells = boardOf({ [cellKey(0, 0)]: "A" });
+    expect(extractWords(cells)).toHaveLength(0);
+  });
+
+  it("käyttää jokerin valittua kirjainta", () => {
+    const cells = new Map<string, PlacedTile>([
+      [cellKey(0, 0), tile("K")],
+      [cellKey(0, 1), tile(JOKER, "i", 1)],
+      [cellKey(0, 2), tile("S")],
+      [cellKey(0, 3), tile("S")],
+      [cellKey(0, 4), tile("A")],
+    ]);
+    expect(extractWords(cells)[0].text).toBe("kissa");
+  });
+});
+
+describe("isConnected", () => {
+  it("tunnistaa yhtenäisen ristikon", () => {
+    const cells = boardOf({
+      [cellKey(0, 0)]: "T",
+      [cellKey(0, 1)]: "A",
+      [cellKey(1, 1)]: "I",
+    });
+    expect(isConnected(cells)).toBe(true);
+  });
+
+  it("tunnistaa erilliset ryhmät", () => {
+    const cells = boardOf({
+      [cellKey(0, 0)]: "T",
+      [cellKey(0, 1)]: "A",
+      [cellKey(5, 5)]: "I",
+    });
+    expect(isConnected(cells)).toBe(false);
+  });
+});
