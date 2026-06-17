@@ -51,6 +51,7 @@ let judge: WordJudge | null = null;
 let root: HTMLElement;
 let showRules = false;
 let jokerPicker: number | null = null; // avoinna olevan jokerin dieIndex (kirjainvalitsin)
+let showChallenge = false; // offline-haastemodaali (jaa siemen / pelaa siemenellä)
 
 // Osoitinpohjainen raahaus (hiiri + kosketus). HTML5 DnD ei toimi mobiilissa,
 // joten käytämme pointer-eventtejä + kelluvaa "haamulaattaa" molemmille.
@@ -233,6 +234,8 @@ export function mountGame(el: HTMLElement): void {
 
 function newRoll(s: string): void {
   seed = s;
+  // Pidä siemen URL-hashissa → nykyinen peli on aina jaettavissa (offline-haaste).
+  location.hash = encodeURIComponent(s);
   const { faces } = rollDice(s);
   tiles = faces.map((face, dieIndex) => ({
     dieIndex,
@@ -372,6 +375,7 @@ function render(): void {
       <button id="sm-new" class="sm-primary">Heitä uudet</button>
       <button id="sm-rules">Säännöt</button>
       <button id="sm-records">🏆 Ennätykset</button>
+      <button id="sm-challenge">🎯 Haaste</button>
       ${roundOver ? "" : `<button id="sm-lock">Lukitse</button>`}
       ${roundOver ? "" : `<span class="sm-timer" id="sm-timer">${fmtTime(secondsLeft())}</span>`}
       <span class="sm-score">${
@@ -386,6 +390,7 @@ function render(): void {
     ${wordsHtml(v)}
     ${judge ? "" : '<p class="sm-words pending">Ladataan sanastoa…</p>'}
     ${jokerPicker !== null ? jokerPickerHtml() : ""}
+    ${showChallenge ? challengeHtml() : ""}
   `;
   wireEvents();
   frameBoard(); // automaattinen zoom/keskitys käytetyn alueen mukaan
@@ -673,6 +678,86 @@ function applyRackSort(key: string): void {
   render();
 }
 
+// --- Offline-haaste: jaa siemen / pelaa siemenellä ---
+
+function challengeUrl(s: string): string {
+  return `${location.origin}${location.pathname}#${encodeURIComponent(s)}`;
+}
+
+/** Hyväksyy joko pelkän siemenen tai koko linkin (#-jälkeinen osa). */
+function parseSeed(input: string): string {
+  const raw = input.trim();
+  if (!raw) return "";
+  const hash = raw.indexOf("#");
+  const s = hash >= 0 ? raw.slice(hash + 1) : raw;
+  try {
+    return decodeURIComponent(s).trim();
+  } catch {
+    return s.trim();
+  }
+}
+
+function challengeHtml(): string {
+  const esc = challengeUrl(seed).replace(/"/g, "&quot;");
+  return `<div class="sm-ch-backdrop" data-ch-close="1">
+    <div class="sm-ch">
+      <h3>🎯 Offline-haaste</h3>
+      <section>
+        <h4>Lähetä tämä peli kaverille</h4>
+        <p class="sm-ch-note">Sama heitto, samat kirjaimet — vertailkaa pisteet. Siemen: <b>${seed}</b></p>
+        <input class="sm-ch-link" readonly value="${esc}" />
+        <div class="sm-ch-row">
+          <button id="sm-ch-share" class="sm-primary">Jaa…</button>
+          <button id="sm-ch-copy">Kopioi linkki</button>
+        </div>
+      </section>
+      <section>
+        <h4>Vastaa haasteeseen</h4>
+        <p class="sm-ch-note">Liitä saamasi siemen tai linkki ja pelaa sama peli.</p>
+        <div class="sm-ch-row">
+          <input id="sm-ch-input" class="sm-ch-link" placeholder="Liitä siemen tai linkki" />
+          <button id="sm-ch-play" class="sm-primary">Pelaa</button>
+        </div>
+      </section>
+      <button id="sm-ch-close" class="sm-ch-clear">Sulje</button>
+    </div>
+  </div>`;
+}
+
+function shareChallenge(): void {
+  const url = challengeUrl(seed);
+  if (navigator.share) {
+    navigator
+      .share({ title: "Itu — haaste", text: `Pelaa sama Itu-peli (siemen ${seed})`, url })
+      .catch(() => {});
+  } else {
+    copyToClipboard(url);
+  }
+}
+
+function copyToClipboard(text: string): void {
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text: string): void {
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand("copy");
+  } catch {
+    /* ei tuettu — käyttäjä voi kopioida kentästä käsin */
+  }
+  ta.remove();
+}
+
 function tileHtml(t: Tile): string {
   const isJoker = t.face === JOKER;
   const assigned = isJoker && t.letter !== JOKER;
@@ -701,6 +786,38 @@ function wireEvents(): void {
   root.querySelector<HTMLButtonElement>("#sm-records")?.addEventListener("click", () => {
     showRecords = true;
     render();
+  });
+
+  // Offline-haaste: avaus + modaalin toiminnot (toimii myös loppunäytössä).
+  root.querySelector<HTMLButtonElement>("#sm-challenge")?.addEventListener("click", () => {
+    showChallenge = true;
+    render();
+  });
+  const closeChallenge = () => {
+    showChallenge = false;
+    render();
+  };
+  root.querySelector<HTMLButtonElement>("#sm-ch-close")?.addEventListener("click", closeChallenge);
+  root.querySelector<HTMLElement>(".sm-ch-backdrop")?.addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) closeChallenge();
+  });
+  root.querySelector<HTMLButtonElement>("#sm-ch-share")?.addEventListener("click", shareChallenge);
+  root.querySelector<HTMLButtonElement>("#sm-ch-copy")?.addEventListener("click", (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    copyToClipboard(challengeUrl(seed));
+    const orig = btn.textContent;
+    btn.textContent = "Kopioitu!";
+    setTimeout(() => {
+      btn.textContent = orig;
+    }, 1500);
+  });
+  root.querySelector<HTMLButtonElement>("#sm-ch-play")?.addEventListener("click", () => {
+    const inp = root.querySelector<HTMLInputElement>("#sm-ch-input");
+    const s = parseSeed(inp?.value ?? "");
+    if (s) {
+      showChallenge = false;
+      newRoll(s);
+    }
   });
 
   // Jokerin kirjainvalitsin (jos avoinna): kirjainnapit + sulkeminen taustaa klikkaamalla.

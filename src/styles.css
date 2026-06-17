@@ -262,6 +262,51 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
   color: var(--muted);
 }
 
+/* --- Offline-haaste-modaali --- */
+.sm-ch-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(0, 0, 0, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+.sm-ch {
+  background: var(--panel);
+  border: 1px solid var(--gold-dim);
+  border-radius: 0.6rem;
+  padding: 1rem 1.1rem;
+  width: min(28rem, 100%);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+.sm-ch h3 { margin: 0 0 0.75rem; color: var(--gold); font-size: 1.15rem; }
+.sm-ch section { border-top: 1px solid var(--line); padding-top: 0.7rem; margin-top: 0.7rem; }
+.sm-ch section:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
+.sm-ch h4 { margin: 0 0 0.3rem; font-size: 0.95rem; }
+.sm-ch-note { margin: 0 0 0.5rem; color: var(--muted); font-size: 0.85rem; }
+.sm-ch-note b { color: var(--text); }
+.sm-ch-link {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  background: var(--tile);
+  color: var(--text);
+  border: 1px solid var(--tile-edge);
+  border-radius: 0.4rem;
+  font: inherit;
+  font-size: 0.85rem;
+}
+.sm-ch-row { display: flex; gap: 0.4rem; margin-top: 0.5rem; }
+.sm-ch-row .sm-ch-link { margin-top: 0; }
+.sm-ch-row button { white-space: nowrap; }
+.sm-ch-clear { margin-top: 0.9rem; width: 100%; color: var(--muted); }
+
+/* Syötekentät pysyvät valittavina (globaali user-select:none ei koske niihin). */
+input, textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 /* --- Teline (rack) --- */
 .sm-rack-tools {
   display: flex;
