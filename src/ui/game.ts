@@ -147,7 +147,7 @@ function endRound(): void {
   const v = validate();
   endBreakdown = finalScore({
     wordPoints: v.wordPoints, // vain kelvolliset sanat
-    unusedFaces: tiles.filter((t) => !t.cell).map((t) => t.face),
+    unusedFaces: v.unusedFaces, // teline + laudalle jääneet ei-sanat (sama logiikka)
     secondsRemaining: endRemaining,
     timeBonusEnabled: TIME_BONUS_ENABLED,
   });
@@ -309,6 +309,8 @@ interface Validation {
   words: { text: string; valid: boolean }[];
   /** Pisteet vain KELVOLLISista sanoista (risteysnoppa kahdesti). */
   wordPoints: number;
+  /** Sakotettavat tahkot: telineessä TAI laudalla mutta ei missään kelvollisessa sanassa. */
+  unusedFaces: Face[];
   /** Kierroksen aikainen näyttöpiste: wordPoints − käyttämättömät (ei aikabonusta). */
   total: number;
   invalidCount: number;
@@ -324,6 +326,9 @@ function validate(): Validation {
   let wordPoints = 0;
   let invalidCount = 0;
 
+  // Tuottavat ruudut = kuuluvat ≥1 kelvolliseen sanaan (näiden nopat eivät ole sakkoa).
+  const productiveCells = new Set<string>();
+
   for (const w of words) {
     const valid = judge ? judge.judge(w.text) === "valid" : false;
     if (!valid) invalidCount++;
@@ -335,13 +340,22 @@ function validate(): Validation {
     // Vain kelvolliset sanat kerryttävät pisteitä; risteysnoppa summautuu kahdesti
     // (kuuluu kahteen sanaan), mikä syntyy luonnostaan kun molemmat sanat ovat valideja.
     if (valid) {
-      for (const k of w.keys) wordPoints += faceValue(cells.get(k)!.face);
+      for (const k of w.keys) {
+        wordPoints += faceValue(cells.get(k)!.face);
+        productiveCells.add(k);
+      }
     }
   }
 
+  // Sakko: telineessä olevat JA laudalle asetetut jotka eivät ole missään
+  // kelvollisessa sanassa (esim. kelvottoman "rut":n r ja u). Jokeri = 0 → ei sakkoa.
+  const unusedFaces = tiles
+    .filter((t) => !t.cell || !productiveCells.has(t.cell))
+    .map((t) => t.face);
+
   const breakdown = finalScore({
     wordPoints,
-    unusedFaces: tiles.filter((t) => !t.cell).map((t) => t.face),
+    unusedFaces,
     secondsRemaining: 0,
     timeBonusEnabled: false,
   });
@@ -350,6 +364,7 @@ function validate(): Validation {
     cellValid,
     words: wordResults,
     wordPoints,
+    unusedFaces,
     total: breakdown.total,
     invalidCount,
     connected: isConnected(cells),
