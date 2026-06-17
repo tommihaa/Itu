@@ -51,7 +51,29 @@ let judge: WordJudge | null = null;
 let root: HTMLElement;
 let showRules = false;
 let jokerPicker: number | null = null; // avoinna olevan jokerin dieIndex (kirjainvalitsin)
-let showChallenge = false; // offline-haastemodaali (jaa siemen / pelaa siemenellä)
+let showChallenge = false; // offline-haastemodaali (aloita haaste / vastaa)
+
+// --- Monikierroshaaste (offline, linkki kantaa tulokset 2-suuntaisesti) ---
+const ROUND_OPTIONS = [1, 3, 5, 10];
+const NAME_KEY = "itu:name";
+
+/** Vastustajan tulokset (haasteessa toinen osapuoli). */
+interface Opp {
+  name: string;
+  scores: number[];
+}
+interface Match {
+  base: string; // perussiemen; kierroksen i siemen = roundSeed(base, i)
+  rounds: number; // N kierrosta
+  current: number; // 0-pohjainen nykyinen kierros
+  myScores: number[]; // omat kierrospisteet
+  myName: string;
+  opp?: Opp; // läsnä kun vastaat haasteeseen tai katsot lopputulosta
+  final?: boolean; // molemmat pelanneet → vain katselu (ei jako-osiota)
+}
+let match: Match | null = null;
+let showMatchSummary = false;
+let myName = loadName();
 
 // Osoitinpohjainen raahaus (hiiri + kosketus). HTML5 DnD ei toimi mobiilissa,
 // joten käytämme pointer-eventtejä + kelluvaa "haamulaattaa" molemmille.
@@ -153,6 +175,7 @@ function endRound(): void {
   });
   computeSuggestions();
   recordResult(v);
+  if (match) match.myScores[match.current] = endBreakdown.total;
   render();
 }
 
@@ -220,9 +243,16 @@ export function mountGame(el: HTMLElement): void {
   window.addEventListener("resize", () => {
     if (!showRules) frameBoard();
   });
-  // Siemen URL-hashista (#siemen) jos annettu → deterministinen, jaettava heitto.
-  const hashSeed = decodeURIComponent(location.hash.replace(/^#/, ""));
-  newRoll(hashSeed || randomSeed());
+  // URL-hash: #c=… = haaste (ottelu), muuten #siemen = yksittäinen jaettu heitto.
+  const rawHash = location.hash.replace(/^#/, "");
+  if (rawHash.startsWith("c=")) {
+    const p = decodeChallenge(rawHash.slice(2));
+    if (p) handleIncoming(p);
+    else newRoll(randomSeed());
+  } else {
+    const hashSeed = decodeURIComponent(rawHash);
+    newRoll(hashSeed || randomSeed());
+  }
   // Sanasto ladataan taustalla; kun valmis, validointi aktivoituu.
   loadJudge()
     .then((j) => {
@@ -234,8 +264,9 @@ export function mountGame(el: HTMLElement): void {
 
 function newRoll(s: string): void {
   seed = s;
-  // Pidä siemen URL-hashissa → nykyinen peli on aina jaettavissa (offline-haaste).
-  location.hash = encodeURIComponent(s);
+  // Vapaapelissä siemen URL-hashiin (jaettavissa). Ottelussa hash on #c=… (vastaaja)
+  // tai tyhjä (haastaja) → ei ylikirjoiteta kierrossiemenellä.
+  if (!match) location.hash = encodeURIComponent(s);
   const { faces } = rollDice(s);
   tiles = faces.map((face, dieIndex) => ({
     dieIndex,
@@ -380,17 +411,25 @@ function render(): void {
     renderRecords();
     return;
   }
+  if (showMatchSummary) {
+    renderMatchSummary();
+    return;
+  }
   const v = validate();
+  const matchTag = match
+    ? `<span class="sm-match-tag">🎯 Kierros ${match.current + 1}/${match.rounds}</span>`
+    : "";
   root.innerHTML = `
     <header class="sm-head">
       <h1>Itu</h1>
       <span class="sm-seed">siemen: ${seed}</span>
+      ${matchTag}
     </header>
     <div class="sm-bar">
-      <button id="sm-new" class="sm-primary">Heitä uudet</button>
+      ${match ? "" : `<button id="sm-new" class="sm-primary">Heitä uudet</button>`}
       <button id="sm-rules">Säännöt</button>
       <button id="sm-records">🏆 Ennätykset</button>
-      <button id="sm-challenge">🎯 Haaste</button>
+      ${match ? "" : `<button id="sm-challenge">🎯 Haaste</button>`}
       ${roundOver ? "" : `<button id="sm-lock">Lukitse</button>`}
       ${roundOver ? "" : `<span class="sm-timer" id="sm-timer">${fmtTime(secondsLeft())}</span>`}
       <span class="sm-score">${
@@ -400,6 +439,7 @@ function render(): void {
       }</span>
     </div>
     ${roundOver ? resultHtml() : ""}
+    ${roundOver && match ? matchNavHtml() : ""}
     ${boardHtml(v)}
     ${rackHtml()}
     ${wordsHtml(v)}
@@ -693,11 +733,7 @@ function applyRackSort(key: string): void {
   render();
 }
 
-// --- Offline-haaste: jaa siemen / pelaa siemenellä ---
-
-function challengeUrl(s: string): string {
-  return `${location.origin}${location.pathname}#${encodeURIComponent(s)}`;
-}
+// --- Offline-haaste: monikierrosottelu, linkki kantaa tulokset ---
 
 /** Hyväksyy joko pelkän siemenen tai koko linkin (#-jälkeinen osa). */
 function parseSeed(input: string): string {
@@ -712,26 +748,153 @@ function parseSeed(input: string): string {
   }
 }
 
+// --- Nimimerkki (localStorage) ---
+function loadName(): string {
+  try {
+    return localStorage.getItem(NAME_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+function saveName(n: string): void {
+  myName = n;
+  try {
+    localStorage.setItem(NAME_KEY, n);
+  } catch {
+    /* yksityistila — nimi ei säily, peli toimii silti */
+  }
+}
+
+// --- Ottelun kulku ---
+function roundSeed(base: string, i: number): string {
+  return `${base}.${i + 1}`;
+}
+
+function startMatch(rounds: number, base: string, opp?: Opp): void {
+  match = { base, rounds, current: 0, myScores: [], myName, ...(opp ? { opp } : {}) };
+  showChallenge = false;
+  showMatchSummary = false;
+  if (!opp) location.hash = ""; // haastaja aloittaa puhtaalta; vastaajan #c=… säilyy URL:ssa
+  newRoll(roundSeed(base, 0));
+}
+
+function advanceMatch(): void {
+  if (!match) return;
+  match.current++;
+  if (match.current < match.rounds) {
+    newRoll(roundSeed(match.base, match.current));
+  } else {
+    showMatchSummary = true;
+    render();
+  }
+}
+
+function exitMatch(): void {
+  match = null;
+  showMatchSummary = false;
+}
+
+// --- Haastekoodaus (base64url JSON URL-hashiin: #c=…) ---
+interface ChallengePayload {
+  v: number;
+  b: string; // perussiemen
+  n: number; // kierrokset
+  a: { name: string; s: number[]; t: number }; // haastaja
+  r?: { name: string; s: number[]; t: number }; // vastaaja (paluulinkissä)
+}
+
+function b64e(s: string): string {
+  return btoa(encodeURIComponent(s)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function b64d(s: string): string {
+  return decodeURIComponent(atob(s.replace(/-/g, "+").replace(/_/g, "/")));
+}
+function challengeLink(p: ChallengePayload): string {
+  return `${location.origin}${location.pathname}#c=${b64e(JSON.stringify(p))}`;
+}
+function decodeChallenge(code: string): ChallengePayload | null {
+  try {
+    const p = JSON.parse(b64d(code)) as ChallengePayload;
+    if (p && p.b && p.n && p.a && Array.isArray(p.a.s)) return p;
+  } catch {
+    /* viallinen koodi */
+  }
+  return null;
+}
+
+const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
+
+function myChallengeLink(): string {
+  const m = match!;
+  return challengeLink({
+    v: 1,
+    b: m.base,
+    n: m.rounds,
+    a: { name: m.myName, s: m.myScores, t: sum(m.myScores) },
+  });
+}
+function myResultLink(): string {
+  const m = match!;
+  return challengeLink({
+    v: 1,
+    b: m.base,
+    n: m.rounds,
+    a: { name: m.opp!.name, s: m.opp!.scores, t: sum(m.opp!.scores) },
+    r: { name: m.myName, s: m.myScores, t: sum(m.myScores) },
+  });
+}
+
+function shareLink(url: string, text: string): void {
+  if (navigator.share) {
+    navigator.share({ title: "Itu — haaste", text, url }).catch(() => {});
+  } else {
+    copyToClipboard(url);
+  }
+}
+
+/** Saapuva haaste URL:sta: joko lopputulos (a+r) tai vastattava haaste (vain a). */
+function handleIncoming(p: ChallengePayload): void {
+  if (p.r) {
+    match = {
+      base: p.b,
+      rounds: p.n,
+      current: p.n,
+      myScores: p.a.s,
+      myName: p.a.name,
+      opp: { name: p.r.name, scores: p.r.s },
+      final: true,
+    };
+    showMatchSummary = true;
+    render();
+  } else {
+    startMatch(p.n, p.b, { name: p.a.name, scores: p.a.s });
+  }
+}
+
 function challengeHtml(): string {
-  const esc = challengeUrl(seed).replace(/"/g, "&quot;");
+  const nameEsc = myName.replace(/"/g, "&quot;");
+  const rounds = ROUND_OPTIONS.map(
+    (n) =>
+      `<button class="sm-tool sm-ch-rounds" data-rounds="${n}">${n === 1 ? "1 kierros" : `${n} kierrosta`}</button>`,
+  ).join("");
   return `<div class="sm-ch-backdrop" data-ch-close="1">
     <div class="sm-ch">
-      <h3>🎯 Offline-haaste</h3>
+      <h3>🎯 Haaste</h3>
       <section>
-        <h4>Lähetä tämä peli kaverille</h4>
-        <p class="sm-ch-note">Sama heitto, samat kirjaimet — vertailkaa pisteet. Siemen: <b>${seed}</b></p>
-        <input class="sm-ch-link" readonly value="${esc}" />
-        <div class="sm-ch-row">
-          <button id="sm-ch-share" class="sm-primary">Jaa…</button>
-          <button id="sm-ch-copy">Kopioi linkki</button>
-        </div>
+        <h4>Nimimerkki <span class="sm-ch-note">(valinnainen)</span></h4>
+        <input id="sm-ch-name" class="sm-ch-link" maxlength="20" placeholder="Sinä" value="${nameEsc}" />
+      </section>
+      <section>
+        <h4>Aloita haaste</h4>
+        <p class="sm-ch-note">Pelaat valitun määrän kierroksia, sitten lähetät tuloslinkin kaverille. Hän pelaa samat heitot — näette kumpi voitti.</p>
+        <div class="sm-ch-row sm-ch-wrap">${rounds}</div>
       </section>
       <section>
         <h4>Vastaa haasteeseen</h4>
-        <p class="sm-ch-note">Liitä saamasi siemen tai linkki ja pelaa sama peli.</p>
+        <p class="sm-ch-note">Liitä saamasi haastelinkki (tai pelkkä siemen yksittäiseen peliin).</p>
         <div class="sm-ch-row">
-          <input id="sm-ch-input" class="sm-ch-link" placeholder="Liitä siemen tai linkki" />
-          <button id="sm-ch-play" class="sm-primary">Pelaa</button>
+          <input id="sm-ch-input" class="sm-ch-link" placeholder="Liitä linkki tai siemen" />
+          <button id="sm-ch-open" class="sm-primary">Avaa</button>
         </div>
       </section>
       <button id="sm-ch-close" class="sm-ch-clear">Sulje</button>
@@ -739,15 +902,96 @@ function challengeHtml(): string {
   </div>`;
 }
 
-function shareChallenge(): void {
-  const url = challengeUrl(seed);
-  if (navigator.share) {
-    navigator
-      .share({ title: "Itu — haaste", text: `Pelaa sama Itu-peli (siemen ${seed})`, url })
-      .catch(() => {});
-  } else {
-    copyToClipboard(url);
+/** Kierrosten välinen navigointi loppunäytössä (ottelutilassa). */
+function matchNavHtml(): string {
+  if (!match) return "";
+  const i = match.current; // juuri pelattu kierros (0-pohjainen)
+  const last = i + 1 >= match.rounds;
+  const oppRound = match.opp ? match.opp.scores[i] : null;
+  return `<div class="sm-match-nav">
+    <span>Kierros ${i + 1}/${match.rounds}${oppRound != null ? ` · haastaja sai ${oppRound} p` : ""}</span>
+    <button id="sm-next" class="sm-primary">${last ? "Näytä ottelun tulos →" : "Seuraava kierros →"}</button>
+  </div>`;
+}
+
+/** Ottelun yhteenveto: kierrosrivit, yhteispisteet, voittaja + jako/paluulinkki. */
+function renderMatchSummary(): void {
+  const m = match!;
+  const myTotal = sum(m.myScores);
+  const opp = m.opp;
+  const oppTotal = opp ? sum(opp.scores) : null;
+  const myLabel = m.myName || "Sinä";
+  const oppLabel = opp ? opp.name || "Haastaja" : null;
+
+  const rows = Array.from({ length: m.rounds }, (_, i) => {
+    const mine = m.myScores[i] ?? 0;
+    const o = opp ? (opp.scores[i] ?? 0) : null;
+    return `<tr><td>Kierros ${i + 1}</td><td>${mine}</td>${o != null ? `<td>${o}</td>` : ""}</tr>`;
+  }).join("");
+
+  let banner = "";
+  if (oppTotal != null) {
+    banner =
+      myTotal > oppTotal
+        ? `<p class="sm-record-banner">🏆 ${myLabel} voitti ${myTotal}–${oppTotal}!</p>`
+        : myTotal < oppTotal
+          ? `<p class="sm-record-banner">${oppLabel} voitti ${oppTotal}–${myTotal}.</p>`
+          : `<p class="sm-record-banner">Tasapeli ${myTotal}–${oppTotal}!</p>`;
   }
+
+  let share = "";
+  if (!m.final) {
+    const link = (opp ? myResultLink() : myChallengeLink()).replace(/"/g, "&quot;");
+    const heading = opp ? "Lähetä tulos takaisin" : "Lähetä haaste kaverille";
+    const note = opp
+      ? "Näin haastaja näkee lopputuloksen."
+      : `Hän pelaa samat ${m.rounds === 1 ? "kierroksen" : m.rounds + " kierrosta"} ja näkee tuloksesi.`;
+    share = `<section>
+      <h4>${heading}</h4>
+      <p class="sm-ch-note">${note}</p>
+      <input class="sm-ch-link" readonly value="${link}" />
+      <div class="sm-ch-row">
+        <button id="sm-ms-share" class="sm-primary">Jaa…</button>
+        <button id="sm-ms-copy">Kopioi linkki</button>
+      </div>
+    </section>`;
+  }
+
+  root.innerHTML = `
+    <div class="sm-bar">
+      <button id="sm-ms-new" class="sm-primary">Uusi peli</button>
+      <h2 class="sm-records-title">🎯 Ottelun tulos <small>(${m.rounds === 1 ? "1 kierros" : m.rounds + " kierrosta"})</small></h2>
+    </div>
+    <div class="sm-result sm-match-result">
+      ${banner}
+      <table class="sm-breakdown sm-match-table">
+        <tr><td></td><td>${escapeHtml(myLabel)}</td>${oppLabel ? `<td>${escapeHtml(oppLabel)}</td>` : ""}</tr>
+        ${rows}
+        <tr class="sm-total"><td>Yhteensä</td><td>${myTotal}</td>${oppTotal != null ? `<td>${oppTotal}</td>` : ""}</tr>
+      </table>
+      ${share}
+    </div>
+  `;
+  root.querySelector<HTMLButtonElement>("#sm-ms-new")!.onclick = () => {
+    exitMatch();
+    location.hash = "";
+    newRoll(randomSeed());
+  };
+  const link = () => (opp ? myResultLink() : myChallengeLink());
+  root.querySelector<HTMLButtonElement>("#sm-ms-share")?.addEventListener("click", () =>
+    shareLink(link(), opp ? "Itu — tulokseni" : "Itu — haaste"),
+  );
+  root.querySelector<HTMLButtonElement>("#sm-ms-copy")?.addEventListener("click", (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    copyToClipboard(link());
+    const o = btn.textContent;
+    btn.textContent = "Kopioitu!";
+    setTimeout(() => (btn.textContent = o), 1500);
+  });
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 }
 
 function copyToClipboard(text: string): void {
@@ -792,7 +1036,9 @@ function wordsHtml(v: Validation): string {
 }
 
 function wireEvents(): void {
-  root.querySelector<HTMLButtonElement>("#sm-new")!.onclick = () => newRoll(randomSeed());
+  root.querySelector<HTMLButtonElement>("#sm-new")?.addEventListener("click", () =>
+    newRoll(randomSeed()),
+  );
   root.querySelector<HTMLButtonElement>("#sm-rules")!.onclick = () => {
     showRules = true;
     render();
@@ -816,24 +1062,32 @@ function wireEvents(): void {
   root.querySelector<HTMLElement>(".sm-ch-backdrop")?.addEventListener("click", (e) => {
     if (e.target === e.currentTarget) closeChallenge();
   });
-  root.querySelector<HTMLButtonElement>("#sm-ch-share")?.addEventListener("click", shareChallenge);
-  root.querySelector<HTMLButtonElement>("#sm-ch-copy")?.addEventListener("click", (e) => {
-    const btn = e.currentTarget as HTMLButtonElement;
-    copyToClipboard(challengeUrl(seed));
-    const orig = btn.textContent;
-    btn.textContent = "Kopioitu!";
-    setTimeout(() => {
-      btn.textContent = orig;
-    }, 1500);
+  root.querySelector<HTMLInputElement>("#sm-ch-name")?.addEventListener("input", (e) => {
+    saveName((e.target as HTMLInputElement).value.trim());
   });
-  root.querySelector<HTMLButtonElement>("#sm-ch-play")?.addEventListener("click", () => {
-    const inp = root.querySelector<HTMLInputElement>("#sm-ch-input");
-    const s = parseSeed(inp?.value ?? "");
+  for (const b of root.querySelectorAll<HTMLElement>(".sm-ch-rounds")) {
+    b.addEventListener("click", () => startMatch(Number(b.dataset.rounds), randomSeed()));
+  }
+  root.querySelector<HTMLButtonElement>("#sm-ch-open")?.addEventListener("click", () => {
+    const raw = root.querySelector<HTMLInputElement>("#sm-ch-input")?.value ?? "";
+    const cm = raw.match(/c=([A-Za-z0-9\-_]+)/);
+    if (cm) {
+      const p = decodeChallenge(cm[1]);
+      if (p) {
+        showChallenge = false;
+        handleIncoming(p);
+        return;
+      }
+    }
+    const s = parseSeed(raw);
     if (s) {
       showChallenge = false;
+      exitMatch();
+      location.hash = encodeURIComponent(s);
       newRoll(s);
     }
   });
+  root.querySelector<HTMLButtonElement>("#sm-next")?.addEventListener("click", advanceMatch);
 
   // Jokerin kirjainvalitsin (jos avoinna): kirjainnapit + sulkeminen taustaa klikkaamalla.
   for (const b of root.querySelectorAll<HTMLElement>("[data-jp]")) {
@@ -849,7 +1103,7 @@ function wireEvents(): void {
   // Kierroksen päätyttyä lauta on jäässä — ei raahausta eikä jokerin valintaa.
   if (roundOver) return;
 
-  for (const btn of root.querySelectorAll<HTMLElement>(".sm-tool")) {
+  for (const btn of root.querySelectorAll<HTMLElement>("[data-sort]")) {
     btn.addEventListener("click", () => applyRackSort(btn.dataset.sort!));
   }
   for (const tileEl of root.querySelectorAll<HTMLElement>(".sm-tile")) {

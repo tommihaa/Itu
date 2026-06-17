@@ -297,9 +297,30 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
   font-size: 0.85rem;
 }
 .sm-ch-row { display: flex; gap: 0.4rem; margin-top: 0.5rem; }
+.sm-ch-row.sm-ch-wrap { flex-wrap: wrap; }
 .sm-ch-row .sm-ch-link { margin-top: 0; }
 .sm-ch-row button { white-space: nowrap; }
 .sm-ch-clear { margin-top: 0.9rem; width: 100%; color: var(--muted); }
+
+/* --- Monikierroshaaste --- */
+.sm-match-tag { color: var(--gold); font-size: 0.9rem; font-weight: 600; }
+.sm-match-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--panel);
+  border: 1px solid var(--gold-dim);
+  border-radius: 0.5rem;
+}
+.sm-match-nav span { color: var(--muted); }
+.sm-match-nav button { margin-left: auto; }
+.sm-match-result { max-width: 32rem; }
+.sm-match-table td { text-align: right; }
+.sm-match-table td:first-child { text-align: left; color: var(--muted); }
+.sm-match-table tr:first-child td { color: var(--gold); font-weight: 600; }
 
 /* Syötekentät pysyvät valittavina (globaali user-select:none ei koske niihin). */
 input, textarea {
