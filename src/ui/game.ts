@@ -87,6 +87,15 @@ interface Drag {
 }
 let drag: Drag | null = null;
 
+// Näppäimistösyöttö: kirjoituskursori laudalla (suunta H/V). Drag toimii rinnalla.
+type Dir = "H" | "V";
+interface Caret {
+  row: number;
+  col: number;
+  dir: Dir;
+}
+let caret: Caret | null = null;
+
 // Kierroksen tila: ajastin loppuu hetkellä roundEndsAt; lukitus tai aika lopettaa.
 let roundEndsAt = 0;
 let roundOver = false;
@@ -243,6 +252,8 @@ export function mountGame(el: HTMLElement): void {
   window.addEventListener("resize", () => {
     if (!showRules) frameBoard();
   });
+  // Näppäimistösyöttö: kirjoita sanoja kursorin kohdalle.
+  window.addEventListener("keydown", onKeyDown);
   // URL-hash: #c=… = haaste (ottelu), muuten #siemen = yksittäinen jaettu heitto.
   const rawHash = location.hash.replace(/^#/, "");
   if (rawHash.startsWith("c=")) {
@@ -279,6 +290,7 @@ function newRoll(s: string): void {
   rackSort = "haro";
   lastRecordRank = 0;
   currentRecord = null;
+  caret = { row: BOARD_MID, col: BOARD_MID, dir: "H" }; // valmis näppäimistösyöttöön
   startRound();
   render();
 }
@@ -441,6 +453,7 @@ function render(): void {
     ${roundOver ? resultHtml() : ""}
     ${roundOver && match ? matchNavHtml() : ""}
     ${boardHtml(v)}
+    ${roundOver ? "" : `<p class="sm-kbd-hint">Voit myös kirjoittaa: klikkaa ruutua ja näppäile sana (välilyönti vaihtaa suunnan ${caret?.dir === "V" ? "↓" : "→"}, ⌫ poistaa).</p>`}
     ${rackHtml()}
     ${wordsHtml(v)}
     ${judge ? "" : '<p class="sm-words pending">Ladataan sanastoa…</p>'}
@@ -576,9 +589,14 @@ function boardHtml(v: Validation): string {
       const valid = v.cellValid.get(key);
       const cls =
         valid === undefined ? "" : valid ? " sm-valid" : " sm-invalid";
-      html += `<div class="sm-cell${cls}" data-cell="${key}">${
-        tile ? tileHtml(tile) : ""
-      }</div>`;
+      const isCaret = !roundOver && caret !== null && caret.row === r && caret.col === c;
+      const caretCls = isCaret ? " sm-caret" : "";
+      const inner = tile
+        ? tileHtml(tile)
+        : isCaret
+          ? `<span class="sm-caret-arrow">${caret!.dir === "H" ? "→" : "↓"}</span>`
+          : "";
+      html += `<div class="sm-cell${cls}${caretCls}" data-cell="${key}">${inner}</div>`;
     }
   }
   // Näkymä (sm-viewport) rajaa; lauta (sm-board) skaalautuu sen sisällä, ks. frameBoard.
@@ -1109,6 +1127,14 @@ function wireEvents(): void {
   for (const tileEl of root.querySelectorAll<HTMLElement>(".sm-tile")) {
     tileEl.addEventListener("pointerdown", (e) => onTilePointerDown(e, tileEl));
   }
+  // Ruudun klikkaus asettaa kirjoituskursorin (näppäimistösyöttö).
+  for (const cellEl of root.querySelectorAll<HTMLElement>(".sm-cell")) {
+    cellEl.addEventListener("click", () => {
+      if (drag) return; // raahauksen pudotus hoitaa oman renderinsä
+      const { row, col } = parseKey(cellEl.dataset.cell!);
+      setCaret(row, col);
+    });
+  }
 }
 
 // --- Osoitinraahaus (hiiri + kosketus) ---
@@ -1211,6 +1237,125 @@ function placeTile(die: number, target: string): void {
 function unplaceTile(die: number): void {
   tiles[die].cell = null;
   render();
+}
+
+// --- Näppäimistösyöttö (kirjoita sanoja kursorin kohdalle) ---
+
+const BOARD_MID = Math.floor(BOARD / 2);
+
+function inBounds(r: number, c: number): boolean {
+  return r >= 0 && r < BOARD && c >= 0 && c < BOARD;
+}
+function stepCell(r: number, c: number, dir: Dir, back = false): [number, number] {
+  const d = back ? -1 : 1;
+  return dir === "H" ? [r, c + d] : [r + d, c];
+}
+
+/** Klikkaus ruutuun: aseta kursori; sama ruutu uudelleen vaihtaa suunnan. */
+function setCaret(row: number, col: number): void {
+  if (roundOver) return;
+  caret =
+    caret && caret.row === row && caret.col === col
+      ? { row, col, dir: caret.dir === "H" ? "V" : "H" }
+      : { row, col, dir: caret?.dir ?? "H" };
+  render();
+}
+
+/** Kirjoita kirjain kursorin kohdalle (telineestä; jokeri jos kirjainta ei ole). */
+function typeAt(ch: string): void {
+  if (roundOver) return;
+  if (!caret) caret = { row: BOARD_MID, col: BOARD_MID, dir: "H" };
+  // Ohita varatut ruudut → ensimmäinen tyhjä suunnassa.
+  let { row, col } = caret;
+  const dir = caret.dir;
+  while (inBounds(row, col) && tileAt(cellKey(row, col))) {
+    [row, col] = stepCell(row, col, dir);
+  }
+  if (!inBounds(row, col)) return;
+  let die = tiles.findIndex((t) => !t.cell && letterOf(t) === ch);
+  let asJoker = false;
+  if (die < 0) {
+    die = tiles.findIndex((t) => !t.cell && t.face === JOKER);
+    asJoker = die >= 0;
+  }
+  if (die < 0) return; // ei sopivaa noppaa telineessä
+  if (asJoker) {
+    tiles[die].letter = ch;
+    tiles[die].locked = true;
+  }
+  tiles[die].cell = cellKey(row, col);
+  const [nr, nc] = stepCell(row, col, dir);
+  caret = inBounds(nr, nc) ? { row: nr, col: nc, dir } : { row, col, dir };
+  render();
+}
+
+/** Askelpalautin: siirry taakse ja poista siellä oleva noppa telineeseen. */
+function backspaceCaret(): void {
+  if (roundOver || !caret) return;
+  const dir = caret.dir;
+  const [pr, pc] = stepCell(caret.row, caret.col, dir, true);
+  if (!inBounds(pr, pc)) return;
+  const t = tileAt(cellKey(pr, pc));
+  if (t) {
+    if (t.face === JOKER && t.locked) {
+      t.letter = JOKER;
+      t.locked = false; // näppäimistöllä asetettu jokeri vapautuu
+    }
+    t.cell = null;
+  }
+  caret = { row: pr, col: pc, dir };
+  render();
+}
+
+function arrowCaret(dir: Dir, back: boolean): void {
+  if (roundOver) return;
+  if (!caret) {
+    caret = { row: BOARD_MID, col: BOARD_MID, dir };
+  } else {
+    const [nr, nc] = stepCell(caret.row, caret.col, dir, back);
+    caret = inBounds(nr, nc) ? { row: nr, col: nc, dir } : { ...caret, dir };
+  }
+  render();
+}
+
+function toggleCaretDir(): void {
+  if (roundOver) return;
+  caret = caret
+    ? { ...caret, dir: caret.dir === "H" ? "V" : "H" }
+    : { row: BOARD_MID, col: BOARD_MID, dir: "H" };
+  render();
+}
+
+function onKeyDown(e: KeyboardEvent): void {
+  // Vain pelinäkymässä; ei modaalien/loppunäytön päällä eikä tekstikentissä.
+  if (roundOver || showRules || showRecords || showMatchSummary || showChallenge) return;
+  if (jokerPicker !== null) return;
+  const tag = (e.target as HTMLElement | null)?.tagName;
+  if (tag === "INPUT" || tag === "TEXTAREA") return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key;
+  if (k.length === 1 && PLAY_LETTERS.includes(k.toLowerCase())) {
+    e.preventDefault();
+    typeAt(k.toLowerCase());
+  } else if (k === "Backspace") {
+    e.preventDefault();
+    backspaceCaret();
+  } else if (k === "ArrowRight") {
+    e.preventDefault();
+    arrowCaret("H", false);
+  } else if (k === "ArrowLeft") {
+    e.preventDefault();
+    arrowCaret("H", true);
+  } else if (k === "ArrowDown") {
+    e.preventDefault();
+    arrowCaret("V", false);
+  } else if (k === "ArrowUp") {
+    e.preventDefault();
+    arrowCaret("V", true);
+  } else if (k === " " || k === "Tab") {
+    e.preventDefault();
+    toggleCaretDir();
+  }
 }
 
 /** Napautus jokerille avaa inline-kirjainvalitsimen (kelvolliset korostettu). */

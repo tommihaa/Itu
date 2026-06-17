@@ -168,6 +168,10 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
 .sm-cell.sm-drop { outline: 2px dashed var(--gold); outline-offset: -2px; }
 .sm-cell.sm-valid { background: var(--valid-bg); }
 .sm-cell.sm-invalid { background: var(--invalid-bg); }
+/* Kirjoituskursori (näppäimistösyöttö) */
+.sm-cell.sm-caret { outline: 2px solid var(--gold); outline-offset: -2px; box-shadow: inset 0 0 0 1px var(--gold-dim); }
+.sm-caret-arrow { color: var(--gold); font-weight: 700; font-size: 1.1rem; opacity: 0.8; }
+.sm-kbd-hint { margin: -0.5rem 0 0.75rem; color: var(--muted); font-size: 0.8rem; }
 
 /* --- Noppa (tile) --- */
 .sm-tile {
