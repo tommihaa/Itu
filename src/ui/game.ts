@@ -40,6 +40,7 @@ interface Tile {
 
 let tiles: Tile[] = [];
 let rackOrder: number[] = []; // telineen näkymäjärjestys (dieIndex-permutaatio)
+let rackSort = "haro"; // aktiivinen järjestys (ryhmävälejä varten)
 let seed = "";
 let judge: WordJudge | null = null;
 let root: HTMLElement;
@@ -70,6 +71,41 @@ interface Suggestions {
   best: string[]; // pisimmät/arvokkaimmat sanat joita olisi voinut tehdä
 }
 let endSuggestions: Suggestions | null = null;
+
+// --- Ennätykset (localStorage): top-10 tulosta + kunkin ruudukko ---
+const RECORDS_KEY = "itu:records:v1";
+const MAX_RECORDS = 10;
+
+interface ScoreRecord {
+  total: number;
+  wordPoints: number;
+  date: number; // Date.now()
+  seed: string;
+  words: string[]; // muodostetut kelvolliset sanat
+  placed: { cell: string; face: Face; letter: Face }[]; // ruudukko (asetetut nopat)
+}
+
+let showRecords = false;
+let lastRecordRank = 0; // tämän pelin sija top-10:ssä (0 = ei listalle)
+let currentRecord: ScoreRecord | null = null; // tämän pelin merkintä (★-korostus)
+
+function loadRecords(): ScoreRecord[] {
+  try {
+    const raw = localStorage.getItem(RECORDS_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr : [];
+  } catch {
+    return []; // rikki / yksityistila → kohdellaan tyhjänä
+  }
+}
+
+function saveRecords(recs: ScoreRecord[]): void {
+  try {
+    localStorage.setItem(RECORDS_KEY, JSON.stringify(recs));
+  } catch {
+    /* tila täynnä tai yksityistila — peli toimii silti */
+  }
+}
 
 function secondsLeft(): number {
   return Math.max(0, Math.ceil((roundEndsAt - Date.now()) / 1000));
@@ -109,7 +145,35 @@ function endRound(): void {
     timeBonusEnabled: TIME_BONUS_ENABLED,
   });
   computeSuggestions();
+  recordResult(v);
   render();
+}
+
+/** Tallentaa tuloksen ennätyslistalle (top-10) jos pisteet > 0; asettaa sijan. */
+function recordResult(v: Validation): void {
+  lastRecordRank = 0;
+  currentRecord = null;
+  if (!endBreakdown || endBreakdown.total <= 0) return;
+  const rec: ScoreRecord = {
+    total: endBreakdown.total,
+    wordPoints: endBreakdown.wordPoints,
+    date: Date.now(),
+    seed,
+    words: v.words.filter((w) => w.valid).map((w) => w.text),
+    placed: tiles
+      .filter((t) => t.cell)
+      .map((t) => ({ cell: t.cell!, face: t.face, letter: t.letter })),
+  };
+  const recs = loadRecords();
+  recs.push(rec);
+  recs.sort((a, b) => b.total - a.total || a.date - b.date); // korkein ensin, tasapeli vanhin ensin
+  const trimmed = recs.slice(0, MAX_RECORDS);
+  const idx = trimmed.indexOf(rec);
+  if (idx >= 0) {
+    lastRecordRank = idx + 1;
+    currentRecord = rec;
+  }
+  saveRecords(trimmed);
 }
 
 /** Mitä kirjaimista olisi voinut tehdä: ratkaisija + jämäkirjainten korostus. */
@@ -172,6 +236,9 @@ function newRoll(s: string): void {
   }));
   // "Härö": nopat alustalle satunnaiseen järjestykseen, deterministisesti siemenestä.
   rackOrder = shuffled(createRng(`${s}:rack`));
+  rackSort = "haro";
+  lastRecordRank = 0;
+  currentRecord = null;
   startRound();
   render();
 }
@@ -244,6 +311,10 @@ function render(): void {
     renderRules();
     return;
   }
+  if (showRecords) {
+    renderRecords();
+    return;
+  }
   const v = validate();
   root.innerHTML = `
     <header class="sm-head">
@@ -253,6 +324,7 @@ function render(): void {
     <div class="sm-bar">
       <button id="sm-new" class="sm-primary">Heitä uudet</button>
       <button id="sm-rules">Säännöt</button>
+      <button id="sm-records">🏆 Ennätykset</button>
       ${roundOver ? "" : `<button id="sm-lock">Lukitse</button>`}
       ${roundOver ? "" : `<span class="sm-timer" id="sm-timer">${fmtTime(secondsLeft())}</span>`}
       <span class="sm-score">${
@@ -292,8 +364,17 @@ function resultHtml(): string {
         </div>`
       : "";
 
+  const banner = lastRecordRank
+    ? `<p class="sm-record-banner">🏆 ${
+        lastRecordRank === 1
+          ? "Uusi paras tulos!"
+          : `Ennätyslistalle — sija ${lastRecordRank}.`
+      }</p>`
+    : "";
+
   return `<div class="sm-result">
     <h2>Lopputulos <small>(${reason})</small></h2>
+    ${banner}
     <table class="sm-breakdown">
       <tr><td>Sanapisteet</td><td>${b.wordPoints}</td></tr>
       <tr><td>Käyttämättä jääneet nopat</td><td>−${b.unusedPenalty}</td></tr>
@@ -318,6 +399,64 @@ function renderRules(): void {
     render();
   };
   root.querySelector<HTMLButtonElement>("#sm-rules-print")!.onclick = () => window.print();
+}
+
+/** 🏆-näkymä: top-10 tulokset, kukin oma ruudukko + sanat. */
+function renderRecords(): void {
+  const recs = loadRecords();
+  const list = recs.length
+    ? recs.map((r, i) => recordHtml(r, i + 1)).join("")
+    : `<p class="sm-words pending">Ei vielä ennätyksiä — pelaa kierros ja lukitse tulos!</p>`;
+  root.innerHTML = `
+    <div class="sm-bar">
+      <button id="sm-records-close">← Takaisin peliin</button>
+      <h2 class="sm-records-title">🏆 Ennätykset</h2>
+    </div>
+    <div class="sm-records">${list}</div>
+  `;
+  root.querySelector<HTMLButtonElement>("#sm-records-close")!.onclick = () => {
+    showRecords = false;
+    render();
+  };
+}
+
+function recordHtml(r: ScoreRecord, rank: number): string {
+  const isCurrent = currentRecord !== null && r.date === currentRecord.date;
+  const d = new Date(r.date);
+  const date = `${d.getDate()}.${d.getMonth() + 1}.`;
+  const words = r.words.map((w) => `<span class="sm-sug-word">${w}</span>`).join(" ");
+  return `<div class="sm-record${isCurrent ? " sm-record-cur" : ""}">
+    <div class="sm-record-head">
+      <span class="sm-record-rank">${rank}.</span>
+      <span class="sm-record-total">${r.total} p</span>
+      ${isCurrent ? '<span class="sm-record-star">★</span>' : ""}
+      <span class="sm-record-meta">${date} · siemen ${r.seed}</span>
+    </div>
+    ${recordBoardHtml(r)}
+    ${words ? `<p class="sm-record-words">${words}</p>` : ""}
+  </div>`;
+}
+
+/** Tallennetun pelin ruudukko staattisena pienoiskuvana (vain käytetty alue). */
+function recordBoardHtml(r: ScoreRecord): string {
+  if (!r.placed.length) return "";
+  const cells = new Map(r.placed.map((t) => [t.cell, t]));
+  const ps = r.placed.map((t) => parseKey(t.cell));
+  const rows = ps.map((p) => p.row);
+  const cols = ps.map((p) => p.col);
+  const minR = Math.min(...rows),
+    maxR = Math.max(...rows),
+    minC = Math.min(...cols),
+    maxC = Math.max(...cols);
+  let html = `<div class="sm-mini" style="grid-template-columns:repeat(${maxC - minC + 1},1.5rem)">`;
+  for (let row = minR; row <= maxR; row++) {
+    for (let col = minC; col <= maxC; col++) {
+      const t = cells.get(cellKey(row, col));
+      const glyph = t ? (t.face === JOKER ? t.letter.toUpperCase() : t.face) : "";
+      html += `<div class="sm-mini-cell${t ? " sm-mini-tile" : ""}">${glyph}</div>`;
+    }
+  }
+  return html + "</div>";
 }
 
 function boardHtml(v: Validation): string {
@@ -383,12 +522,33 @@ function frameBoard(): void {
 
 function rackHtml(): string {
   const order = rackOrder.length === tiles.length ? rackOrder : [...tiles.keys()];
-  const slots = order
-    .filter((die) => !tiles[die].cell)
-    .map((die) => `<div class="sm-slot">${tileHtml(tiles[die])}</div>`)
+  const rackDice = order.filter((die) => !tiles[die].cell);
+  // Ryhmittäin järjestettäessä (vokaalit/sointu/pisteet) pieni väli erottaa ryhmät.
+  let prevGroup: number | null = null;
+  const slots = rackDice
+    .map((die, i) => {
+      const g = rackGroupOf(die);
+      const gap = i > 0 && g !== null && g !== prevGroup ? " sm-gap" : "";
+      prevGroup = g;
+      return `<div class="sm-slot${gap}">${tileHtml(tiles[die])}</div>`;
+    })
     .join("");
   const tools = roundOver ? "" : rackToolsHtml();
   return `${tools}<div class="sm-rack" data-rack="1">${slots}</div>`;
+}
+
+/** Ryhmätunniste nykyiselle järjestykselle; null = ei ryhmittelyä (ei välejä). */
+function rackGroupOf(die: number): number | null {
+  switch (rackSort) {
+    case "vow":
+      return vowelGroup(die);
+    case "harmony":
+      return harmonyGroup(die);
+    case "pts":
+      return faceValue(tiles[die].face);
+    default:
+      return null; // haro, abc → yhtenäinen rivi
+  }
 }
 
 function rackToolsHtml(): string {
@@ -440,6 +600,7 @@ function shuffled(rand: () => number): number[] {
 }
 
 function applyRackSort(key: string): void {
+  rackSort = key;
   const byAlpha = (a: number, b: number) => alphaKey(a).localeCompare(alphaKey(b), "fi");
   const order = [...tiles.keys()];
   switch (key) {
@@ -486,6 +647,10 @@ function wireEvents(): void {
     render();
   };
   root.querySelector<HTMLButtonElement>("#sm-lock")?.addEventListener("click", endRound);
+  root.querySelector<HTMLButtonElement>("#sm-records")?.addEventListener("click", () => {
+    showRecords = true;
+    render();
+  });
 
   // Kierroksen päätyttyä lauta on jäässä — ei raahausta eikä jokerin valintaa.
   if (roundOver) return;
