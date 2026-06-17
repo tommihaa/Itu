@@ -19,11 +19,22 @@ export interface RuleGroup {
   examples: Example[];
 }
 
+/** Kirjainlista (esim. pelin kirjaimet / pois jääneet) chip-rivinä. */
+export interface LetterRow {
+  label: string;
+  /** Kirjaimet välilyönnein, esim. "A D E G". */
+  chars: string;
+  /** true = mukana pelissä (✓), false = ei mukana (✗). */
+  accept: boolean;
+}
+
 export interface RuleSection {
   heading: string;
   /** Selkoteksti, lyhyitä lauseita. */
   body?: string;
   groups?: RuleGroup[];
+  /** Kirjainrivit (chipit) — esim. mitkä kirjaimet ovat/eivät ole pelissä. */
+  letters?: LetterRow[];
 }
 
 export const RULES_TITLE = "Mitkä sanat kelpaavat?";
@@ -44,8 +55,21 @@ export const RULES: RuleSection[] = [
   {
     heading: "Kirjaimet",
     body:
-      "Käytä vain pelin kirjaimia. Mukana ei ole b-, c- eikä f-kirjainta — " +
-      "ne ovat suomessa vain lainasanoissa. G on mukana, mutta harvinainen.",
+      "Käytä vain pelin kirjaimia (alla). Suomessa b, c, f ja q, w, x, z, å " +
+      "esiintyvät vain lainasanoissa ja erisnimissä, joten ne eivät ole mukana. " +
+      "G on mukana mutta harvinainen — se tulee taivutuksessa (nk → ng).",
+    letters: [
+      {
+        label: "Pelin kirjaimet",
+        accept: true,
+        chars: "A D E G H I J K L M N O P R S T U V Y Ä Ö",
+      },
+      {
+        label: "Eivät ole pelissä",
+        accept: false,
+        chars: "B C F Q W X Z Å",
+      },
+    ],
     groups: [
       {
         title: "Eivät kelpaa (väärä kirjain)",
@@ -54,6 +78,8 @@ export const RULES: RuleSection[] = [
           { word: "banaani", hint: "b" },
           { word: "fakta", hint: "f" },
           { word: "celsius", hint: "c" },
+          { word: "pizza", hint: "z" },
+          { word: "taxi", hint: "x" },
         ],
       },
     ],

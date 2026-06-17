@@ -248,6 +248,28 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
 .sm-rules-lead { color: var(--muted); margin-top: 0; }
 .sm-rule-section { border-top: 1px solid var(--line); padding-top: 0.75rem; margin-top: 1rem; }
 .sm-rule-section h3 { color: var(--gold); margin: 0 0 0.4rem; font-size: 1.1rem; }
+/* Kirjainrivit (mitkä kirjaimet ovat / eivät ole pelissä) */
+.sm-rule-letters { display: grid; gap: 0.5rem; margin: 0.25rem 0 0.75rem; }
+.sm-letter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+.sm-letter-label { font-weight: 600; min-width: 9.5rem; }
+.sm-letter-row .sign { font-weight: 700; }
+.sm-letter-row.ok .sign { color: var(--valid); }
+.sm-letter-row.bad .sign { color: var(--invalid); }
+.sm-letter-chips { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.sm-letter {
+  display: inline-grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 0.25rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  background: var(--tile);
+  border: 1px solid var(--tile-edge);
+}
+.sm-letter-row.ok .sm-letter { border-color: var(--valid); }
+.sm-letter-row.bad .sm-letter { color: var(--muted); border-style: dashed; }
+
 .sm-rule-groups { display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
 .sm-rule-group { background: var(--panel); border: 1px solid var(--line); border-left-width: 4px; border-radius: 0.4rem; padding: 0.5rem 0.7rem; }
 .sm-rule-group.ok { border-left-color: var(--valid); }
@@ -270,6 +292,10 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
   .sm-rule-group { background: #fff; border-color: #bbb; break-inside: avoid; }
   .sm-rule-group.ok .sign { color: #1a7a3a; }
   .sm-rule-group.bad .sign { color: #b22; }
+  .sm-letter { background: #fff; border-color: #888; color: #111; }
+  .sm-letter-row.bad .sm-letter { color: #555; }
+  .sm-letter-row.ok .sign { color: #1a7a3a; }
+  .sm-letter-row.bad .sign { color: #b22; }
 }
 
 /* --- Mobiili: pienennä ruutuja, jotta 15×15-lauta mahtuu paremmin --- */
