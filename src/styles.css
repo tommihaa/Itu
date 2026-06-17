@@ -206,6 +206,61 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
 }
 .sm-tile.sm-joker { color: var(--gold); }
 .sm-tile.sm-dragging { opacity: 0.35; }
+/* Jokerin pieni ◇-merkki (kirjain valittu): kertoo että ruutu on jokeri ja vaihdettavissa. */
+.sm-joker-mark {
+  position: absolute;
+  left: 2px;
+  top: 0;
+  font-size: 0.55rem;
+  color: var(--gold-dim);
+  line-height: 1;
+}
+
+/* --- Jokerin kirjainvalitsin (inline) --- */
+.sm-jp-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(0, 0, 0, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+.sm-jp {
+  background: var(--panel);
+  border: 1px solid var(--gold-dim);
+  border-radius: 0.6rem;
+  padding: 1rem 1.1rem;
+  max-width: 22rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+.sm-jp h3 { margin: 0 0 0.25rem; color: var(--gold); font-size: 1.1rem; }
+.sm-jp-hint { margin: 0 0 0.7rem; color: var(--muted); font-size: 0.85rem; }
+.sm-jp-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.3rem;
+}
+.sm-jp-letter {
+  padding: 0.5rem 0;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.sm-jp-letter.sm-jp-valid {
+  border-color: var(--valid);
+  background: var(--valid-bg);
+  color: var(--text);
+}
+.sm-jp-letter.sm-jp-cur {
+  border-color: var(--gold);
+  background: var(--gold-dim);
+  color: #1a160d;
+}
+.sm-jp-clear {
+  margin-top: 0.7rem;
+  width: 100%;
+  color: var(--muted);
+}
 
 /* --- Teline (rack) --- */
 .sm-rack-tools {

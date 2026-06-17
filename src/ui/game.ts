@@ -31,11 +31,16 @@ const MAX_SCALE = 2.8;
 // Aikabonus oletuksena päällä; asetukseksi (D) myöhemmin.
 const TIME_BONUS_ENABLED = true;
 
+// Pelin kirjaimet (jokerin valittavissa olevat); sama joukko kuin nopissa/sanastossa.
+const PLAY_LETTERS = "adeghijklmnoprstuvyäö".split("");
+
 interface Tile {
   dieIndex: number;
   face: Face;
   letter: Face; // jokerin valittu kirjain; muilla = face
   cell: string | null; // null = telineessä
+  /** Jokeri: pelaaja lukinnut kirjaimen käsin (auto-päättely ei muuta). */
+  locked?: boolean;
 }
 
 let tiles: Tile[] = [];
@@ -45,6 +50,7 @@ let seed = "";
 let judge: WordJudge | null = null;
 let root: HTMLElement;
 let showRules = false;
+let jokerPicker: number | null = null; // avoinna olevan jokerin dieIndex (kirjainvalitsin)
 
 // Osoitinpohjainen raahaus (hiiri + kosketus). HTML5 DnD ei toimi mobiilissa,
 // joten käytämme pointer-eventtejä + kelluvaa "haamulaattaa" molemmille.
@@ -255,6 +261,46 @@ function tileAt(cell: string): Tile | undefined {
   return tiles.find((t) => t.cell === cell);
 }
 
+/**
+ * Kirjaimet jotka tekevät KAIKKI jokerin läpi kulkevat sanat kelvollisiksi.
+ * Risteyksessä (vaaka + pysty) ehto leikkaa → yleensä yksikäsitteinen.
+ * Tyhjä = jokeri ei ole sanassa, tai mikään kirjain ei kelpaa kaikkiin.
+ */
+function jokerCandidates(t: Tile): string[] {
+  if (!judge || !t.cell) return [];
+  const cells = buildCells();
+  const key = t.cell;
+  const through = extractWords(cells).filter((w) => w.keys.includes(key));
+  if (!through.length) return [];
+  const out: string[] = [];
+  for (const L of PLAY_LETTERS) {
+    const ok = through.every(
+      (w) =>
+        judge!.judge(
+          w.keys.map((k) => (k === key ? L : cells.get(k)!.letter.toLowerCase())).join(""),
+        ) === "valid",
+    );
+    if (ok) out.push(L);
+  }
+  return out;
+}
+
+/**
+ * Auto-päättely: jokainen lukitsematon jokeri saa kirjaimen joka tekee sen
+ * sanoista kelvollisia. Yksikäsitteinen ratkeaa itsestään; monitulkintaisessa
+ * valitaan aakkosjärjestyksen ensimmäinen (pelaaja voi vaihtaa valitsimesta).
+ */
+function resolveJokers(): void {
+  if (!judge) return;
+  for (const t of tiles) {
+    if (t.face !== JOKER || !t.cell || t.locked) continue;
+    const cands = jokerCandidates(t);
+    t.letter = cands.length
+      ? cands.sort((a, b) => a.localeCompare(b, "fi"))[0]
+      : JOKER;
+  }
+}
+
 interface Validation {
   cellValid: Map<string, boolean>; // ruutu → kuuluuko vain kelvollisiin sanoihin
   words: { text: string; valid: boolean }[];
@@ -267,6 +313,7 @@ interface Validation {
 }
 
 function validate(): Validation {
+  resolveJokers(); // jokerit saavat kirjaimensa ennen sanojen poimintaa
   const cells = buildCells();
   const words = extractWords(cells);
   const cellValid = new Map<string, boolean>();
@@ -338,6 +385,7 @@ function render(): void {
     ${rackHtml()}
     ${wordsHtml(v)}
     ${judge ? "" : '<p class="sm-words pending">Ladataan sanastoa…</p>'}
+    ${jokerPicker !== null ? jokerPickerHtml() : ""}
   `;
   wireEvents();
   frameBoard(); // automaattinen zoom/keskitys käytetyn alueen mukaan
@@ -627,9 +675,12 @@ function applyRackSort(key: string): void {
 
 function tileHtml(t: Tile): string {
   const isJoker = t.face === JOKER;
-  const glyph = isJoker ? (t.letter === JOKER ? "◇" : t.letter.toUpperCase()) : t.face;
+  const assigned = isJoker && t.letter !== JOKER;
+  const glyph = isJoker ? (assigned ? t.letter.toUpperCase() : "◇") : t.face;
+  // Jokerille, jolla on kirjain, pieni ◇-merkki → näkee että on jokeri ja sen voi vaihtaa.
+  const mark = assigned ? `<span class="sm-joker-mark">◇</span>` : "";
   return `<div class="sm-tile${isJoker ? " sm-joker" : ""}"
-    data-die="${t.dieIndex}">${glyph}<span class="sm-val">${faceValue(t.face) || ""}</span></div>`;
+    data-die="${t.dieIndex}">${glyph}${mark}<span class="sm-val">${faceValue(t.face) || ""}</span></div>`;
 }
 
 function wordsHtml(v: Validation): string {
@@ -650,6 +701,17 @@ function wireEvents(): void {
   root.querySelector<HTMLButtonElement>("#sm-records")?.addEventListener("click", () => {
     showRecords = true;
     render();
+  });
+
+  // Jokerin kirjainvalitsin (jos avoinna): kirjainnapit + sulkeminen taustaa klikkaamalla.
+  for (const b of root.querySelectorAll<HTMLElement>("[data-jp]")) {
+    b.addEventListener("click", () => pickJoker(b.dataset.jp!));
+  }
+  root.querySelector<HTMLElement>("[data-jp-close]")?.addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) {
+      jokerPicker = null;
+      render();
+    }
   });
 
   // Kierroksen päätyttyä lauta on jäässä — ei raahausta eikä jokerin valintaa.
@@ -765,15 +827,48 @@ function unplaceTile(die: number): void {
   render();
 }
 
+/** Napautus jokerille avaa inline-kirjainvalitsimen (kelvolliset korostettu). */
 function assignJoker(t: Tile): void {
-  const input = window.prompt("Jokerin kirjain (a, i, e, …):", t.letter === JOKER ? "" : t.letter);
-  if (input === null) return;
-  const ch = input.trim().toLowerCase();
-  // Hyväksy vain pelin kirjaimisto; tyhjä palauttaa jokerin valitsemattomaksi.
-  if (ch === "") {
-    t.letter = JOKER;
-  } else if (/^[adeghijklmnoprstuvyäö]$/.test(ch)) {
-    t.letter = ch;
-  }
+  jokerPicker = t.dieIndex;
   render();
+}
+
+/** Pelaajan valinta valitsimesta: "" = tyhjennä (anna auto-päättelyn hoitaa). */
+function pickJoker(letter: string): void {
+  const t = tiles.find((x) => x.dieIndex === jokerPicker);
+  if (t) {
+    if (letter === "") {
+      t.letter = JOKER;
+      t.locked = false; // takaisin auto-päättelyyn
+    } else if (PLAY_LETTERS.includes(letter)) {
+      t.letter = letter;
+      t.locked = true; // pelaaja lukitsi
+    }
+  }
+  jokerPicker = null;
+  render();
+}
+
+function jokerPickerHtml(): string {
+  const t = tiles.find((x) => x.dieIndex === jokerPicker);
+  if (!t) return "";
+  const valid = new Set(jokerCandidates(t));
+  const cur = t.letter === JOKER ? null : t.letter;
+  const btns = PLAY_LETTERS.map(
+    (L) =>
+      `<button class="sm-jp-letter${valid.has(L) ? " sm-jp-valid" : ""}${
+        cur === L ? " sm-jp-cur" : ""
+      }" data-jp="${L}">${L.toUpperCase()}</button>`,
+  ).join("");
+  const hint = valid.size
+    ? "Korostetut kirjaimet tekevät sanasta kelvollisen."
+    : "Mikään kirjain ei tee kaikista sanoista kelvollisia — valitse silti haluamasi.";
+  return `<div class="sm-jp-backdrop" data-jp-close="1">
+    <div class="sm-jp">
+      <h3>Jokerin kirjain</h3>
+      <p class="sm-jp-hint">${hint}</p>
+      <div class="sm-jp-grid">${btns}</div>
+      <button class="sm-jp-clear" data-jp="">◇ Tyhjennä — anna pelin valita</button>
+    </div>
+  </div>`;
 }
