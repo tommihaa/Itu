@@ -1,4 +1,4 @@
-# SanaMix — designdokumentti
+# Itu — designdokumentti
 
 Web-pohjainen sananmuodostuspeli kirjainnopilla, Tacticin Sana Mix -matkapelin hengessä.
 Päätökset lukittu 12.6.2026. Arkkitehtuurimalli: Superjatsi (Vite + TS + Web Components,

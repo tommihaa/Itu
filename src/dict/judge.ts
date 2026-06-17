@@ -1,6 +1,6 @@
 // Sanan kelvollisuuden arviointi rajapinnan takana, jotta muut kielet (ja
 // tuomarimoodi) voidaan lisätä myöhemmin ilman pelikoodin muutoksia.
-// Ks. SANAMIX.md: ExactJudge nyt; AdvisoryJudge / HumanJudge myöhemmin.
+// Ks. ITU.md: ExactJudge nyt; AdvisoryJudge / HumanJudge myöhemmin.
 import { Dawg } from "./dawg";
 import type { BuiltDawg } from "./builder";
 

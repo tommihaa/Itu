@@ -1,7 +1,7 @@
 # Perustelut — miksi nämä sanaston ja noppien rajoitteet?
 
 Tämä dokumentti kokoaa **miksi** kukin rajoite valittiin. *Mitä* hyväksytään:
-[SANASTO.md](SANASTO.md). Noppadata: [SANAMIX.md](SANAMIX.md). Jokainen kohta:
+[SANASTO.md](SANASTO.md). Noppadata: [ITU.md](ITU.md). Jokainen kohta:
 **päätös → perustelu → hinta/vaihtoehto** (mitä punnittiin).
 
 ---

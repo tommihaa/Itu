@@ -8,7 +8,7 @@ import {
   VOWELS,
 } from "../src/domain/dice";
 
-// Lukittu jakauma 12.6.2026, G lisätty 14.6.2026 (T6→T5, +G1) — ks. SANAMIX.md.
+// Lukittu jakauma 12.6.2026, G lisätty 14.6.2026 (T6→T5, +G1) — ks. ITU.md.
 // Testi hajoaa, jos data muuttuu.
 const LOCKED_COUNTS: Record<string, number> = {
   A: 8, I: 7, E: 6, O: 5, U: 4, Ä: 4, Y: 2, Ö: 1,

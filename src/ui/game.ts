@@ -247,7 +247,7 @@ function render(): void {
   const v = validate();
   root.innerHTML = `
     <header class="sm-head">
-      <h1>13 kirjainta sanoiksi</h1>
+      <h1>Itu</h1>
       <span class="sm-seed">siemen: ${seed}</span>
     </header>
     <div class="sm-bar">

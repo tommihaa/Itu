@@ -3,7 +3,7 @@
 // Tämä moduuli on puhdas (ei fs:ää), jotta sekä build-skripti että testit
 // voivat rakentaa ja kysellä DAWG:n muistissa. Levyformaatti: ks. encode().
 
-// Pelin kirjaimisto (ks. SANAMIX.md, noppadata): ei b/c/f/g/q/w/x/z/å/š/ž.
+// Pelin kirjaimisto (ks. ITU.md, noppadata): ei b/c/f/g/q/w/x/z/å/š/ž.
 // 20 merkkiä → mahtuu 5 bittiin. Järjestys = tavujärjestys (sort vertailee näin).
 export const ALPHABET = "abcdefghijklmnoprstuvyäö";
 

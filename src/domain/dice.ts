@@ -1,4 +1,4 @@
-// Noppadata — lukittu 12.6.2026, ks. SANAMIX.md. Älä muuta ilman designpäätöstä:
+// Noppadata — lukittu 12.6.2026, ks. ITU.md. Älä muuta ilman designpäätöstä:
 // jakauma (78 tahkoa = 37V + 40K + 1 jokeri) ja per-noppa-poissulkevuus
 // (Ö nopalla 11, D+jokeri nopalla 13, A:t kahdeksalla nopalla) ovat testien vartioimia.
 // 14.6.2026: G lisätty (nopalla 8, T6→T5). Syy: nk→ng-astevaihtelu tuottaa

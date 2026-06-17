@@ -1,9 +1,9 @@
-# Sanamuotojen build-aikainen generointi SanaMixiin.
+# Sanamuotojen build-aikainen generointi Itu-peliin.
 #
 # Lähde: Kotuksen nykysuomen sanalista 2024 (CC BY 4.0, Kotimaisten kielten
 # keskus) + GiellaLT:n suomen generaattori-FST (uralicNLP).
 #
-# Periaate (ks. SANAMIX.md): kaikki aito taivutus sisään, produktiivinen
+# Periaate (ks. ITU.md): kaikki aito taivutus sisään, produktiivinen
 # liimaus ulos. Kiellettyjä muotoja (liitepartikkelit +Foc/*, omistusliitteet
 # +Px*, vapaat yhdyssanat +Cmp#) ei koskaan pyydetä generaattorilta, joten
 # ne eivät voi päätyä listaan.

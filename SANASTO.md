@@ -1,4 +1,4 @@
-# Sanaston hyväksymissäännöt — "13 kirjainta sanoiksi"
+# Sanaston hyväksymissäännöt — Itu
 
 Kanoninen, koodia vasten todennettu kuvaus siitä **mitkä sanat peli hyväksyy.**
 Tämä dokumentti ja [gen_wordforms.py](build/gen_wordforms.py) pidetään yhtenevinä;
