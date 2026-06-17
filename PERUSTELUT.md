@@ -46,13 +46,22 @@ eivät ole sanoja; 13 = noppien määrä = pisin mahdollinen muodostettava sana.
 **Hinta.** Osa aidoista sanoista (väärillä kirjaimilla) jää ulos — mutta niitä ei
 voisi laudalle muodostaakaan, joten poisjättö on oikein.
 
-## 4. b, c, f pois — mutta g sisään
+## 4. b, c, f, q, w, x, z, å pois — mutta g sisään
 
-**Päätös.** b/c/f eivät ole noppadatassa eivätkä sanastossa; **g on** (lisätty 14.6).
+**Päätös.** b/c/f sekä q/w/x/z/å (samoin š/ž) eivät ole noppadatassa eivätkä
+sanastossa; **g on** (lisätty 14.6).
 
-**Perustelu.** b/c/f esiintyvät suomessa *vain lainasanoissa* (banaani, curry,
-fakta) — "kuolleita" kirjaimia, joiden poisjättö hävittää vain lainoja. **g on
-eri tapaus:** se on natiivin ng-yhtymän kirjain (hengittää, rengas, sangen) JA
+**Perustelu.** Nämä ovat suomen *vieraskirjaimia*: ne esiintyvät vain
+lainasanoissa ja erisnimissä ja ovat frekvenssiltään häviävän pieniä — b/c/f
+(banaani, curry, fakta), q/w/x/z (taxi, pizza, watti, qigong), å (Åland,
+ångström, ruotsalaisperäiset nimet). Poisjättö hävittää vain lainoja, ei
+kotoperäisiä sanoja. Rajaus on myös linjassa vakiintuneen suomalaisen
+sanapelikäytännön kanssa: **c, q, w, x, z ja å puuttuvat suomalaisesta
+Scrabblesta** (ja monilta Sana Mix -tyyppisiltä noppasanapeleiltä); b ja f ovat
+Scrabblessa mukana harvinaisina kalliina kivinä, mutta jätimme nekin pois
+pitääksemme pelin puhtaasti kotoperäisenä — kohdan 3 koherenssin (vain
+heitettävissä olevat kirjaimet kelpaavat) ja tämän pelin "harjoittele oikeaa
+suomea" -hengen mukaisesti. **g on eri tapaus:** se on natiivin ng-yhtymän kirjain (hengittää, rengas, sangen) JA
 astevaihtelun nk→ng tuotos (kenkä→**kengät**, kaupunki→**kaupungin**, lanka→**langan**).
 Datassa ~2 187 nk-vartaloista lemmaa tuottaa g:n taivutuksessa. Ilman g:tä peli
 olisi hyväksynyt nk-sanan perusmuodon mutta hylännyt sen taivutusmuodot

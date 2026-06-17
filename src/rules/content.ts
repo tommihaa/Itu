@@ -55,9 +55,10 @@ export const RULES: RuleSection[] = [
   {
     heading: "Kirjaimet",
     body:
-      "Käytä vain pelin kirjaimia (alla). Suomessa b, c, f ja q, w, x, z, å " +
-      "esiintyvät vain lainasanoissa ja erisnimissä, joten ne eivät ole mukana. " +
-      "G on mukana mutta harvinainen — se tulee taivutuksessa (nk → ng).",
+      "Käytä vain pelin kirjaimia (alla). Pois jääneet b, c, f, q, w, x, z ja å " +
+      "esiintyvät suomessa lähinnä lainasanoissa ja erisnimissä ja ovat hyvin " +
+      "harvinaisia — monet niistä puuttuvat myös suomalaisesta Scrabblesta ja " +
+      "Sana Mixistä. G on mukana mutta harvinainen: se tulee taivutuksessa (nk → ng).",
     letters: [
       {
         label: "Pelin kirjaimet",
