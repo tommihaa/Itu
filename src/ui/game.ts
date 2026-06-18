@@ -50,6 +50,7 @@ let seed = "";
 let judge: WordJudge | null = null;
 let root: HTMLElement;
 let showRules = false;
+let showChecker = false; // sanantarkistin (pelin ulkopuolinen "käykö sana")
 let jokerPicker: number | null = null; // avoinna olevan jokerin dieIndex (kirjainvalitsin)
 let showChallenge = false; // offline-haastemodaali (aloita haaste / vastaa)
 
@@ -423,6 +424,10 @@ function render(): void {
     renderRecords();
     return;
   }
+  if (showChecker) {
+    renderChecker();
+    return;
+  }
   if (showMatchSummary) {
     renderMatchSummary();
     return;
@@ -440,6 +445,7 @@ function render(): void {
     <div class="sm-bar">
       ${match ? "" : `<button id="sm-new" class="sm-primary">Heitä uudet</button>`}
       <button id="sm-rules">Säännöt</button>
+      <button id="sm-checker">🔎 Tarkista</button>
       <button id="sm-records">🏆 Ennätykset</button>
       ${match ? "" : `<button id="sm-challenge">🎯 Haaste</button>`}
       ${roundOver ? "" : `<button id="sm-lock">Lukitse</button>`}
@@ -520,6 +526,51 @@ function renderRules(): void {
     render();
   };
   root.querySelector<HTMLButtonElement>("#sm-rules-print")!.onclick = () => window.print();
+}
+
+/** Sanantarkistin: pelin ulkopuolinen "käykö sana" -haku (sama DAWG-tuomari). */
+function renderChecker(): void {
+  root.innerHTML = `
+    <div class="sm-bar">
+      <button id="sm-check-close">← Takaisin peliin</button>
+      <h2 class="sm-records-title">🔎 Tarkista sana</h2>
+    </div>
+    <div class="sm-checker">
+      <p class="sm-ch-note">Kokeile käykö jokin sana — esim. <b>rankin</b>, <b>rankkasi</b>, <b>kuusta</b>. Pelin sanakirja vastaa, samoin kuin pelissä.</p>
+      <input id="sm-check-input" class="sm-ch-link" placeholder="Kirjoita sana"
+        autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" />
+      <p id="sm-check-result" class="sm-check-result"></p>
+      <div class="sm-check-note">
+        <h4>Erisnimet</h4>
+        <p>Erisnimi ei kelpaa niminä, mutta moni etunimi on myös tavallinen sana ja
+        kelpaa pienellä kirjoitettuna: <b>tarmo</b>, <b>kaino</b>, <b>into</b>,
+        <b>aamu</b>, <b>vieno</b>. Sanakirja katsoo sanaa, ei isoa alkukirjainta.</p>
+      </div>
+    </div>
+  `;
+  const input = root.querySelector<HTMLInputElement>("#sm-check-input")!;
+  const result = root.querySelector<HTMLElement>("#sm-check-result")!;
+  // Päivitä tulos suoraan DOM:iin (ei full-renderiä → syöttökenttä säilyttää fokuksen).
+  const update = () => {
+    const w = input.value.trim().toLowerCase();
+    if (!w) {
+      result.textContent = "";
+      result.className = "sm-check-result";
+    } else if (!judge) {
+      result.textContent = "Ladataan sanastoa…";
+      result.className = "sm-check-result pending";
+    } else {
+      const ok = judge.judge(w) === "valid";
+      result.textContent = ok ? `✓ ”${w}” kelpaa` : `✗ ”${w}” ei kelpaa`;
+      result.className = `sm-check-result ${ok ? "ok" : "bad"}`;
+    }
+  };
+  input.addEventListener("input", update);
+  input.focus();
+  root.querySelector<HTMLButtonElement>("#sm-check-close")!.onclick = () => {
+    showChecker = false;
+    render();
+  };
 }
 
 /** 🏆-näkymä: top-10 tulokset, kukin oma ruudukko + sanat. */
@@ -1066,6 +1117,10 @@ function wireEvents(): void {
     showRecords = true;
     render();
   });
+  root.querySelector<HTMLButtonElement>("#sm-checker")?.addEventListener("click", () => {
+    showChecker = true;
+    render();
+  });
 
   // Offline-haaste: avaus + modaalin toiminnot (toimii myös loppunäytössä).
   root.querySelector<HTMLButtonElement>("#sm-challenge")?.addEventListener("click", () => {
@@ -1328,7 +1383,8 @@ function toggleCaretDir(): void {
 
 function onKeyDown(e: KeyboardEvent): void {
   // Vain pelinäkymässä; ei modaalien/loppunäytön päällä eikä tekstikentissä.
-  if (roundOver || showRules || showRecords || showMatchSummary || showChallenge) return;
+  if (roundOver || showRules || showRecords || showChecker || showMatchSummary || showChallenge)
+    return;
   if (jokerPicker !== null) return;
   const tag = (e.target as HTMLElement | null)?.tagName;
   if (tag === "INPUT" || tag === "TEXTAREA") return;

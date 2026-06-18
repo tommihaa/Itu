@@ -306,6 +306,25 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
 .sm-ch-row button { white-space: nowrap; }
 .sm-ch-clear { margin-top: 0.9rem; width: 100%; color: var(--muted); }
 
+/* --- Sanantarkistin --- */
+.sm-checker { max-width: 32rem; }
+.sm-checker .sm-ch-link { font-size: 1.1rem; padding: 0.6rem 0.7rem; }
+.sm-check-result { min-height: 1.6rem; margin: 0.6rem 0; font-size: 1.2rem; font-weight: 700; }
+.sm-check-result.ok { color: var(--valid); }
+.sm-check-result.bad { color: var(--invalid); }
+.sm-check-result.pending { color: var(--muted); font-weight: 400; font-size: 1rem; }
+.sm-check-note {
+  margin-top: 1rem;
+  border-top: 1px solid var(--line);
+  padding-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.sm-check-note h4 { margin: 0 0 0.3rem; color: var(--gold); font-size: 1rem; }
+.sm-check-note p { margin: 0; }
+.sm-check-note b { color: var(--text); }
+
 /* --- Monikierroshaaste --- */
 .sm-match-tag { color: var(--gold); font-size: 0.9rem; font-weight: 600; }
 .sm-match-nav {
