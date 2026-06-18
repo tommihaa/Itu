@@ -20,6 +20,7 @@ import {
 } from "../domain/board";
 import type { WordJudge } from "../dict/judge";
 import { loadJudge } from "../dict/load";
+import { loadLemmas, type LemmaLookup } from "../dict/lemmas";
 import { renderRulesContent } from "../rules/view";
 
 // Iso sisäinen lauta, jotta tila ei lopu kesken; näkymä kehystää käytetyn alueen.
@@ -51,6 +52,12 @@ let judge: WordJudge | null = null;
 let root: HTMLElement;
 let showRules = false;
 let showChecker = false; // sanantarkistin (pelin ulkopuolinen "käykö sana")
+
+// Opettavuus: muoto -> lemma (lazy-ladattu paketti, ks. dict/lemmas.ts).
+let lemmas: LemmaLookup | null = null;
+let lemmasLoading = false;
+let endWords: string[] = []; // kierroksen kelvolliset sanat (loppunäytön perusmuodot)
+let checkerRefresh: (() => void) | null = null; // tarkistimen tuloksen päivitys ilman renderiä
 let jokerPicker: number | null = null; // avoinna olevan jokerin dieIndex (kirjainvalitsin)
 let showChallenge = false; // offline-haastemodaali (aloita haaste / vastaa)
 
@@ -185,6 +192,8 @@ function endRound(): void {
   });
   computeSuggestions();
   recordResult(v);
+  endWords = v.words.filter((w) => w.valid).map((w) => w.text);
+  if (endWords.length) ensureLemmas(); // perusmuodot loppunäyttöön (lazy)
   if (match) match.myScores[match.current] = endBreakdown.total;
   render();
 }
@@ -499,6 +508,20 @@ function resultHtml(): string {
       }</p>`
     : "";
 
+  // Omat sanat + perusmuodot (opettavuus): "väkeä — taivutusmuoto sanasta väki".
+  const lemmaHtml = endWords.length
+    ? `<div class="sm-sug sm-lemmas">
+        <h3>Sanasi ja perusmuodot</h3>
+        ${endWords
+          .map((w) => {
+            const note = lemmaNote(w);
+            const tail = note ? ` <span class="sm-lemma">— ${note}</span>` : lemmasLoading ? " …" : "";
+            return `<div class="sm-lemma-row"><b>${escapeHtml(w)}</b>${tail}</div>`;
+          })
+          .join("")}
+      </div>`
+    : "";
+
   return `<div class="sm-result">
     <h2>Lopputulos <small>(${reason})</small></h2>
     ${banner}
@@ -508,6 +531,7 @@ function resultHtml(): string {
       <tr><td>Aikabonus${endRemaining > 0 ? ` (${endRemaining} s säästöön)` : ""}</td><td>+${b.timeBonus}</td></tr>
       <tr class="sm-total"><td>Yhteensä</td><td>${b.total}</td></tr>
     </table>
+    ${lemmaHtml}
     ${sugHtml}
   </div>`;
 }
@@ -526,6 +550,30 @@ function renderRules(): void {
     render();
   };
   root.querySelector<HTMLButtonElement>("#sm-rules-print")!.onclick = () => window.print();
+}
+
+/** Lataa lemma-paketti kerran (lazy); valmistuttua päivittää avoinna olevan näkymän. */
+function ensureLemmas(): void {
+  if (lemmas || lemmasLoading) return;
+  lemmasLoading = true;
+  loadLemmas()
+    .then((l) => {
+      lemmas = l;
+      if (showChecker) checkerRefresh?.();
+      else render();
+    })
+    .catch((e) => console.error("Lemma-paketin lataus epäonnistui", e))
+    .finally(() => {
+      lemmasLoading = false;
+    });
+}
+
+/** Opettava selite: perusmuoto vai taivutusmuoto (ja minkä sanan). "" jos ei tietoa. */
+function lemmaNote(word: string): string {
+  if (!lemmas) return "";
+  const lemma = lemmas.lookup(word);
+  if (!lemma) return "";
+  return lemma === word ? "perusmuoto" : `taivutusmuoto sanasta ${lemma}`;
 }
 
 /** Sanantarkistin: pelin ulkopuolinen "käykö sana" -haku (sama DAWG-tuomari). */
@@ -559,14 +607,24 @@ function renderChecker(): void {
     } else if (!judge) {
       result.textContent = "Ladataan sanastoa…";
       result.className = "sm-check-result pending";
+    } else if (judge.judge(w) === "valid") {
+      const note = lemmaNote(w);
+      const tail = note
+        ? ` <span class="sm-lemma">— ${note}</span>`
+        : lemmasLoading
+          ? ` <span class="sm-lemma">…</span>`
+          : "";
+      result.innerHTML = `✓ ”${escapeHtml(w)}” kelpaa${tail}`;
+      result.className = "sm-check-result ok";
     } else {
-      const ok = judge.judge(w) === "valid";
-      result.textContent = ok ? `✓ ”${w}” kelpaa` : `✗ ”${w}” ei kelpaa`;
-      result.className = `sm-check-result ${ok ? "ok" : "bad"}`;
+      result.textContent = `✗ ”${w}” ei kelpaa`;
+      result.className = "sm-check-result bad";
     }
   };
+  checkerRefresh = update;
   input.addEventListener("input", update);
   input.focus();
+  ensureLemmas(); // lataa perusmuodot taustalla
   root.querySelector<HTMLButtonElement>("#sm-check-close")!.onclick = () => {
     showChecker = false;
     render();
