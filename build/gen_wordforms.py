@@ -10,10 +10,17 @@
 #
 # Ajo:  python -X utf8 build/gen_wordforms.py [--sample N]
 # Tulos: data/wordforms.txt — yksi rivi per muoto, aakkostettu, uniikki:
-#   muoto<TAB>lemma1,lemma2,...
+#   muoto<TAB>lemma1#koodi;koodi|lemma2#koodi
 # Lemmat ovat Kotus-perusmuotoja, joista muoto syntyi (opettavuutta varten:
 # kierroksen lopussa "kellutetuissa -> kelluttaa"). Sama muoto voi periytyä
-# useasta lemmasta (homografit), siksi pilkulla eroteltu joukko.
+# useasta lemmasta (homografit) → '|'-eroteltu; kullakin lemmalla ≥1
+# analyysikoodi '#':n jälkeen, ';'-eroteltuna.
+# Koodi = FST:n tag+suffix (esim. "N+Sg+Ine", "V+Act+Ind+Prs+Sg3"), tai "Base"
+# (perusmuoto/taipumaton). Tämä on Tarkastajan auktoritatiivinen lähde: analyysi
+# tulee samasta FST:stä joka muodon tuotti — ei arvauksesta.
+#
+# Sample-ajo (--sample N) kirjoittaa data/wordforms.sample.txt:hen eikä koske
+# täyteen wordforms.txt:hen eikä checkpointteihin.
 
 import ctypes
 import re
@@ -58,18 +65,23 @@ PARTICIPLES = [f"+{voice}+{prc}" for voice, prc in
 
 def verb_tags() -> list[str]:
     tags: list[str] = []
-    # Finiittimuodot: aktiivi + passiivi, 4 modusta, persoonat + kieltomuodot.
-    for mood, tenses in [("Ind", ["Prs", "Prt"]), ("Cond", ["Prs"]),
-                         ("Pot", ["Prs"])]:
-        for tense in tenses:
-            tags += [f"+Act+{mood}+{tense}+{p}" for p in PERSONS]
-            tags.append(f"+Act+{mood}+{tense}+ConNeg")
-            tags.append(f"+Act+{mood}+{tense}+ConNeg+Sg")
-            tags.append(f"+Pss+{mood}+{tense}")
-            tags.append(f"+Pss+{mood}+{tense}+ConNeg")
+    # Aktiivin indikatiivi: preesens + imperfekti (aikamuoto mukana).
+    for tense in ["Prs", "Prt"]:
+        tags += [f"+Act+Ind+{tense}+{p}" for p in PERSONS]
+        tags.append(f"+Act+Ind+{tense}+ConNeg")      # en anna / en antanut
+        tags.append(f"+Act+Ind+{tense}+ConNeg+Sg")
+    # Konditionaali + potentiaali: EI aikamuototagia. FST haluaa +Act+Cond+Sg3
+    # (ei +Prs); +Prs tuotti tyhjän → koko konditionaali puuttui aiemmin (0 riviä).
+    for mood in ["Cond", "Pot"]:
+        tags += [f"+Act+{mood}+{p}" for p in PERSONS]
+        tags.append(f"+Act+{mood}+ConNeg")
+    # Imperatiivi.
     tags += [f"+Act+Imprt+{p}" for p in ["Sg2", "Sg3", "Pl1", "Pl2", "Pl3"]]
-    tags += ["+Act+Imprt+ConNeg+Sg2", "+Act+Imprt+ConNeg",
-             "+Pss+Imprt", "+Pss+Imprt+ConNeg"]
+    tags += ["+Act+Imprt+ConNeg+Sg2", "+Act+Imprt+ConNeg"]
+    # Passiivi: persoona Pe4 pakollinen (ilman sitä FST tuotti tyhjän → annettiin
+    # ym. puuttuivat). Passiivin kieltomuotoa ("anneta") FST ei tuota → jätetään pois.
+    tags += ["+Pss+Ind+Prs+Pe4", "+Pss+Ind+Prt+Pe4",
+             "+Pss+Cond+Pe4", "+Pss+Pot+Pe4", "+Pss+Imprt+Pe4"]
     # Infinitiivit (ilman omistusliitteellisiä muotoja kuten juostakseen).
     tags += ["+InfA+Sg+Lat", "+InfE+Sg+Ine", "+InfE+Sg+Ins"]
     tags += [f"+InfMa+Sg+{c}" for c in ["Ine", "Ela", "Ill", "Ade", "Abe", "Ins"]]
@@ -106,14 +118,18 @@ def mapped_tagsets(pos: str) -> list[tuple[str, list[str]]]:
             result.append(m)
     return result
 
-def generate_forms(word: str, tag: str, tagset: list[str]) -> set[str]:
-    forms: set[str] = set()
+def generate_forms(word: str, tag: str, tagset: list[str]) -> set[tuple[str, str]]:
+    """Palauttaa (muoto, analyysikoodi) -parit. Koodi = tag+suffix (esim.
+    "N+Sg+Ine", "V+Act+Ind+Prs+Sg3") = muodon morfologinen analyysi ilman lemmaa,
+    sama jolla FST sen tuotti → auktoritatiivinen, ei arvaus."""
+    out: set[tuple[str, str]] = set()
     for suffix in tagset:
+        code = f"{tag}{suffix}"
         for result in uralicApi.generate(f"{word}+{tag}{suffix}", "fin"):
             form = result[0].lower()
             if ALLOWED.match(form):
-                forms.add(form)
-    return forms
+                out.add((form, code))
+    return out
 
 PROBES = {"N": "+N+Sg+Gen", "A": "+A+Sg+Gen", "V": "+V+Act+Ind+Prs+Sg3"}
 
@@ -121,15 +137,16 @@ def can_generate(word: str, tag: str) -> bool:
     return bool(uralicApi.generate(word + PROBES[tag], "fin"))
 
 def fallback_by_suffix(word: str, tag: str, tagset: list[str],
-                       known: dict[str, set[str]]) -> set[str]:
+                       known: dict[str, set[str]]) -> set[tuple[str, str]]:
     """Yhdyssana/uudissana, jota FST ei tunne: peri taivutus pisimmästä
     loppuosasta, joka on itse generoituva Kotus-lemma (esitaikina → taikina).
-    Vokaalisointu määräytyy loppuosasta, joten etuliitteen liimaus on turvallista."""
+    Vokaalisointu määräytyy loppuosasta, joten etuliitteen liimaus on turvallista.
+    Analyysikoodi periytyy loppuosan muodosta (sama sija/luku)."""
     for i in range(1, len(word) - 2):
         suffix = word[i:]
         if tag in known.get(suffix, set()) and can_generate(suffix, tag):
             prefix = word[:i]
-            return {prefix + f for f in generate_forms(suffix, tag, tagset)
+            return {(prefix + f, code) for f, code in generate_forms(suffix, tag, tagset)
                     if ALLOWED.match(prefix + f)}
     return set()
 
@@ -162,20 +179,24 @@ def main() -> None:
         step = max(1, len(lemmas) // sample)
         lemmas = lemmas[::step][:sample]
 
+    # Sample-ajo ei saa ylikirjoittaa täyttä wordforms.txt:ää (eikä checkpointteja).
+    target = TARGET if not sample else TARGET.with_name("wordforms.sample.txt")
+
     # Loppuosaperintää varten: mitkä lemmat ovat olemassa millä sanaluokalla.
     known: dict[str, set[str]] = {}
     for word, pos in lemmas:
         for tag, _ in mapped_tagsets(pos):
             known.setdefault(word.lower(), set()).add(tag)
 
-    # Muoto -> joukko Kotus-lemmoja, joista se syntyi.
-    forms: dict[str, set[str]] = {}
+    # Muoto -> lemma -> joukko analyysikoodeja
+    # (esim. {"talossa": {"talo": {"N+Sg+Ine"}}}).
+    forms: dict[str, dict[str, set[str]]] = {}
 
     # Checkpoint/resume: täysi ajo (~2,5 h) on kuollut toistuvasti kun kone meni
     # lepotilaan (keep_system_awake ei estä kannen sulkua/horrosta). Kirjoitamme
     # jokaisen lemman tulokset append-lokiin ja talletamme edistymisindeksin
     # 500 lemman välein; uusi ajo jatkaa siitä mihin jäätiin (kaatuminen menettää
-    # < 500 lemmaa). Append-loki: "muoto<TAB>lemma" per rivi (yksi lemma/rivi).
+    # < 500 lemmaa). Append-loki: "muoto<TAB>lemma<TAB>koodi" per rivi.
     ckpt_log = TARGET.with_suffix(".partial.txt")
     ckpt_prog = TARGET.with_suffix(".progress")
     start_index = 0
@@ -184,9 +205,10 @@ def main() -> None:
         if ckpt_log.exists() and ckpt_prog.exists():
             with open(ckpt_log, encoding="utf-8") as f:
                 for line in f:
-                    form, sep, lemma = line.rstrip("\n").partition("\t")
-                    if form and sep and lemma:
-                        forms.setdefault(form, set()).add(lemma)
+                    cols = line.rstrip("\n").split("\t")
+                    if len(cols) == 3 and all(cols):
+                        form, lemma, code = cols
+                        forms.setdefault(form, {}).setdefault(lemma, set()).add(code)
             try:
                 start_index = int(ckpt_prog.read_text().strip())
             except ValueError:
@@ -195,10 +217,10 @@ def main() -> None:
                   f"{len(forms)} muotoa ladattu", flush=True)
         log_handle = open(ckpt_log, "a", encoding="utf-8")
 
-    def add(form: str, lemma: str) -> None:
-        forms.setdefault(form, set()).add(lemma)
+    def add(form: str, lemma: str, code: str) -> None:
+        forms.setdefault(form, {}).setdefault(lemma, set()).add(code)
         if log_handle is not None:
-            log_handle.write(f"{form}\t{lemma}\n")
+            log_handle.write(f"{form}\t{lemma}\t{code}\n")
 
     stats = {"lemmas": 0, "generated": 0, "skipped_pos": 0,
              "fallback": 0, "no_output": 0}
@@ -213,13 +235,13 @@ def main() -> None:
         tagsets = mapped_tagsets(pos)
         if not tagsets:
             if ALLOWED.match(lower):
-                add(lower, word)
+                add(lower, word, "Base")
             stats["skipped_pos"] += 1
             continue
 
         stats["lemmas"] += 1
-        # Duaaliluokat: unioni kaikkien luokkien taivutusmuodoista.
-        produced: set[str] = set()
+        # Duaaliluokat: unioni kaikkien luokkien (muoto, koodi) -pareista.
+        produced: set[tuple[str, str]] = set()
         for tag, tagset in tagsets:
             produced |= generate_forms(lower, tag, tagset)
         if not produced:
@@ -228,14 +250,14 @@ def main() -> None:
             if produced:
                 stats["fallback"] += 1
         if produced:
-            for form in produced:
-                add(form, word)
+            for form, code in produced:
+                add(form, word, code)
             stats["generated"] += 1
         else:
             stats["no_output"] += 1
             # Perusmuoto talteen, vaikka generaattori ei tuntisi sanaa.
             if ALLOWED.match(lower):
-                add(lower, word)
+                add(lower, word, "Base")
 
         if (i + 1) % 500 == 0:
             if log_handle is not None:
@@ -250,10 +272,15 @@ def main() -> None:
 
     if log_handle is not None:
         log_handle.flush()
-    lines = [f"{form}\t{','.join(sorted(lemmas))}"
-             for form, lemmas in sorted(forms.items())]
-    TARGET.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(f"VALMIS: {len(forms)} uniikkia muotoa -> {TARGET}")
+
+    def fmt(analyses: dict[str, set[str]]) -> str:
+        # lemma1#koodi;koodi|lemma2#koodi (lemmat ja koodit lajiteltu → vakaa output)
+        return "|".join(f"{lemma}#{';'.join(sorted(codes))}"
+                        for lemma, codes in sorted(analyses.items()))
+
+    lines = [f"{form}\t{fmt(analyses)}" for form, analyses in sorted(forms.items())]
+    target.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"VALMIS: {len(forms)} uniikkia muotoa -> {target}")
     print(stats)
     if log_handle is not None:
         log_handle.close()

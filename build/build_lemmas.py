@@ -1,18 +1,22 @@
-# Lemma-assetin paketointi opettavuutta varten (muoto -> lemma).
+# Analyysi-assetin paketointi Tarkastajaa varten (muoto -> [(lemma, [koodit])]).
 #
-# Lukee data/wordforms.txt (muoto<TAB>lemma, jo lajiteltu muodon mukaan) ja
-# kirjoittaa itsenäisen, binäärihaettavan paketin:
-#   public/dict/lemmas-fi-v1.bin.gz  (+ .meta.json)
+# Lukee data/wordforms.txt (muoto<TAB>lemma#koodi;koodi|lemma2#koodi, lajiteltu
+# muodon mukaan) ja kirjoittaa itsenäisen, binäärihaettavan paketin:
+#   public/dict/forms-fi-v1.bin.gz  (+ .meta.json, sis. kooditaulukon)
+# Ks. lukija src/dict/lemmas.ts.
 #
-# Muoto: front-coded entryt, restart (täysi muoto) joka BLOCK_SIZE:nnen kohdalla
-# → ajossa rakennetaan restart-indeksi yhdellä skannauksella, lookup binäärihakee
-# lohkon ja purkaa siitä ≤BLOCK_SIZE entryä. Ks. src/dict/lemmas.ts.
-#
-# Entry: uint8(formPrefixLen) formSuffixUtf8 0x09 uint8(lemmaPrefixLen) lemmaSuffixUtf8 0x0A
-# - formPrefixLen = jaettu MERKKI-etuliite edelliseen muotoon (0 restartissa)
-# - lemmaPrefixLen = jaettu MERKKI-etuliite saman entryn muotoon
-# Erottimet 0x09/0x0A ovat turvallisia: sanat eivät sisällä niitä, eikä ä/ö:n
-# UTF-8 tuota näitä tavuja.
+# Binääriformaatti (per entry; eteneminen on COUNT-ohjattua, ei NL-skannausta):
+#   uint8 formPrefixLen | formSuffix… 0x09
+#   uint8 nLemmas
+#   nLemmas × ( uint8 lemmaPrefixLen | lemmaSuffix… 0x09
+#               | uint8 nCodes | nCodes × codeIndex (LE, codeWidth tavua) )
+# - formPrefixLen  = jaettu MERKKI-etuliite edelliseen muotoon (0 restartissa, joka
+#   BLOCK_SIZE:nnen kohdalla → restart-indeksi + binäärihaku ajossa).
+# - lemmaPrefixLen = jaettu MERKKI-etuliite saman entryn muotoon.
+# - 0x09 (TAB) päättää sanamerkkijonot turvallisesti: sanat eivät sisällä 0x09/0x0A,
+#   eikä ä/ö:n UTF-8 tuota niitä. Koodit ovat binääri-indeksejä meta.codes-taulukkoon
+#   ja luetaan nCodes-laskurilla — ei koskaan skannaamalla → indeksitavu saa olla
+#   mitä tahansa (myös 0x09/0x0A) ilman törmäystä.
 
 import gzip
 import json
@@ -20,9 +24,10 @@ import os
 import sys
 
 BLOCK_SIZE = 64
-SRC = os.path.join("data", "wordforms.txt")
+SAMPLE = "--sample" in sys.argv
+SRC = os.path.join("data", "wordforms.sample.txt" if SAMPLE else "wordforms.txt")
 OUT_DIR = os.path.join("public", "dict")
-VERSION = "lemmas-fi-v1"
+VERSION = "forms-fi-sample" if SAMPLE else "forms-fi-v1"
 
 
 def common_prefix(a: str, b: str) -> int:
@@ -33,50 +38,76 @@ def common_prefix(a: str, b: str) -> int:
     return i
 
 
+def parse_line(line: str) -> tuple[str, list[tuple[str, list[str]]]]:
+    form, _, blob = line.partition("\t")
+    analyses: list[tuple[str, list[str]]] = []
+    for part in blob.split("|"):
+        lemma, _, codestr = part.partition("#")
+        codes = codestr.split(";") if codestr else []
+        analyses.append((lemma, codes))
+    return form, analyses
+
+
 def main() -> None:
     if not os.path.exists(SRC):
         sys.exit(f"Lähdetiedostoa ei löydy: {SRC}")
     os.makedirs(OUT_DIR, exist_ok=True)
 
-    # Lue + lajittele muodon mukaan koodipiste-järjestykseen (= JS-merkkijonon
-    # UTF-16 code unit -järjestys BMP-merkeille kuten ä/ö) → binäärihaku ajossa toimii.
-    entries = []
+    entries: list[tuple[str, list[tuple[str, list[str]]]]] = []
+    code_set: set[str] = set()
     with open(SRC, encoding="utf-8") as f:
         for line in f:
             line = line.rstrip("\r\n")
-            if not line:
+            if not line or "\t" not in line:
                 continue
-            parts = line.split("\t")
-            if len(parts) < 2:
-                continue
-            entries.append((parts[0], parts[1]))
+            form, analyses = parse_line(line)
+            entries.append((form, analyses))
+            for _, codes in analyses:
+                code_set.update(codes)
     entries.sort(key=lambda e: e[0])
-    print(f"  luettu+lajiteltu {len(entries)} entryä", flush=True)
+
+    codes_sorted = sorted(code_set)
+    code_index = {c: i for i, c in enumerate(codes_sorted)}
+    code_width = 1 if len(codes_sorted) <= 255 else 2
+    print(f"  {len(entries)} entryä, {len(codes_sorted)} eri koodia, "
+          f"codeWidth={code_width}", flush=True)
 
     buf = bytearray()
+
+    def put_idx(idx: int) -> None:
+        buf.append(idx & 0xFF)
+        if code_width == 2:
+            buf.append((idx >> 8) & 0xFF)
+
     prev_form = ""
     count = 0
-    for form, lemma in entries:
+    for form, analyses in entries:
         fp = 0 if count % BLOCK_SIZE == 0 else common_prefix(prev_form, form)
-        lp = common_prefix(form, lemma)
         buf.append(min(fp, 255))
         buf.extend(form[fp:].encode("utf-8"))
         buf.append(0x09)
-        buf.append(min(lp, 255))
-        buf.extend(lemma[lp:].encode("utf-8"))
-        buf.append(0x0A)
+        buf.append(min(len(analyses), 255))
+        for lemma, codes in analyses:
+            lp = common_prefix(form, lemma)
+            buf.append(min(lp, 255))
+            buf.extend(lemma[lp:].encode("utf-8"))
+            buf.append(0x09)
+            buf.append(min(len(codes), 255))
+            for c in codes:
+                put_idx(code_index[c])
         prev_form = form
         count += 1
 
     raw = bytes(buf)
     gz = gzip.compress(raw, 9)
-    bin_path = os.path.join(OUT_DIR, f"{VERSION}.bin.gz")
-    with open(bin_path, "wb") as out:
+    with open(os.path.join(OUT_DIR, f"{VERSION}.bin.gz"), "wb") as out:
         out.write(gz)
     meta = {
         "version": VERSION,
         "count": count,
         "blockSize": BLOCK_SIZE,
+        "codeWidth": code_width,
+        "codes": codes_sorted,
         "rawBytes": len(raw),
         "gzBytes": len(gz),
     }
@@ -85,7 +116,7 @@ def main() -> None:
 
     print(f"VALMIS: {count} entryä")
     print(f"  raaka {len(raw)/1024/1024:.2f} MB -> gzip {len(gz)/1024/1024:.2f} MB")
-    print(f"  {bin_path}")
+    print(f"  {os.path.join(OUT_DIR, f'{VERSION}.bin.gz')}")
 
 
 if __name__ == "__main__":

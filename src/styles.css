@@ -306,13 +306,19 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
 .sm-ch-row button { white-space: nowrap; }
 .sm-ch-clear { margin-top: 0.9rem; width: 100%; color: var(--muted); }
 
-/* --- Opettavuus: perusmuodot --- */
+/* --- Tarkastaja: perusmuodot, sijat ja niiden vaikutus --- */
 .sm-lemma { color: var(--muted); font-weight: 400; font-size: 0.9rem; }
-.sm-lemmas .sm-lemma-row { line-height: 1.7; }
-.sm-lemmas .sm-lemma-row b { color: var(--valid); }
 .sm-check-result .sm-lemma { font-size: 0.95rem; }
+.sm-lemma-row { line-height: 1.5; margin: 0.4rem 0; }
+.sm-lemma-row > b { color: var(--valid); }
+.sm-ana { margin: 0.1rem 0 0.1rem 1rem; color: var(--muted); font-size: 0.88rem; line-height: 1.45; }
+.sm-ana b { color: var(--text); font-weight: 600; }
+.sm-ana i { color: var(--text); }
+.sm-ana .sm-q { color: var(--text); }
+.sm-ana-list { margin-top: 0.35rem; }
+.sm-check-ok-line { display: block; }
 
-/* --- Sanantarkistin --- */
+/* --- Tarkastaja (sanahaku) --- */
 .sm-checker { max-width: 32rem; }
 .sm-checker .sm-ch-link { font-size: 1.1rem; padding: 0.6rem 0.7rem; }
 .sm-check-result { min-height: 1.6rem; margin: 0.6rem 0; font-size: 1.2rem; font-weight: 700; }

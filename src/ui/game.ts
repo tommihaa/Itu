@@ -21,6 +21,7 @@ import {
 import type { WordJudge } from "../dict/judge";
 import { loadJudge } from "../dict/load";
 import { loadLemmas, type LemmaLookup } from "../dict/lemmas";
+import { describeCode } from "../dict/morph";
 import { renderRulesContent } from "../rules/view";
 
 // Iso sisäinen lauta, jotta tila ei lopu kesken; näkymä kehystää käytetyn alueen.
@@ -46,12 +47,15 @@ interface Tile {
 
 let tiles: Tile[] = [];
 let rackOrder: number[] = []; // telineen näkymäjärjestys (dieIndex-permutaatio)
+// Viimeksi sovellettu kehystys (zoom+siirto). Pidetään paikallaan kunnes asetetut
+// nopat eivät enää mahdu näkyviin → vähemmän "hyppimistä" (ks. frameBoard).
+let currentFrame: { scale: number; tx: number; ty: number } | null = null;
 let rackSort = "haro"; // aktiivinen järjestys (ryhmävälejä varten)
 let seed = "";
 let judge: WordJudge | null = null;
 let root: HTMLElement;
 let showRules = false;
-let showChecker = false; // sanantarkistin (pelin ulkopuolinen "käykö sana")
+let showChecker = false; // Tarkastaja (pelin ulkopuolinen sanahaku + selitys)
 
 // Opettavuus: muoto -> lemma (lazy-ladattu paketti, ks. dict/lemmas.ts).
 let lemmas: LemmaLookup | null = null;
@@ -193,7 +197,7 @@ function endRound(): void {
   computeSuggestions();
   recordResult(v);
   endWords = v.words.filter((w) => w.valid).map((w) => w.text);
-  if (endWords.length) ensureLemmas(); // perusmuodot loppunäyttöön (lazy)
+  ensureLemmas(); // analyysit loppunäyttöön + ratkaisijan ehdotuksiin (lazy)
   if (match) match.myScores[match.current] = endBreakdown.total;
   render();
 }
@@ -260,7 +264,10 @@ export function mountGame(el: HTMLElement): void {
   root = el;
   // Ikkunan koon muuttuessa kehystä uudelleen (responsiivinen zoom).
   window.addEventListener("resize", () => {
-    if (!showRules) frameBoard();
+    if (!showRules) {
+      currentFrame = null; // koon muutos → kehystä uudelleen näkymään sopivaksi
+      frameBoard();
+    }
   });
   // Näppäimistösyöttö: kirjoita sanoja kursorin kohdalle.
   window.addEventListener("keydown", onKeyDown);
@@ -301,6 +308,7 @@ function newRoll(s: string): void {
   lastRecordRank = 0;
   currentRecord = null;
   caret = { row: BOARD_MID, col: BOARD_MID, dir: "H" }; // valmis näppäimistösyöttöön
+  currentFrame = null; // uusi heitto kehystää tuoreesti (keskelle)
   startRound();
   render();
 }
@@ -454,7 +462,7 @@ function render(): void {
     <div class="sm-bar">
       ${match ? "" : `<button id="sm-new" class="sm-primary">Heitä uudet</button>`}
       <button id="sm-rules">Säännöt</button>
-      <button id="sm-checker">🔎 Tarkista</button>
+      <button id="sm-checker">🔎 Tarkastaja</button>
       <button id="sm-records">🏆 Ennätykset</button>
       ${match ? "" : `<button id="sm-challenge">🎯 Haaste</button>`}
       ${roundOver ? "" : `<button id="sm-lock">Lukitse</button>`}
@@ -484,19 +492,17 @@ function resultHtml(): string {
   const b = endBreakdown;
   const reason = endRemaining > 0 ? "lukittu" : "aika loppui";
   const s = endSuggestions;
-  const wordList = (words: string[]) =>
-    words.map((w) => `<span class="sm-sug-word">${w}</span>`).join(" ");
   const sugHtml =
     s && (s.withLeftover.length || s.best.length)
       ? `<div class="sm-sug">
           ${
             s.leftover.length && s.withLeftover.length
               ? `<h3>Käyttämättä jäi <b>${s.leftover.map((c) => c.toUpperCase()).join(" ")}</b> — niillä olisi voinut tehdä</h3>
-                 <p>${wordList(s.withLeftover)}</p>`
+                 ${wordRows(s.withLeftover)}`
               : ""
           }
           <h3>Näillä kirjaimilla olisi voinut tehdä myös</h3>
-          <p>${wordList(s.best)}</p>
+          ${wordRows(s.best)}
         </div>`
       : "";
 
@@ -508,17 +514,11 @@ function resultHtml(): string {
       }</p>`
     : "";
 
-  // Omat sanat + perusmuodot (opettavuus): "väkeä — taivutusmuoto sanasta väki".
+  // Omat sanat + Tarkastaja-selitteet (perusmuoto, sija, sijan vaikutus).
   const lemmaHtml = endWords.length
     ? `<div class="sm-sug sm-lemmas">
-        <h3>Sanasi ja perusmuodot</h3>
-        ${endWords
-          .map((w) => {
-            const note = lemmaNote(w);
-            const tail = note ? ` <span class="sm-lemma">— ${note}</span>` : lemmasLoading ? " …" : "";
-            return `<div class="sm-lemma-row"><b>${escapeHtml(w)}</b>${tail}</div>`;
-          })
-          .join("")}
+        <h3>Sanasi ja niiden muodot</h3>
+        ${wordRows(endWords)}
       </div>`
     : "";
 
@@ -568,23 +568,61 @@ function ensureLemmas(): void {
     });
 }
 
-/** Opettava selite: perusmuoto vai taivutusmuoto (ja minkä sanan). "" jos ei tietoa. */
-function lemmaNote(word: string): string {
-  if (!lemmas) return "";
-  const lemma = lemmas.lookup(word);
-  if (!lemma) return "";
-  return lemma === word ? "perusmuoto" : `taivutusmuoto sanasta ${lemma}`;
+/** Tarkastaja: kaikki pätevät tulkinnat sanalle (perusmuoto + sija + vaikutus +
+ * selkoesimerkki). Kukin rivi auktoritatiivisesta FST-analyysista; tyhjä jos ei
+ * tietoa (mieluummin vaiti kuin arvaus). Lemmat/esimerkit escapataan. */
+function analysisLines(word: string): string[] {
+  if (!lemmas) return [];
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const a of lemmas.lookup(word)) {
+    let line: string;
+    if (a.code === "Base") {
+      line =
+        a.lemma === word ? "perusmuoto" : `perusmuoto sanasta <b>${escapeHtml(a.lemma)}</b>`;
+    } else {
+      const d = describeCode(a.code);
+      if (!d) continue; // tuntematon koodi → ei arvausta
+      const parts = [d.text];
+      if (d.effect) parts.push(`<span class="sm-q">${d.effect}</span>`);
+      parts.push(`perusmuoto <b>${escapeHtml(a.lemma)}</b>`);
+      if (d.example && d.example !== word) parts.push(`kuten <i>${escapeHtml(d.example)}</i>`);
+      line = parts.join(" · ");
+    }
+    if (!seen.has(line)) {
+      seen.add(line);
+      out.push(line);
+    }
+  }
+  return out;
 }
 
-/** Sanantarkistin: pelin ulkopuolinen "käykö sana" -haku (sama DAWG-tuomari). */
+/** Sanalista, jossa kunkin sanan alla sen Tarkastaja-tulkinnat (loppunäyttö +
+ * ratkaisijan ehdotukset). Lataus kesken → "…". */
+function wordRows(words: string[]): string {
+  return words
+    .map((w) => {
+      const lines = analysisLines(w);
+      const body = lines.length
+        ? lines.map((l) => `<div class="sm-ana">${l}</div>`).join("")
+        : lemmasLoading
+          ? `<div class="sm-ana">…</div>`
+          : "";
+      return `<div class="sm-lemma-row"><b>${escapeHtml(w)}</b>${body}</div>`;
+    })
+    .join("");
+}
+
+/** Tarkastaja: pelin ulkopuolinen sanahaku (sama DAWG-tuomari) + selitys siitä,
+ * mikä muoto sana on ja mistä perusmuodosta. */
 function renderChecker(): void {
   root.innerHTML = `
     <div class="sm-bar">
       <button id="sm-check-close">← Takaisin peliin</button>
-      <h2 class="sm-records-title">🔎 Tarkista sana</h2>
+      <h2 class="sm-records-title">🔎 Tarkastaja</h2>
     </div>
     <div class="sm-checker">
-      <p class="sm-ch-note">Kokeile käykö jokin sana — esim. <b>rankin</b>, <b>rankkasi</b>, <b>kuusta</b>. Pelin sanakirja vastaa, samoin kuin pelissä.</p>
+      <p class="sm-ch-note">Kokeile käykö jokin sana — esim. <b>kuusta</b>, <b>rankin</b>, <b>kellutetuissa</b>. Pelin sanakirja vastaa kuten pelissä, ja Tarkastaja kertoo perusmuodon, sijamuodon ja mitä se tarkoittaa.</p>
       <input id="sm-check-input" class="sm-ch-link" placeholder="Kirjoita sana"
         autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" />
       <p id="sm-check-result" class="sm-check-result"></p>
@@ -608,13 +646,13 @@ function renderChecker(): void {
       result.textContent = "Ladataan sanastoa…";
       result.className = "sm-check-result pending";
     } else if (judge.judge(w) === "valid") {
-      const note = lemmaNote(w);
-      const tail = note
-        ? ` <span class="sm-lemma">— ${note}</span>`
+      const lines = analysisLines(w);
+      const body = lines.length
+        ? `<div class="sm-ana-list">${lines.map((l) => `<div class="sm-ana">${l}</div>`).join("")}</div>`
         : lemmasLoading
           ? ` <span class="sm-lemma">…</span>`
           : "";
-      result.innerHTML = `✓ ”${escapeHtml(w)}” kelpaa${tail}`;
+      result.innerHTML = `<span class="sm-check-ok-line">✓ ”${escapeHtml(w)}” kelpaa</span>${body}`;
       result.className = "sm-check-result ok";
     } else {
       result.textContent = `✗ ”${w}” ei kelpaa`;
@@ -714,30 +752,63 @@ function boardHtml(v: Validation): string {
 
 /**
  * Automaattinen kehystys: skaalaa + keskittää laudan niin, että asetetut nopat
- * (+ marginaali) täyttävät näkymän. Geometria mitataan offsetLeft/Top:lla, jotka
- * jättävät nykyisen transformin huomiotta → uusi transform animoituu pehmeästi
- * vanhasta (CSS-transition). Kutsutaan renderin lopussa (= pudotuksen jälkeen).
+ * (+ marginaali) täyttävät näkymän. Geometria mitataan offsetLeft/Top:lla (jättävät
+ * transformin huomiotta).
+ *
+ * "Pidä kehys, kehystä vain kun tarpeen": jos kaikki asetetut nopat mahtuvat yhä
+ * näkyviin nykyisellä kehyksellä, sitä EI lasketa uusiksi → lauta pysyy paikallaan
+ * pudotusten välillä (ei levotonta hyppimistä). Vasta kun noppa lähestyy reunaa,
+ * kehystetään uudelleen — silloin pehmeästi animoiden edellisestä kehyksestä.
  */
 function frameBoard(): void {
   const viewport = root.querySelector<HTMLElement>(".sm-viewport");
   const board = root.querySelector<HTMLElement>(".sm-board");
   if (!viewport || !board) return;
 
+  const vw = viewport.clientWidth;
+  const vh = viewport.clientHeight;
+  if (vw === 0 || vh === 0) return;
+
+  // Asetettujen noppien rajat (ilman marginaalia) = "sisältö", jonka pitää pysyä näkyvissä.
   const placed = tiles.filter((t) => t.cell).map((t) => parseKey(t.cell!));
   const mid = Math.floor(BOARD / 2);
-  let minR: number, maxR: number, minC: number, maxC: number;
+  let cMinR: number, cMaxR: number, cMinC: number, cMaxC: number;
   if (placed.length === 0) {
-    minR = minC = mid - 3;
-    maxR = maxC = mid + 3; // tyhjänä: keskeinen 7×7 zoomattuna
+    cMinR = cMinC = mid - 3;
+    cMaxR = cMaxC = mid + 3; // tyhjänä: keskeinen 7×7
   } else {
     const rows = placed.map((p) => p.row);
     const cols = placed.map((p) => p.col);
-    minR = Math.max(0, Math.min(...rows) - FRAME_MARGIN);
-    maxR = Math.min(BOARD - 1, Math.max(...rows) + FRAME_MARGIN);
-    minC = Math.max(0, Math.min(...cols) - FRAME_MARGIN);
-    maxC = Math.min(BOARD - 1, Math.max(...cols) + FRAME_MARGIN);
+    cMinR = Math.min(...rows);
+    cMaxR = Math.max(...rows);
+    cMinC = Math.min(...cols);
+    cMaxC = Math.max(...cols);
   }
 
+  // Mahtuuko sisältö yhä nykyisellä kehyksellä? Jos kyllä, pidä se (vain uudelleenaseta
+  // transform tuoreelle DOM:lle ilman animaatiota) → ei hyppimistä.
+  if (currentFrame) {
+    const ctl = board.querySelector<HTMLElement>(`[data-cell="${cellKey(cMinR, cMinC)}"]`);
+    const cbr = board.querySelector<HTMLElement>(`[data-cell="${cellKey(cMaxR, cMaxC)}"]`);
+    if (ctl && cbr) {
+      const { scale, tx, ty } = currentFrame;
+      const pad = 6; // px-turvamarginaali reunaan
+      const sx0 = ctl.offsetLeft * scale + tx;
+      const sy0 = ctl.offsetTop * scale + ty;
+      const sx1 = (cbr.offsetLeft + cbr.offsetWidth) * scale + tx;
+      const sy1 = (cbr.offsetTop + cbr.offsetHeight) * scale + ty;
+      if (sx0 >= pad && sy0 >= pad && sx1 <= vw - pad && sy1 <= vh - pad) {
+        applyFrame(board, currentFrame, false);
+        return;
+      }
+    }
+  }
+
+  // Kehystä uudelleen: sovita sisältö + marginaali näkymään.
+  const minR = Math.max(0, cMinR - FRAME_MARGIN);
+  const maxR = Math.min(BOARD - 1, cMaxR + FRAME_MARGIN);
+  const minC = Math.max(0, cMinC - FRAME_MARGIN);
+  const maxC = Math.min(BOARD - 1, cMaxC + FRAME_MARGIN);
   const tl = board.querySelector<HTMLElement>(`[data-cell="${cellKey(minR, minC)}"]`);
   const br = board.querySelector<HTMLElement>(`[data-cell="${cellKey(maxR, maxC)}"]`);
   if (!tl || !br) return;
@@ -745,14 +816,38 @@ function frameBoard(): void {
   const boxTop = tl.offsetTop;
   const boxW = br.offsetLeft + br.offsetWidth - boxLeft;
   const boxH = br.offsetTop + br.offsetHeight - boxTop;
-  const vw = viewport.clientWidth;
-  const vh = viewport.clientHeight;
-  if (boxW <= 0 || boxH <= 0 || vw === 0 || vh === 0) return;
+  if (boxW <= 0 || boxH <= 0) return;
 
   const scale = Math.min(MAX_SCALE, vw / boxW, vh / boxH);
   const tx = (vw - boxW * scale) / 2 - boxLeft * scale;
   const ty = (vh - boxH * scale) / 2 - boxTop * scale;
-  board.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+  const next = { scale, tx, ty };
+  // Animoi edellisestä kehyksestä uuteen (jos sellainen on); muuten aseta suoraan.
+  applyFrame(board, next, currentFrame !== null);
+  currentFrame = next;
+}
+
+/**
+ * Asettaa kehyksen transformina. animate=true → animoi edellisestä kehyksestä
+ * (lauta rakennetaan uudelleen joka renderissä, joten asetetaan ensin edellinen
+ * arvo ja vasta seuraavassa framessa uusi, jotta CSS-transition käynnistyy).
+ */
+function applyFrame(
+  board: HTMLElement,
+  f: { scale: number; tx: number; ty: number },
+  animate: boolean,
+): void {
+  const css = `translate(${f.tx}px, ${f.ty}px) scale(${f.scale})`;
+  if (animate && currentFrame) {
+    const p = currentFrame;
+    board.style.transform = `translate(${p.tx}px, ${p.ty}px) scale(${p.scale})`;
+    void board.offsetWidth; // pakota reflow → transition lähtee edellisestä arvosta
+    requestAnimationFrame(() => {
+      board.style.transform = css;
+    });
+  } else {
+    board.style.transform = css;
+  }
 }
 
 function rackHtml(): string {

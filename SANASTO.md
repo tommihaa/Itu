@@ -132,6 +132,13 @@ Näitä ei pyydetä generaattorilta, joten ne eivät voi päätyä sanastoon:
 - **Validointi on rajapinnan takana** (`WordJudge`): `ExactJudge` (DAWG, suomi)
   nyt; `AdvisoryJudge` (kolmas väri "en tunne") ja `HumanJudge` (tuomarimoodi)
   mahdollistavat muut kielet myöhemmin ilman pelikoodin muutoksia.
-- **Opettavuus:** jokainen muoto säilyttää lähde-lemmansa (muoto→lemma-pari),
-  joten kierroksen lopussa voidaan näyttää *"kelluteltuihin → kellutella"* ja
-  löytämättä jääneet sanat.
+- **Opettavuus / Tarkastaja:** jokainen muoto säilyttää lähde-lemmansa JA
+  morfologisen analyysikoodin (sija/luku tai verbimuoto), jonka FST antoi muodon
+  tuottaessaan. `gen_wordforms.py` kirjoittaa `muoto<TAB>lemma#koodi;koodi|lemma2#…`,
+  ja `build_lemmas.py` pakkaa sen erilliseksi lazy-assetiksi
+  `public/dict/forms-fi-v1.{bin.gz,meta.json}` (meta sisältää kooditaulukon).
+  Tarkastaja (🔎, ks. ITU.md) näyttää näistä **kaikki pätevät tulkinnat**:
+  perusmuodon, sijamuodon ja sen vaikutuksen selkoesimerkein. Koodi→suomi-muunto
+  on kiinteä, käsin todennettu taulukko `src/dict/morph.ts` (suomen sijajärjestelmä
+  on suljettu) — **ei ajonaikaista päättelyä, ei hallusinaatiota; tuntematon koodi
+  → ei näytetä mitään.** Asset on erillinen DAWG-tuomarista (validointi ennallaan).

@@ -122,8 +122,8 @@ export const RULES: RuleSection[] = [
           { word: "iso" },
           { word: "isompi" },
           { word: "isoin" },
-          { word: "kauniimpi" },
-          { word: "kaunein" },
+          { word: "nopeampi" },
+          { word: "nopein" },
         ],
       },
       {

@@ -82,5 +82,13 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
 
 - Vapaa ruudukko: nopat raahataan Scrabble-tyyliin, risteykset jakavat nopan.
 - **Säännöt esitetään esimerkkivetoisesti** (✓/✗-sanaparit, ei kielioppitermejä).
+- **Tarkastaja** (🔎, pelin ulkopuolinen sanahaku + loppunäyttö + ratkaisijan
+  ehdotukset): kertoo sanan perusmuodon, kaikki pätevät tulkinnat ja sijamuodon
+  *sekä sen vaikutuksen* selkoesimerkein (esim. "inessiivi — 'missä?' sisällä;
+  kuten *talossa*"). Tässä kielioppitermi näytetään, koska tavoite on oppia —
+  mutta aina selkoselityksen ja esimerkin kanssa. **Ei hallusinaatiota:** analyysi
+  tulee build-aikaisesta FST-generoinnista (sama lähde joka muodon hyväksyy) +
+  kiinteästä, käsin todennetusta sijataulukosta (`src/dict/morph.ts`); tuntematon
+  → ei näytetä mitään. Data: `public/dict/forms-fi-v1` (lazy, ks. SANASTO.md).
 - Asetukset: aikabonus päälle/pois ja taso, jokerimäärä 1–3, äänet.
   Tallennus localStorageen.
