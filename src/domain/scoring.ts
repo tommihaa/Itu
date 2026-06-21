@@ -12,10 +12,21 @@ export function sumValues(faces: readonly Face[]): number {
 
 export const TIME_BONUS_SECONDS_PER_POINT = 5;
 export const GAME_DURATION_SECONDS = 180;
+/** Aikabonus aukeaa vasta kun tämä osuus ajasta on kulunut (loppukolmannes). */
+export const TIME_BONUS_ELAPSED_FRACTION = 2 / 3;
+/** Aikabonuksen katto, ettei se dominoi sanapisteitä eikä houkuta kiirehtimään. */
+export const TIME_BONUS_MAX = 6;
 
-/** +1 piste / 5 säästettyä sekuntia (oletusasetus; voi kytkeä pois). */
+/**
+ * Aikabonus: +1 piste / 5 säästettyä sekuntia, mutta VAIN kun ≥2/3 ajasta on kulunut
+ * (eli ≤1/3 jäljellä), ja kattoon `TIME_BONUS_MAX` asti. Näin alussa ei kannata
+ * kiirehtiä — bonus palkitsee tehokkuuden vasta loppukolmanneksella.
+ */
 export function timeBonus(secondsRemaining: number): number {
-  return Math.floor(Math.max(0, secondsRemaining) / TIME_BONUS_SECONDS_PER_POINT);
+  const opensAt = GAME_DURATION_SECONDS * (1 - TIME_BONUS_ELAPSED_FRACTION); // = /3
+  if (secondsRemaining > opensAt) return 0; // ei vielä 2/3 kulunut → ei bonusta
+  const raw = Math.floor(Math.max(0, secondsRemaining) / TIME_BONUS_SECONDS_PER_POINT);
+  return Math.min(TIME_BONUS_MAX, raw);
 }
 
 export interface ScoreInput {

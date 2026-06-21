@@ -4,8 +4,11 @@ import {
   RULES,
   RULES_LEAD,
   RULES_TITLE,
+  CONTROLS,
+  CONTROLS_TITLE,
   type LetterRow,
   type RuleGroup,
+  type RuleSection,
 } from "./content";
 
 function escape(s: string): string {
@@ -45,26 +48,33 @@ function groupHtml(g: RuleGroup): string {
     </div>`;
 }
 
-/** Pelkkä sääntösisältö (ilman painikkeita) — käytetään näkymässä ja tulosteessa. */
-export function renderRulesContent(): string {
-  const sections = RULES.map((s) => {
-    const body = s.body
-      ? `<p>${s.body.split("\n").map(escape).join("<br>")}</p>`
-      : "";
-    const letters = s.letters ? lettersHtml(s.letters) : "";
-    const groups = s.groups ? s.groups.map(groupHtml).join("") : "";
-    return `<section class="sm-rule-section">
+function sectionHtml(s: RuleSection): string {
+  const body = s.body ? `<p>${s.body.split("\n").map(escape).join("<br>")}</p>` : "";
+  const letters = s.letters ? lettersHtml(s.letters) : "";
+  const groups = s.groups ? s.groups.map(groupHtml).join("") : "";
+  return `<section class="sm-rule-section">
       <h3>${escape(s.heading)}</h3>
       ${body}
       ${letters}
       <div class="sm-rule-groups">${groups}</div>
     </section>`;
-  }).join("");
+}
 
+/** "Sanat"-välilehti: mitkä sanat kelpaavat (ilman painikkeita) — näkymässä ja tulosteessa. */
+export function renderWordsContent(): string {
   return `
     <div class="sm-rules-doc">
       <h2>${escape(RULES_TITLE)}</h2>
       <p class="sm-rules-lead">${escape(RULES_LEAD)}</p>
-      ${sections}
+      ${RULES.map(sectionHtml).join("")}
+    </div>`;
+}
+
+/** "Ohjaus"-välilehti: pelin ohjaus laitteittain — näkymässä ja tulosteessa. */
+export function renderControlsContent(): string {
+  return `
+    <div class="sm-rules-doc">
+      <h2>${escape(CONTROLS_TITLE)}</h2>
+      ${CONTROLS.map(sectionHtml).join("")}
     </div>`;
 }

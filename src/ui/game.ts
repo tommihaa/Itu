@@ -22,7 +22,7 @@ import type { WordJudge } from "../dict/judge";
 import { loadJudge } from "../dict/load";
 import { loadLemmas, type LemmaLookup } from "../dict/lemmas";
 import { describeCode } from "../dict/morph";
-import { renderRulesContent } from "../rules/view";
+import { renderWordsContent, renderControlsContent } from "../rules/view";
 
 // Iso sisäinen lauta, jotta tila ei lopu kesken; näkymä kehystää käytetyn alueen.
 const BOARD = 21;
@@ -50,11 +50,18 @@ let rackOrder: number[] = []; // telineen näkymäjärjestys (dieIndex-permutaat
 // Viimeksi sovellettu kehystys (zoom+siirto). Pidetään paikallaan kunnes asetetut
 // nopat eivät enää mahdu näkyviin → vähemmän "hyppimistä" (ks. frameBoard).
 let currentFrame: { scale: number; tx: number; ty: number } | null = null;
-let rackSort = "haro"; // aktiivinen järjestys (ryhmävälejä varten)
+// Zoom pois käytöstä toistaiseksi (käyttäjän pyyntö): kiinteä koko + vieritettävä näkymä.
+// Vanha automaattinen kehystys (zoom/pan) jää lipun taakse, helppo palauttaa myöhemmin.
+const ZOOM_ENABLED = false;
+// Vieritysasema säilytetään moduulitilassa, koska render() rakentaa viewportin uudelleen
+// (jolloin selaimen vieritys nollautuu). null = keskitä seuraavalla renderillä.
+let viewScroll: { left: number; top: number } | null = null;
+let rackSort = "abc"; // aktiivinen järjestys (ryhmävälejä varten); newRoll asettaa tallennetun
 let seed = "";
 let judge: WordJudge | null = null;
 let root: HTMLElement;
 let showRules = false;
+let rulesTab: "words" | "controls" = "words"; // Säännöt-näkymän aktiivinen välilehti
 let showChecker = false; // Tarkastaja (pelin ulkopuolinen sanahaku + selitys)
 
 // Opettavuus: muoto -> lemma (lazy-ladattu paketti, ks. dict/lemmas.ts).
@@ -68,6 +75,26 @@ let showChallenge = false; // offline-haastemodaali (aloita haaste / vastaa)
 // --- Monikierroshaaste (offline, linkki kantaa tulokset 2-suuntaisesti) ---
 const ROUND_OPTIONS = [1, 3, 5, 10];
 const NAME_KEY = "itu:name";
+
+// Telineen järjestysvalinta säilyy heitosta toiseen (localStorage).
+const SORT_KEY = "itu:sort:v1";
+const SORT_KEYS = ["abc", "pts", "con", "harmony"]; // "Härö" poistettu; "vow"→"con" (Konsonantit)
+const DEFAULT_SORT = "abc";
+function loadSort(): string {
+  try {
+    const s = localStorage.getItem(SORT_KEY);
+    return s && SORT_KEYS.includes(s) ? s : DEFAULT_SORT; // vanha "haro" → oletus
+  } catch {
+    return DEFAULT_SORT;
+  }
+}
+function saveSort(k: string): void {
+  try {
+    localStorage.setItem(SORT_KEY, k);
+  } catch {
+    /* yksityistila — valinta ei säily, peli toimii silti */
+  }
+}
 
 /** Vastustajan tulokset (haasteessa toinen osapuoli). */
 interface Opp {
@@ -87,17 +114,34 @@ let match: Match | null = null;
 let showMatchSummary = false;
 let myName = loadName();
 
-// Osoitinpohjainen raahaus (hiiri + kosketus). HTML5 DnD ei toimi mobiilissa,
-// joten käytämme pointer-eventtejä + kelluvaa "haamulaattaa" molemmille.
+// Osoitinpohjainen raahaus (hiiri + kosketus + kynä). HTML5 DnD ei toimi mobiilissa,
+// joten käytämme pointer-eventtejä + kelluvaa "haamulaattaa" kaikille.
+// Haamu luodaan vasta ensimmäisellä liikkeellä, jotta paikallaan pysyvä painallus
+// voi muuttua pitkäksi painallukseksi (= poisto) ilman haamun vilkkumista.
 interface Drag {
   die: number;
-  ghost: HTMLElement;
+  tileEl: HTMLElement; // lähde-elementti (sm-dragging-luokkaa varten)
+  ghost: HTMLElement | null; // null kunnes raahaus alkaa (liike > kynnys)
   startX: number;
   startY: number;
   moved: boolean;
   hover: HTMLElement | null;
+  longPress?: ReturnType<typeof setTimeout>; // pitkän painalluksen ajastin
+  consumed?: boolean; // pitkä painallus jo hoiti → pointerup ei käsittele napautusta
 }
 let drag: Drag | null = null;
+
+// Napauta-ja-aseta: telineestä "nostettu" nappula (dieIndex) odottaa ruudun napautusta.
+let lifted: number | null = null;
+// Kumoa-pino (Ctrl+Z): viimeisimmät lautamuutokset (die + ruutu ennen muutosta).
+let history: { die: number; prevCell: string | null }[] = [];
+// Napautuksen jälkeen tuleva synteettinen ruutuklikkaus vaimennetaan (estää tuplakäsittely).
+let suppressCellClickUntil = 0;
+// Tuplanapautus (kosketus/hiiri): viimeisin napautettu noppa + aika.
+let lastTapDie = -1;
+let lastTapAt = 0;
+const LONG_PRESS_MS = 450;
+const DOUBLE_TAP_MS = 300;
 
 // Näppäimistösyöttö: kirjoituskursori laudalla (suunta H/V). Drag toimii rinnalla.
 type Dir = "H" | "V";
@@ -107,6 +151,10 @@ interface Caret {
   dir: Dir;
 }
 let caret: Caret | null = null;
+// Näppäilytila: tosi kun pelaaja ohjaa kursoria (klikkaa ruutua / näppäilee),
+// epätosi raahatessa. Kehystys pitää kursorin näkyvissä VAIN näppäiltäessä, jotta
+// raahauksen "ei hyppimistä" -logiikka säilyy ennallaan (ks. frameBoard).
+let kbdMode = false;
 
 // Kierroksen tila: ajastin loppuu hetkellä roundEndsAt; lukitus tai aika lopettaa.
 let roundEndsAt = 0;
@@ -302,13 +350,17 @@ function newRoll(s: string): void {
     letter: face === JOKER ? JOKER : face,
     cell: null,
   }));
-  // "Härö": nopat alustalle satunnaiseen järjestykseen, deterministisesti siemenestä.
-  rackOrder = shuffled(createRng(`${s}:rack`));
-  rackSort = "haro";
+  // Järjestysvalinta säilyy heitosta toiseen (oletus: Aakkoset).
+  rackSort = loadSort();
+  rackOrder = computeRackOrder(rackSort, createRng(`${s}:rack`));
   lastRecordRank = 0;
   currentRecord = null;
   caret = { row: BOARD_MID, col: BOARD_MID, dir: "H" }; // valmis näppäimistösyöttöön
+  kbdMode = false; // tuore heitto: kehystä raahauslogiikalla kunnes pelaaja näppäilee
+  lifted = null; // nostot ja kumoa-historia kuuluvat yhteen heittoon
+  history = [];
   currentFrame = null; // uusi heitto kehystää tuoreesti (keskelle)
+  viewScroll = null; // keskitä näkymä uudelleen (zoom-off)
   startRound();
   render();
 }
@@ -476,7 +528,7 @@ function render(): void {
     ${roundOver ? resultHtml() : ""}
     ${roundOver && match ? matchNavHtml() : ""}
     ${boardHtml(v)}
-    ${roundOver ? "" : `<p class="sm-kbd-hint">Voit myös kirjoittaa: klikkaa ruutua ja näppäile sana (välilyönti vaihtaa suunnan ${caret?.dir === "V" ? "↓" : "→"}, ⌫ poistaa).</p>`}
+    ${roundOver ? "" : controlsHintHtml()}
     ${rackHtml()}
     ${wordsHtml(v)}
     ${judge ? "" : '<p class="sm-words pending">Ladataan sanastoa…</p>'}
@@ -528,7 +580,11 @@ function resultHtml(): string {
     <table class="sm-breakdown">
       <tr><td>Sanapisteet</td><td>${b.wordPoints}</td></tr>
       <tr><td>Käyttämättä jääneet nopat</td><td>−${b.unusedPenalty}</td></tr>
-      <tr><td>Aikabonus${endRemaining > 0 ? ` (${endRemaining} s säästöön)` : ""}</td><td>+${b.timeBonus}</td></tr>
+      <tr><td>Aikabonus${endRemaining > 0 ? ` (${endRemaining} s säästöön)` : ""}${
+        b.timeBonus === 0 && endRemaining > GAME_DURATION_SECONDS / 3
+          ? ` <span class="sm-bonus-note">— alkaa viimeisellä kolmanneksella</span>`
+          : ""
+      }</td><td>+${b.timeBonus}</td></tr>
       <tr class="sm-total"><td>Yhteensä</td><td>${b.total}</td></tr>
     </table>
     ${lemmaHtml}
@@ -536,20 +592,30 @@ function resultHtml(): string {
   </div>`;
 }
 
-/** Selkosäännöt — sama sisältö pelin sisällä ja tulosteessa (@media print). */
+/** Selkosäännöt + ohjaus eri välilehdillä — sama sisältö pelissä ja tulosteessa (@media print). */
 function renderRules(): void {
+  const tab = (key: "words" | "controls", label: string) =>
+    `<button class="sm-tab${key === rulesTab ? " sm-tab-active" : ""}" data-rtab="${key}">${label}</button>`;
+  const content = rulesTab === "controls" ? renderControlsContent() : renderWordsContent();
   root.innerHTML = `
     <div class="sm-bar sm-no-print">
       <button id="sm-rules-close">← Takaisin peliin</button>
       <button id="sm-rules-print" class="sm-primary">Tulosta</button>
     </div>
-    ${renderRulesContent()}
+    <div class="sm-tabs sm-no-print">${tab("words", "Sanat")}${tab("controls", "Ohjaus")}</div>
+    ${content}
   `;
   root.querySelector<HTMLButtonElement>("#sm-rules-close")!.onclick = () => {
     showRules = false;
     render();
   };
   root.querySelector<HTMLButtonElement>("#sm-rules-print")!.onclick = () => window.print();
+  for (const b of root.querySelectorAll<HTMLElement>("[data-rtab]")) {
+    b.addEventListener("click", () => {
+      rulesTab = b.dataset.rtab as "words" | "controls";
+      renderRules();
+    });
+  }
 }
 
 /** Lataa lemma-paketti kerran (lazy); valmistuttua päivittää avoinna olevan näkymän. */
@@ -727,6 +793,17 @@ function recordBoardHtml(r: ScoreRecord): string {
   return html + "</div>";
 }
 
+/** Laitekohtainen ohjevihje laudan alla (hiiri vs. kosketus/kynä). Heuristiikka:
+ * `pointer: fine` ≈ hiiri/kynä, muuten kosketus. Kaikki eleet toimivat silti aina. */
+function controlsHintHtml(): string {
+  const fine = typeof matchMedia === "function" && matchMedia("(pointer: fine)").matches;
+  const arrow = caret?.dir === "V" ? "↓" : "→";
+  const text = fine
+    ? `Raahaa — tai napauta nappula ja sitten ruutu. Oikea klikkaus tai tuplaklikkaus poistaa. Voit myös kirjoittaa (väli vaihtaa suunnan ${arrow}, ⌫ poistaa, Ctrl+Z kumoaa).`
+    : "Napauta nappula ja sitten ruutu — tai raahaa. Poista pitämällä pohjassa tai tuplanapauttamalla.";
+  return `<p class="sm-kbd-hint">${text}</p>`;
+}
+
 function boardHtml(v: Validation): string {
   let html = `<div class="sm-board" style="grid-template-columns:repeat(${BOARD},var(--cell))">`;
   for (let r = 0; r < BOARD; r++) {
@@ -738,16 +815,44 @@ function boardHtml(v: Validation): string {
         valid === undefined ? "" : valid ? " sm-valid" : " sm-invalid";
       const isCaret = !roundOver && caret !== null && caret.row === r && caret.col === c;
       const caretCls = isCaret ? " sm-caret" : "";
-      const inner = tile
-        ? tileHtml(tile)
-        : isCaret
-          ? `<span class="sm-caret-arrow">${caret!.dir === "H" ? "→" : "↓"}</span>`
-          : "";
+      // Kursorinuoli piirretään myös asetetun nopan PÄÄLLE, jotta sanan päällä näkee missä mennään.
+      const caretMark = isCaret ? `<span class="sm-caret-arrow">${caret!.dir === "H" ? "→" : "↓"}</span>` : "";
+      const inner = tile ? `${tileHtml(tile)}${caretMark}` : caretMark;
       html += `<div class="sm-cell${cls}${caretCls}" data-cell="${key}">${inner}</div>`;
     }
   }
   // Näkymä (sm-viewport) rajaa; lauta (sm-board) skaalautuu sen sisällä, ks. frameBoard.
   return `<div class="sm-viewport">${html}</div></div>`;
+}
+
+/** Vieritysasema joka keskittää annetun ruudun näkymään (zoom-off-tila). */
+function cellCenterScroll(
+  viewport: HTMLElement,
+  board: HTMLElement,
+  row: number,
+  col: number,
+): { left: number; top: number } {
+  const cell = board.querySelector<HTMLElement>(`[data-cell="${cellKey(row, col)}"]`);
+  if (!cell) return { left: 0, top: 0 };
+  return {
+    left: cell.offsetLeft + cell.offsetWidth / 2 - viewport.clientWidth / 2,
+    top: cell.offsetTop + cell.offsetHeight / 2 - viewport.clientHeight / 2,
+  };
+}
+
+/** Säätää viewScrollia minimaalisesti niin, että kursoriruutu pysyy näkyvissä (ei zoom). */
+function keepCaretVisible(viewport: HTMLElement, board: HTMLElement): void {
+  if (!caret || !viewScroll) return;
+  const cell = board.querySelector<HTMLElement>(`[data-cell="${cellKey(caret.row, caret.col)}"]`);
+  if (!cell) return;
+  const pad = 8;
+  const { offsetLeft: cl, offsetTop: ct, offsetWidth: cw, offsetHeight: ch } = cell;
+  const vw = viewport.clientWidth;
+  const vh = viewport.clientHeight;
+  if (cl < viewScroll.left + pad) viewScroll.left = cl - pad;
+  else if (cl + cw > viewScroll.left + vw - pad) viewScroll.left = cl + cw - vw + pad;
+  if (ct < viewScroll.top + pad) viewScroll.top = ct - pad;
+  else if (ct + ch > viewScroll.top + vh - pad) viewScroll.top = ct + ch - vh + pad;
 }
 
 /**
@@ -764,6 +869,28 @@ function frameBoard(): void {
   const viewport = root.querySelector<HTMLElement>(".sm-viewport");
   const board = root.querySelector<HTMLElement>(".sm-board");
   if (!viewport || !board) return;
+
+  // Zoom pois käytöstä: ei skaalausta, näkymä vieritettävissä. Vieritysasema säilytetään
+  // (render rakentaa DOM:in uusiksi), keskitetään kerran/heitto, ja näppäiltäessä
+  // vieritetään kursori näkyviin — vieritys, EI zoom.
+  if (!ZOOM_ENABLED) {
+    board.style.transform = "none";
+    // Tallenna käyttäjän oma vieritys (kerran per viewport-elementti).
+    if (!viewport.dataset.scrollBound) {
+      viewport.dataset.scrollBound = "1";
+      viewport.addEventListener("scroll", () => {
+        viewScroll = { left: viewport.scrollLeft, top: viewport.scrollTop };
+      });
+    }
+    if (viewScroll === null) {
+      viewScroll = cellCenterScroll(viewport, board, BOARD_MID, BOARD_MID); // keskitä aloitus
+    } else if (kbdMode && caret && !roundOver) {
+      keepCaretVisible(viewport, board); // pidä kirjoituskohta näkyvissä vierittämällä
+    }
+    viewport.scrollLeft = viewScroll.left; // selain rajaa kelvolliseen väliin
+    viewport.scrollTop = viewScroll.top;
+    return;
+  }
 
   const vw = viewport.clientWidth;
   const vh = viewport.clientHeight;
@@ -783,6 +910,16 @@ function frameBoard(): void {
     cMaxR = Math.max(...rows);
     cMinC = Math.min(...cols);
     cMaxC = Math.max(...cols);
+  }
+
+  // Näppäiltäessä kirjoituskohta (kursori) kuuluu näkyvään sisältöön: muuten kursori
+  // karkaa reunan yli ja jokainen kirjain laukaisee yllättävän uudelleenkehystyksen
+  // (etenkin kapealla näytöllä → "kohdistin hyppii"). Raahatessa kursoria ei huomioida.
+  if (kbdMode && !roundOver && caret) {
+    cMinR = Math.min(cMinR, caret.row);
+    cMaxR = Math.max(cMaxR, caret.row);
+    cMinC = Math.min(cMinC, caret.col);
+    cMaxC = Math.max(cMaxC, caret.col);
   }
 
   // Mahtuuko sisältö yhä nykyisellä kehyksellä? Jos kyllä, pidä se (vain uudelleenaseta
@@ -870,8 +1007,8 @@ function rackHtml(): string {
 /** Ryhmätunniste nykyiselle järjestykselle; null = ei ryhmittelyä (ei välejä). */
 function rackGroupOf(die: number): number | null {
   switch (rackSort) {
-    case "vow":
-      return vowelGroup(die);
+    case "con":
+      return consonantGroup(die);
     case "harmony":
       return harmonyGroup(die);
     case "pts":
@@ -882,10 +1019,11 @@ function rackGroupOf(die: number): number | null {
 }
 
 function rackToolsHtml(): string {
-  const b = (key: string, label: string) => `<button class="sm-tool" data-sort="${key}">${label}</button>`;
+  const b = (key: string, label: string) =>
+    `<button class="sm-tool${key === rackSort ? " sm-tool-active" : ""}" data-sort="${key}">${label}</button>`;
   return `<div class="sm-rack-tools">
-    <span class="sm-tools-label">Järjestä:</span>
-    ${b("haro", "Härö")}${b("abc", "Aakkoset")}${b("pts", "Pisteet")}${b("vow", "Vokaalit")}${b("harmony", "Vokaalisointu")}
+    <span class="sm-tools-label">Järjestys:</span>
+    ${b("abc", "Aakkoset")}${b("con", "Konsonantit")}${b("pts", "Pisteet")}${b("harmony", "Vokaalisointu")}
   </div>`;
 }
 
@@ -905,10 +1043,12 @@ function alphaKey(die: number): string {
   return letterOf(tiles[die]) ?? "￿"; // valitsematon jokeri viimeiseksi
 }
 
-function vowelGroup(die: number): number {
+/** "Konsonantit"-järjestys: konsonantit ensin (0), vokaalit sitten (1), jokeri viimeiseksi.
+ * Täydentää "Vokaalisointua", joka aloittaa vokaaleista. */
+function consonantGroup(die: number): number {
   const ch = letterOf(tiles[die]);
   if (ch === null) return 2; // jokeri
-  return BACK_VOWELS.has(ch) || NEUTRAL_VOWELS.has(ch) || FRONT_VOWELS.has(ch) ? 0 : 1;
+  return BACK_VOWELS.has(ch) || NEUTRAL_VOWELS.has(ch) || FRONT_VOWELS.has(ch) ? 1 : 0;
 }
 
 function harmonyGroup(die: number): number {
@@ -929,29 +1069,31 @@ function shuffled(rand: () => number): number[] {
   return a;
 }
 
-function applyRackSort(key: string): void {
-  rackSort = key;
+/** Telineen näkymäjärjestys valitulle moodille. "Härö" käyttää annettua rng:tä
+ * (heitossa siemenpohjainen → deterministinen; napista Math.random → tuore sekoitus). */
+function computeRackOrder(key: string, rand: () => number): number[] {
   const byAlpha = (a: number, b: number) => alphaKey(a).localeCompare(alphaKey(b), "fi");
   const order = [...tiles.keys()];
   switch (key) {
-    case "haro":
-      rackOrder = shuffled(Math.random);
-      break;
     case "abc":
-      rackOrder = order.sort(byAlpha);
-      break;
+      return order.sort(byAlpha);
     case "pts":
-      rackOrder = order.sort(
+      return order.sort(
         (a, b) => faceValue(tiles[b].face) - faceValue(tiles[a].face) || byAlpha(a, b),
       );
-      break;
-    case "vow":
-      rackOrder = order.sort((a, b) => vowelGroup(a) - vowelGroup(b) || byAlpha(a, b));
-      break;
+    case "con":
+      return order.sort((a, b) => consonantGroup(a) - consonantGroup(b) || byAlpha(a, b));
     case "harmony":
-      rackOrder = order.sort((a, b) => harmonyGroup(a) - harmonyGroup(b) || byAlpha(a, b));
-      break;
+      return order.sort((a, b) => harmonyGroup(a) - harmonyGroup(b) || byAlpha(a, b));
+    default:
+      return shuffled(rand); // haro
   }
+}
+
+function applyRackSort(key: string): void {
+  rackSort = key;
+  saveSort(key); // valinta säilyy seuraaviin heittoihin
+  rackOrder = computeRackOrder(key, Math.random);
   render();
 }
 
@@ -1245,7 +1387,8 @@ function tileHtml(t: Tile): string {
   const glyph = isJoker ? (assigned ? t.letter.toUpperCase() : "◇") : t.face;
   // Jokerille, jolla on kirjain, pieni ◇-merkki → näkee että on jokeri ja sen voi vaihtaa.
   const mark = assigned ? `<span class="sm-joker-mark">◇</span>` : "";
-  return `<div class="sm-tile${isJoker ? " sm-joker" : ""}"
+  const liftedCls = t.dieIndex === lifted ? " sm-lifted" : "";
+  return `<div class="sm-tile${isJoker ? " sm-joker" : ""}${liftedCls}"
     data-die="${t.dieIndex}">${glyph}${mark}<span class="sm-val">${faceValue(t.face) || ""}</span></div>`;
 }
 
@@ -1334,11 +1477,27 @@ function wireEvents(): void {
   }
   for (const tileEl of root.querySelectorAll<HTMLElement>(".sm-tile")) {
     tileEl.addEventListener("pointerdown", (e) => onTilePointerDown(e, tileEl));
+    // Hiiren oikea klikkaus laudalle asetetun nopan päällä poistaa sen telineeseen.
+    tileEl.addEventListener("contextmenu", (e) => {
+      const die = Number(tileEl.dataset.die);
+      if (tiles[die]?.cell) {
+        e.preventDefault();
+        unplaceTile(die);
+      }
+    });
   }
   // Ruudun klikkaus asettaa kirjoituskursorin (näppäimistösyöttö).
   for (const cellEl of root.querySelectorAll<HTMLElement>(".sm-cell")) {
     cellEl.addEventListener("click", () => {
       if (drag) return; // raahauksen pudotus hoitaa oman renderinsä
+      if (performance.now() < suppressCellClickUntil) {
+        suppressCellClickUntil = 0; // nopan napautus hoiti tämän eleen jo
+        return;
+      }
+      if (lifted !== null) {
+        placeTile(lifted, cellEl.dataset.cell!); // napauta-ja-aseta (placeTile nollaa noston)
+        return;
+      }
       const { row, col } = parseKey(cellEl.dataset.cell!);
       setCaret(row, col);
     });
@@ -1349,30 +1508,42 @@ function wireEvents(): void {
 
 function onTilePointerDown(e: PointerEvent, tileEl: HTMLElement): void {
   if (roundOver || drag) return;
+  if (e.button !== 0) return; // vain ykköspainike/kosketus/kynä raahaa (oikea = poisto, ks. contextmenu)
   e.preventDefault();
+  const die = Number(tileEl.dataset.die);
+  drag = { die, tileEl, ghost: null, startX: e.clientX, startY: e.clientY, moved: false, hover: null };
+  // Laudalla olevan nopan paikallaan painaminen = pitkä painallus → poisto telineeseen.
+  if (tiles[die]?.cell) {
+    drag.longPress = setTimeout(() => {
+      if (!drag || drag.die !== die || drag.moved) return;
+      drag.consumed = true; // pointerup ei enää käsittele napautusta
+      teardownDrag();
+      drag = null;
+      unplaceTile(die);
+    }, LONG_PRESS_MS);
+  }
+  window.addEventListener("pointermove", onPointerMove);
+  window.addEventListener("pointerup", onPointerUp);
+  window.addEventListener("pointercancel", onPointerCancel);
+}
+
+/** Luo kelluva haamulaatta (vasta kun raahaus oikeasti alkaa). */
+function startGhost(): void {
+  if (!drag || drag.ghost) return;
+  kbdMode = false; // raahaus: kehystä ilman kursorinseurantaa (säilytä "ei hyppimistä")
+  const tileEl = drag.tileEl;
   const size = tileEl.offsetWidth;
   const ghost = tileEl.cloneNode(true) as HTMLElement;
   ghost.classList.add("sm-ghost");
   ghost.style.width = `${size}px`;
   ghost.style.height = `${size}px`;
   document.body.appendChild(ghost);
-  drag = {
-    die: Number(tileEl.dataset.die),
-    ghost,
-    startX: e.clientX,
-    startY: e.clientY,
-    moved: false,
-    hover: null,
-  };
-  moveGhost(e.clientX, e.clientY);
+  drag.ghost = ghost;
   tileEl.classList.add("sm-dragging");
-  window.addEventListener("pointermove", onPointerMove);
-  window.addEventListener("pointerup", onPointerUp);
-  window.addEventListener("pointercancel", onPointerCancel);
 }
 
 function moveGhost(x: number, y: number): void {
-  if (!drag) return;
+  if (!drag?.ghost) return;
   const g = drag.ghost;
   g.style.left = `${x - g.offsetWidth / 2}px`;
   g.style.top = `${y - g.offsetHeight / 2}px`;
@@ -1389,40 +1560,79 @@ function onPointerMove(e: PointerEvent): void {
   if (!drag) return;
   if (!drag.moved && Math.hypot(e.clientX - drag.startX, e.clientY - drag.startY) > 6) {
     drag.moved = true;
+    if (drag.longPress) clearTimeout(drag.longPress); // liike → ei pitkä painallus
+    startGhost();
   }
+  if (!drag.moved) return;
   moveGhost(e.clientX, e.clientY);
   const under = document.elementFromPoint(e.clientX, e.clientY);
-  setHover(drag.moved ? (under?.closest<HTMLElement>(".sm-cell") ?? null) : null);
+  setHover(under?.closest<HTMLElement>(".sm-cell") ?? null);
 }
 
 function teardownDrag(): void {
+  if (drag?.longPress) clearTimeout(drag.longPress);
   window.removeEventListener("pointermove", onPointerMove);
   window.removeEventListener("pointerup", onPointerUp);
   window.removeEventListener("pointercancel", onPointerCancel);
   drag?.hover?.classList.remove("sm-drop");
-  drag?.ghost.remove();
+  drag?.ghost?.remove();
 }
 
 function onPointerUp(e: PointerEvent): void {
   if (!drag) return;
-  const { die, moved } = drag;
+  const { die, moved, consumed } = drag;
   const x = e.clientX;
   const y = e.clientY;
   teardownDrag();
   drag = null;
-  const under = document.elementFromPoint(x, y);
+  if (consumed) return; // pitkä painallus jo hoiti
   if (!moved) {
-    // Napautus (ei raahaus): jokerin kirjaimen valinta.
-    const t = tiles.find((tile) => tile.dieIndex === die);
-    if (t && t.face === JOKER) assignJoker(t);
-    else render(); // poista sm-dragging-luokka
+    onTileTap(die);
     return;
   }
+  const under = document.elementFromPoint(x, y);
   const cell = under?.closest<HTMLElement>(".sm-cell");
   const rack = under?.closest<HTMLElement>(".sm-rack");
   if (cell) placeTile(die, cell.dataset.cell!);
   else if (rack) unplaceTile(die);
   else render(); // pudotettu muualle → palauta ennalleen
+}
+
+/** Nopan napautus (ei raahaus): nosto/asetus, jokerin valinta, kursori tai tuplanapautus-poisto. */
+function onTileTap(die: number): void {
+  const t = tiles[die];
+  // Vain laudan noppa on .sm-cell:n sisällä → vaimenna sen synteettinen ruutuklikkaus.
+  // Telineen nappula ei ole ruudussa, joten seuraava ruutuklikkaus jää koskemattomaksi.
+  if (t.cell) suppressCellClickUntil = performance.now() + 350;
+  // Nostettu nappula odottaa: napautus laudan nopan päälle = aseta sen ruutuun (vaihto);
+  // telineen nopan napautus = vaihda/peru nosto.
+  if (lifted !== null) {
+    if (t.cell) placeTile(lifted, t.cell);
+    else {
+      lifted = lifted === die ? null : die;
+      render();
+    }
+    return;
+  }
+  // Tuplanapautus laudan nopan päällä → poisto telineeseen.
+  const now = performance.now();
+  if (t.cell && lastTapDie === die && now - lastTapAt < DOUBLE_TAP_MS) {
+    lastTapDie = -1;
+    unplaceTile(die);
+    return;
+  }
+  lastTapDie = die;
+  lastTapAt = now;
+  if (t.cell) {
+    if (t.face === JOKER) assignJoker(t); // laudan jokeri: kirjainvalitsin
+    else {
+      const { row, col } = parseKey(t.cell);
+      setCaret(row, col); // laudan noppa: aseta kirjoituskursori
+    }
+  } else {
+    lifted = die; // telineen nappula: nosta (napauta-ja-aseta)
+    render();
+  }
 }
 
 function onPointerCancel(): void {
@@ -1433,17 +1643,40 @@ function onPointerCancel(): void {
 
 function placeTile(die: number, target: string): void {
   const dragged = tiles[die];
+  recordHistory(die); // kumoa: muistiin ruutu ennen asetusta
   const occupant = tileAt(target);
   if (occupant && occupant.dieIndex !== dragged.dieIndex) {
     // Vaihda: kohteessa ollut noppa raahatun lähtöruutuun (tai telineeseen).
     occupant.cell = dragged.cell;
   }
   dragged.cell = target;
+  lifted = null; // asetus kuluttaa mahdollisen noston
   render();
 }
 
 function unplaceTile(die: number): void {
+  recordHistory(die); // kumoa: muistiin ruutu ennen poistoa
   tiles[die].cell = null;
+  render();
+}
+
+/** Tallenna nopan nykyinen ruutu kumoa-pinoon ennen muutosta. */
+function recordHistory(die: number): void {
+  history.push({ die, prevCell: tiles[die].cell });
+}
+
+/** Ctrl+Z: peru viimeisin lautamuutos (asetus/siirto/poisto). */
+function undoLast(): void {
+  if (roundOver) return;
+  const last = history.pop();
+  if (!last) return;
+  const t = tiles[last.die];
+  // Näppäimistöllä asetettu jokeri vapautuu palatessaan telineeseen (kuten ⌫).
+  if (last.prevCell === null && t.face === JOKER && t.locked) {
+    t.letter = JOKER;
+    t.locked = false;
+  }
+  t.cell = last.prevCell;
   render();
 }
 
@@ -1462,6 +1695,9 @@ function stepCell(r: number, c: number, dir: Dir, back = false): [number, number
 /** Klikkaus ruutuun: aseta kursori; sama ruutu uudelleen vaihtaa suunnan. */
 function setCaret(row: number, col: number): void {
   if (roundOver) return;
+  // Klikkaus EI saa liikuttaa näkymää: kursori ilmestyy juuri napautettuun ruutuun.
+  // Vasta kirjoittaminen/nuolet kytkee kursorinseurannan (kbdMode) takaisin päälle.
+  kbdMode = false;
   caret =
     caret && caret.row === row && caret.col === col
       ? { row, col, dir: caret.dir === "H" ? "V" : "H" }
@@ -1472,6 +1708,7 @@ function setCaret(row: number, col: number): void {
 /** Kirjoita kirjain kursorin kohdalle (telineestä; jokeri jos kirjainta ei ole). */
 function typeAt(ch: string): void {
   if (roundOver) return;
+  kbdMode = true;
   if (!caret) caret = { row: BOARD_MID, col: BOARD_MID, dir: "H" };
   // Ohita varatut ruudut → ensimmäinen tyhjä suunnassa.
   let { row, col } = caret;
@@ -1491,32 +1728,48 @@ function typeAt(ch: string): void {
     tiles[die].letter = ch;
     tiles[die].locked = true;
   }
+  recordHistory(die); // kumoa: muistiin ruutu (null) ennen asetusta
   tiles[die].cell = cellKey(row, col);
   const [nr, nc] = stepCell(row, col, dir);
   caret = inBounds(nr, nc) ? { row: nr, col: nc, dir } : { row, col, dir };
   render();
 }
 
-/** Askelpalautin: siirry taakse ja poista siellä oleva noppa telineeseen. */
+/** Poistaa nopan laudalta telineeseen: kumoa-historia + näppäinjokerin vapautus. */
+function releaseTile(t: Tile): void {
+  recordHistory(t.dieIndex);
+  if (t.face === JOKER && t.locked) {
+    t.letter = JOKER;
+    t.locked = false; // näppäimistöllä asetettu jokeri vapautuu auto-päättelyyn
+  }
+  t.cell = null;
+}
+
+/** Askelpalautin: tyhjennä aktiivinen ruutu jos varattu (keskeltä poisto), muuten
+ * astu taakse ja poista edellinen (kirjoituksen perän poisto). */
 function backspaceCaret(): void {
   if (roundOver || !caret) return;
+  kbdMode = true;
   const dir = caret.dir;
+  // Aktiivinen ruutu varattu → tyhjennä SE; kursori jää paikalleen (intuitiivinen).
+  const here = tileAt(cellKey(caret.row, caret.col));
+  if (here) {
+    releaseTile(here);
+    render();
+    return;
+  }
+  // Aktiivinen ruutu tyhjä → astu taakse ja poista edellinen.
   const [pr, pc] = stepCell(caret.row, caret.col, dir, true);
   if (!inBounds(pr, pc)) return;
   const t = tileAt(cellKey(pr, pc));
-  if (t) {
-    if (t.face === JOKER && t.locked) {
-      t.letter = JOKER;
-      t.locked = false; // näppäimistöllä asetettu jokeri vapautuu
-    }
-    t.cell = null;
-  }
+  if (t) releaseTile(t);
   caret = { row: pr, col: pc, dir };
   render();
 }
 
 function arrowCaret(dir: Dir, back: boolean): void {
   if (roundOver) return;
+  kbdMode = true;
   if (!caret) {
     caret = { row: BOARD_MID, col: BOARD_MID, dir };
   } else {
@@ -1528,22 +1781,79 @@ function arrowCaret(dir: Dir, back: boolean): void {
 
 function toggleCaretDir(): void {
   if (roundOver) return;
+  kbdMode = true;
   caret = caret
     ? { ...caret, dir: caret.dir === "H" ? "V" : "H" }
     : { row: BOARD_MID, col: BOARD_MID, dir: "H" };
   render();
 }
 
+/** Esc: sulje avoin modaali/näkymä tai peru pelinäkymän valinta. true = jotain tehtiin. */
+function handleEscape(): boolean {
+  if (jokerPicker !== null) {
+    jokerPicker = null;
+    render();
+    return true;
+  }
+  if (showChallenge) {
+    showChallenge = false;
+    render();
+    return true;
+  }
+  if (showRules || showRecords || showChecker) {
+    showRules = showRecords = showChecker = false;
+    render();
+    return true;
+  }
+  if (lifted !== null) {
+    lifted = null; // peru napauta-ja-aseta -nosto
+    render();
+    return true;
+  }
+  if (caret) {
+    caret = null; // tyhjennä kirjoituskursori
+    render();
+    return true;
+  }
+  return false;
+}
+
 function onKeyDown(e: KeyboardEvent): void {
-  // Vain pelinäkymässä; ei modaalien/loppunäytön päällä eikä tekstikentissä.
-  if (roundOver || showRules || showRecords || showChecker || showMatchSummary || showChallenge)
-    return;
-  if (jokerPicker !== null) return;
   const tag = (e.target as HTMLElement | null)?.tagName;
-  if (tag === "INPUT" || tag === "TEXTAREA") return;
+  if (tag === "INPUT" || tag === "TEXTAREA") return; // tekstikentät hoitavat omansa
+  // Enter/väli kohdistetulle napille: anna napin toimia (ei pelilogiikkaa päälle).
+  if ((e.key === "Enter" || e.key === " ") && tag === "BUTTON") return;
+
+  // Esc toimii myös modaalin/loppunäytön päällä: sulje avoin kerros tai peru valinta.
+  if (e.key === "Escape") {
+    if (handleEscape()) e.preventDefault();
+    return;
+  }
+
+  // Muut näppäimet vain pelinäkymässä (ei modaalien/loppunäytön päällä).
+  if (
+    roundOver ||
+    showRules ||
+    showRecords ||
+    showChecker ||
+    showMatchSummary ||
+    showChallenge ||
+    jokerPicker !== null
+  )
+    return;
+
+  // Ctrl/Cmd+Z = kumoa viimeisin lautamuutos (ennen muuta modifier-suodatusta).
+  if ((e.ctrlKey || e.metaKey) && !e.altKey && (e.key === "z" || e.key === "Z")) {
+    e.preventDefault();
+    undoLast();
+    return;
+  }
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   const k = e.key;
-  if (k.length === 1 && PLAY_LETTERS.includes(k.toLowerCase())) {
+  if (k === "Enter") {
+    e.preventDefault();
+    endRound(); // Lukitse
+  } else if (k.length === 1 && PLAY_LETTERS.includes(k.toLowerCase())) {
     e.preventDefault();
     typeAt(k.toLowerCase());
   } else if (k === "Backspace") {

@@ -141,7 +141,7 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
   position: relative;
   width: 100%;
   height: min(70vh, 34rem);
-  overflow: hidden;
+  overflow: auto; /* zoom pois: lauta kiinteässä koossa, näkymä vieritettävissä */
   border: 2px solid var(--line);
   border-radius: 0.4rem;
   margin-bottom: 1rem;
@@ -154,6 +154,7 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
   background: var(--line);
   padding: 2px;
   width: max-content;
+  margin: 0 auto; /* zoom-off: keskitä vaakasuunnassa kun lauta mahtuu (ei haittaa vierittäessä) */
   transform-origin: 0 0;
   transition: transform 250ms ease;
   will-change: transform;
@@ -170,8 +171,31 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
 .sm-cell.sm-invalid { background: var(--invalid-bg); }
 /* Kirjoituskursori (näppäimistösyöttö) */
 .sm-cell.sm-caret { outline: 2px solid var(--gold); outline-offset: -2px; box-shadow: inset 0 0 0 1px var(--gold-dim); }
-.sm-caret-arrow { color: var(--gold); font-weight: 700; font-size: 1.1rem; opacity: 0.8; }
+/* Kursori myös asetetun nopan päällä: rengas nappulan ympäri, jotta sanan päällä näkyy missä mennään. */
+.sm-cell.sm-caret .sm-tile { outline: 2px solid var(--gold); outline-offset: -2px; box-shadow: 0 0 0 2px var(--gold-dim); z-index: 2; }
+/* Suuntanuoli kulmaan (näkyy myös nappulan päällä, varjostus erottaa taustasta). */
+.sm-caret-arrow {
+  position: absolute;
+  right: 1px;
+  bottom: 0;
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.85rem;
+  line-height: 1;
+  text-shadow: 0 0 2px var(--bg), 0 0 3px var(--bg);
+  z-index: 3;
+  pointer-events: none;
+}
+/* Laitekohtainen ohjevihje (teksti valitaan JS:ssä osoitintyypin mukaan, ks. controlsHintHtml). */
 .sm-kbd-hint { margin: -0.5rem 0 0.75rem; color: var(--muted); font-size: 0.8rem; }
+/* Napauta-ja-aseta: telineestä nostettu nappula odottaa ruudun napautusta. */
+.sm-tile.sm-lifted {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+  box-shadow: 0 0 0 2px var(--gold-dim), 0 2px 6px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+  z-index: 2;
+}
 
 /* --- Noppa (tile) --- */
 .sm-tile {
@@ -378,6 +402,34 @@ input, textarea {
   border-radius: 1rem;
   background: var(--panel);
 }
+/* Aktiivinen järjestysvalinta korostettuna (säilyy heitosta toiseen). */
+.sm-tool-active {
+  background: var(--gold);
+  color: var(--bg);
+  font-weight: 700;
+}
+
+/* Säännöt-näkymän välilehdet (Sanat / Ohjaus). */
+.sm-tabs {
+  display: flex;
+  gap: 0.35rem;
+  margin: 0.25rem 0 0.75rem;
+}
+.sm-tab {
+  padding: 0.35rem 0.9rem;
+  font-size: 0.95rem;
+  border-radius: 0.4rem 0.4rem 0 0;
+  background: var(--panel);
+  border-bottom: 2px solid transparent;
+}
+.sm-tab-active {
+  background: var(--gold);
+  color: var(--bg);
+  font-weight: 700;
+}
+
+/* Aikabonus-selite tulosnäytössä (kun bonus jäi 0:ksi aikaisen lukituksen takia). */
+.sm-bonus-note { color: var(--muted); font-size: 0.8rem; }
 .sm-rack {
   display: flex;
   gap: 4px;
@@ -461,4 +513,7 @@ input, textarea {
   .sm-tile { font-size: 0.95rem; }
   .sm-tile .sm-val { font-size: 0.5rem; }
   .sm-bar .sm-score { width: 100%; margin-left: 0; }
+  /* Kapealla näytöllä neliönmuotoinen näkymä: ruudukosta näkyy yhtä paljon pysty-
+     kuin vaakasuunnassa, eikä korkea näkymä työnnä telinettä ja nappeja ruudun alle. */
+  .sm-viewport { height: auto; aspect-ratio: 1 / 1; }
 }

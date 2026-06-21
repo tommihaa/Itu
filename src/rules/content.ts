@@ -195,3 +195,34 @@ export const RULES: RuleSection[] = [
       "yhdistämäsi uusi sana ei.",
   },
 ];
+
+/** Pelin ohjaus laitteittain — sama sisältö näkymässä ja tulosteessa. Kukin
+ * syöttötapa (hiiri, kosketus/kynä, näppäimistö) kertoo samat toiminnot omalla
+ * tavallaan; kaikki tavat toimivat rinnakkain. */
+export const CONTROLS_TITLE = "Pelin ohjaus";
+
+export const CONTROLS: RuleSection[] = [
+  {
+    heading: "Hiiri",
+    body:
+      "• Raahaa nappula telineestä ruutuun (tai ruudusta toiseen).\n" +
+      "• Tai napauta nappula ja sitten ruutu, johon se menee.\n" +
+      "• Poista laudalta: oikea klikkaus tai tuplaklikkaus nopan päällä — tai raahaa takaisin telineeseen.\n" +
+      "• Jokeri: napauta laudalla olevaa jokeria valitaksesi sen kirjaimen.",
+  },
+  {
+    heading: "Kosketus ja kynä",
+    body:
+      "• Napauta nappula ja sitten ruutu — tai raahaa nappula paikalleen.\n" +
+      "• Poista laudalta: pidä noppaa pohjassa hetki tai tuplanapauta — tai raahaa takaisin telineeseen.\n" +
+      "• Jokeri: napauta laudalla olevaa jokeria valitaksesi sen kirjaimen.",
+  },
+  {
+    heading: "Näppäimistö",
+    body:
+      "• Valitse kirjoituskohta napauttamalla ruutua ja kirjoita sana.\n" +
+      "• Väli tai sarkain vaihtaa suunnan (vaaka → / pysty ↓); nuolinäppäimet siirtävät kohtaa.\n" +
+      "• ⌫ poistaa edellisen kirjaimen. Ctrl+Z kumoaa viimeisimmän. Esc peruuttaa valinnan.\n" +
+      "• Enter lukitsee kierroksen.",
+  },
+];
