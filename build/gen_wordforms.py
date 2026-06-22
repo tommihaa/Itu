@@ -83,8 +83,15 @@ def verb_tags() -> list[str]:
     tags += ["+Pss+Ind+Prs+Pe4", "+Pss+Ind+Prt+Pe4",
              "+Pss+Cond+Pe4", "+Pss+Pot+Pe4", "+Pss+Imprt+Pe4"]
     # Infinitiivit (ilman omistusliitteellisiä muotoja kuten juostakseen).
-    tags += ["+InfA+Sg+Lat", "+InfE+Sg+Ine", "+InfE+Sg+Ins"]
-    tags += [f"+InfMa+Sg+{c}" for c in ["Ine", "Ela", "Ill", "Ade", "Abe", "Ins"]]
+    # HUOM: omorfi vaatii +Act MYÖS infinitiiveille — ilman sitä A/E/MA-infinitiivit
+    # tuottivat TYHJÄN (verbien perusmuoto + kaikki infinitiivit puuttuivat koko
+    # sanakirjasta 21.6 asti; audit build/audit_morph.py). 1. inf = perusmuoto (laskea),
+    # 2. inf (laskien/laskiessa), 3. inf MA (laskemassa…).
+    tags += ["+Act+InfA+Sg+Lat", "+Act+InfE+Sg+Ine", "+Act+InfE+Sg+Ins"]
+    tags += [f"+Act+InfMa+Sg+{c}" for c in ["Ine", "Ela", "Ill", "Ade", "Abe", "Ins"]]
+    # 4. infinitiivi (teonnimi -minen) taipuu nominina; aitoa ja erittäin yleistä
+    # kieltä (laskeminen, laskemisen, laskemista…). Tagi Der/minen (EI +Act, EI +N).
+    tags += [f"+Der/minen+{num}+{case}" for num in NUMBERS for case in CASES]
     # Partisiipit täydessä taivutuksessa (myös vertailu: syödympi jää
     # generaattorin harkintaan — pyydetään vain perusaste).
     tags += [f"{prc}+{num}+{case}"
