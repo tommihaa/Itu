@@ -4,6 +4,22 @@ Web-pohjainen sananmuodostuspeli kirjainnopilla, Tacticin Sana Mix -matkapelin h
 Päätökset lukittu 12.6.2026. Arkkitehtuurimalli: Superjatsi (Vite + TS + Web Components,
 domain/ui-erotus, ei Reactia). Dev-portti 5177.
 
+## Esittely (kopioi tuoreeseen chattiin / kuvaukseksi)
+
+> **Itu** on suomenkielinen sananmuodostus-noppapeli (selainpeli). Pelaaja heittää
+> kirjainnoppia ja muodostaa niistä sanoja laudalle ristikkomaisesti aikarajan
+> (3 min/kierros) puitteissa; pisteet kirjaimista + aikabonus viimeisellä kolmanneksella.
+> **Offline-yksinpeli** — ei verkkopalvelua, ei ääniä, ei monikielisyyttä (tietoisia
+> valintoja: pelirauhha). Sanojen kelpoisuus tarkistetaan **koko suomen sanastosta**
+> (~2,3 M taivutusmuotoa, pakattuna DAWG-rakenteeseen selaimessa). Teknologia:
+> **Vite + TypeScript, vanilla (ei Reactia)**, tiukka domain/UI-erottelu. Sanasto
+> generoidaan GiellaLT/omorfi-morfologialla (FST) lemmalistasta. Live: tommi-itu.vercel.app.
+
+Säädä mukaan tarpeen mukaan: koodiapuun lisää tiedostorakenne + domain/UI-jako;
+peli-/designkeskusteluun offline-filosofia + "ääretön peli" -arvolinssi; sanastoapuun
+omorfi/uralicNLP + DAWG + +Act-infinitiivioppi. (Miksi tuore chat tarvitsee tämän:
+muisti on paikallinen tähän Claude Code -ympäristöön — toinen chat alkaa kylmänä.)
+
 ## Ydinmekaniikka
 
 - 13 kirjainnoppaa heitetään kerralla; pelaaja muodostaa nopista ristikon
