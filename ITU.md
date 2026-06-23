@@ -8,7 +8,7 @@ domain/ui-erotus, ei Reactia). Dev-portti 5177.
 
 > **Itu** on suomenkielinen sananmuodostus-noppapeli (selainpeli). Pelaaja heittää
 > kirjainnoppia ja muodostaa niistä sanoja laudalle ristikkomaisesti aikarajan
-> (3 min/kierros) puitteissa; pisteet kirjaimista + aikabonus viimeisellä kolmanneksella.
+> (3 min/kierros) puitteissa; pisteet kirjaimista + aikabonus kun teline on (lähes) ratkaistu.
 > **Offline-yksinpeli** — ei verkkopalvelua, ei ääniä, ei monikielisyyttä (tietoisia
 > valintoja: pelirauhha). Sanojen kelpoisuus tarkistetaan **koko suomen sanastosta**
 > (~2,3 M taivutusmuotoa, pakattuna DAWG-rakenteeseen selaimessa). Teknologia:
@@ -38,7 +38,9 @@ muisti on paikallinen tähän Claude Code -ympäristöön — toinen chat alkaa 
 - Käyttämättömien noppien arvot vähennetään loppusummasta.
   Käyttämätön jokeri ei maksa mitään (arvo 0).
 - **Aikabonus** (asetus, oletus PÄÄLLÄ): +1 piste / 5 säästettyä sekuntia
-  lukittaessa ennen ajan loppua.
+  lukittaessa ennen ajan loppua, katto 6. Aukeaa **vain kun ≥11/13 noppaa on
+  käytetty kelvollisissa sanoissa** → palkitsee nopean JA (lähes) täyden ratkaisun,
+  ei pelkkää aikaista lukitsemista. Alle kynnyksen jäänyt ratkaisu ei saa bonusta.
 
 ## Nopat (LUKITTU)
 

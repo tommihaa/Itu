@@ -25,20 +25,29 @@ describe("pisteytys", () => {
     expect(sumValues([])).toBe(0);
   });
 
-  it("aikabonus on +1 piste / 5 säästettyä sekuntia", () => {
-    expect(timeBonus(0)).toBe(0);
-    expect(timeBonus(4)).toBe(0);
-    expect(timeBonus(5)).toBe(1);
-    expect(timeBonus(47)).toBe(9);
-    expect(timeBonus(180)).toBe(36);
-    expect(timeBonus(-10)).toBe(0);
+  it("aikabonus on +1 piste / 5 säästettyä sekuntia, katto 6, kun kynnys täyttyy", () => {
+    expect(timeBonus(0, 13)).toBe(0);
+    expect(timeBonus(4, 13)).toBe(0);
+    expect(timeBonus(5, 11)).toBe(1);
+    expect(timeBonus(30, 11)).toBe(6); // katto
+    expect(timeBonus(47, 13)).toBe(6); // katto
+    expect(timeBonus(180, 13)).toBe(6); // katto
+    expect(timeBonus(-10, 13)).toBe(0);
   });
 
-  it("laskee loppupisteet: sanat - jämät + aikabonus", () => {
+  it("aikabonus on 0 jos käytettyjä kirjaimia < 11, vaikka aikaa olisi säästössä", () => {
+    expect(timeBonus(120, 10)).toBe(0);
+    expect(timeBonus(120, 0)).toBe(0);
+    // Tasan kynnyksessä bonus aukeaa:
+    expect(timeBonus(120, 11)).toBe(6);
+  });
+
+  it("laskee loppupisteet: sanat - jämät + aikabonus (kynnys täynnä)", () => {
     const score = finalScore({
       wordPoints: 30,
       unusedFaces: ["D", "U"], // 7 + 3
       secondsRemaining: 25,
+      lettersUsed: 11,
       timeBonusEnabled: true,
     });
     expect(score).toEqual({
@@ -49,11 +58,24 @@ describe("pisteytys", () => {
     });
   });
 
+  it("loppupisteet: aikabonus jää pois kun käytettyjä kirjaimia liian vähän", () => {
+    const score = finalScore({
+      wordPoints: 30,
+      unusedFaces: ["D", "U"], // 7 + 3
+      secondsRemaining: 25,
+      lettersUsed: 8, // alle kynnyksen
+      timeBonusEnabled: true,
+    });
+    expect(score.timeBonus).toBe(0);
+    expect(score.total).toBe(20); // 30 - 10, ei bonusta
+  });
+
   it("käyttämätön jokeri ei maksa mitään", () => {
     const score = finalScore({
       wordPoints: 10,
       unusedFaces: [JOKER],
       secondsRemaining: 0,
+      lettersUsed: 12,
       timeBonusEnabled: true,
     });
     expect(score.unusedPenalty).toBe(0);
@@ -65,6 +87,7 @@ describe("pisteytys", () => {
       wordPoints: 10,
       unusedFaces: [],
       secondsRemaining: 100,
+      lettersUsed: 13,
       timeBonusEnabled: false,
     });
     expect(score.timeBonus).toBe(0);

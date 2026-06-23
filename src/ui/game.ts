@@ -6,6 +6,7 @@ import {
   faceValue,
   finalScore,
   GAME_DURATION_SECONDS,
+  TIME_BONUS_MIN_LETTERS_USED,
   type ScoreBreakdown,
 } from "../domain/scoring";
 import { rollDice } from "../domain/roll";
@@ -30,7 +31,8 @@ const BOARD = 21;
 // suurin sallittu zoom (ettei yksi noppa zoomaa liikaa).
 const FRAME_MARGIN = 2;
 const MAX_SCALE = 2.8;
-// Aikabonus oletuksena päällä; asetukseksi (D) myöhemmin.
+// Aikabonus oletuksena päällä; asetukseksi (D) myöhemmin. Bonus vaatii ≥11 käytettyä
+// noppaa (scoring.ts TIME_BONUS_MIN_LETTERS_USED) → palkitsee nopean JA täyden ratkaisun.
 const TIME_BONUS_ENABLED = true;
 
 // Pelin kirjaimet (jokerin valittavissa olevat); sama joukko kuin nopissa/sanastossa.
@@ -162,6 +164,7 @@ let roundOver = false;
 let timerHandle: ReturnType<typeof setInterval> | undefined;
 let endBreakdown: ScoreBreakdown | null = null;
 let endRemaining = 0; // jäljellä ollut aika lukitushetkellä (näyttöä varten)
+let endLettersUsed = 0; // käytetyt nopat lukitushetkellä (aikabonusselitettä varten)
 
 interface Suggestions {
   leftover: string[]; // käyttämättä jääneet kirjaimet
@@ -236,10 +239,12 @@ function endRound(): void {
   if (timerHandle) clearInterval(timerHandle);
   endRemaining = secondsLeft();
   const v = validate();
+  endLettersUsed = v.lettersUsed;
   endBreakdown = finalScore({
     wordPoints: v.wordPoints, // vain kelvolliset sanat
     unusedFaces: v.unusedFaces, // teline + laudalle jääneet ei-sanat (sama logiikka)
     secondsRemaining: endRemaining,
+    lettersUsed: v.lettersUsed, // ≥11 → aikabonus aukeaa
     timeBonusEnabled: TIME_BONUS_ENABLED,
   });
   computeSuggestions();
@@ -424,6 +429,8 @@ interface Validation {
   wordPoints: number;
   /** Sakotettavat tahkot: telineessä TAI laudalla mutta ei missään kelvollisessa sanassa. */
   unusedFaces: Face[];
+  /** Kelvollisissa sanoissa käytettyjen noppien määrä (aikabonuksen kynnystä varten). */
+  lettersUsed: number;
   /** Kierroksen aikainen näyttöpiste: wordPoints − käyttämättömät (ei aikabonusta). */
   total: number;
   invalidCount: number;
@@ -470,6 +477,7 @@ function validate(): Validation {
     wordPoints,
     unusedFaces,
     secondsRemaining: 0,
+    lettersUsed: productiveCells.size,
     timeBonusEnabled: false,
   });
 
@@ -478,6 +486,7 @@ function validate(): Validation {
     words: wordResults,
     wordPoints,
     unusedFaces,
+    lettersUsed: productiveCells.size,
     total: breakdown.total,
     invalidCount,
     connected: isConnected(cells),
@@ -581,8 +590,8 @@ function resultHtml(): string {
       <tr><td>Sanapisteet</td><td>${b.wordPoints}</td></tr>
       <tr><td>Käyttämättä jääneet nopat</td><td>−${b.unusedPenalty}</td></tr>
       <tr><td>Aikabonus${endRemaining > 0 ? ` (${endRemaining} s säästöön)` : ""}${
-        b.timeBonus === 0 && endRemaining > GAME_DURATION_SECONDS / 3
-          ? ` <span class="sm-bonus-note">— alkaa viimeisellä kolmanneksella</span>`
+        b.timeBonus === 0 && endRemaining > 0 && endLettersUsed < TIME_BONUS_MIN_LETTERS_USED
+          ? ` <span class="sm-bonus-note">— vaatii ≥${TIME_BONUS_MIN_LETTERS_USED} käytettyä kirjainta (käytit ${endLettersUsed})</span>`
           : ""
       }</td><td>+${b.timeBonus}</td></tr>
       <tr class="sm-total"><td>Yhteensä</td><td>${b.total}</td></tr>
