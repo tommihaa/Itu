@@ -514,6 +514,9 @@ function render(): void {
   const matchTag = match
     ? `<span class="sm-match-tag">🎯 Kierros ${match.current + 1}/${match.rounds}</span>`
     : "";
+  // Nappipalkki kolmeen ryhmään: toiminnot (muuttavat pelitilaa) | näkymät (avaavat
+  // paneelin) | tila (vain luku). Erotin näkyy vain kun toiminnot-ryhmässä on nappeja.
+  const hasActions = !match || !roundOver;
   root.innerHTML = `
     <header class="sm-head">
       <h1>Itu</h1>
@@ -521,18 +524,25 @@ function render(): void {
       ${matchTag}
     </header>
     <div class="sm-bar">
-      ${match ? "" : `<button id="sm-new" class="sm-primary">Heitä uudet</button>`}
-      <button id="sm-rules">Säännöt</button>
-      <button id="sm-checker">🔎 Tarkastaja</button>
-      <button id="sm-records">🏆 Ennätykset</button>
-      ${match ? "" : `<button id="sm-challenge">🎯 Haaste</button>`}
-      ${roundOver ? "" : `<button id="sm-lock">Lukitse</button>`}
-      ${roundOver ? "" : `<span class="sm-timer" id="sm-timer">${fmtTime(secondsLeft())}</span>`}
-      <span class="sm-score">${
-        roundOver ? "Kierros päättyi" : `Pisteet: <b>${v.total}</b>`
-      }${v.invalidCount ? ` · ${v.invalidCount} kelvotonta` : ""}${
-        !v.connected ? " · ristikko ei yhtenäinen" : ""
-      }</span>
+      <div class="sm-bar-group sm-bar-actions">
+        ${match ? "" : `<button id="sm-new" class="sm-primary">🎲 Heitä uudet</button>`}
+        ${roundOver ? "" : `<button id="sm-lock">Lukitse</button>`}
+      </div>
+      ${hasActions ? `<span class="sm-bar-sep" aria-hidden="true"></span>` : ""}
+      <div class="sm-bar-group sm-bar-views">
+        <button id="sm-rules">📜 Säännöt</button>
+        <button id="sm-checker">🔎 Tarkastaja</button>
+        <button id="sm-records">🏆 Ennätykset</button>
+        ${match ? "" : `<button id="sm-challenge">🎯 Haaste</button>`}
+      </div>
+      <div class="sm-bar-status">
+        ${roundOver ? "" : `<span class="sm-timer" id="sm-timer">${fmtTime(secondsLeft())}</span>`}
+        <span class="sm-score">${
+          roundOver ? "Kierros päättyi" : `Pisteet: <b>${v.total}</b>`
+        }${v.invalidCount ? ` · ${v.invalidCount} kelvotonta` : ""}${
+          !v.connected ? " · ristikko ei yhtenäinen" : ""
+        }</span>
+      </div>
     </div>
     ${roundOver ? resultHtml() : ""}
     ${roundOver && match ? matchNavHtml() : ""}
@@ -808,7 +818,7 @@ function controlsHintHtml(): string {
   const fine = typeof matchMedia === "function" && matchMedia("(pointer: fine)").matches;
   const arrow = caret?.dir === "V" ? "↓" : "→";
   const text = fine
-    ? `Raahaa — tai napauta nappula ja sitten ruutu. Oikea klikkaus tai tuplaklikkaus poistaa. Voit myös kirjoittaa (väli vaihtaa suunnan ${arrow}, ⌫ poistaa, Ctrl+Z kumoaa).`
+    ? `Raahaa — tai napauta nappula ja sitten ruutu. Oikea klikkaus tai tuplaklikkaus poistaa. Voit myös kirjoittaa (väli tai sarkain vaihtaa suunnan ${arrow}, ⌫ poistaa, Ctrl+Z kumoaa).`
     : "Napauta nappula ja sitten ruutu — tai raahaa. Poista pitämällä pohjassa tai tuplanapauttamalla.";
   return `<p class="sm-kbd-hint">${text}</p>`;
 }

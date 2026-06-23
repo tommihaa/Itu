@@ -51,7 +51,11 @@ header.sm-head h1 { margin: 0; color: var(--gold); font-size: 1.4rem; letter-spa
 header.sm-head .sm-seed { color: var(--muted); font-size: 0.85rem; }
 
 .sm-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
-.sm-bar .sm-score { margin-left: auto; font-size: 1.05rem; color: var(--gold); }
+/* Ryhmät: toiminnot | näkymät | tila. Sisäinen väli tiivis, ryhmien väli erottimella. */
+.sm-bar-group { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+.sm-bar-status { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-left: auto; }
+.sm-bar-sep { width: 1px; align-self: stretch; min-height: 1.6rem; background: var(--line); margin: 0 0.35rem; }
+.sm-bar .sm-score { font-size: 1.05rem; color: var(--gold); }
 .sm-bar .sm-score b { color: var(--text); }
 .sm-timer {
   font-variant-numeric: tabular-nums;
@@ -512,7 +516,9 @@ input, textarea {
   #app { padding: 0.5rem; }
   .sm-tile { font-size: 0.95rem; }
   .sm-tile .sm-val { font-size: 0.5rem; }
-  .sm-bar .sm-score { width: 100%; margin-left: 0; }
+  /* Kapealla: tila-ryhmä omalle rivilleen täysleveänä, ei oikealle työntöä. */
+  .sm-bar-status { width: 100%; margin-left: 0; }
+  .sm-bar-sep { display: none; }
   /* Kapealla näytöllä neliönmuotoinen näkymä: ruudukosta näkyy yhtä paljon pysty-
      kuin vaakasuunnassa, eikä korkea näkymä työnnä telinettä ja nappeja ruudun alle. */
   .sm-viewport { height: auto; aspect-ratio: 1 / 1; }
