@@ -361,7 +361,10 @@ function newRoll(s: string): void {
   rackOrder = computeRackOrder(rackSort, createRng(`${s}:rack`));
   lastRecordRank = 0;
   currentRecord = null;
-  caret = { row: BOARD_MID, col: BOARD_MID, dir: "H" }; // valmis näppäimistösyöttöön
+  // Ei oletuskursoria: tyhjällä laudalla aloitusopaste (sm-board-hint) on ainoa CTA, eikä
+  // keskelle piirretty kursori kilpaile sen kanssa. Näppäily luo kursorin keskelle itse
+  // (typeAt), ja ruudun napautus asettaa sen — kummassakin opaste väistyy.
+  caret = null;
   kbdMode = false; // tuore heitto: kehystä raahauslogiikalla kunnes pelaaja näppäilee
   lifted = null; // nostot ja kumoa-historia kuuluvat yhteen heittoon
   history = [];
@@ -898,7 +901,9 @@ function boardHtml(v: Validation): string {
   html += `</div>`; // sulje sm-board (avattiin html:n alussa) — ettei sulku mene väärään diviin
   // Tyhjän laudan aloitusopaste: kutsuu ensisiirtoon ilman ohjekappaleen lukemista.
   // pointer-events:none (CSS) → ei estä raahausta; katoaa heti kun ensimmäinen noppa on laudalla.
-  const boardEmpty = !roundOver && tiles.every((t) => !t.cell);
+  // Opaste vain ennen ensimmäistä toimintoa: piilota heti kun kursori on asetettu (pelaaja
+  // valitsi ruudun) tai noppa on laudalla → valittu ruutu ei koskaan jää tekstin alle.
+  const boardEmpty = !roundOver && !caret && tiles.every((t) => !t.cell);
   const startHint = boardEmpty
     ? `<div class="sm-board-hint">Raahaa kirjaimia ruudukkoon ja kokoa niistä sanaristikko</div>`
     : "";
