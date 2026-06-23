@@ -95,6 +95,18 @@ export function describeCode(code: string): Described | null {
     const infK = find(INFINITIVE);
     const caseK = find(CASE_INFO);
     const numK = find(NUMBER);
+    // 4. infinitiivi -minen: verbistä johdettu teonnimi, taipuu kuten substantiivi.
+    if (has("Der/minen")) {
+      const tail = caseK
+        ? ` · ${numK ? NUMBER[numK] + " " : ""}${CASE_INFO[caseK].term}`
+        : "";
+      const r: Described = { text: `verbi · teonnimi (-minen)${tail}` };
+      if (caseK) {
+        r.effect = CASE_INFO[caseK].question;
+        r.example = CASE_INFO[caseK].example;
+      }
+      return r;
+    }
     if (prcK) {
       const voice = has("Pss") ? "passiivin " : "";
       const tail = caseK ? ` · ${numK ? NUMBER[numK] + " " : ""}${CASE_INFO[caseK].term}` : "";
