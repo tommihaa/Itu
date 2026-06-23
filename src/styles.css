@@ -164,11 +164,13 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
 .sm-board-hint {
   position: absolute;
   inset: 0;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   padding: 1rem;
+  overflow-wrap: anywhere;
   pointer-events: none;
   color: var(--muted);
   font-size: 1rem;
@@ -564,7 +566,8 @@ input, textarea {
   /* Kapealla: tila-ryhmä omalle rivilleen täysleveänä, ei oikealle työntöä. */
   .sm-bar-status { width: 100%; margin-left: 0; }
   .sm-bar-sep { display: none; }
-  /* Kapealla näytöllä neliönmuotoinen näkymä: ruudukosta näkyy yhtä paljon pysty-
-     kuin vaakasuunnassa, eikä korkea näkymä työnnä telinettä ja nappeja ruudun alle. */
-  .sm-viewport { height: auto; aspect-ratio: 1 / 1; }
+  /* Kapealla näytöllä matala näkymä: lauta vieritettävissä sisäisesti (overflow:auto,
+     frameBoard keskittää käytetyn alueen), jotta teline ja kirjaimet näkyvät ilman koko
+     sivun vierittämistä. Neliö (aspect-ratio 1/1) oli liian korkea ja työnsi telineen alle. */
+  .sm-viewport { height: min(44vh, 22rem); aspect-ratio: auto; }
 }

@@ -536,12 +536,12 @@ function render(): void {
     <div class="sm-bar">
       <div class="sm-bar-group sm-bar-actions">
         ${match ? "" : `<button id="sm-new" class="sm-primary">🎲 Heitä uudet</button>`}
-        ${roundOver ? "" : `<button id="sm-lock">Lukitse</button>`}
+        ${roundOver ? "" : `<button id="sm-lock">🔒 Lukitse</button>`}
       </div>
       ${hasActions ? `<span class="sm-bar-sep" aria-hidden="true"></span>` : ""}
       <div class="sm-bar-group sm-bar-views">
         <button id="sm-rules">📜 Säännöt</button>
-        <button id="sm-checker">🔎 Tarkastaja</button>
+        <button id="sm-checker">🔎 Sanapoliisi</button>
         <button id="sm-records">🏆 Ennätykset</button>
         ${match ? "" : `<button id="sm-challenge">🎯 Haaste</button>`}
       </div>
@@ -738,10 +738,10 @@ function renderChecker(): void {
   root.innerHTML = `
     <div class="sm-bar">
       <button id="sm-check-close">← Takaisin peliin</button>
-      <h2 class="sm-records-title">🔎 Tarkastaja</h2>
+      <h2 class="sm-records-title">🔎 Sanapoliisi</h2>
     </div>
     <div class="sm-checker">
-      <p class="sm-ch-note">Kokeile käykö jokin sana — esim. <b>kuusta</b>, <b>rankin</b>, <b>kellutetuissa</b>. Pelin sanakirja vastaa kuten pelissä, ja Tarkastaja kertoo perusmuodon, sijamuodon ja mitä se tarkoittaa.</p>
+      <p class="sm-ch-note">Kokeile käykö jokin sana — esim. <b>kuusta</b>, <b>rankin</b>, <b>kellutetuissa</b>. Pelin sanakirja vastaa kuten pelissä, ja Sanapoliisi kertoo perusmuodon, sijamuodon ja mitä se tarkoittaa.</p>
       <input id="sm-check-input" class="sm-ch-link" placeholder="Kirjoita sana"
         autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" />
       <p id="sm-check-result" class="sm-check-result"></p>
@@ -852,19 +852,28 @@ function controlsHintHtml(): string {
   const fine = typeof matchMedia === "function" && matchMedia("(pointer: fine)").matches;
   // Yksi ydinrivi per syöttötapa; täysi komentolista (poisto, Ctrl+Z, ⌫) elää
   // Säännöt › Ohjaus -välilehdellä (rules/content.ts CONTROLS) — ei kahdenneta tähän.
-  // Kirjoitusvihje näkyy vain kun kirjoituskohta on auki (caret), eli kun se on relevantti.
-  const caretHint = caret
-    ? ` · kirjoita: väli/sarkain vaihtaa suunnan ${caret.dir === "V" ? "↓" : "→"}`
-    : "";
-  // Tyhjällä laudalla aloitusopaste (sm-board-hint) kantaa "raahaa"-pääviestin → ei toisteta
-  // sitä tässä; näytetään vain syöttötapavihje/kirjoitusvihje + viite täyteen ohjeeseen.
   const boardEmpty = tiles.every((t) => !t.cell);
-  const core = boardEmpty
-    ? ""
-    : (fine
+  const arrow = caret ? (caret.dir === "V" ? "↓" : "→") : "";
+  const parts: string[] = [];
+  // Tyhjällä laudalla aloitusopaste (sm-board-hint) kantaa "raahaa"-pääviestin → ei toisteta tässä.
+  if (!boardEmpty) {
+    parts.push(
+      fine
         ? "Raahaa nappula laudalle — tai napauta nappula, sitten ruutu."
-        : "Napauta nappula ja sitten ruutu — tai raahaa.") + " ";
-  return `<p class="sm-kbd-hint">${core}${caretHint ? caretHint.replace(/^ · /, "") + " " : ""}<span class="sm-hint-more">Lisää: 📜 Säännöt › Ohjaus</span></p>`;
+        : "Napauta nappula ja sitten ruutu — tai raahaa.",
+    );
+  }
+  // Suunnanvaihto, vain kun kirjoituskohta on auki. Kosketuslaitteella EI näppäimistöä →
+  // näytä napautusohje (napauta valittua ruutua = setCaret vaihtaa suunnan), ei väli/sarkain.
+  if (caret) {
+    parts.push(
+      fine
+        ? `Kirjoita: väli tai sarkain vaihtaa suunnan ${arrow}.`
+        : `Napauta valittua ruutua vaihtaaksesi suunnan ${arrow}.`,
+    );
+  }
+  parts.push(`<span class="sm-hint-more">Lisää: 📜 Säännöt › Ohjaus</span>`);
+  return `<p class="sm-kbd-hint">${parts.join(" ")}</p>`;
 }
 
 function boardHtml(v: Validation): string {
@@ -886,14 +895,16 @@ function boardHtml(v: Validation): string {
       html += `<div class="sm-cell${cls}${islandCls}${caretCls}" data-cell="${key}">${inner}</div>`;
     }
   }
+  html += `</div>`; // sulje sm-board (avattiin html:n alussa) — ettei sulku mene väärään diviin
   // Tyhjän laudan aloitusopaste: kutsuu ensisiirtoon ilman ohjekappaleen lukemista.
   // pointer-events:none (CSS) → ei estä raahausta; katoaa heti kun ensimmäinen noppa on laudalla.
   const boardEmpty = !roundOver && tiles.every((t) => !t.cell);
   const startHint = boardEmpty
     ? `<div class="sm-board-hint">Raahaa kirjaimia ruudukkoon ja kokoa niistä sanaristikko</div>`
     : "";
-  // Näkymä (sm-viewport) rajaa ja vierittää; opaste on kääreessä (sm-board-wrap) viewportin
-  // SIBLINGINÄ, jotta se pysyy näkyvän alueen keskellä eikä valu vierityksen mukana.
+  // Näkymä (sm-viewport) rajaa ja vierittää; opaste on kääreen (sm-board-wrap) lapsi JA viewportin
+  // SIBLING — EI vierittyvän viewportin sisällä, jotta se pysyy näkyvän alueen keskellä eikä
+  // ankkuroidu vieritettyyn lautaan. sm-board suljetaan yllä, joten divit menevät tasan.
   return `<div class="sm-board-wrap"><div class="sm-viewport">${html}</div>${startHint}</div>`;
 }
 
