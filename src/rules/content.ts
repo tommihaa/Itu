@@ -141,6 +141,12 @@ export const RULES: RuleSection[] = [
   },
   {
     heading: "Nämä eivät kelpaa",
+    body:
+      "Liitesanat ja omistusliitteet eivät ole omia sanoja vaan jatkeita: " +
+      "ne voi liimata melkein minkä tahansa sanan perään, yhä uudelleen " +
+      "(talo → talokin → talonikin → talossammekohan). Jos ne kelpaisivat, " +
+      "lähes kaikki kelpaisi — eikä sanan löytäminen olisi enää haaste. " +
+      "Siksi peliin otetaan itse sanat, ei niiden perään liimattuja jatkeita.",
     groups: [
       {
         title: "Liitesanat (sanan perään liimattu pikkusana)",
