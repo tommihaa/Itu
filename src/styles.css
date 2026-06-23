@@ -66,6 +66,22 @@ header.sm-head .sm-seed { color: var(--muted); font-size: 0.85rem; }
   border-radius: 0.4rem;
   background: var(--tile);
 }
+/* Elävä kirjainmittari: neutraali kunnes aikabonuksen kynnys täyttyy, sitten korostuu. */
+.sm-used {
+  font-size: 0.85rem;
+  color: var(--muted);
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  white-space: nowrap;
+}
+.sm-used b { color: var(--text); }
+.sm-used.sm-used-ready {
+  color: var(--gold);
+  border-color: var(--gold-dim);
+  background: var(--valid-bg);
+}
+.sm-used.sm-used-ready b { color: var(--gold); }
 
 /* --- Kierroksen loppunäkymä --- */
 .sm-result {
@@ -141,6 +157,25 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
 
 /* --- Lauta --- */
 /* Näkymä rajaa; lauta skaalautuu sen sisällä (automaattinen kehystys, ks. frameBoard). */
+/* Kääre: opaste (sm-board-hint) on viewportin siblinginä, jotta se pysyy näkyvän
+   alueen keskellä eikä valu sisäisen vierityksen mukana. */
+.sm-board-wrap { position: relative; }
+/* Tyhjän laudan aloitusopaste: peittää näkyvän alueen, ei estä raahausta. */
+.sm-board-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+  pointer-events: none;
+  color: var(--muted);
+  font-size: 1rem;
+  font-weight: 600;
+  text-shadow: 0 0 4px var(--bg), 0 0 6px var(--bg);
+  z-index: 4;
+}
 .sm-viewport {
   position: relative;
   width: 100%;
@@ -173,6 +208,8 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
 .sm-cell.sm-drop { outline: 2px dashed var(--gold); outline-offset: -2px; }
 .sm-cell.sm-valid { background: var(--valid-bg); }
 .sm-cell.sm-invalid { background: var(--invalid-bg); }
+/* Irrallinen saareke: katkoviiva = "tämä ei ole kiinni ristikossa" (eri kuin punainen = "ei sana"). */
+.sm-cell.sm-island { outline: 2px dashed var(--gold); outline-offset: -2px; }
 /* Kirjoituskursori (näppäimistösyöttö) */
 .sm-cell.sm-caret { outline: 2px solid var(--gold); outline-offset: -2px; box-shadow: inset 0 0 0 1px var(--gold-dim); }
 /* Kursori myös asetetun nopan päällä: rengas nappulan ympäri, jotta sanan päällä näkyy missä mennään. */
@@ -192,6 +229,8 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
 }
 /* Laitekohtainen ohjevihje (teksti valitaan JS:ssä osoitintyypin mukaan, ks. controlsHintHtml). */
 .sm-kbd-hint { margin: -0.5rem 0 0.75rem; color: var(--muted); font-size: 0.8rem; }
+/* Hento viite täyteen ohjelistaan (Säännöt › Ohjaus) — ei kilpaile ydinrivin kanssa. */
+.sm-hint-more { opacity: 0.7; white-space: nowrap; }
 /* Napauta-ja-aseta: telineestä nostettu nappula odottaa ruudun napautusta. */
 .sm-tile.sm-lifted {
   outline: 2px solid var(--gold);
@@ -345,6 +384,10 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
 .sm-ana .sm-q { color: var(--text); }
 .sm-ana-list { margin-top: 0.35rem; }
 .sm-check-ok-line { display: block; }
+/* Perusmuodon sanakirjalinkit (Kotus · Wikt): hento, ei vie huomiota itse analyysiltä. */
+.sm-dict { font-size: 0.85em; opacity: 0.85; white-space: nowrap; }
+.sm-dict-link { color: var(--gold); text-decoration: none; border-bottom: 1px dotted var(--gold-dim); }
+.sm-dict-link:hover { border-bottom-style: solid; }
 
 /* --- Tarkastaja (sanahaku) --- */
 .sm-checker { max-width: 32rem; }
@@ -452,6 +495,8 @@ input, textarea {
 .sm-words { margin-top: 0.75rem; font-size: 0.9rem; }
 .sm-words .ok { color: var(--valid); }
 .sm-words .bad { color: var(--invalid); }
+/* Kelvottoman sanan syy: himmeä, ei vie huomiota itse sanalta. */
+.sm-words .sm-bad-why { color: var(--muted); font-size: 0.85em; }
 .sm-words .pending { color: var(--muted); }
 
 /* --- Selkosäännöt --- */

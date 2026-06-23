@@ -72,10 +72,8 @@ export function extractWords(cells: Cells): BoardWord[] {
   return words;
 }
 
-/** Tosi, jos kaikki asetetut nopat muodostavat yhden yhtenäisen ryhmän (ristikko). */
-export function isConnected(cells: Cells): boolean {
-  if (cells.size <= 1) return true;
-  const start = cells.keys().next().value!;
+/** Yhden yhtenäisen komponentin ruudut alkaen `start`:sta (4-naapuruus, flood-fill). */
+function floodComponent(cells: Cells, start: string): Set<string> {
   const stack = [start];
   const visited = new Set<string>([start]);
   while (stack.length) {
@@ -92,7 +90,41 @@ export function isConnected(cells: Cells): boolean {
       }
     }
   }
-  return visited.size === cells.size;
+  return visited;
+}
+
+/** Tosi, jos kaikki asetetut nopat muodostavat yhden yhtenäisen ryhmän (ristikko). */
+export function isConnected(cells: Cells): boolean {
+  if (cells.size <= 1) return true;
+  const start = cells.keys().next().value!;
+  return floodComponent(cells, start).size === cells.size;
+}
+
+/**
+ * Ruudut jotka EIVÄT kuulu suurimpaan yhtenäiseen komponenttiin — eli irralliset
+ * saarekkeet. Tyhjä joukko = ristikko on yhtenäinen (tai ≤1 ruutua). Tasakokoisten
+ * komponenttien tapauksessa "suurin" on ensiksi löytyvä, jolloin loput jäävät
+ * saarekkeiksi. Käytetään UI:ssa korostamaan MISSÄ ristikko on poikki.
+ */
+export function disconnectedCells(cells: Cells): Set<string> {
+  const island = new Set<string>();
+  if (cells.size <= 1) return island;
+  // Etsi kaikki komponentit; pidä suurin, palauta loput.
+  const remaining = new Set(cells.keys());
+  let largest = new Set<string>();
+  const components: Set<string>[] = [];
+  while (remaining.size) {
+    const start = remaining.values().next().value!;
+    const comp = floodComponent(cells, start);
+    for (const k of comp) remaining.delete(k);
+    components.push(comp);
+    if (comp.size > largest.size) largest = comp;
+  }
+  for (const comp of components) {
+    if (comp === largest) continue;
+    for (const k of comp) island.add(k);
+  }
+  return island;
 }
 
 /** Tosi, jos noppa on jokeri jolle ei ole vielä valittu kirjainta. */

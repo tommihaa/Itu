@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { cellKey, extractWords, isConnected, type PlacedTile } from "../src/domain/board";
+import {
+  cellKey,
+  extractWords,
+  isConnected,
+  disconnectedCells,
+  type PlacedTile,
+} from "../src/domain/board";
 import { JOKER } from "../src/domain/dice";
 
 function tile(face: string, letter = face, dieIndex = 0): PlacedTile {
@@ -75,5 +81,43 @@ describe("isConnected", () => {
       [cellKey(5, 5)]: "I",
     });
     expect(isConnected(cells)).toBe(false);
+  });
+});
+
+describe("disconnectedCells", () => {
+  it("yhtenäinen ristikko → tyhjä joukko", () => {
+    const cells = boardOf({
+      [cellKey(0, 0)]: "T",
+      [cellKey(0, 1)]: "A",
+      [cellKey(1, 1)]: "I",
+    });
+    expect(disconnectedCells(cells).size).toBe(0);
+  });
+
+  it("≤1 ruutua → tyhjä joukko", () => {
+    expect(disconnectedCells(boardOf({})).size).toBe(0);
+    expect(disconnectedCells(boardOf({ [cellKey(3, 3)]: "A" })).size).toBe(0);
+  });
+
+  it("palauttaa pienemmän saarekkeen, ei suurinta komponenttia", () => {
+    // Suuri komponentti (3 ruutua) rivillä 0; irrallinen saareke (1 ruutu) kaukana.
+    const cells = boardOf({
+      [cellKey(0, 0)]: "T",
+      [cellKey(0, 1)]: "A",
+      [cellKey(0, 2)]: "L",
+      [cellKey(5, 5)]: "I",
+    });
+    const island = disconnectedCells(cells);
+    expect([...island]).toEqual([cellKey(5, 5)]);
+  });
+
+  it("tasakokoiset komponentit → toinen jää saarekkeeksi (ei molempia, ei kumpikaan)", () => {
+    const cells = boardOf({
+      [cellKey(0, 0)]: "A",
+      [cellKey(0, 1)]: "B",
+      [cellKey(5, 5)]: "C",
+      [cellKey(5, 6)]: "D",
+    });
+    expect(disconnectedCells(cells).size).toBe(2);
   });
 });

@@ -16,6 +16,7 @@ import {
   parseKey,
   extractWords,
   isConnected,
+  disconnectedCells,
   type Cells,
   type PlacedTile,
 } from "../domain/board";
@@ -435,6 +436,8 @@ interface Validation {
   total: number;
   invalidCount: number;
   connected: boolean;
+  /** Irrallisten saarekkeiden ruudut (ei suurimmassa komponentissa); tyhjä = yhtenäinen. */
+  islandCells: Set<string>;
 }
 
 function validate(): Validation {
@@ -490,6 +493,7 @@ function validate(): Validation {
     total: breakdown.total,
     invalidCount,
     connected: isConnected(cells),
+    islandCells: disconnectedCells(cells),
   };
 }
 
@@ -517,6 +521,12 @@ function render(): void {
   // Nappipalkki kolmeen ryhmään: toiminnot (muuttavat pelitilaa) | näkymät (avaavat
   // paneelin) | tila (vain luku). Erotin näkyy vain kun toiminnot-ryhmässä on nappeja.
   const hasActions = !match || !roundOver;
+  // Elävä kirjainmittari: tekee aikabonuksen piilokynnyksen (≥11/13) näkyväksi maaliksi
+  // jo pelin aikana, ei vasta tulosruudussa. "Auki" = kynnys täynnä ja bonus käytössä.
+  const bonusReady = TIME_BONUS_ENABLED && v.lettersUsed >= TIME_BONUS_MIN_LETTERS_USED;
+  const usedChip = `<span class="sm-used${bonusReady ? " sm-used-ready" : ""}" title="${
+    bonusReady ? "Aikabonus auki" : `Aikabonus aukeaa kun ≥${TIME_BONUS_MIN_LETTERS_USED} noppaa on käytetty`
+  }">Kirjaimia: <b>${v.lettersUsed}</b>/${tiles.length}${bonusReady ? " ⚡" : ""}</span>`;
   root.innerHTML = `
     <header class="sm-head">
       <h1>Itu</h1>
@@ -537,6 +547,7 @@ function render(): void {
       </div>
       <div class="sm-bar-status">
         ${roundOver ? "" : `<span class="sm-timer" id="sm-timer">${fmtTime(secondsLeft())}</span>`}
+        ${roundOver ? "" : usedChip}
         <span class="sm-score">${
           roundOver ? "Kierros päättyi" : `Pisteet: <b>${v.total}</b>`
         }${v.invalidCount ? ` · ${v.invalidCount} kelvotonta` : ""}${
@@ -653,6 +664,26 @@ function ensureLemmas(): void {
     });
 }
 
+/**
+ * Perusmuodon linkit ulkoisiin sanakirjoihin. EI hallusinointia: linkki vie HAKUUN
+ * auktoritatiiviseen lähteeseen (emme generoi määritelmää). Harvinainen johoslemma voi
+ * näyttää lähteen oman "ei hakutuloksia" -viestin — se on lähteen totuus, ei meidän arvaus.
+ * Kaksi lähdettä: Kielitoimiston sanakirja (Kotus, sama kuin pelin sanaston pohja) +
+ * fi.Wiktionary (laajempi, johdokset/taulukot). Lemma on raaka → encodeURIComponent ä/ö:lle.
+ */
+function dictLinks(lemma: string): string {
+  const enc = encodeURIComponent(lemma);
+  const a = (href: string, label: string, title: string) =>
+    `<a class="sm-dict-link" href="${href}" target="_blank" rel="noopener noreferrer" title="${title}">${label}</a>`;
+  return (
+    ` <span class="sm-dict">(katso: ` +
+    a(`https://www.kielitoimistonsanakirja.fi/${enc}`, "Kotus", `Hae “${escapeHtml(lemma)}” Kielitoimiston sanakirjasta`) +
+    ` · ` +
+    a(`https://fi.wiktionary.org/wiki/${enc}`, "Wikt", `Hae “${escapeHtml(lemma)}” Wikisanakirjasta`) +
+    `)</span>`
+  );
+}
+
 /** Tarkastaja: kaikki pätevät tulkinnat sanalle (perusmuoto + sija + vaikutus +
  * selkoesimerkki). Kukin rivi auktoritatiivisesta FST-analyysista; tyhjä jos ei
  * tietoa (mieluummin vaiti kuin arvaus). Lemmat/esimerkit escapataan. */
@@ -663,14 +694,17 @@ function analysisLines(word: string): string[] {
   for (const a of lemmas.lookup(word)) {
     let line: string;
     if (a.code === "Base") {
+      // Sana ON perusmuotonsa → linkki sanaan itseensä; muuten linkki taustalemmaan.
       line =
-        a.lemma === word ? "perusmuoto" : `perusmuoto sanasta <b>${escapeHtml(a.lemma)}</b>`;
+        a.lemma === word
+          ? `perusmuoto${dictLinks(a.lemma)}`
+          : `perusmuoto sanasta <b>${escapeHtml(a.lemma)}</b>${dictLinks(a.lemma)}`;
     } else {
       const d = describeCode(a.code);
       if (!d) continue; // tuntematon koodi → ei arvausta
       const parts = [d.text];
       if (d.effect) parts.push(`<span class="sm-q">${d.effect}</span>`);
-      parts.push(`perusmuoto <b>${escapeHtml(a.lemma)}</b>`);
+      parts.push(`perusmuoto <b>${escapeHtml(a.lemma)}</b>${dictLinks(a.lemma)}`);
       if (d.example && d.example !== word) parts.push(`kuten <i>${escapeHtml(d.example)}</i>`);
       line = parts.join(" · ");
     }
@@ -816,11 +850,21 @@ function recordBoardHtml(r: ScoreRecord): string {
  * `pointer: fine` ≈ hiiri/kynä, muuten kosketus. Kaikki eleet toimivat silti aina. */
 function controlsHintHtml(): string {
   const fine = typeof matchMedia === "function" && matchMedia("(pointer: fine)").matches;
-  const arrow = caret?.dir === "V" ? "↓" : "→";
-  const text = fine
-    ? `Raahaa — tai napauta nappula ja sitten ruutu. Oikea klikkaus tai tuplaklikkaus poistaa. Voit myös kirjoittaa (väli tai sarkain vaihtaa suunnan ${arrow}, ⌫ poistaa, Ctrl+Z kumoaa).`
-    : "Napauta nappula ja sitten ruutu — tai raahaa. Poista pitämällä pohjassa tai tuplanapauttamalla.";
-  return `<p class="sm-kbd-hint">${text}</p>`;
+  // Yksi ydinrivi per syöttötapa; täysi komentolista (poisto, Ctrl+Z, ⌫) elää
+  // Säännöt › Ohjaus -välilehdellä (rules/content.ts CONTROLS) — ei kahdenneta tähän.
+  // Kirjoitusvihje näkyy vain kun kirjoituskohta on auki (caret), eli kun se on relevantti.
+  const caretHint = caret
+    ? ` · kirjoita: väli/sarkain vaihtaa suunnan ${caret.dir === "V" ? "↓" : "→"}`
+    : "";
+  // Tyhjällä laudalla aloitusopaste (sm-board-hint) kantaa "raahaa"-pääviestin → ei toisteta
+  // sitä tässä; näytetään vain syöttötapavihje/kirjoitusvihje + viite täyteen ohjeeseen.
+  const boardEmpty = tiles.every((t) => !t.cell);
+  const core = boardEmpty
+    ? ""
+    : (fine
+        ? "Raahaa nappula laudalle — tai napauta nappula, sitten ruutu."
+        : "Napauta nappula ja sitten ruutu — tai raahaa.") + " ";
+  return `<p class="sm-kbd-hint">${core}${caretHint ? caretHint.replace(/^ · /, "") + " " : ""}<span class="sm-hint-more">Lisää: 📜 Säännöt › Ohjaus</span></p>`;
 }
 
 function boardHtml(v: Validation): string {
@@ -832,16 +876,25 @@ function boardHtml(v: Validation): string {
       const valid = v.cellValid.get(key);
       const cls =
         valid === undefined ? "" : valid ? " sm-valid" : " sm-invalid";
+      // Irrallinen saareke: korostetaan MISSÄ ristikko on poikki (eri kuin sm-invalid = "ei sana").
+      const islandCls = v.islandCells.has(key) ? " sm-island" : "";
       const isCaret = !roundOver && caret !== null && caret.row === r && caret.col === c;
       const caretCls = isCaret ? " sm-caret" : "";
       // Kursorinuoli piirretään myös asetetun nopan PÄÄLLE, jotta sanan päällä näkee missä mennään.
       const caretMark = isCaret ? `<span class="sm-caret-arrow">${caret!.dir === "H" ? "→" : "↓"}</span>` : "";
       const inner = tile ? `${tileHtml(tile)}${caretMark}` : caretMark;
-      html += `<div class="sm-cell${cls}${caretCls}" data-cell="${key}">${inner}</div>`;
+      html += `<div class="sm-cell${cls}${islandCls}${caretCls}" data-cell="${key}">${inner}</div>`;
     }
   }
-  // Näkymä (sm-viewport) rajaa; lauta (sm-board) skaalautuu sen sisällä, ks. frameBoard.
-  return `<div class="sm-viewport">${html}</div></div>`;
+  // Tyhjän laudan aloitusopaste: kutsuu ensisiirtoon ilman ohjekappaleen lukemista.
+  // pointer-events:none (CSS) → ei estä raahausta; katoaa heti kun ensimmäinen noppa on laudalla.
+  const boardEmpty = !roundOver && tiles.every((t) => !t.cell);
+  const startHint = boardEmpty
+    ? `<div class="sm-board-hint">Raahaa kirjaimia ruudukkoon ja kokoa niistä sanaristikko</div>`
+    : "";
+  // Näkymä (sm-viewport) rajaa ja vierittää; opaste on kääreessä (sm-board-wrap) viewportin
+  // SIBLINGINÄ, jotta se pysyy näkyvän alueen keskellä eikä valu vierityksen mukana.
+  return `<div class="sm-board-wrap"><div class="sm-viewport">${html}</div>${startHint}</div>`;
 }
 
 /** Vieritysasema joka keskittää annetun ruudun näkymään (zoom-off-tila). */
@@ -1414,7 +1467,13 @@ function tileHtml(t: Tile): string {
 function wordsHtml(v: Validation): string {
   if (!v.words.length) return "";
   const items = v.words
-    .map((w) => `<span class="${w.valid ? "ok" : "bad"}">${w.text}</span>`)
+    .map((w) => {
+      if (w.valid) return `<span class="ok">${w.text}</span>`;
+      // Elävä syy: erottaa "väärä kirjain" (ei pelin kirjaimistossa) ja "ei sanakirjassa".
+      const badLetter = [...w.text].some((c) => !PLAY_LETTERS.includes(c));
+      const reason = badLetter ? "väärä kirjain" : "ei sanakirjassa";
+      return `<span class="bad">${w.text}<span class="sm-bad-why"> (${reason})</span></span>`;
+    })
     .join(" · ");
   return `<p class="sm-words">Sanat: ${items}</p>`;
 }
