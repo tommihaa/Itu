@@ -364,12 +364,22 @@ export function mountGame(el: HTMLElement): void {
     newRoll(hashSeed || randomSeed());
   }
   // Sanasto ladataan taustalla; kun valmis, validointi aktivoituu.
-  loadJudge()
-    .then((j) => {
-      judge = j;
-      render();
-    })
-    .catch((e) => console.error("Sanaston lataus epäonnistui", e));
+  // Lykätään 874 KB:n haku ENSIMMÄISEN maalauksen yli, jottei se kilpaile
+  // kaistasta LCP-ikkunassa (mobiiliperformanssi). requestIdleCallback antaa
+  // selaimen maalata laudan ensin; setTimeout-varalla selaimille joilla ei rIC:tä.
+  const startDictLoad = () => {
+    loadJudge()
+      .then((j) => {
+        judge = j;
+        render();
+      })
+      .catch((e) => console.error("Sanaston lataus epäonnistui", e));
+  };
+  const ric = (window as unknown as {
+    requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => void;
+  }).requestIdleCallback;
+  if (ric) ric(startDictLoad, { timeout: 1500 });
+  else setTimeout(startDictLoad, 200);
 }
 
 function newRoll(s: string): void {
