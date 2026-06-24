@@ -42,6 +42,23 @@ muisti on paikallinen tähän Claude Code -ympäristöön — toinen chat alkaa 
   käytetty kelvollisissa sanoissa** → palkitsee nopean JA (lähes) täyden ratkaisun,
   ei pelkkää aikaista lukitsemista. Alle kynnyksen jäänyt ratkaisu ei saa bonusta.
 
+### Scrabble-pistemoodi (asetus, oletus POIS)
+
+Valinnainen kerros nykyisen pisteytyksen **päälle** — ei korvaa mitään (aikabonus ja
+3 min ajastin säilyvät). Tekee *sijoittelusta* merkityksellistä, ei vain siitä mitä sanoja
+muodostaa ("mahdollisuuksien maksimointi"). Domain: `src/domain/premium.ts` (puhdas).
+
+- **Premium-ruudut:** kiinteä, symmetrinen layout keskitettynä lautaan. Kirjain ×2 (DL),
+  kirjain ×3 (TL), sana ×2 (DW), sana ×3 (TW). Scrabblen ristipisteytys: kukin sana laskee
+  omat kirjain-/sanakertoimensa, joten risteysnoppa saa kertoimet molemmissa sanoissa.
+- **Keskusankkuri (★):** ristikon on katettava keskiruutu. 13 noppaa + yhtenäisyysvaatimus
+  eivät ylety kaikkiin premiumeihin → aito kompromissi.
+- **Bingo-bonus** (+20): kun KAIKKI 13 noppaa on käytetty kelvollisissa sanoissa ja ankkuri
+  katettu. Itun vastine Scrabblen "kaikki nappulat" -bonukselle.
+
+**Ei** muuta sanaston validointia (DAWG), noppia eikä heittoa — puhdas pistemekaniikka.
+**Ei** Scrabble-suomen pelitoteutus (ei vastustajaa, ei kuratoitua sanalistaa, ei b/c/f).
+
 ## Nopat (LUKITTU)
 
 78 tahkoa: 37 vokaalia, 40 konsonanttia, 1 jokeri. Ei B/C/F-kirjaimia
@@ -108,5 +125,7 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
   tulee build-aikaisesta FST-generoinnista (sama lähde joka muodon hyväksyy) +
   kiinteästä, käsin todennetusta sijataulukosta (`src/dict/morph.ts`); tuntematon
   → ei näytetä mitään. Data: `public/dict/forms-fi-v1` (lazy, ks. SANASTO.md).
-- Asetukset: aikabonus päälle/pois ja taso, jokerimäärä 1–3, äänet.
-  Tallennus localStorageen.
+- **Asetukset (⚙️):** kevyt paneeli (nappipalkki › ⚙️ Asetukset). Nyt: **Scrabble-pistemoodi**
+  (premium-ruudut + bingo + keskusankkuri, ks. Pisteytys). Tallennus localStorageen
+  (`itu:premium:v1`). Aikabonus/jokerimäärä ovat toistaiseksi moduulivakioita — siirtyvät
+  tähän paneeliin myöhemmin.

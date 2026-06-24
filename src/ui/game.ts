@@ -5,10 +5,17 @@ import { JOKER, LETTER_VALUES, type Face } from "../domain/dice";
 import {
   faceValue,
   finalScore,
+  scoreWord,
   GAME_DURATION_SECONDS,
   TIME_BONUS_MIN_LETTERS_USED,
   type ScoreBreakdown,
 } from "../domain/scoring";
+import {
+  CENTER,
+  BINGO_BONUS,
+  premiumAt,
+  premiumKindAt,
+} from "../domain/premium";
 import { rollDice } from "../domain/roll";
 import { createRng, randomSeed } from "../domain/rng";
 import {
@@ -66,6 +73,7 @@ let root: HTMLElement;
 let showRules = false;
 let rulesTab: "words" | "controls" = "words"; // Säännöt-näkymän aktiivinen välilehti
 let showChecker = false; // Tarkastaja (pelin ulkopuolinen sanahaku + selitys)
+let showSettings = false; // ⚙️ Asetukset-paneeli (toistaiseksi: Scrabble-pistemoodi)
 
 // Opettavuus: muoto -> lemma (lazy-ladattu paketti, ks. dict/lemmas.ts).
 let lemmas: LemmaLookup | null = null;
@@ -98,6 +106,25 @@ function saveSort(k: string): void {
     /* yksityistila — valinta ei säily, peli toimii silti */
   }
 }
+
+// Scrabble-pistemoodi (valinnainen): premium-ruudut + bingo + keskusankkuri.
+// Kerrostuu nykyisen päälle; OFF = identtinen perinteinen Itu. Säilyy localStoragessa.
+const PREMIUM_KEY = "itu:premium:v1";
+function loadPremiumMode(): boolean {
+  try {
+    return localStorage.getItem(PREMIUM_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+function savePremiumMode(on: boolean): void {
+  try {
+    localStorage.setItem(PREMIUM_KEY, on ? "1" : "0");
+  } catch {
+    /* yksityistila — valinta ei säily, peli toimii silti */
+  }
+}
+let premiumMode = loadPremiumMode();
 
 /** Vastustajan tulokset (haasteessa toinen osapuoli). */
 interface Opp {
@@ -247,6 +274,7 @@ function endRound(): void {
     secondsRemaining: endRemaining,
     lettersUsed: v.lettersUsed, // ≥11 → aikabonus aukeaa
     timeBonusEnabled: TIME_BONUS_ENABLED,
+    bingo: v.bingo, // premium-moodi: kaikki nopat käytetty + keskusankkuri
   });
   computeSuggestions();
   recordResult(v);
@@ -441,6 +469,10 @@ interface Validation {
   connected: boolean;
   /** Irrallisten saarekkeiden ruudut (ei suurimmassa komponentissa); tyhjä = yhtenäinen. */
   islandCells: Set<string>;
+  /** Premium-moodi: ristikko kattaa keskiruudun (★). Aina tosi kun premium-moodi pois. */
+  anchored: boolean;
+  /** Premium-moodin bingo-bonus (kaikki nopat käytetty + ankkuri); 0 muuten. */
+  bingo: number;
 }
 
 function validate(): Validation {
@@ -465,13 +497,19 @@ function validate(): Validation {
     }
     // Vain kelvolliset sanat kerryttävät pisteitä; risteysnoppa summautuu kahdesti
     // (kuuluu kahteen sanaan), mikä syntyy luonnostaan kun molemmat sanat ovat valideja.
+    // Premium-moodissa kukin sana saa omat kirjain-/sanakertoimensa (Scrabblen ristipisteytys).
     if (valid) {
-      for (const k of w.keys) {
-        wordPoints += faceValue(cells.get(k)!.face);
-        productiveCells.add(k);
-      }
+      const vals = w.keys.map((k) => faceValue(cells.get(k)!.face));
+      const prem = premiumMode ? w.keys.map((k) => premiumAt(k)) : null;
+      wordPoints += scoreWord(vals, prem);
+      for (const k of w.keys) productiveCells.add(k);
     }
   }
+
+  // Premium-moodi: ristikon on katettava keskiruutu (★); bingo = kaikki nopat käytetty.
+  const anchored = !premiumMode || cells.has(CENTER);
+  const bingo =
+    premiumMode && anchored && productiveCells.size === tiles.length ? BINGO_BONUS : 0;
 
   // Sakko: telineessä olevat JA laudalle asetetut jotka eivät ole missään
   // kelvollisessa sanassa (esim. kelvottoman "rut":n r ja u). Jokeri = 0 → ei sakkoa.
@@ -485,6 +523,7 @@ function validate(): Validation {
     secondsRemaining: 0,
     lettersUsed: productiveCells.size,
     timeBonusEnabled: false,
+    bingo,
   });
 
   return {
@@ -497,6 +536,8 @@ function validate(): Validation {
     invalidCount,
     connected: isConnected(cells),
     islandCells: disconnectedCells(cells),
+    anchored,
+    bingo,
   };
 }
 
@@ -513,11 +554,16 @@ function render(): void {
     renderChecker();
     return;
   }
+  if (showSettings) {
+    renderSettings();
+    return;
+  }
   if (showMatchSummary) {
     renderMatchSummary();
     return;
   }
   const v = validate();
+  const anyPlaced = tiles.some((t) => t.cell); // ankkuri-varoitus vasta kun jotain on laudalla
   const matchTag = match
     ? `<span class="sm-match-tag">🎯 Kierros ${match.current + 1}/${match.rounds}</span>`
     : "";
@@ -546,6 +592,7 @@ function render(): void {
         <button id="sm-rules">📜 Säännöt</button>
         <button id="sm-checker">🔎 Sanapoliisi</button>
         <button id="sm-records">🏆 Ennätykset</button>
+        <button id="sm-settings">⚙️ Asetukset</button>
         ${match ? "" : `<button id="sm-challenge">🎯 Haaste</button>`}
       </div>
       <div class="sm-bar-status">
@@ -555,6 +602,8 @@ function render(): void {
           roundOver ? "Kierros päättyi" : `Pisteet: <b>${v.total}</b>`
         }${v.invalidCount ? ` · ${v.invalidCount} kelvotonta` : ""}${
           !v.connected ? " · ristikko ei yhtenäinen" : ""
+        }${premiumMode && !roundOver && anyPlaced && !v.anchored ? ' · aloita <span class="sm-star">★</span>-ruudusta' : ""}${
+          v.bingo ? " · ⚡ bingo!" : ""
         }</span>
       </div>
     </div>
@@ -618,6 +667,7 @@ function resultHtml(): string {
           ? ` <span class="sm-bonus-note">— vaatii ≥${TIME_BONUS_MIN_LETTERS_USED} käytettyä kirjainta (käytit ${endLettersUsed})</span>`
           : ""
       }</td><td>+${b.timeBonus}</td></tr>
+      ${b.bingo ? `<tr><td>Bingo (kaikki nopat) ⚡</td><td>+${b.bingo}</td></tr>` : ""}
       <tr class="sm-total"><td>Yhteensä</td><td>${b.total}</td></tr>
     </table>
     ${lemmaHtml}
@@ -649,6 +699,43 @@ function renderRules(): void {
       renderRules();
     });
   }
+}
+
+/** ⚙️ Asetukset — toistaiseksi vain Scrabble-pistemoodi (premium-ruudut + bingo + keskusankkuri). */
+function renderSettings(): void {
+  root.innerHTML = `
+    <div class="sm-bar sm-no-print">
+      <button id="sm-settings-close">← Takaisin peliin</button>
+    </div>
+    <div class="sm-settings">
+      <h2>Asetukset</h2>
+      <label class="sm-setting-row">
+        <input type="checkbox" id="sm-set-premium"${premiumMode ? " checked" : ""} />
+        <span class="sm-setting-text">
+          <b>🟦 Scrabble-pistemoodi</b>
+          <small>Premium-ruudut (kirjain ×2/×3, sana ×2/×3), bingo-bonus kaikkien noppien
+          käytöstä ja keskusankkuri (★). Kerrostuu nykyisen pisteytyksen päälle — aikabonus ja
+          ajastin säilyvät. Pois päältä peli on perinteinen Itu.</small>
+        </span>
+      </label>
+      <div class="sm-prem-legend">
+        <span class="sm-prem-chip sm-prem sm-prem-dl">DL · kirjain ×2</span>
+        <span class="sm-prem-chip sm-prem sm-prem-tl">TL · kirjain ×3</span>
+        <span class="sm-prem-chip sm-prem sm-prem-dw">DW · sana ×2</span>
+        <span class="sm-prem-chip sm-prem sm-prem-tw">TW · sana ×3</span>
+        <span class="sm-prem-chip"><span class="sm-star">★</span> aloitusruutu</span>
+      </div>
+    </div>
+  `;
+  root.querySelector<HTMLButtonElement>("#sm-settings-close")!.onclick = () => {
+    showSettings = false;
+    render();
+  };
+  root.querySelector<HTMLInputElement>("#sm-set-premium")!.onchange = (e) => {
+    premiumMode = (e.target as HTMLInputElement).checked;
+    savePremiumMode(premiumMode);
+    renderSettings(); // päivitä valinta heti; lauta päivittyy kun palataan peliin
+  };
 }
 
 /** Lataa lemma-paketti kerran (lazy); valmistuttua päivittää avoinna olevan näkymän. */
@@ -890,12 +977,17 @@ function boardHtml(v: Validation): string {
         valid === undefined ? "" : valid ? " sm-valid" : " sm-invalid";
       // Irrallinen saareke: korostetaan MISSÄ ristikko on poikki (eri kuin sm-invalid = "ei sana").
       const islandCls = v.islandCells.has(key) ? " sm-island" : "";
+      // Premium-moodi: ruudun pohjaväri (laji) + keskiruudun ★ (näkyy vain tyhjänä).
+      const premKind = premiumMode ? premiumKindAt(key) : null;
+      const premCls = premKind ? ` sm-prem sm-prem-${premKind.toLowerCase()}` : "";
       const isCaret = !roundOver && caret !== null && caret.row === r && caret.col === c;
       const caretCls = isCaret ? " sm-caret" : "";
       // Kursorinuoli piirretään myös asetetun nopan PÄÄLLE, jotta sanan päällä näkee missä mennään.
       const caretMark = isCaret ? `<span class="sm-caret-arrow">${caret!.dir === "H" ? "→" : "↓"}</span>` : "";
-      const inner = tile ? `${tileHtml(tile)}${caretMark}` : caretMark;
-      html += `<div class="sm-cell${cls}${islandCls}${caretCls}" data-cell="${key}">${inner}</div>`;
+      const starMark =
+        premiumMode && key === CENTER ? `<span class="sm-center-star">★</span>` : "";
+      const inner = tile ? `${tileHtml(tile)}${caretMark}` : `${starMark}${caretMark}`;
+      html += `<div class="sm-cell${cls}${islandCls}${premCls}${caretCls}" data-cell="${key}">${inner}</div>`;
     }
   }
   html += `</div>`; // sulje sm-board (avattiin html:n alussa) — ettei sulku mene väärään diviin
@@ -1511,6 +1603,10 @@ function wireEvents(): void {
     showChecker = true;
     render();
   });
+  root.querySelector<HTMLButtonElement>("#sm-settings")?.addEventListener("click", () => {
+    showSettings = true;
+    render();
+  });
 
   // Offline-haaste: avaus + modaalin toiminnot (toimii myös loppunäytössä).
   root.querySelector<HTMLButtonElement>("#sm-challenge")?.addEventListener("click", () => {
@@ -1894,8 +1990,8 @@ function handleEscape(): boolean {
     render();
     return true;
   }
-  if (showRules || showRecords || showChecker) {
-    showRules = showRecords = showChecker = false;
+  if (showRules || showRecords || showChecker || showSettings) {
+    showRules = showRecords = showChecker = showSettings = false;
     render();
     return true;
   }
@@ -1930,6 +2026,7 @@ function onKeyDown(e: KeyboardEvent): void {
     showRules ||
     showRecords ||
     showChecker ||
+    showSettings ||
     showMatchSummary ||
     showChallenge ||
     jokerPicker !== null

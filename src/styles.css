@@ -10,6 +10,11 @@
   --valid-bg: #14331f;
   --invalid: #a23b3b;
   --invalid-bg: #341515;
+  /* Premium-pistemoodin ruutuvärit (ruudun pohja; validius näkyy edustalla). */
+  --prem-dl: #1c2c3a; /* kirjain ×2 — viileä sininen */
+  --prem-tl: #21405c; /* kirjain ×3 — syvempi sininen */
+  --prem-dw: #3a2230; /* sana ×2 — vaaleanpunainen sävy */
+  --prem-tw: #4a1d1d; /* sana ×3 — punainen */
   --tile: #2b2517;
   --tile-edge: #4a3f24;
   --cell: 2.5rem; /* ruudun/nopan koko; pienenee mobiilissa (media query) */
@@ -207,6 +212,14 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
   border-radius: 0.2rem;
   position: relative;
 }
+/* Premium-pistemoodi: ruudun pohjaväri lajin mukaan. Plain-luokkavalitsin (spesifisyys 0,1,0),
+   jotta .sm-cell.sm-valid / .sm-invalid (0,2,0) peittää tinttauksen kun nappula on asetettu. */
+.sm-prem-dl { background: var(--prem-dl); }
+.sm-prem-tl { background: var(--prem-tl); }
+.sm-prem-dw { background: var(--prem-dw); }
+.sm-prem-tw { background: var(--prem-tw); }
+.sm-center-star { color: var(--gold); font-size: 1.05rem; opacity: 0.8; }
+.sm-star { color: var(--gold); }
 .sm-cell.sm-drop { outline: 2px dashed var(--gold); outline-offset: -2px; }
 .sm-cell.sm-valid { background: var(--valid-bg); }
 .sm-cell.sm-invalid { background: var(--invalid-bg); }
@@ -409,6 +422,31 @@ button.sm-primary { background: var(--gold-dim); border-color: var(--gold); colo
 .sm-check-note h4 { margin: 0 0 0.3rem; color: var(--gold); font-size: 1rem; }
 .sm-check-note p { margin: 0; }
 .sm-check-note b { color: var(--text); }
+
+/* --- ⚙️ Asetukset-paneeli --- */
+.sm-settings { padding: 0.5rem 0.25rem; max-width: 34rem; }
+.sm-settings h2 { color: var(--gold); font-size: 1.2rem; margin: 0 0 0.75rem; }
+.sm-setting-row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  cursor: pointer;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  background: var(--panel);
+}
+.sm-setting-row input { margin-top: 0.25rem; }
+.sm-setting-text b { color: var(--gold); }
+.sm-setting-text small { display: block; color: var(--muted); margin-top: 0.25rem; line-height: 1.45; }
+.sm-prem-legend { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
+.sm-prem-chip {
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.3rem;
+  border: 1px solid var(--line);
+  color: var(--text);
+}
 
 /* --- Monikierroshaaste --- */
 .sm-match-tag { color: var(--gold); font-size: 0.9rem; font-weight: 600; }

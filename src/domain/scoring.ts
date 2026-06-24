@@ -1,4 +1,5 @@
 import { LETTER_VALUES, type Face } from "./dice";
+import type { PremiumCell } from "./premium";
 
 export function faceValue(face: Face): number {
   const value = LETTER_VALUES[face];
@@ -8,6 +9,27 @@ export function faceValue(face: Face): number {
 
 export function sumValues(faces: readonly Face[]): number {
   return faces.reduce((sum, f) => sum + faceValue(f), 0);
+}
+
+/**
+ * Yhden sanan pisteet. `premiums === null` → pelkkä kirjainarvojen summa (perustila,
+ * identtinen vanhaan pisteytykseen). Muuten Scrabblen ristipisteytys:
+ *   Σ(arvo_i × kirjainkerroin_i) × Π(sanakerroin_i).
+ * `premiums` on samanpituinen ja -järjestyksinen kuin `letterValues`. Risteysnoppa:
+ * H- ja V-sana pisteytetään erikseen, joten kumpikin saa omat kertoimensa luonnostaan.
+ */
+export function scoreWord(
+  letterValues: readonly number[],
+  premiums: readonly PremiumCell[] | null,
+): number {
+  if (!premiums) return letterValues.reduce((s, v) => s + v, 0);
+  let sum = 0;
+  let wordMult = 1;
+  for (let i = 0; i < letterValues.length; i++) {
+    sum += letterValues[i] * premiums[i].letter;
+    wordMult *= premiums[i].word;
+  }
+  return sum * wordMult;
 }
 
 export const TIME_BONUS_SECONDS_PER_POINT = 5;
@@ -39,12 +61,15 @@ export interface ScoreInput {
   /** Kelvollisissa sanoissa käytettyjen noppien määrä (aikabonuksen kynnystä varten). */
   lettersUsed: number;
   timeBonusEnabled: boolean;
+  /** Bingo-bonus (premium-moodi: kaikki nopat käytetty + keskusankkuri); 0 jos ei sovellu. */
+  bingo?: number;
 }
 
 export interface ScoreBreakdown {
   wordPoints: number;
   unusedPenalty: number;
   timeBonus: number;
+  bingo: number;
   total: number;
 }
 
@@ -53,10 +78,12 @@ export function finalScore(input: ScoreInput): ScoreBreakdown {
   const bonus = input.timeBonusEnabled
     ? timeBonus(input.secondsRemaining, input.lettersUsed)
     : 0;
+  const bingo = input.bingo ?? 0;
   return {
     wordPoints: input.wordPoints,
     unusedPenalty,
     timeBonus: bonus,
-    total: input.wordPoints - unusedPenalty + bonus,
+    bingo,
+    total: input.wordPoints - unusedPenalty + bonus + bingo,
   };
 }

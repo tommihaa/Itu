@@ -3,9 +3,11 @@ import { JOKER } from "../src/domain/dice";
 import {
   faceValue,
   finalScore,
+  scoreWord,
   sumValues,
   timeBonus,
 } from "../src/domain/scoring";
+import type { PremiumCell } from "../src/domain/premium";
 
 describe("pisteytys", () => {
   it("käyttää suomi-Scrabblen arvoja", () => {
@@ -54,6 +56,7 @@ describe("pisteytys", () => {
       wordPoints: 30,
       unusedPenalty: 10,
       timeBonus: 5,
+      bingo: 0,
       total: 25,
     });
   });
@@ -92,5 +95,55 @@ describe("pisteytys", () => {
     });
     expect(score.timeBonus).toBe(0);
     expect(score.total).toBe(10);
+  });
+
+  it("bingo-bonus summautuu loppupisteisiin", () => {
+    const score = finalScore({
+      wordPoints: 40,
+      unusedFaces: [],
+      secondsRemaining: 0,
+      lettersUsed: 13,
+      timeBonusEnabled: false,
+      bingo: 20,
+    });
+    expect(score.bingo).toBe(20);
+    expect(score.total).toBe(60);
+  });
+});
+
+describe("scoreWord (premium-kertoimet)", () => {
+  const none: PremiumCell = { letter: 1, word: 1 };
+
+  it("premiums=null → pelkkä summa (identtinen vanhaan)", () => {
+    // TALO = 1+1+2+2 = 6
+    expect(scoreWord([1, 1, 2, 2], null)).toBe(6);
+    expect(scoreWord([], null)).toBe(0);
+  });
+
+  it("kaikki perustasolla = summa", () => {
+    expect(scoreWord([1, 1, 2, 2], [none, none, none, none])).toBe(6);
+  });
+
+  it("DL kaksinkertaistaa yhden kirjaimen", () => {
+    // O (arvo 2) DL-ruudussa: 1 + 1 + 2*2 + 2 = 8
+    const dl: PremiumCell = { letter: 2, word: 1 };
+    expect(scoreWord([1, 1, 2, 2], [none, none, dl, none])).toBe(8);
+  });
+
+  it("TL kolminkertaistaa yhden kirjaimen", () => {
+    const tl: PremiumCell = { letter: 3, word: 1 };
+    expect(scoreWord([1, 1, 2, 2], [none, none, none, tl])).toBe(10); // 1+1+2+2*3
+  });
+
+  it("TW kolminkertaistaa koko sanan summan", () => {
+    const tw: PremiumCell = { letter: 1, word: 3 };
+    expect(scoreWord([1, 1, 2, 2], [tw, none, none, none])).toBe(18); // 6 * 3
+  });
+
+  it("kirjain- ja sanakertoimet yhdistyvät (DL + DW)", () => {
+    const dl: PremiumCell = { letter: 2, word: 1 };
+    const dw: PremiumCell = { letter: 1, word: 2 };
+    // (1 + 1*2 + 2) * 2 = 10
+    expect(scoreWord([1, 1, 2], [none, dl, dw])).toBe(10);
   });
 });
