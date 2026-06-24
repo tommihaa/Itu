@@ -12,9 +12,11 @@ jos ne eroavat, se on bugi. Päivitetty 14.6.2026, vastaa generointiputkea
 
 > **Kaikki aito taivutus sisään, produktiivinen liimaus ulos.**
 
-Scrabble "runnoo suomea" perusmuotosäännöillä; tämän pelin pointti on sallia
-taivutusmuodot. Mekaniikka palkitsee mahdollisimman monen nopan käytön
-(sanapisteet − käyttämättömät), joten taivutusten salliminen *tukee* ydintä.
+Myös kilpa-Scrabble (suomi) sallii taivutusmuodot — ero ei ole *perusmuoto vs
+taivutus* vaan **tuomarin tyyppi**: Scrabblessa kelpoisuus on käsin kuratoitu sanalista,
+tässä pelissä se on **generaattori** (FST tuottaa lemman koko paradigman build-aikana).
+Mekaniikka palkitsee mahdollisimman monen nopan käytön (sanapisteet − käyttämättömät),
+joten systemaattinen taivutuksen salliminen *tukee* ydintä.
 
 ## Putki
 
