@@ -15,6 +15,7 @@ import {
   BINGO_BONUS,
   premiumAt,
   premiumKindAt,
+  type PremiumKind,
 } from "../domain/premium";
 import { rollDice } from "../domain/roll";
 import { createRng, randomSeed } from "../domain/rng";
@@ -143,6 +144,13 @@ function savePremiumMode(on: boolean): void {
 }
 let premiumMode = loadPremiumMode();
 
+// Otteluissa pistemoodi LUKITAAN haastelinkin mukaiseksi (reilu vertailu: molemmat
+// pelaavat samat heitot SAMOILLA pistesäännöillä). Oma ⚙️-asetus (premiumMode) on
+// vapaapelin oletus eikä vaikuta käynnissä olevaan otteluun. Vapaapelissä = oma asetus.
+function activePremium(): boolean {
+  return match ? match.premium : premiumMode;
+}
+
 /** Vastustajan tulokset (haasteessa toinen osapuoli). */
 interface Opp {
   name: string;
@@ -151,6 +159,7 @@ interface Opp {
 interface Match {
   base: string; // perussiemen; kierroksen i siemen = roundSeed(base, i)
   rounds: number; // N kierrosta
+  premium: boolean; // ottelun lukittu pistemoodi (haastelinkistä); ei muutu kesken ottelun
   current: number; // 0-pohjainen nykyinen kierros
   myScores: number[]; // omat kierrospisteet
   myName: string;
@@ -218,21 +227,28 @@ interface Suggestions {
 }
 let endSuggestions: Suggestions | null = null;
 
-// --- Ennätykset (localStorage): top-10 tulosta + kunkin ruudukko ---
-const RECORDS_KEY = "itu:records:v1";
+// --- Ennätykset (localStorage): top-10 tulosta PER pistemoodi + kunkin ruudukko ---
+// v2: erilliset listat Itu- ja Scrabble-moodille (premiumin kertoimet+bingo tekevät
+// pisteistä eri mittakaavan → yhdistetty lista oli epävertailukelpoinen). v1 (yhdistetty)
+// hylätään tietoisesti — vanha avain jää storageen lukematta.
+const RECORDS_KEY = "itu:records:v2";
 const MAX_RECORDS = 10;
+
+type RecordMode = "itu" | "scrabble";
 
 interface ScoreRecord {
   total: number;
   wordPoints: number;
   date: number; // Date.now()
   seed: string;
+  mode: RecordMode; // millä pistemoodilla tulos pelattiin (oma top-10 per moodi)
   words: string[]; // muodostetut kelvolliset sanat
   placed: { cell: string; face: Face; letter: Face }[]; // ruudukko (asetetut nopat)
 }
 
 let showRecords = false;
-let lastRecordRank = 0; // tämän pelin sija top-10:ssä (0 = ei listalle)
+let recordsTab: RecordMode = "itu"; // 🏆-näkymän aktiivinen pistemoodi-välilehti
+let lastRecordRank = 0; // tämän pelin sija OMAN moodinsa top-10:ssä (0 = ei listalle)
 let currentRecord: ScoreRecord | null = null; // tämän pelin merkintä (★-korostus)
 
 function loadRecords(): ScoreRecord[] {
@@ -306,11 +322,13 @@ function recordResult(v: Validation): void {
   lastRecordRank = 0;
   currentRecord = null;
   if (!endBreakdown || endBreakdown.total <= 0) return;
+  const mode: RecordMode = activePremium() ? "scrabble" : "itu";
   const rec: ScoreRecord = {
     total: endBreakdown.total,
     wordPoints: endBreakdown.wordPoints,
     date: Date.now(),
     seed,
+    mode,
     words: v.words.filter((w) => w.valid).map((w) => w.text),
     placed: tiles
       .filter((t) => t.cell)
@@ -319,13 +337,21 @@ function recordResult(v: Validation): void {
   const recs = loadRecords();
   recs.push(rec);
   recs.sort((a, b) => b.total - a.total || a.date - b.date); // korkein ensin, tasapeli vanhin ensin
-  const trimmed = recs.slice(0, MAX_RECORDS);
-  const idx = trimmed.indexOf(rec);
-  if (idx >= 0) {
-    lastRecordRank = idx + 1;
-    currentRecord = rec;
+  // Trimmaus PER moodi: kummallekin oma top-10. Kuljetetaan järjestyksessä ja pidetään
+  // kustakin moodista enintään MAX_RECORDS → toinen moodi ei syrjäytä toista listalta.
+  const kept: ScoreRecord[] = [];
+  const counts: Record<RecordMode, number> = { itu: 0, scrabble: 0 };
+  for (const r of recs) {
+    const m = r.mode ?? "itu";
+    if (counts[m] < MAX_RECORDS) {
+      counts[m]++;
+      kept.push(r);
+    }
   }
-  saveRecords(trimmed);
+  // Sija lasketaan oman moodin listalla (ei yhdistetyllä).
+  lastRecordRank = kept.filter((r) => (r.mode ?? "itu") === mode).indexOf(rec) + 1;
+  if (lastRecordRank > 0) currentRecord = rec;
+  saveRecords(kept);
 }
 
 /** Mitä kirjaimista olisi voinut tehdä: ratkaisija + jämäkirjainten korostus. */
@@ -527,16 +553,16 @@ function validate(): Validation {
     // Premium-moodissa kukin sana saa omat kirjain-/sanakertoimensa (Scrabblen ristipisteytys).
     if (valid) {
       const vals = w.keys.map((k) => faceValue(cells.get(k)!.face));
-      const prem = premiumMode ? w.keys.map((k) => premiumAt(k)) : null;
+      const prem = activePremium() ? w.keys.map((k) => premiumAt(k)) : null;
       wordPoints += scoreWord(vals, prem);
       for (const k of w.keys) productiveCells.add(k);
     }
   }
 
   // Premium-moodi: ristikon on katettava keskiruutu (★); bingo = kaikki nopat käytetty.
-  const anchored = !premiumMode || cells.has(CENTER);
+  const anchored = !activePremium() || cells.has(CENTER);
   const bingo =
-    premiumMode && anchored && productiveCells.size === tiles.length ? BINGO_BONUS : 0;
+    activePremium() && anchored && productiveCells.size === tiles.length ? BINGO_BONUS : 0;
 
   // Sakko: telineessä olevat JA laudalle asetetut jotka eivät ole missään
   // kelvollisessa sanassa (esim. kelvottoman "rut":n r ja u). Jokeri = 0 → ei sakkoa.
@@ -592,7 +618,7 @@ function render(): void {
   const v = validate();
   const anyPlaced = tiles.some((t) => t.cell); // ankkuri-varoitus vasta kun jotain on laudalla
   const matchTag = match
-    ? `<span class="sm-match-tag">🎯 Kierros ${match.current + 1}/${match.rounds}</span>`
+    ? `<span class="sm-match-tag">🎯 Kierros ${match.current + 1}/${match.rounds}${match.premium ? " · 🟦 Scrabble" : ""}</span>`
     : "";
   // Nappipalkki kolmeen ryhmään: toiminnot (muuttavat pelitilaa) | näkymät (avaavat
   // paneelin) | tila (vain luku). Erotin näkyy vain kun toiminnot-ryhmässä on nappeja.
@@ -632,11 +658,12 @@ function render(): void {
           roundOver ? "Kierros päättyi" : `Pisteet: <b>${v.total}</b>`
         }${v.invalidCount ? ` · ${v.invalidCount} kelvotonta` : ""}${
           !v.connected ? " · ristikko ei yhtenäinen" : ""
-        }${premiumMode && !roundOver && anyPlaced && !v.anchored ? ' · aloita <span class="sm-star">★</span>-ruudusta' : ""}${
+        }${activePremium() && !roundOver && anyPlaced && !v.anchored ? ' · aloita <span class="sm-star">★</span>-ruudusta' : ""}${
           v.bingo ? " · ⚡ bingo!" : ""
         }</span>
       </div>
     </div>
+    ${activePremium() && !roundOver ? premLegendHtml(true) : ""}
     ${roundOver ? resultHtml() : ""}
     ${roundOver && match ? matchNavHtml() : ""}
     ${boardHtml(v)}
@@ -731,6 +758,31 @@ function renderRules(): void {
   }
 }
 
+// Premium-ruutujen suomenkieliset lyhenteet (K = kirjain, S = sana; ×2/×3 = kerroin).
+// Korvaavat aiemmat englannin DL/TL/DW/TW-koodit, jotta selite avautuu suomeksi.
+const PREM_FI: Record<PremiumKind, string> = { DL: "K×2", TL: "K×3", DW: "S×2", TW: "S×3" };
+const PREM_TITLE: Record<PremiumKind, string> = {
+  DL: "Kirjain ×2",
+  TL: "Kirjain ×3",
+  DW: "Sana ×2",
+  TW: "Sana ×3",
+};
+
+/** Premium-kertoimien legenda (väri → merkitys). Jaettu Asetusten ja pelinäytön kesken. */
+function premLegendHtml(game = false): string {
+  const order: PremiumKind[] = ["DL", "TL", "DW", "TW"];
+  const chips = order
+    .map(
+      (k) =>
+        `<span class="sm-prem-chip sm-prem sm-prem-${k.toLowerCase()}" title="${PREM_TITLE[k]}">${PREM_FI[k]}</span>`,
+    )
+    .join("");
+  return `<div class="sm-prem-legend${game ? " sm-prem-legend-game" : ""}" aria-label="Pistemoodin kertoimet">
+    ${chips}
+    <span class="sm-prem-chip"><span class="sm-star">★</span> aloitus</span>
+  </div>`;
+}
+
 /** ⚙️ Asetukset — Scrabble-pistemoodi + aikabonus (molemmat paikallisia pistesääntöjä). */
 function renderSettings(): void {
   root.innerHTML = `
@@ -757,13 +809,8 @@ function renderSettings(): void {
           ajastin säilyvät. Pois päältä peli on perinteinen Itu.</small>
         </span>
       </label>
-      <div class="sm-prem-legend">
-        <span class="sm-prem-chip sm-prem sm-prem-dl">DL · kirjain ×2</span>
-        <span class="sm-prem-chip sm-prem sm-prem-tl">TL · kirjain ×3</span>
-        <span class="sm-prem-chip sm-prem sm-prem-dw">DW · sana ×2</span>
-        <span class="sm-prem-chip sm-prem sm-prem-tw">TW · sana ×3</span>
-        <span class="sm-prem-chip"><span class="sm-star">★</span> aloitusruutu</span>
-      </div>
+      ${premLegendHtml()}
+      <p class="sm-ch-note sm-prem-key">K = kirjain, S = sana · ×2 ja ×3 ovat kertoimia. Sama selite näkyy laudan yllä Scrabble-moodissa.</p>
     </div>
   `;
   root.querySelector<HTMLButtonElement>("#sm-settings-close")!.onclick = () => {
@@ -922,23 +969,37 @@ function renderChecker(): void {
   };
 }
 
-/** 🏆-näkymä: top-10 tulokset, kukin oma ruudukko + sanat. */
+/** 🏆-näkymä: top-10 tulokset per pistemoodi (välilehdet Itu / Scrabble). */
 function renderRecords(): void {
-  const recs = loadRecords();
+  const all = loadRecords();
+  const recs = all.filter((r) => (r.mode ?? "itu") === recordsTab);
+  const tab = (key: RecordMode, label: string) =>
+    `<button class="sm-tab${key === recordsTab ? " sm-tab-active" : ""}" data-rectab="${key}">${label}</button>`;
+  const empty =
+    recordsTab === "scrabble"
+      ? "Ei vielä Scrabble-moodin ennätyksiä — pelaa kierros Scrabble-pistemoodilla ja lukitse tulos!"
+      : "Ei vielä Itu-ennätyksiä — pelaa kierros ja lukitse tulos!";
   const list = recs.length
     ? recs.map((r, i) => recordHtml(r, i + 1)).join("")
-    : `<p class="sm-words pending">Ei vielä ennätyksiä — pelaa kierros ja lukitse tulos!</p>`;
+    : `<p class="sm-words pending">${empty}</p>`;
   root.innerHTML = `
     <div class="sm-bar">
       <button id="sm-records-close">← Takaisin peliin</button>
       <h2 class="sm-records-title">🏆 Ennätykset</h2>
     </div>
+    <div class="sm-tabs">${tab("itu", "Itu")}${tab("scrabble", "🟦 Scrabble")}</div>
     <div class="sm-records">${list}</div>
   `;
   root.querySelector<HTMLButtonElement>("#sm-records-close")!.onclick = () => {
     showRecords = false;
     render();
   };
+  for (const b of root.querySelectorAll<HTMLElement>("[data-rectab]")) {
+    b.addEventListener("click", () => {
+      recordsTab = b.dataset.rectab as RecordMode;
+      renderRecords();
+    });
+  }
 }
 
 function recordHtml(r: ScoreRecord, rank: number): string {
@@ -1022,14 +1083,14 @@ function boardHtml(v: Validation): string {
       // Irrallinen saareke: korostetaan MISSÄ ristikko on poikki (eri kuin sm-invalid = "ei sana").
       const islandCls = v.islandCells.has(key) ? " sm-island" : "";
       // Premium-moodi: ruudun pohjaväri (laji) + keskiruudun ★ (näkyy vain tyhjänä).
-      const premKind = premiumMode ? premiumKindAt(key) : null;
+      const premKind = activePremium() ? premiumKindAt(key) : null;
       const premCls = premKind ? ` sm-prem sm-prem-${premKind.toLowerCase()}` : "";
       const isCaret = !roundOver && caret !== null && caret.row === r && caret.col === c;
       const caretCls = isCaret ? " sm-caret" : "";
       // Kursorinuoli piirretään myös asetetun nopan PÄÄLLE, jotta sanan päällä näkee missä mennään.
       const caretMark = isCaret ? `<span class="sm-caret-arrow">${caret!.dir === "H" ? "→" : "↓"}</span>` : "";
       const starMark =
-        premiumMode && key === CENTER ? `<span class="sm-center-star">★</span>` : "";
+        activePremium() && key === CENTER ? `<span class="sm-center-star">★</span>` : "";
       const inner = tile ? `${tileHtml(tile)}${caretMark}` : `${starMark}${caretMark}`;
       html += `<div class="sm-cell${cls}${islandCls}${premCls}${caretCls}" data-cell="${key}">${inner}</div>`;
     }
@@ -1358,8 +1419,8 @@ function roundSeed(base: string, i: number): string {
   return `${base}.${i + 1}`;
 }
 
-function startMatch(rounds: number, base: string, opp?: Opp): void {
-  match = { base, rounds, current: 0, myScores: [], myName, ...(opp ? { opp } : {}) };
+function startMatch(rounds: number, base: string, premium: boolean, opp?: Opp): void {
+  match = { base, rounds, premium, current: 0, myScores: [], myName, ...(opp ? { opp } : {}) };
   showChallenge = false;
   showMatchSummary = false;
   if (!opp) location.hash = ""; // haastaja aloittaa puhtaalta; vastaajan #c=… säilyy URL:ssa
@@ -1387,6 +1448,7 @@ interface ChallengePayload {
   v: number;
   b: string; // perussiemen
   n: number; // kierrokset
+  m?: 0 | 1; // pistemoodi: 1 = Scrabble (premium), 0/puuttuu = perinteinen Itu
   a: { name: string; s: number[]; t: number }; // haastaja
   r?: { name: string; s: number[]; t: number }; // vastaaja (paluulinkissä)
 }
@@ -1418,6 +1480,7 @@ function myChallengeLink(): string {
     v: 1,
     b: m.base,
     n: m.rounds,
+    m: m.premium ? 1 : 0,
     a: { name: m.myName, s: m.myScores, t: sum(m.myScores) },
   });
 }
@@ -1427,6 +1490,7 @@ function myResultLink(): string {
     v: 1,
     b: m.base,
     n: m.rounds,
+    m: m.premium ? 1 : 0,
     a: { name: m.opp!.name, s: m.opp!.scores, t: sum(m.opp!.scores) },
     r: { name: m.myName, s: m.myScores, t: sum(m.myScores) },
   });
@@ -1446,6 +1510,7 @@ function handleIncoming(p: ChallengePayload): void {
     match = {
       base: p.b,
       rounds: p.n,
+      premium: p.m === 1,
       current: p.n,
       myScores: p.a.s,
       myName: p.a.name,
@@ -1455,7 +1520,7 @@ function handleIncoming(p: ChallengePayload): void {
     showMatchSummary = true;
     render();
   } else {
-    startMatch(p.n, p.b, { name: p.a.name, scores: p.a.s });
+    startMatch(p.n, p.b, p.m === 1, { name: p.a.name, scores: p.a.s });
   }
 }
 
@@ -1474,7 +1539,7 @@ function challengeHtml(): string {
       </section>
       <section>
         <h4>Aloita haaste</h4>
-        <p class="sm-ch-note">Pelaat valitun määrän kierroksia, sitten lähetät tuloslinkin kaverille. Hän pelaa samat heitot — näette kumpi voitti.</p>
+        <p class="sm-ch-note">Pelaat valitun määrän kierroksia, sitten lähetät tuloslinkin kaverille. Hän pelaa samat heitot ${premiumMode ? "<b>Scrabble-pistemoodilla</b>" : "perinteisellä Itu-pisteytyksellä"} — näette kumpi voitti.${premiumMode ? "" : " (Vaihda pistemoodi ⚙️ Asetuksista ennen aloitusta.)"}</p>
         <div class="sm-ch-row sm-ch-wrap">${rounds}</div>
       </section>
       <section>
@@ -1548,7 +1613,7 @@ function renderMatchSummary(): void {
   root.innerHTML = `
     <div class="sm-bar">
       <button id="sm-ms-new" class="sm-primary">Uusi peli</button>
-      <h2 class="sm-records-title">🎯 Ottelun tulos <small>(${m.rounds === 1 ? "1 kierros" : m.rounds + " kierrosta"})</small></h2>
+      <h2 class="sm-records-title">🎯 Ottelun tulos <small>(${m.rounds === 1 ? "1 kierros" : m.rounds + " kierrosta"}${m.premium ? " · 🟦 Scrabble" : ""})</small></h2>
     </div>
     <div class="sm-result sm-match-result">
       ${banner}
@@ -1640,6 +1705,8 @@ function wireEvents(): void {
   };
   root.querySelector<HTMLButtonElement>("#sm-lock")?.addEventListener("click", endRound);
   root.querySelector<HTMLButtonElement>("#sm-records")?.addEventListener("click", () => {
+    // Avaa oletuksena juuri pelatun (tai aktiivisen) moodin välilehti.
+    recordsTab = currentRecord ? currentRecord.mode : activePremium() ? "scrabble" : "itu";
     showRecords = true;
     render();
   });
@@ -1669,7 +1736,9 @@ function wireEvents(): void {
     saveName((e.target as HTMLInputElement).value.trim());
   });
   for (const b of root.querySelectorAll<HTMLElement>(".sm-ch-rounds")) {
-    b.addEventListener("click", () => startMatch(Number(b.dataset.rounds), randomSeed()));
+    b.addEventListener("click", () =>
+      startMatch(Number(b.dataset.rounds), randomSeed(), premiumMode),
+    );
   }
   root.querySelector<HTMLButtonElement>("#sm-ch-open")?.addEventListener("click", () => {
     const raw = root.querySelector<HTMLInputElement>("#sm-ch-input")?.value ?? "";

@@ -442,6 +442,9 @@ button.sm-primary { background: var(--gold); border-color: var(--gold); color: #
 .sm-setting-text b { color: var(--gold); }
 .sm-setting-text small { display: block; color: var(--muted); margin-top: 0.25rem; line-height: 1.45; }
 .sm-prem-legend { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
+/* Pelinäytön legendapalkki (laudan yllä Scrabble-moodissa): tiiviit marginaalit. */
+.sm-prem-legend-game { margin: -0.25rem 0 0.6rem; }
+.sm-prem-key { margin-top: 0.5rem; }
 .sm-prem-chip {
   font-size: 0.8rem;
   padding: 0.2rem 0.5rem;
