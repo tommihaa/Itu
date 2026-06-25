@@ -41,6 +41,16 @@ Abl, All, Abe × (Sg, Pl). Lisäksi **monikon instruktiivi** (Pl+Ins: *jaloin, k
   *kaunein* → **kaunein puuttuu**. (Säännöllisemmät nopein/suurin/pienin ovat mukana.)
   Ei tagikorjattavissa; vaatisi omorfin korjauksen. Sääntöesimerkit välttävät kaunein.
 
+- **Ei-leksikalisoidut tekijännimet (-ja/-jä):** omorfin "fin"-malli **ei tue tuottavaa
+  tekijännimijohdosta** — `Der/ja` palauttaa tyhjän kaikilla tagiformaateilla (vrt. `Der/minen` ✓
+  ja kausatiivi-VERBI *laskettaa* ✓ ovat tuettuja). Siksi tekijännimet ovat sanastossa **vain jos
+  Kotus on ne leksikalisoinut** (*laskija, tappaja, kuljettaja, näyttäjä* — n. 367 -ttaja/-ttäjä-
+  lemmaa on jo mukana). **Ei-leksikalisoidut kausatiivin tekijännimet** (*laskettaja, juoksuttaja*)
+  jäävät pois: omorfi ei generoi eikä taivuta niitä (suljettu leksikko). Tietoinen pysyväistila —
+  ei-leksikalisoitu kausatiivin tekijännimi on **produktiivinen johdos, ei taivutus** → kuuluu
+  ITU.md:n "produktiivinen liimaus ulos" -linjalle. Empiirisesti probattu 25.6.2026; lisääminen olisi
+  vaatinut FST:n ohittavan käsintaivuttimen (rikkoisi "analyysi samasta FST:stä" -invariantin).
+
 ## "Kuolleet" tagit (pyydetään, mutta tuottavat tyhjää nykymallilla — vaarattomia)
 
 Eivät lisää mitään, mutta eivät myöskään haittaa (dokumentoitu ettei jää epäselväksi):
