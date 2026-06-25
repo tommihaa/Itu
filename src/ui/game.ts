@@ -97,6 +97,7 @@ let showSettings = false; // ⚙️ Asetukset-paneeli (toistaiseksi: Scrabble-pi
 let lemmas: LemmaLookup | null = null;
 let lemmasLoading = false;
 let endWords: string[] = []; // kierroksen kelvolliset sanat (loppunäytön perusmuodot)
+let endWordScores: number[] = []; // ^samassa järjestyksessä: kunkin sanan pisteet (kertoimineen)
 let checkerRefresh: (() => void) | null = null; // tarkistimen tuloksen päivitys ilman renderiä
 let jokerPicker: number | null = null; // avoinna olevan jokerin dieIndex (kirjainvalitsin)
 let showChallenge = false; // offline-haastemodaali (aloita haaste / vastaa)
@@ -243,6 +244,7 @@ interface ScoreRecord {
   seed: string;
   mode: RecordMode; // millä pistemoodilla tulos pelattiin (oma top-10 per moodi)
   words: string[]; // muodostetut kelvolliset sanat
+  wordScores?: number[]; // ^samassa järjestyksessä: kunkin sanan pisteet (vanhoilta tietueilta puuttuu)
   placed: { cell: string; face: Face; letter: Face }[]; // ruudukko (asetetut nopat)
 }
 
@@ -311,7 +313,9 @@ function endRound(): void {
   });
   computeSuggestions();
   recordResult(v);
-  endWords = v.words.filter((w) => w.valid).map((w) => w.text);
+  const validWords = v.words.filter((w) => w.valid);
+  endWords = validWords.map((w) => w.text);
+  endWordScores = validWords.map((w) => w.points);
   ensureLemmas(); // analyysit loppunäyttöön + ratkaisijan ehdotuksiin (lazy)
   if (match) match.myScores[match.current] = endBreakdown.total;
   render();
@@ -330,6 +334,7 @@ function recordResult(v: Validation): void {
     seed,
     mode,
     words: v.words.filter((w) => w.valid).map((w) => w.text),
+    wordScores: v.words.filter((w) => w.valid).map((w) => w.points),
     placed: tiles
       .filter((t) => t.cell)
       .map((t) => ({ cell: t.cell!, face: t.face, letter: t.letter })),
@@ -509,7 +514,8 @@ function resolveJokers(): void {
 
 interface Validation {
   cellValid: Map<string, boolean>; // ruutu → kuuluuko vain kelvollisiin sanoihin
-  words: { text: string; valid: boolean }[];
+  // points = sanan oma pistesumma (premium-moodissa kertoimineen); 0 kelvottomalle.
+  words: { text: string; valid: boolean; points: number }[];
   /** Pisteet vain KELVOLLISista sanoista (risteysnoppa kahdesti). */
   wordPoints: number;
   /** Sakotettavat tahkot: telineessä TAI laudalla mutta ei missään kelvollisessa sanassa. */
@@ -533,7 +539,7 @@ function validate(): Validation {
   const cells = buildCells();
   const words = extractWords(cells);
   const cellValid = new Map<string, boolean>();
-  const wordResults: { text: string; valid: boolean }[] = [];
+  const wordResults: { text: string; valid: boolean; points: number }[] = [];
   let wordPoints = 0;
   let invalidCount = 0;
 
@@ -543,7 +549,6 @@ function validate(): Validation {
   for (const w of words) {
     const valid = judge ? judge.judge(w.text) === "valid" : false;
     if (!valid) invalidCount++;
-    wordResults.push({ text: w.text, valid });
     for (const k of w.keys) {
       const prev = cellValid.get(k);
       cellValid.set(k, prev === undefined ? valid : prev && valid);
@@ -551,12 +556,15 @@ function validate(): Validation {
     // Vain kelvolliset sanat kerryttävät pisteitä; risteysnoppa summautuu kahdesti
     // (kuuluu kahteen sanaan), mikä syntyy luonnostaan kun molemmat sanat ovat valideja.
     // Premium-moodissa kukin sana saa omat kirjain-/sanakertoimensa (Scrabblen ristipisteytys).
+    let points = 0;
     if (valid) {
       const vals = w.keys.map((k) => faceValue(cells.get(k)!.face));
       const prem = activePremium() ? w.keys.map((k) => premiumAt(k)) : null;
-      wordPoints += scoreWord(vals, prem);
+      points = scoreWord(vals, prem);
+      wordPoints += points;
       for (const k of w.keys) productiveCells.add(k);
     }
+    wordResults.push({ text: w.text, valid, points });
   }
 
   // Premium-moodi: ristikon on katettava keskiruutu (★); bingo = kaikki nopat käytetty.
@@ -709,7 +717,7 @@ function resultHtml(): string {
   const lemmaHtml = endWords.length
     ? `<div class="sm-sug sm-lemmas">
         <h3>Sanasi ja niiden muodot</h3>
-        ${wordRows(endWords)}
+        ${wordRows(endWords, endWordScores)}
       </div>`
     : "";
 
@@ -898,17 +906,23 @@ function analysisLines(word: string): string[] {
 }
 
 /** Sanalista, jossa kunkin sanan alla sen Tarkastaja-tulkinnat (loppunäyttö +
- * ratkaisijan ehdotukset). Lataus kesken → "…". */
-function wordRows(words: string[]): string {
+ * ratkaisijan ehdotukset). Lataus kesken → "…". Valinnaiset `scores` (samassa
+ * järjestyksessä) näyttävät kunkin sanan tuottamat pisteet — käytössä omissa sanoissa,
+ * ei hypoteettisissa ehdotuksissa. */
+function wordRows(words: string[], scores?: number[]): string {
   return words
-    .map((w) => {
+    .map((w, i) => {
       const lines = analysisLines(w);
       const body = lines.length
         ? lines.map((l) => `<div class="sm-ana">${l}</div>`).join("")
         : lemmasLoading
           ? `<div class="sm-ana">…</div>`
           : "";
-      return `<div class="sm-lemma-row"><b>${escapeHtml(w)}</b>${body}</div>`;
+      const pts =
+        scores && scores[i] !== undefined
+          ? `<span class="sm-word-pts">${scores[i]} p</span>`
+          : "";
+      return `<div class="sm-lemma-row"><b>${escapeHtml(w)}</b>${pts}${body}</div>`;
     })
     .join("");
 }
@@ -1006,7 +1020,16 @@ function recordHtml(r: ScoreRecord, rank: number): string {
   const isCurrent = currentRecord !== null && r.date === currentRecord.date;
   const d = new Date(r.date);
   const date = `${d.getDate()}.${d.getMonth() + 1}.`;
-  const words = r.words.map((w) => `<span class="sm-sug-word">${w}</span>`).join(" ");
+  // Per-sana-pisteet (kertoimineen) jos tallennettu; vanhoilta tietueilta puuttuu → pelkkä sana.
+  const words = r.words
+    .map((w, i) => {
+      const p =
+        r.wordScores && r.wordScores[i] !== undefined
+          ? `<span class="sm-rec-word-pts">${r.wordScores[i]}</span>`
+          : "";
+      return `<span class="sm-sug-word">${escapeHtml(w)}${p}</span>`;
+    })
+    .join(" ");
   return `<div class="sm-record${isCurrent ? " sm-record-cur" : ""}">
     <div class="sm-record-head">
       <span class="sm-record-rank">${rank}.</span>

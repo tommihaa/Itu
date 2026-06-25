@@ -113,6 +113,15 @@ header.sm-head .sm-seed { color: var(--muted); font-size: 0.85rem; }
   color: var(--valid);
   font-size: 0.9rem;
 }
+/* Per-sana-pisteet ennätysrivin sanachipissä: pieni kultainen rusetti sanan perään. */
+.sm-rec-word-pts {
+  margin-left: 0.3rem;
+  padding-left: 0.3rem;
+  border-left: 1px solid var(--tile-edge);
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
 .sm-result h2 small { color: var(--muted); font-weight: 400; font-size: 0.85rem; }
 .sm-record-banner { margin: 0 0 0.5rem; color: var(--gold); font-weight: 700; }
 
@@ -395,6 +404,8 @@ button.sm-primary { background: var(--gold); border-color: var(--gold); color: #
 .sm-check-result .sm-lemma { font-size: 0.95rem; }
 .sm-lemma-row { line-height: 1.5; margin: 0.4rem 0; }
 .sm-lemma-row > b { color: var(--valid); }
+/* Sanan tuottamat pisteet loppunäytön "Sanasi"-listassa: kultainen, sanan vieressä. */
+.sm-word-pts { margin-left: 0.4rem; color: var(--gold); font-weight: 700; font-size: 0.85rem; }
 .sm-ana { margin: 0.1rem 0 0.1rem 1rem; color: var(--muted); font-size: 0.88rem; line-height: 1.45; }
 .sm-ana b { color: var(--text); font-weight: 600; }
 .sm-ana i { color: var(--text); }
