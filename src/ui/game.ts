@@ -39,9 +39,26 @@ const BOARD = 21;
 // suurin sallittu zoom (ettei yksi noppa zoomaa liikaa).
 const FRAME_MARGIN = 2;
 const MAX_SCALE = 2.8;
-// Aikabonus oletuksena päällä; asetukseksi (D) myöhemmin. Bonus vaatii ≥11 käytettyä
-// noppaa (scoring.ts TIME_BONUS_MIN_LETTERS_USED) → palkitsee nopean JA täyden ratkaisun.
-const TIME_BONUS_ENABLED = true;
+// Aikabonus (valinnainen asetus, oletus PÄÄLLÄ). Bonus vaatii ≥11 käytettyä noppaa
+// (scoring.ts TIME_BONUS_MIN_LETTERS_USED) → palkitsee nopean JA täyden ratkaisun.
+// Pois → ajastin näkyy yhä, mutta jäljellä oleva aika ei tuo bonuspisteitä.
+// Kuten premiumMode: paikallinen, pelkkä pistesääntö (ei muuta lautaa) → ei riko siemenjakoa.
+const TIME_BONUS_KEY = "itu:timebonus:v1";
+function loadTimeBonus(): boolean {
+  try {
+    return localStorage.getItem(TIME_BONUS_KEY) !== "0"; // oletus päällä
+  } catch {
+    return true;
+  }
+}
+function saveTimeBonus(on: boolean): void {
+  try {
+    localStorage.setItem(TIME_BONUS_KEY, on ? "1" : "0");
+  } catch {
+    /* yksityistila — valinta ei säily, peli toimii silti */
+  }
+}
+let timeBonusEnabled = loadTimeBonus();
 
 // Pelin kirjaimet (jokerin valittavissa olevat); sama joukko kuin nopissa/sanastossa.
 const PLAY_LETTERS = "adeghijklmnoprstuvyäö".split("");
@@ -273,7 +290,7 @@ function endRound(): void {
     unusedFaces: v.unusedFaces, // teline + laudalle jääneet ei-sanat (sama logiikka)
     secondsRemaining: endRemaining,
     lettersUsed: v.lettersUsed, // ≥11 → aikabonus aukeaa
-    timeBonusEnabled: TIME_BONUS_ENABLED,
+    timeBonusEnabled,
     bingo: v.bingo, // premium-moodi: kaikki nopat käytetty + keskusankkuri
   });
   computeSuggestions();
@@ -582,10 +599,13 @@ function render(): void {
   const hasActions = !match || !roundOver;
   // Elävä kirjainmittari: tekee aikabonuksen piilokynnyksen (≥11/13) näkyväksi maaliksi
   // jo pelin aikana, ei vasta tulosruudussa. "Auki" = kynnys täynnä ja bonus käytössä.
-  const bonusReady = TIME_BONUS_ENABLED && v.lettersUsed >= TIME_BONUS_MIN_LETTERS_USED;
-  const usedChip = `<span class="sm-used${bonusReady ? " sm-used-ready" : ""}" title="${
-    bonusReady ? "Aikabonus auki" : `Aikabonus aukeaa kun ≥${TIME_BONUS_MIN_LETTERS_USED} noppaa on käytetty`
-  }">Kirjaimia: <b>${v.lettersUsed}</b>/${tiles.length}${bonusReady ? " ⚡" : ""}</span>`;
+  const bonusReady = timeBonusEnabled && v.lettersUsed >= TIME_BONUS_MIN_LETTERS_USED;
+  const usedTitle = !timeBonusEnabled
+    ? "Aikabonus pois käytöstä — käytä silti mahdollisimman monta noppaa"
+    : bonusReady
+      ? "Aikabonus auki"
+      : `Aikabonus aukeaa kun ≥${TIME_BONUS_MIN_LETTERS_USED} noppaa on käytetty`;
+  const usedChip = `<span class="sm-used${bonusReady ? " sm-used-ready" : ""}" title="${usedTitle}">Kirjaimia: <b>${v.lettersUsed}</b>/${tiles.length}${bonusReady ? " ⚡" : ""}</span>`;
   root.innerHTML = `
     <header class="sm-head">
       <h1>Itu</h1>
@@ -711,7 +731,7 @@ function renderRules(): void {
   }
 }
 
-/** ⚙️ Asetukset — toistaiseksi vain Scrabble-pistemoodi (premium-ruudut + bingo + keskusankkuri). */
+/** ⚙️ Asetukset — Scrabble-pistemoodi + aikabonus (molemmat paikallisia pistesääntöjä). */
 function renderSettings(): void {
   root.innerHTML = `
     <div class="sm-bar sm-no-print">
@@ -719,6 +739,15 @@ function renderSettings(): void {
     </div>
     <div class="sm-settings">
       <h2>Asetukset</h2>
+      <label class="sm-setting-row">
+        <input type="checkbox" id="sm-set-timebonus"${timeBonusEnabled ? " checked" : ""} />
+        <span class="sm-setting-text">
+          <b>⏱️ Aikabonus</b>
+          <small>Nopeasta ja täydestä ratkaisusta lisäpisteitä: jäljellä oleva aika palkitaan,
+          kun käytät ≥${TIME_BONUS_MIN_LETTERS_USED} noppaa. Pois päältä ajastin näkyy yhä, mutta
+          aika ei tuo bonuspisteitä — voit pohtia rauhassa.</small>
+        </span>
+      </label>
       <label class="sm-setting-row">
         <input type="checkbox" id="sm-set-premium"${premiumMode ? " checked" : ""} />
         <span class="sm-setting-text">
@@ -740,6 +769,11 @@ function renderSettings(): void {
   root.querySelector<HTMLButtonElement>("#sm-settings-close")!.onclick = () => {
     showSettings = false;
     render();
+  };
+  root.querySelector<HTMLInputElement>("#sm-set-timebonus")!.onchange = (e) => {
+    timeBonusEnabled = (e.target as HTMLInputElement).checked;
+    saveTimeBonus(timeBonusEnabled);
+    renderSettings(); // päivitä valinta heti; huomioidaan kun lukitset kierroksen
   };
   root.querySelector<HTMLInputElement>("#sm-set-premium")!.onchange = (e) => {
     premiumMode = (e.target as HTMLInputElement).checked;
