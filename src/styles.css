@@ -450,6 +450,9 @@ button.sm-primary { background: var(--gold); border-color: var(--gold); color: #
   background: var(--panel);
 }
 .sm-setting-row input { margin-top: 0.25rem; }
+/* Kesto-rivi: otsikko + presetnapit allekkain (ei valintaruutua → sarakelayout). */
+.sm-setting-block { flex-direction: column; cursor: default; }
+.sm-duration-opts { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .sm-setting-text b { color: var(--gold); }
 .sm-setting-text small { display: block; color: var(--muted); margin-top: 0.25rem; line-height: 1.45; }
 .sm-prem-legend { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
@@ -533,6 +536,8 @@ input, textarea {
 
 /* Aikabonus-selite tulosnäytössä (kun bonus jäi 0:ksi aikaisen lukituksen takia). */
 .sm-bonus-note { color: var(--muted); font-size: 0.8rem; }
+/* 🏆 kesto-välilehtirivi (pistemoodirivin alla): tiiviimpi väli erottamaan riveiksi. */
+.sm-tabs-dur { margin-top: -0.5rem; }
 .sm-rack {
   display: flex;
   gap: 4px;

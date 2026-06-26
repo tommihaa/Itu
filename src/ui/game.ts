@@ -145,11 +145,47 @@ function savePremiumMode(on: boolean): void {
 }
 let premiumMode = loadPremiumMode();
 
-// Otteluissa pistemoodi LUKITAAN haastelinkin mukaiseksi (reilu vertailu: molemmat
-// pelaavat samat heitot SAMOILLA pistesäännöillä). Oma ⚙️-asetus (premiumMode) on
-// vapaapelin oletus eikä vaikuta käynnissä olevaan otteluun. Vapaapelissä = oma asetus.
+// Kierroksen kesto (valinnainen asetus, oletus 3 min = GAME_DURATION_SECONDS).
+// Presetit 1/2/3/5 min; tietokoneajan dynaaminen valinta, ei kiveen hakattu. Kuten
+// premiumMode ja aikabonus: pelkkä aikaraamikerros — EI kosketa lautaa/siementä/noppia,
+// joten saman siemenen ratkaisut pysyvät vertailukelpoisina. Aikabonus laskee yhä
+// jäljellä olevasta ajasta riippumatta kestosta (lyhyt kesto ≠ enemmän bonusta).
+const DURATION_KEY = "itu:duration:v1";
+const DURATION_OPTIONS: number[] = [60, 120, 180, 300];
+const DEFAULT_DURATION = GAME_DURATION_SECONDS; // 180 s = 3 min
+/** Sallittu kesto tai oletus (saapuva haastelinkki + rikki/tuntematon storage). */
+function coerceDuration(n: unknown): number {
+  return typeof n === "number" && DURATION_OPTIONS.includes(n) ? n : DEFAULT_DURATION;
+}
+function loadDuration(): number {
+  try {
+    return coerceDuration(Number(localStorage.getItem(DURATION_KEY)));
+  } catch {
+    return DEFAULT_DURATION;
+  }
+}
+function saveDuration(s: number): void {
+  try {
+    localStorage.setItem(DURATION_KEY, String(s));
+  } catch {
+    /* yksityistila — valinta ei säily, peli toimii silti */
+  }
+}
+let gameDuration = loadDuration();
+/** Kesto-presetin lyhyt suomenkielinen otsikko (60 → "1 min", muuten "N s"). */
+function durationLabel(s: number): string {
+  return s % 60 === 0 ? `${s / 60} min` : `${s} s`;
+}
+
+// Otteluissa pistemoodi JA kesto LUKITAAN haastelinkin mukaisiksi (reilu vertailu: molemmat
+// pelaavat samat heitot SAMOILLA pistesäännöillä JA samalla aikaraamilla — estää 90 s vs
+// 5 min samalla siemenellä). Oma ⚙️-asetus on vapaapelin oletus eikä vaikuta käynnissä
+// olevaan otteluun. Vapaapelissä = oma asetus.
 function activePremium(): boolean {
   return match ? match.premium : premiumMode;
+}
+function activeDuration(): number {
+  return match ? match.duration : gameDuration;
 }
 
 /** Vastustajan tulokset (haasteessa toinen osapuoli). */
@@ -161,6 +197,7 @@ interface Match {
   base: string; // perussiemen; kierroksen i siemen = roundSeed(base, i)
   rounds: number; // N kierrosta
   premium: boolean; // ottelun lukittu pistemoodi (haastelinkistä); ei muutu kesken ottelun
+  duration: number; // ottelun lukittu kierroskesto (s, haastelinkistä); ei muutu kesken ottelun
   current: number; // 0-pohjainen nykyinen kierros
   myScores: number[]; // omat kierrospisteet
   myName: string;
@@ -228,10 +265,12 @@ interface Suggestions {
 }
 let endSuggestions: Suggestions | null = null;
 
-// --- Ennätykset (localStorage): top-10 tulosta PER pistemoodi + kunkin ruudukko ---
-// v2: erilliset listat Itu- ja Scrabble-moodille (premiumin kertoimet+bingo tekevät
-// pisteistä eri mittakaavan → yhdistetty lista oli epävertailukelpoinen). v1 (yhdistetty)
-// hylätään tietoisesti — vanha avain jää storageen lukematta.
+// --- Ennätykset (localStorage): top-10 tulosta PER (pistemoodi × kesto) + kunkin ruudukko ---
+// v2: erilliset listat Itu- ja Scrabble-moodille (premiumin kertoimet+bingo tekevät pisteistä
+// eri mittakaavan). Lisäksi kategorisoidaan KESTON mukaan: enemmän aikaa → enemmän/pidempiä
+// sanoja → eri pistemittakaava, joten kullakin (moodi × kesto) on oma top-10. Sama vertailtavuus-
+// periaate kuin moodilla, ulotettuna kestoon. Vanhat v2-tietueet ilman `duration`-kenttää
+// kohdellaan oletuskestoisina (DEFAULT_DURATION) → pysyvät valideina (ei avaimen bumppausta).
 const RECORDS_KEY = "itu:records:v2";
 const MAX_RECORDS = 10;
 
@@ -242,15 +281,22 @@ interface ScoreRecord {
   wordPoints: number;
   date: number; // Date.now()
   seed: string;
-  mode: RecordMode; // millä pistemoodilla tulos pelattiin (oma top-10 per moodi)
+  mode: RecordMode; // millä pistemoodilla tulos pelattiin (oma top-10 per moodi × kesto)
+  duration?: number; // kierroskesto sekunteina (vanhoilta tietueilta puuttuu → DEFAULT_DURATION)
   words: string[]; // muodostetut kelvolliset sanat
   wordScores?: number[]; // ^samassa järjestyksessä: kunkin sanan pisteet (vanhoilta tietueilta puuttuu)
   placed: { cell: string; face: Face; letter: Face }[]; // ruudukko (asetetut nopat)
 }
 
+/** Tietueen kategoria-avain: pistemoodi + kesto (oma top-10 per yhdistelmä). */
+function recordCategory(r: ScoreRecord): string {
+  return `${r.mode ?? "itu"}:${r.duration ?? DEFAULT_DURATION}`;
+}
+
 let showRecords = false;
 let recordsTab: RecordMode = "itu"; // 🏆-näkymän aktiivinen pistemoodi-välilehti
-let lastRecordRank = 0; // tämän pelin sija OMAN moodinsa top-10:ssä (0 = ei listalle)
+let recordsDurationTab = DEFAULT_DURATION; // 🏆-näkymän aktiivinen kesto-välilehti (s)
+let lastRecordRank = 0; // tämän pelin sija OMAN (moodi × kesto) -listansa top-10:ssä (0 = ei listalle)
 let currentRecord: ScoreRecord | null = null; // tämän pelin merkintä (★-korostus)
 
 function loadRecords(): ScoreRecord[] {
@@ -280,7 +326,7 @@ function fmtTime(s: number): string {
 }
 
 function startRound(): void {
-  roundEndsAt = Date.now() + GAME_DURATION_SECONDS * 1000;
+  roundEndsAt = Date.now() + activeDuration() * 1000;
   roundOver = false;
   endBreakdown = null;
   if (timerHandle) clearInterval(timerHandle);
@@ -333,6 +379,7 @@ function recordResult(v: Validation): void {
     date: Date.now(),
     seed,
     mode,
+    duration: activeDuration(), // kategorisointi: oma top-10 per (moodi × kesto)
     words: v.words.filter((w) => w.valid).map((w) => w.text),
     wordScores: v.words.filter((w) => w.valid).map((w) => w.points),
     placed: tiles
@@ -342,19 +389,22 @@ function recordResult(v: Validation): void {
   const recs = loadRecords();
   recs.push(rec);
   recs.sort((a, b) => b.total - a.total || a.date - b.date); // korkein ensin, tasapeli vanhin ensin
-  // Trimmaus PER moodi: kummallekin oma top-10. Kuljetetaan järjestyksessä ja pidetään
-  // kustakin moodista enintään MAX_RECORDS → toinen moodi ei syrjäytä toista listalta.
+  // Trimmaus PER kategoria (moodi × kesto): kullakin yhdistelmällä oma top-10. Kuljetetaan
+  // järjestyksessä ja pidetään kustakin kategoriasta enintään MAX_RECORDS → mikään kategoria
+  // ei syrjäytä toista listalta.
   const kept: ScoreRecord[] = [];
-  const counts: Record<RecordMode, number> = { itu: 0, scrabble: 0 };
+  const counts = new Map<string, number>();
   for (const r of recs) {
-    const m = r.mode ?? "itu";
-    if (counts[m] < MAX_RECORDS) {
-      counts[m]++;
+    const cat = recordCategory(r);
+    const n = counts.get(cat) ?? 0;
+    if (n < MAX_RECORDS) {
+      counts.set(cat, n + 1);
       kept.push(r);
     }
   }
-  // Sija lasketaan oman moodin listalla (ei yhdistetyllä).
-  lastRecordRank = kept.filter((r) => (r.mode ?? "itu") === mode).indexOf(rec) + 1;
+  // Sija lasketaan oman kategorian (moodi × kesto) listalla.
+  const cat = recordCategory(rec);
+  lastRecordRank = kept.filter((r) => recordCategory(r) === cat).indexOf(rec) + 1;
   if (lastRecordRank > 0) currentRecord = rec;
   saveRecords(kept);
 }
@@ -626,7 +676,7 @@ function render(): void {
   const v = validate();
   const anyPlaced = tiles.some((t) => t.cell); // ankkuri-varoitus vasta kun jotain on laudalla
   const matchTag = match
-    ? `<span class="sm-match-tag">🎯 Kierros ${match.current + 1}/${match.rounds}${match.premium ? " · 🟦 Scrabble" : ""}</span>`
+    ? `<span class="sm-match-tag">🎯 Kierros ${match.current + 1}/${match.rounds} · ⏳ ${durationLabel(match.duration)}${match.premium ? " · 🟦 Scrabble" : ""}</span>`
     : "";
   // Nappipalkki kolmeen ryhmään: toiminnot (muuttavat pelitilaa) | näkymät (avaavat
   // paneelin) | tila (vain luku). Erotin näkyy vain kun toiminnot-ryhmässä on nappeja.
@@ -799,6 +849,21 @@ function renderSettings(): void {
     </div>
     <div class="sm-settings">
       <h2>Asetukset</h2>
+      <div class="sm-setting-row sm-setting-block">
+        <span class="sm-setting-text">
+          <b>⏳ Kierroksen kesto</b>
+          <small>Kuinka kauan aikaa per heitto. Oletus 3 min. Aikabonus lasketaan jäljellä
+          olevasta ajasta riippumatta kestosta, joten lyhyt kesto ei tuo enempää bonusta.
+          Haasteessa kesto lukitaan linkkiin, jotta molemmat pelaavat saman ajan.
+          <b>Kullakin kestolla on oma ennätyslistansa</b> (sama aika kaikille = reilu vertailu).</small>
+        </span>
+        <div class="sm-duration-opts" role="group" aria-label="Kierroksen kesto">
+          ${DURATION_OPTIONS.map(
+            (s) =>
+              `<button class="sm-tool sm-dur-opt${s === gameDuration ? " sm-tool-active" : ""}" data-dur="${s}" aria-pressed="${s === gameDuration}">${durationLabel(s)}</button>`,
+          ).join("")}
+        </div>
+      </div>
       <label class="sm-setting-row">
         <input type="checkbox" id="sm-set-timebonus"${timeBonusEnabled ? " checked" : ""} />
         <span class="sm-setting-text">
@@ -825,6 +890,13 @@ function renderSettings(): void {
     showSettings = false;
     render();
   };
+  for (const b of root.querySelectorAll<HTMLElement>("[data-dur]")) {
+    b.addEventListener("click", () => {
+      gameDuration = coerceDuration(Number(b.dataset.dur));
+      saveDuration(gameDuration);
+      renderSettings(); // päivitä valinta heti; huomioidaan seuraavan kierroksen alkaessa
+    });
+  }
   root.querySelector<HTMLInputElement>("#sm-set-timebonus")!.onchange = (e) => {
     timeBonusEnabled = (e.target as HTMLInputElement).checked;
     saveTimeBonus(timeBonusEnabled);
@@ -983,16 +1055,19 @@ function renderChecker(): void {
   };
 }
 
-/** 🏆-näkymä: top-10 tulokset per pistemoodi (välilehdet Itu / Scrabble). */
+/** 🏆-näkymä: top-10 tulokset per (pistemoodi × kesto). Kaksi välilehtiriviä:
+ * pistemoodi (Itu / Scrabble) ja kesto (1/2/3/5 min). Lista suodattuu molemmilla. */
 function renderRecords(): void {
   const all = loadRecords();
-  const recs = all.filter((r) => (r.mode ?? "itu") === recordsTab);
-  const tab = (key: RecordMode, label: string) =>
+  const recs = all.filter(
+    (r) => (r.mode ?? "itu") === recordsTab && (r.duration ?? DEFAULT_DURATION) === recordsDurationTab,
+  );
+  const modeTab = (key: RecordMode, label: string) =>
     `<button class="sm-tab${key === recordsTab ? " sm-tab-active" : ""}" data-rectab="${key}">${label}</button>`;
-  const empty =
-    recordsTab === "scrabble"
-      ? "Ei vielä Scrabble-moodin ennätyksiä — pelaa kierros Scrabble-pistemoodilla ja lukitse tulos!"
-      : "Ei vielä Itu-ennätyksiä — pelaa kierros ja lukitse tulos!";
+  const durTab = (s: number) =>
+    `<button class="sm-tab${s === recordsDurationTab ? " sm-tab-active" : ""}" data-recdur="${s}">${durationLabel(s)}</button>`;
+  const modeName = recordsTab === "scrabble" ? "Scrabble-moodin " : "Itu-";
+  const empty = `Ei vielä ${modeName}ennätyksiä kestolla ${durationLabel(recordsDurationTab)} — pelaa kierros tällä asetuksella ja lukitse tulos!`;
   const list = recs.length
     ? recs.map((r, i) => recordHtml(r, i + 1)).join("")
     : `<p class="sm-words pending">${empty}</p>`;
@@ -1001,7 +1076,8 @@ function renderRecords(): void {
       <button id="sm-records-close">← Takaisin peliin</button>
       <h2 class="sm-records-title">🏆 Ennätykset</h2>
     </div>
-    <div class="sm-tabs">${tab("itu", "Itu")}${tab("scrabble", "🟦 Scrabble")}</div>
+    <div class="sm-tabs">${modeTab("itu", "Itu")}${modeTab("scrabble", "🟦 Scrabble")}</div>
+    <div class="sm-tabs sm-tabs-dur">${DURATION_OPTIONS.map(durTab).join("")}</div>
     <div class="sm-records">${list}</div>
   `;
   root.querySelector<HTMLButtonElement>("#sm-records-close")!.onclick = () => {
@@ -1011,6 +1087,12 @@ function renderRecords(): void {
   for (const b of root.querySelectorAll<HTMLElement>("[data-rectab]")) {
     b.addEventListener("click", () => {
       recordsTab = b.dataset.rectab as RecordMode;
+      renderRecords();
+    });
+  }
+  for (const b of root.querySelectorAll<HTMLElement>("[data-recdur]")) {
+    b.addEventListener("click", () => {
+      recordsDurationTab = Number(b.dataset.recdur);
       renderRecords();
     });
   }
@@ -1442,8 +1524,8 @@ function roundSeed(base: string, i: number): string {
   return `${base}.${i + 1}`;
 }
 
-function startMatch(rounds: number, base: string, premium: boolean, opp?: Opp): void {
-  match = { base, rounds, premium, current: 0, myScores: [], myName, ...(opp ? { opp } : {}) };
+function startMatch(rounds: number, base: string, premium: boolean, duration: number, opp?: Opp): void {
+  match = { base, rounds, premium, duration, current: 0, myScores: [], myName, ...(opp ? { opp } : {}) };
   showChallenge = false;
   showMatchSummary = false;
   if (!opp) location.hash = ""; // haastaja aloittaa puhtaalta; vastaajan #c=… säilyy URL:ssa
@@ -1472,6 +1554,7 @@ interface ChallengePayload {
   b: string; // perussiemen
   n: number; // kierrokset
   m?: 0 | 1; // pistemoodi: 1 = Scrabble (premium), 0/puuttuu = perinteinen Itu
+  d?: number; // kierroskesto sekunteina (puuttuu/tuntematon → oletus 3 min)
   a: { name: string; s: number[]; t: number }; // haastaja
   r?: { name: string; s: number[]; t: number }; // vastaaja (paluulinkissä)
 }
@@ -1504,6 +1587,7 @@ function myChallengeLink(): string {
     b: m.base,
     n: m.rounds,
     m: m.premium ? 1 : 0,
+    d: m.duration,
     a: { name: m.myName, s: m.myScores, t: sum(m.myScores) },
   });
 }
@@ -1514,6 +1598,7 @@ function myResultLink(): string {
     b: m.base,
     n: m.rounds,
     m: m.premium ? 1 : 0,
+    d: m.duration,
     a: { name: m.opp!.name, s: m.opp!.scores, t: sum(m.opp!.scores) },
     r: { name: m.myName, s: m.myScores, t: sum(m.myScores) },
   });
@@ -1534,6 +1619,7 @@ function handleIncoming(p: ChallengePayload): void {
       base: p.b,
       rounds: p.n,
       premium: p.m === 1,
+      duration: coerceDuration(p.d),
       current: p.n,
       myScores: p.a.s,
       myName: p.a.name,
@@ -1543,7 +1629,7 @@ function handleIncoming(p: ChallengePayload): void {
     showMatchSummary = true;
     render();
   } else {
-    startMatch(p.n, p.b, p.m === 1, { name: p.a.name, scores: p.a.s });
+    startMatch(p.n, p.b, p.m === 1, coerceDuration(p.d), { name: p.a.name, scores: p.a.s });
   }
 }
 
@@ -1636,7 +1722,7 @@ function renderMatchSummary(): void {
   root.innerHTML = `
     <div class="sm-bar">
       <button id="sm-ms-new" class="sm-primary">Uusi peli</button>
-      <h2 class="sm-records-title">🎯 Ottelun tulos <small>(${m.rounds === 1 ? "1 kierros" : m.rounds + " kierrosta"}${m.premium ? " · 🟦 Scrabble" : ""})</small></h2>
+      <h2 class="sm-records-title">🎯 Ottelun tulos <small>(${m.rounds === 1 ? "1 kierros" : m.rounds + " kierrosta"} · ⏳ ${durationLabel(m.duration)}${m.premium ? " · 🟦 Scrabble" : ""})</small></h2>
     </div>
     <div class="sm-result sm-match-result">
       ${banner}
@@ -1728,8 +1814,9 @@ function wireEvents(): void {
   };
   root.querySelector<HTMLButtonElement>("#sm-lock")?.addEventListener("click", endRound);
   root.querySelector<HTMLButtonElement>("#sm-records")?.addEventListener("click", () => {
-    // Avaa oletuksena juuri pelatun (tai aktiivisen) moodin välilehti.
+    // Avaa oletuksena juuri pelatun (tai aktiivisen) moodin + keston välilehdet.
     recordsTab = currentRecord ? currentRecord.mode : activePremium() ? "scrabble" : "itu";
+    recordsDurationTab = currentRecord?.duration ?? activeDuration();
     showRecords = true;
     render();
   });
@@ -1760,7 +1847,7 @@ function wireEvents(): void {
   });
   for (const b of root.querySelectorAll<HTMLElement>(".sm-ch-rounds")) {
     b.addEventListener("click", () =>
-      startMatch(Number(b.dataset.rounds), randomSeed(), premiumMode),
+      startMatch(Number(b.dataset.rounds), randomSeed(), premiumMode, gameDuration),
     );
   }
   root.querySelector<HTMLButtonElement>("#sm-ch-open")?.addEventListener("click", () => {
