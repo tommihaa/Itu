@@ -703,13 +703,16 @@ function render(): void {
         ${roundOver ? "" : `<button id="sm-lock">🔒 Lukitse</button>`}
       </div>
       ${hasActions ? `<span class="sm-bar-sep" aria-hidden="true"></span>` : ""}
-      <div class="sm-bar-group sm-bar-views">
-        <button id="sm-rules">📜 Säännöt</button>
-        <button id="sm-checker">🔎 Sanapoliisi</button>
-        <button id="sm-records">🏆 Ennätykset</button>
-        <button id="sm-settings">⚙️ Asetukset</button>
-        ${match ? "" : `<button id="sm-challenge">🎯 Haaste</button>`}
-      </div>
+      <details class="sm-menu">
+        <summary class="sm-menu-btn" title="Lisää" aria-label="Lisää valikko">☰ Lisää</summary>
+        <div class="sm-bar-group sm-bar-views">
+          <button id="sm-rules">📜 Säännöt</button>
+          <button id="sm-checker">🔎 Sanapoliisi</button>
+          <button id="sm-records">🏆 Ennätykset</button>
+          <button id="sm-settings">⚙️ Asetukset</button>
+          ${match ? "" : `<button id="sm-challenge">🎯 Haaste</button>`}
+        </div>
+      </details>
       <div class="sm-bar-status">
         ${roundOver ? "" : `<span class="sm-timer" id="sm-timer">${fmtTime(secondsLeft())}</span>`}
         ${roundOver ? "" : usedChip}

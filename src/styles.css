@@ -58,6 +58,21 @@ header.sm-head .sm-seed { color: var(--muted); font-size: 0.85rem; }
 .sm-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
 /* Ryhmät: toiminnot | näkymät | tila. Sisäinen väli tiivis, ryhmien väli erottimella. */
 .sm-bar-group { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+/* "Lisää"-valikko (natiivi <details>, ei JS-tilaa): työpöydällä näkymänapit näkyvät rivissä
+   ja ☰ on piilossa; puhelimessa napit menevät ☰:n taakse (ks. mobiili-media query). */
+.sm-menu { display: flex; position: relative; }
+.sm-menu > summary {
+  display: none;
+  list-style: none;
+  cursor: pointer;
+  background: var(--tile);
+  color: var(--text);
+  border: 1px solid var(--tile-edge);
+  border-radius: 0.4rem;
+  padding: 0.45rem 0.8rem;
+}
+.sm-menu > summary::-webkit-details-marker { display: none; }
+.sm-menu > .sm-bar-views { display: flex; }
 .sm-bar-status { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-left: auto; }
 .sm-bar-sep { width: 1px; align-self: stretch; min-height: 1.6rem; background: var(--line); margin: 0 0.35rem; }
 .sm-bar .sm-score { font-size: 1.05rem; color: var(--gold); }
@@ -699,4 +714,24 @@ input, textarea {
   .sm-game .sm-rack,
   .sm-game .sm-words,
   .sm-game .sm-kbd-hint { flex: none; }
+  /* Puhelin: näkymänapit ☰-valikon taakse → palkki lyhenee (vain 🎲 🔒 ☰ + tila). */
+  .sm-menu > summary { display: inline-flex; align-items: center; }
+  .sm-menu:not([open]) > .sm-bar-views { display: none; }
+  .sm-menu[open] > .sm-bar-views {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 20;
+    min-width: 12rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 0.4rem;
+    padding: 0.4rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  }
+  /* Ohjeteksti ei enää työnny laudan päälle (negatiivinen ylämarginaali pois). */
+  .sm-game .sm-kbd-hint { margin-top: 0; }
 }
