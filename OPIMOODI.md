@@ -1,8 +1,22 @@
 # Itu — Opi-moodi (adaptiivinen kielioppihaaste)
 
-> Designdokumentti. Status: **suunniteltu, ei toteutettu.** Tämä on backlog-design,
-> ei lukittu spec — toteutusvaiheessa varmistetaan tagimerkkijonot koodista.
+> Designdokumentti. Status: **VAIHE 1 TOTEUTETTU 28.6.2026** (ei vielä deployattu).
+> Toteutus: puhdas domain `src/domain/learn.ts` (+ `test/learn.test.ts`, 18 testiä) +
+> UI-kytkennät `src/ui/game.ts` (⚙️-toggle `itu:learnmode:v1`, teemasirut laudan yllä,
+> reaaliaikainen osuma, loppunäyttö + viikkopalkki, edistymä `itu:learn:v1`) + CSS.
+> Todennettu livenä (port 5177): tavoitesirut, "nimet" → nominatiivi+monikko syttyivät,
+> loppunäyttö 2/3, edistymä tallentui, 71/71 testiä, tsc puhdas. **Vaihe 2 (kaveri-moodi)
+> yhä auki** (oma suunnitelma, ks. Vaiheistus). Tagimerkkijonot varmistettu morph.ts:stä.
 > Syntyi vertailevasta sanapelitutkimuksesta (ks. lopun liite).
+>
+> **Toteutuksen poikkeamat designista:** (1) toggle ja edistymä eri avaimissa
+> (`itu:learnmode:v1` vs `itu:learn:v1`) — design ehdotti samaa avainta molemmille,
+> mikä ei toimi (boolean vs objekti). (2) `lastHit` on ISO-päivästringi ("YYYY-MM-DD",
+> ""=ei koskaan), ei ms-aikaleima → ISO-stringit vertautuvat kronologisesti suoraan
+> (`weeklyProgress` käyttää `>=`). (3) Lisätty `recordThemeSession` (puhdas edistymäpäivitys)
+> jota design ei nimennyt mutta edellytti. (4) `seen` = montako kertaa tarjottu tavoitteena,
+> `hits` = montako kertaa osuttu KUN tarjottu (→ osumasuhde ≤ 1); ei-tarjotut osumat
+> päivittävät vain `lastHit`:n (viikkokoontiin).
 
 ## Konteksti
 

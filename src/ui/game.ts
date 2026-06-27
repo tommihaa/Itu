@@ -32,6 +32,16 @@ import type { WordJudge } from "../dict/judge";
 import { loadJudge } from "../dict/load";
 import { loadLemmas, type LemmaLookup } from "../dict/lemmas";
 import { describeCode } from "../dict/morph";
+import {
+  THEME_BY_ID,
+  detectThemes,
+  pickDailyTargets,
+  weeklyProgress,
+  recordThemeSession,
+  dateKey,
+  weekStartKey,
+  type LearnProgress,
+} from "../domain/learn";
 import { renderWordsContent, renderControlsContent } from "../rules/view";
 
 // Iso sisäinen lauta, jotta tila ei lopu kesken; näkymä kehystää käytetyn alueen.
@@ -144,6 +154,48 @@ function savePremiumMode(on: boolean): void {
   }
 }
 let premiumMode = loadPremiumMode();
+
+// Opi-moodi (valinnainen, oletus POIS): adaptiivinen kielioppi-PÄIVÄHAASTE. Kerää laudan
+// valmiiden sanojen kielioppiteemoja (sija/luku/aikamuoto/…) muutaman päivätavoitteen verran.
+// PEHMEÄ: ei estä pelaamista, EI muuta pisteytystä/sanastoa/lautaa → ei riko siemenjakoa eikä
+// ennätyksiä. Domain src/domain/learn.ts (puhdas); tämä on vain näkymä + tallennus.
+const LEARN_MODE_KEY = "itu:learnmode:v1"; // päällä/pois
+const LEARN_PROGRESS_KEY = "itu:learn:v1"; // LearnProgress (seen/hits/lastHit per teema)
+function loadLearnMode(): boolean {
+  try {
+    return localStorage.getItem(LEARN_MODE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+function saveLearnMode(on: boolean): void {
+  try {
+    localStorage.setItem(LEARN_MODE_KEY, on ? "1" : "0");
+  } catch {
+    /* yksityistila — valinta ei säily, peli toimii silti */
+  }
+}
+function loadLearnProgress(): LearnProgress {
+  try {
+    const raw = localStorage.getItem(LEARN_PROGRESS_KEY);
+    const o = raw ? JSON.parse(raw) : {};
+    return o && typeof o === "object" ? (o as LearnProgress) : {};
+  } catch {
+    return {};
+  }
+}
+function saveLearnProgress(p: LearnProgress): void {
+  try {
+    localStorage.setItem(LEARN_PROGRESS_KEY, JSON.stringify(p));
+  } catch {
+    /* tila täynnä tai yksityistila — peli toimii silti */
+  }
+}
+let learnMode = loadLearnMode();
+let learnProgress = loadLearnProgress();
+// Viimeisen lukitun kierroksen Opi-tulos (loppunäyttöä varten).
+let lastLearnTargets: string[] = [];
+let lastLearnAchieved: Set<string> = new Set();
 
 // Kierroksen kesto (valinnainen asetus, oletus 3 min = GAME_DURATION_SECONDS).
 // Presetit 1/2/3/5 min; tietokoneajan dynaaminen valinta, ei kiveen hakattu. Kuten
@@ -293,9 +345,22 @@ function recordCategory(r: ScoreRecord): string {
   return `${r.mode ?? "itu"}:${r.duration ?? DEFAULT_DURATION}`;
 }
 
+/** Sanapistettä minuutissa = tuottavuus, vertailukelpoinen kestojen yli. Tarkoituksella
+ * VAIN sanapisteet (ei aikabonusta/sakkoja) → ei kasaannu aikabonuksen kanssa (aikabonus
+ * palkitsee jo nopeudesta). Vanha tietue ilman kestoa → DEFAULT_DURATION. */
+function wordRate(r: ScoreRecord): number {
+  const mins = (r.duration ?? DEFAULT_DURATION) / 60;
+  return mins > 0 ? r.wordPoints / mins : 0;
+}
+function fmtRate(rate: number): string {
+  return (Math.round(rate * 10) / 10).toFixed(1);
+}
+
+type RecordsSort = "total" | "rate";
 let showRecords = false;
 let recordsTab: RecordMode = "itu"; // 🏆-näkymän aktiivinen pistemoodi-välilehti
 let recordsDurationTab = DEFAULT_DURATION; // 🏆-näkymän aktiivinen kesto-välilehti (s)
+let recordsSort: RecordsSort = "total"; // 🏆 lajittelu: kokonaispisteet (per kesto) vs sanapistettä/min (kestot yhdessä)
 let lastRecordRank = 0; // tämän pelin sija OMAN (moodi × kesto) -listansa top-10:ssä (0 = ei listalle)
 let currentRecord: ScoreRecord | null = null; // tämän pelin merkintä (★-korostus)
 
@@ -362,6 +427,18 @@ function endRound(): void {
   const validWords = v.words.filter((w) => w.valid);
   endWords = validWords.map((w) => w.text);
   endWordScores = validWords.map((w) => w.points);
+  // Opi-moodi: kerää kierroksen kielioppiteemat ja päivitä adaptiivinen edistymä. Vaatii
+  // analyysipaketin (esiladattu kun moodi on päällä); jos ei vielä ladannut, ohitetaan.
+  if (learnMode && lemmas) {
+    const lk = lemmas;
+    lastLearnAchieved = detectThemes(endWords, (w) => lk.lookup(w));
+    lastLearnTargets = pickDailyTargets(learnProgress, dateKey());
+    learnProgress = recordThemeSession(learnProgress, lastLearnTargets, lastLearnAchieved, dateKey());
+    saveLearnProgress(learnProgress);
+  } else {
+    lastLearnTargets = [];
+    lastLearnAchieved = new Set();
+  }
   ensureLemmas(); // analyysit loppunäyttöön + ratkaisijan ehdotuksiin (lazy)
   if (match) match.myScores[match.current] = endBreakdown.total;
   render();
@@ -478,6 +555,8 @@ export function mountGame(el: HTMLElement): void {
   }).requestIdleCallback;
   if (ric) ric(startDictLoad, { timeout: 1500 });
   else setTimeout(startDictLoad, 200);
+  // Opi-moodi päällä → esilataa analyysipaketti, jotta teemasirut syttyvät reaaliajassa.
+  if (learnMode) ensureLemmas();
 }
 
 function newRoll(s: string): void {
@@ -674,6 +753,16 @@ function render(): void {
     return;
   }
   const v = validate();
+  // Opi-moodi: mitkä päivän teemat laudan kelvolliset sanat jo toteuttavat (reaaliaikainen
+  // sirujen syttyminen). Vaatii ladatun analyysipaketin; muuten tyhjä → sirut näkyvät himmeinä.
+  let learnHits: Set<string> = new Set();
+  if (learnMode && lemmas) {
+    const lk = lemmas;
+    learnHits = detectThemes(
+      v.words.filter((w) => w.valid).map((w) => w.text),
+      (w) => lk.lookup(w),
+    );
+  }
   const anyPlaced = tiles.some((t) => t.cell); // ankkuri-varoitus vasta kun jotain on laudalla
   const matchTag = match
     ? `<span class="sm-match-tag">🎯 Kierros ${match.current + 1}/${match.rounds} · ⏳ ${durationLabel(match.duration)}${match.premium ? " · 🟦 Scrabble" : ""}</span>`
@@ -727,6 +816,7 @@ function render(): void {
       </div>
     </div>
     ${activePremium() && !roundOver ? premLegendHtml(true) : ""}
+    ${learnMode && !roundOver ? learnTargetsHtml(learnHits) : ""}
     ${roundOver ? resultHtml() : ""}
     ${roundOver && match ? matchNavHtml() : ""}
     ${boardHtml(v)}
@@ -777,9 +867,12 @@ function resultHtml(): string {
       </div>`
     : "";
 
+  const learnHtml = learnMode ? learnResultHtml() : "";
+
   return `<div class="sm-result">
     <h2>Lopputulos <small>(${reason})</small></h2>
     ${banner}
+    ${learnHtml}
     <table class="sm-breakdown">
       <tr><td>Sanapisteet</td><td>${b.wordPoints}</td></tr>
       <tr><td>Käyttämättä jääneet nopat</td><td>−${b.unusedPenalty}</td></tr>
@@ -847,6 +940,61 @@ function premLegendHtml(game = false): string {
   </div>`;
 }
 
+/** Opi-moodin päivän teemasirut laudan yllä; osutut korostuvat reaaliajassa. */
+function learnTargetsHtml(hits: Set<string>): string {
+  const targets = pickDailyTargets(learnProgress, dateKey());
+  const chips = targets
+    .map((id) => {
+      const t = THEME_BY_ID[id];
+      if (!t) return "";
+      const hit = hits.has(id);
+      return `<span class="sm-learn-chip${hit ? " sm-learn-hit" : ""}" title="${escapeHtml(t.describe)}">${hit ? "✓ " : ""}${escapeHtml(t.label)}</span>`;
+    })
+    .join("");
+  const wk = weeklyProgress(learnProgress, weekStartKey());
+  const loading = !lemmas ? ' <span class="sm-learn-loading">(ladataan…)</span>' : "";
+  return `<div class="sm-learn-bar" aria-label="Opi-moodin päivän teemat">
+    <span class="sm-learn-title">📚 Tänään:</span>
+    ${chips}${loading}
+    <span class="sm-learn-week" title="Viikon eri teemat">${wk.covered}/${wk.goal}${wk.covered >= wk.goal ? " ✓" : ""} viikossa</span>
+  </div>`;
+}
+
+/** Loppunäytön Opi-yhteenveto: päivän tavoitteet (osuit/et) + bonusosumat + viikkopalkki. */
+function learnResultHtml(): string {
+  if (!lastLearnTargets.length) {
+    return `<div class="sm-learn-result">
+      <h3>📚 Opi-moodi</h3>
+      <p class="sm-words pending">Teemat tallentuvat kun sanasto on latautunut — pelaa uusi kierros.</p>
+    </div>`;
+  }
+  const chips = lastLearnTargets
+    .map((id) => {
+      const t = THEME_BY_ID[id];
+      const hit = lastLearnAchieved.has(id);
+      return `<span class="sm-learn-chip${hit ? " sm-learn-hit" : ""}" title="${escapeHtml(t?.describe ?? "")}">${hit ? "✓ " : "○ "}${escapeHtml(t?.label ?? id)}</span>`;
+    })
+    .join("");
+  const extra = [...lastLearnAchieved].filter((id) => !lastLearnTargets.includes(id));
+  const extraChips = extra.length
+    ? `<p class="sm-learn-extra">Lisäksi osuit: ${extra
+        .map((id) => escapeHtml(THEME_BY_ID[id]?.label ?? id))
+        .join(", ")}</p>`
+    : "";
+  const wk = weeklyProgress(learnProgress, weekStartKey());
+  const pct = wk.goal > 0 ? Math.min(100, Math.round((wk.covered / wk.goal) * 100)) : 0;
+  const hitCount = lastLearnTargets.filter((id) => lastLearnAchieved.has(id)).length;
+  return `<div class="sm-learn-result">
+    <h3>📚 Päivän teemat ${hitCount}/${lastLearnTargets.length}</h3>
+    <div class="sm-learn-chips">${chips}</div>
+    ${extraChips}
+    <div class="sm-learn-weekbar" title="Viikon eri teemat">
+      <div class="sm-learn-weekfill" style="width:${pct}%"></div>
+      <span class="sm-learn-weeklabel">Viikko: ${wk.covered}/${wk.goal}${wk.covered >= wk.goal ? " ✓" : ""} teemaa</span>
+    </div>
+  </div>`;
+}
+
 /** ⚙️ Asetukset — Scrabble-pistemoodi + aikabonus (molemmat paikallisia pistesääntöjä). */
 function renderSettings(): void {
   root.innerHTML = `
@@ -877,6 +1025,16 @@ function renderSettings(): void {
           <small>Nopeasta ja täydestä ratkaisusta lisäpisteitä: jäljellä oleva aika palkitaan,
           kun käytät ≥${TIME_BONUS_MIN_LETTERS_USED} noppaa. Pois päältä ajastin näkyy yhä, mutta
           aika ei tuo bonuspisteitä — voit pohtia rauhassa.</small>
+        </span>
+      </label>
+      <label class="sm-setting-row">
+        <input type="checkbox" id="sm-set-learn"${learnMode ? " checked" : ""} />
+        <span class="sm-setting-text">
+          <b>📚 Opi-moodi</b>
+          <small>Päivän kielioppihaaste: muutama teema (sija, monikko, aikamuoto, …)
+          kerättäväksi laudan sanoilla. Pehmeä — ei estä pelaamista eikä muuta pisteitä,
+          vaan näyttää mitä muotoja muodostit. Adaptiivinen: tarjoaa sitä mitä harjoittelet
+          vähiten, viikkotavoite löysänä koontina. Edistymä tallentuu vain tälle laitteelle.</small>
         </span>
       </label>
       <label class="sm-setting-row">
@@ -912,6 +1070,12 @@ function renderSettings(): void {
     premiumMode = (e.target as HTMLInputElement).checked;
     savePremiumMode(premiumMode);
     renderSettings(); // päivitä valinta heti; lauta päivittyy kun palataan peliin
+  };
+  root.querySelector<HTMLInputElement>("#sm-set-learn")!.onchange = (e) => {
+    learnMode = (e.target as HTMLInputElement).checked;
+    saveLearnMode(learnMode);
+    if (learnMode) ensureLemmas(); // teemasirut tarvitsevat analyysipaketin
+    renderSettings(); // päivitä valinta heti; teemasirut näkyvät kun palataan peliin
   };
 }
 
@@ -1065,17 +1229,28 @@ function renderChecker(): void {
  * pistemoodi (Itu / Scrabble) ja kesto (1/2/3/5 min). Lista suodattuu molemmilla. */
 function renderRecords(): void {
   const all = loadRecords();
-  const recs = all.filter(
-    (r) => (r.mode ?? "itu") === recordsTab && (r.duration ?? DEFAULT_DURATION) === recordsDurationTab,
-  );
+  const modeRecs = all.filter((r) => (r.mode ?? "itu") === recordsTab);
+  const rateMode = recordsSort === "rate";
+  // Tuottavuuslajittelu yhdistää kestot (vertailu kestojen yli); kokonaispistelajittelu
+  // suodattaa valitulla kestolla (sama aika kaikille = reilu vertailu).
+  const recs = rateMode
+    ? modeRecs
+        .slice()
+        .sort((a, b) => wordRate(b) - wordRate(a) || b.wordPoints - a.wordPoints || a.date - b.date)
+        .slice(0, MAX_RECORDS)
+    : modeRecs.filter((r) => (r.duration ?? DEFAULT_DURATION) === recordsDurationTab);
   const modeTab = (key: RecordMode, label: string) =>
     `<button class="sm-tab${key === recordsTab ? " sm-tab-active" : ""}" data-rectab="${key}">${label}</button>`;
   const durTab = (s: number) =>
     `<button class="sm-tab${s === recordsDurationTab ? " sm-tab-active" : ""}" data-recdur="${s}">${durationLabel(s)}</button>`;
+  const sortTab = (key: RecordsSort, label: string) =>
+    `<button class="sm-tab${key === recordsSort ? " sm-tab-active" : ""}" data-recsort="${key}">${label}</button>`;
   const modeName = recordsTab === "scrabble" ? "Scrabble-moodin " : "Itu-";
-  const empty = `Ei vielä ${modeName}ennätyksiä kestolla ${durationLabel(recordsDurationTab)} — pelaa kierros tällä asetuksella ja lukitse tulos!`;
+  const empty = rateMode
+    ? `Ei vielä ${modeName}ennätyksiä — pelaa kierros ja lukitse tulos! Pistettä/min vertaa eri kestoja keskenään.`
+    : `Ei vielä ${modeName}ennätyksiä kestolla ${durationLabel(recordsDurationTab)} — pelaa kierros tällä asetuksella ja lukitse tulos!`;
   const list = recs.length
-    ? recs.map((r, i) => recordHtml(r, i + 1)).join("")
+    ? recs.map((r, i) => recordHtml(r, i + 1, rateMode)).join("")
     : `<p class="sm-words pending">${empty}</p>`;
   root.innerHTML = `
     <div class="sm-bar">
@@ -1083,7 +1258,9 @@ function renderRecords(): void {
       <h2 class="sm-records-title">🏆 Ennätykset</h2>
     </div>
     <div class="sm-tabs">${modeTab("itu", "Itu")}${modeTab("scrabble", "🟦 Scrabble")}</div>
-    <div class="sm-tabs sm-tabs-dur">${DURATION_OPTIONS.map(durTab).join("")}</div>
+    <div class="sm-tabs sm-tabs-sort">${sortTab("total", "Kokonaispisteet")}${sortTab("rate", "⚡ Pistettä/min")}</div>
+    ${rateMode ? "" : `<div class="sm-tabs sm-tabs-dur">${DURATION_OPTIONS.map(durTab).join("")}</div>`}
+    ${rateMode ? `<p class="sm-ch-note sm-rate-note">Sanapisteet jaettuna kierroksen kestolla (min). Aikabonus ja sakot eivät vaikuta → vertaa puhdasta tuottavuutta eri kestojen yli.</p>` : ""}
     <div class="sm-records">${list}</div>
   `;
   root.querySelector<HTMLButtonElement>("#sm-records-close")!.onclick = () => {
@@ -1096,6 +1273,12 @@ function renderRecords(): void {
       renderRecords();
     });
   }
+  for (const b of root.querySelectorAll<HTMLElement>("[data-recsort]")) {
+    b.addEventListener("click", () => {
+      recordsSort = b.dataset.recsort as RecordsSort;
+      renderRecords();
+    });
+  }
   for (const b of root.querySelectorAll<HTMLElement>("[data-recdur]")) {
     b.addEventListener("click", () => {
       recordsDurationTab = Number(b.dataset.recdur);
@@ -1104,10 +1287,15 @@ function renderRecords(): void {
   }
 }
 
-function recordHtml(r: ScoreRecord, rank: number): string {
+function recordHtml(r: ScoreRecord, rank: number, showRate = false): string {
   const isCurrent = currentRecord !== null && r.date === currentRecord.date;
   const d = new Date(r.date);
   const date = `${d.getDate()}.${d.getMonth() + 1}.`;
+  // Rate-tilassa pääluku on sanapistettä/min + alarivi (sanapisteet · kesto, koska kestot
+  // sekaisin); kokonaispistetilassa pelkkä kokonaispistemäärä (kesto on välilehdessä).
+  const primary = showRate
+    ? `<span class="sm-record-total">${fmtRate(wordRate(r))} p/min</span><span class="sm-record-rate-sub">${r.wordPoints} sanap · ${durationLabel(r.duration ?? DEFAULT_DURATION)}</span>`
+    : `<span class="sm-record-total">${r.total} p</span>`;
   // Per-sana-pisteet (kertoimineen) jos tallennettu; vanhoilta tietueilta puuttuu → pelkkä sana.
   const words = r.words
     .map((w, i) => {
@@ -1121,7 +1309,7 @@ function recordHtml(r: ScoreRecord, rank: number): string {
   return `<div class="sm-record${isCurrent ? " sm-record-cur" : ""}">
     <div class="sm-record-head">
       <span class="sm-record-rank">${rank}.</span>
-      <span class="sm-record-total">${r.total} p</span>
+      ${primary}
       ${isCurrent ? '<span class="sm-record-star">★</span>' : ""}
       <span class="sm-record-meta">${date} · siemen ${r.seed}</span>
     </div>

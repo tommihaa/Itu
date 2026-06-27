@@ -501,6 +501,69 @@ button.sm-primary { background: var(--gold); border-color: var(--gold); color: #
   color: var(--text);
 }
 
+/* --- Opi-moodi (kielioppi-päivähaaste) --- */
+/* Päivän teemasirut laudan yllä; osuneet hohtavat kullalla. Kerma-/kulta-paletti
+   tarkoituksella eri kuin vihreä "sana kelpaa" -signaali. */
+.sm-learn-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: -0.25rem 0 0.6rem;
+}
+.sm-learn-title { color: var(--gold); font-size: 0.85rem; font-weight: 600; }
+.sm-learn-loading { color: var(--muted); font-size: 0.8rem; }
+.sm-learn-week { margin-left: auto; color: var(--muted); font-size: 0.8rem; }
+.sm-learn-chip {
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.3rem;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.sm-learn-chip.sm-learn-hit {
+  color: #1a160d;
+  background: var(--gold);
+  border-color: var(--gold);
+  font-weight: 600;
+}
+/* Loppunäytön Opi-yhteenveto. */
+.sm-learn-result {
+  margin: 0.25rem 0 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--gold-dim);
+  border-radius: 0.5rem;
+  background: var(--panel);
+}
+.sm-learn-result h3 { margin: 0 0 0.5rem; color: var(--gold); font-size: 1rem; }
+.sm-learn-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.sm-learn-extra { margin: 0.5rem 0 0; color: var(--muted); font-size: 0.85rem; }
+.sm-learn-weekbar {
+  position: relative;
+  margin-top: 0.6rem;
+  height: 1.3rem;
+  border-radius: 0.3rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.sm-learn-weekfill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--valid-bg);
+  transition: width 0.3s;
+}
+.sm-learn-weeklabel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  color: var(--text);
+}
+
 /* --- Monikierroshaaste --- */
 .sm-match-tag { color: var(--gold); font-size: 0.9rem; font-weight: 600; }
 .sm-match-nav {
@@ -570,8 +633,12 @@ input, textarea {
 
 /* Aikabonus-selite tulosnäytössä (kun bonus jäi 0:ksi aikaisen lukituksen takia). */
 .sm-bonus-note { color: var(--muted); font-size: 0.8rem; }
-/* 🏆 kesto-välilehtirivi (pistemoodirivin alla): tiiviimpi väli erottamaan riveiksi. */
+/* 🏆 lajittelu- ja kesto-välilehtirivit (pistemoodirivin alla): tiiviimpi väli riveiksi. */
+.sm-tabs-sort { margin-top: -0.5rem; }
 .sm-tabs-dur { margin-top: -0.5rem; }
+/* Pistettä/min-näkymän selite + tietueen alarivi (sanapisteet · kesto). */
+.sm-rate-note { margin-top: -0.25rem; }
+.sm-record-rate-sub { color: var(--muted); font-size: 0.8rem; }
 /* Hyllyteline: lämmin tarjotin, jonka alalaidassa on etureuna (::after) jolla nopat
    "lepäävät" — tekee laatikosta telineen muodolla, ei värillä. */
 .sm-rack {

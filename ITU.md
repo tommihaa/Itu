@@ -59,6 +59,24 @@ muodostaa ("mahdollisuuksien maksimointi"). Domain: `src/domain/premium.ts` (puh
 **Ei** muuta sanaston validointia (DAWG), noppia eikä heittoa — puhdas pistemekaniikka.
 **Ei** Scrabble-suomen pelitoteutus (ei vastustajaa, ei kuratoitua sanalistaa, ei b/c/f).
 
+### Opi-moodi (asetus, oletus POIS) — adaptiivinen kielioppi-päivähaaste
+
+Valinnainen oppimiskerros: päivän muutama kielioppiteema (sija/luku/aikamuoto/vertailu/
+partisiippi) kerättäväksi laudan sanoilla. **PEHMEÄ** — ei estä pelaamista, **EI muuta
+pisteytystä, sanastoa, lautaa eikä ennätyksiä** ("ei korvaa mitään"). Vain LUKEE valmiit
+sanat ja kerää teemoja. Ei grindiä: rajattu päiväsetti + löysä viikkokoonti, ei streak-kuria.
+
+- **Teema = predikaatti FST-analyysikoodin yli** (`code` sisältää tagin, esim. `+Ine`).
+  Sijateemat johdettu `CASE_INFO`:sta (morph.ts); sama auktoritatiivinen lähde kuin
+  Sanapoliisilla → ei hallusinaatiota. Domain: `src/domain/learn.ts` (puhdas, testattu).
+- **Adaptiivinen:** päivän tavoitteet valitaan oman historian mukaan (harjoittelematon →
+  matalin osumasuhde → pisin aika osumasta), deterministinen `(edistymä, päivä)`:stä.
+- **UI:** ⚙️-kytkin (`itu:learnmode:v1`), teemasirut laudan yllä (osuneet syttyvät reaaliajassa),
+  loppunäyttö = osutut teemat + viikkopalkki, per sana selite (Sanapoliisi-tyyliin). Edistymä
+  `itu:learn:v1` (per teema: tarjottu/osuttu/viim. osumapäivä), vain tällä laitteella.
+- **Vaihe 1 (yksinpeli) toteutettu;** vaihe 2 = kaveri-moodi haastelinkillä on oma suunnitelma.
+  Täysi design: `OPIMOODI.md`.
+
 ## Nopat (LUKITTU)
 
 78 tahkoa: 37 vokaalia, 40 konsonanttia, 1 jokeri. Ei B/C/F-kirjaimia
@@ -127,7 +145,12 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
   tulee build-aikaisesta FST-generoinnista (sama lähde joka muodon hyväksyy) +
   kiinteästä, käsin todennetusta sijataulukosta (`src/dict/morph.ts`); tuntematon
   → ei näytetä mitään. Data: `public/dict/forms-fi-v1` (lazy, ks. SANASTO.md).
-- **Asetukset (⚙️):** kevyt paneeli (nappipalkki › ⚙️ Asetukset). Nyt: **Scrabble-pistemoodi**
-  (premium-ruudut + bingo + keskusankkuri, ks. Pisteytys). Tallennus localStorageen
-  (`itu:premium:v1`). Aikabonus/jokerimäärä ovat toistaiseksi moduulivakioita — siirtyvät
-  tähän paneeliin myöhemmin.
+- **Asetukset (⚙️):** kevyt paneeli (nappipalkki › ⚙️ Asetukset). Nyt: **kierroksen kesto**
+  (1/2/3/5 min, `itu:duration:v1`), **aikabonus** on/off (`itu:timebonus:v1`), **Opi-moodi**
+  (`itu:learnmode:v1`) ja **Scrabble-pistemoodi** (premium-ruudut + bingo + keskusankkuri,
+  `itu:premium:v1`). Kaikki tallennetaan localStorageen.
+- **Ennätykset (🏆):** top-10 per (pistemoodi × kesto). Lajittelu **Kokonaispisteet**
+  (valitulla kestolla, reilu sama-aika-vertailu) tai **⚡ Pistettä/min** = sanapisteet ÷ kesto,
+  joka yhdistää kestot ja vertaa puhdasta tuottavuutta. Pistettä/min käyttää **vain
+  sanapisteitä** (ei aikabonusta/sakkoja) → ei kasaannu aikabonuksen kanssa. Taaksepäin­-
+  yhteensopiva: laskettu tallennetusta `wordPoints`/`duration`-kentästä (vanha tietue → 3 min).
