@@ -58,10 +58,14 @@ header.sm-head .sm-seed { color: var(--muted); font-size: 0.85rem; }
 .sm-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
 /* Ryhmät: toiminnot | näkymät | tila. Sisäinen väli tiivis, ryhmien väli erottimella. */
 .sm-bar-group { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
-/* "Lisää"-valikko (natiivi <details>, ei JS-tilaa): työpöydällä näkymänapit näkyvät rivissä
-   ja ☰ on piilossa; puhelimessa napit menevät ☰:n taakse (ks. mobiili-media query). */
+/* "Lisää"-valikko (checkbox-hack, ei JS-tilaa): työpöydällä näkymänapit näkyvät rivissä
+   ja ☰ on piilossa; puhelimessa napit menevät ☰:n taakse (ks. mobiili-media query).
+   Miksi ei <details>: suljettu <details> piilottaa sisältönsä Chromiumissa display:flexistä
+   huolimatta, joten työpöydän "aina näkyvä" tila rikkoutui. Checkbox + label + sisarus-div
+   on tavallinen virtaus, jonka :checked ~ -valitsin paljastaa vain mobiilissa. */
 .sm-menu { display: flex; position: relative; }
-.sm-menu > summary {
+.sm-menu-cb { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; }
+.sm-menu-btn {
   display: none;
   list-style: none;
   cursor: pointer;
@@ -71,7 +75,6 @@ header.sm-head .sm-seed { color: var(--muted); font-size: 0.85rem; }
   border-radius: 0.4rem;
   padding: 0.45rem 0.8rem;
 }
-.sm-menu > summary::-webkit-details-marker { display: none; }
 .sm-menu > .sm-bar-views { display: flex; }
 .sm-bar-status { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-left: auto; }
 .sm-bar-sep { width: 1px; align-self: stretch; min-height: 1.6rem; background: var(--line); margin: 0 0.35rem; }
@@ -714,16 +717,33 @@ input, textarea {
   .sm-game .sm-rack,
   .sm-game .sm-words,
   .sm-game .sm-kbd-hint { flex: none; }
+  /* Teline puhelimessa: äänneryhmä-otsikot inline-erottimina ja LYHYINÄ (data-short)
+     — täysleveä otsikkorivi per ryhmä venytti telineen jopa 5 riville, ja pitkät sanat
+     veivät 3 riviä. Lyhyt muoto (kons. / a·o·u / e·i / ä·ö·y / ★) + pienennetyt nopat
+     mahtuvat ~2 riville myös kun kaikki 5 ryhmää näkyy. Järjestys säilyy. */
+  .sm-rack .sm-slot { width: 1.75rem; height: 1.75rem; }
+  .sm-rack-glabel {
+    flex-basis: auto;
+    align-self: center;
+    margin: 0;
+    padding-left: 0.3rem;
+    border-left: 1px solid var(--line);
+    font-size: 0;
+    line-height: 1.05;
+    white-space: nowrap;
+  }
+  .sm-rack-glabel::before { content: attr(data-short); font-size: 0.62rem; }
+  .sm-rack-glabel:first-child { border-left: none; padding-left: 0; }
   /* Puhelin: näkymänapit ☰-valikon taakse → palkki lyhenee (vain 🎲 🔒 ☰ + tila). */
-  .sm-menu > summary { display: inline-flex; align-items: center; }
-  .sm-menu:not([open]) > .sm-bar-views { display: none; }
-  .sm-menu[open] > .sm-bar-views {
+  .sm-menu-btn { display: inline-flex; align-items: center; }
+  .sm-menu > .sm-bar-views { display: none; }
+  .sm-menu-cb:checked ~ .sm-bar-views {
     display: flex;
     flex-direction: column;
     align-items: stretch;
     position: absolute;
     top: calc(100% + 4px);
-    left: 0;
+    right: 0;
     z-index: 20;
     min-width: 12rem;
     background: var(--panel);

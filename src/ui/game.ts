@@ -703,8 +703,9 @@ function render(): void {
         ${roundOver ? "" : `<button id="sm-lock">🔒 Lukitse</button>`}
       </div>
       ${hasActions ? `<span class="sm-bar-sep" aria-hidden="true"></span>` : ""}
-      <details class="sm-menu">
-        <summary class="sm-menu-btn" title="Lisää" aria-label="Lisää valikko">☰ Lisää</summary>
+      <div class="sm-menu">
+        <input type="checkbox" id="sm-menu-cb" class="sm-menu-cb" aria-hidden="true" tabindex="-1" />
+        <label for="sm-menu-cb" class="sm-menu-btn" title="Lisää" aria-label="Lisää valikko">☰ Lisää</label>
         <div class="sm-bar-group sm-bar-views">
           <button id="sm-rules">📜 Säännöt</button>
           <button id="sm-checker">🔎 Sanapoliisi</button>
@@ -712,7 +713,7 @@ function render(): void {
           <button id="sm-settings">⚙️ Asetukset</button>
           ${match ? "" : `<button id="sm-challenge">🎯 Haaste</button>`}
         </div>
-      </details>
+      </div>
       <div class="sm-bar-status">
         ${roundOver ? "" : `<span class="sm-timer" id="sm-timer">${fmtTime(secondsLeft())}</span>`}
         ${roundOver ? "" : usedChip}
@@ -1393,7 +1394,9 @@ function rackHtml(): string {
     if (grouped) {
       const g = aanneGroup(die);
       if (g !== prevGroup) {
-        parts.push(`<span class="sm-rack-glabel">${AANNE_LABELS[g]}</span>`);
+        parts.push(
+          `<span class="sm-rack-glabel" data-short="${AANNE_SHORT[g]}">${AANNE_LABELS[g]}</span>`,
+        );
         prevGroup = g;
       }
     }
@@ -1461,6 +1464,17 @@ const AANNE_LABELS: Record<number, string> = {
   2: "neutraalit (e, i)",
   3: "etuvokaalit",
   4: "jokeri",
+};
+
+// Lyhyet otsikot puhelimelle (CSS vaihtaa nämä täysien tilalle ::before-pseudolla,
+// jotta koko teline mahtuu ~2 riville). Vokaaliryhmät näytetään omilla kirjaimillaan
+// — lyhyin JA intuitiivisin muoto (a·o·u = takavokaalit). Ks. styles.css .sm-rack-glabel. */
+const AANNE_SHORT: Record<number, string> = {
+  0: "kons.",
+  1: "a·o·u",
+  2: "e·i",
+  3: "ä·ö·y",
+  4: "★",
 };
 
 /** Telineen näkymäjärjestys valitulle moodille (deterministinen, ei satunnaisuutta). */

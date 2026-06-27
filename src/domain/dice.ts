@@ -64,3 +64,10 @@ export const VOWELS: ReadonlySet<Face> = new Set([
 export function countsAsVowel(face: Face): boolean {
   return VOWELS.has(face) || face === JOKER;
 }
+
+// Jokeri lasketaan konsonantiksi konsonanttitakuussa, koska se voi toimia sellaisena
+// (sama leniency kuin vokaalitakuussa — jokeri ei ole VOWELS-joukossa, joten tämä
+// palauttaa sille true). Joustava jokeri voi siis täyttää kummankin takuun.
+export function countsAsConsonant(face: Face): boolean {
+  return !VOWELS.has(face);
+}

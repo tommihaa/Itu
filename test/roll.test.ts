@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { countsAsVowel, diceWithJokers, JOKER } from "../src/domain/dice";
-import { MIN_VOWELS, rollDice } from "../src/domain/roll";
+import { countsAsConsonant, countsAsVowel, diceWithJokers, JOKER } from "../src/domain/dice";
+import { MIN_CONSONANTS, MIN_VOWELS, rollDice } from "../src/domain/roll";
 
 describe("heitto", () => {
   it("on deterministinen: sama siemen → sama heitto", () => {
@@ -30,9 +30,17 @@ describe("heitto", () => {
       expect(faces.filter(countsAsVowel).length).toBeGreaterThanOrEqual(MIN_VOWELS);
       rerollsSeen += rerolls;
     }
-    // Takuun pitää laueta joskus, mutta harvoin (odotusarvo ~6,2 vokaalia).
+    // Takuun pitää laueta joskus, mutta harvoin. rerolls kattaa nyt sekä vokaali- että
+    // konsonanttitakuun, joten yläraja on väljempi kuin pelkällä vokaalitakuulla.
     expect(rerollsSeen).toBeGreaterThan(0);
-    expect(rerollsSeen).toBeLessThan(200);
+    expect(rerollsSeen).toBeLessThan(400);
+  });
+
+  it("täyttää konsonanttitakuun (>= 4, jokeri lasketaan) kaikilla siemenillä", () => {
+    for (let i = 0; i < 2000; i++) {
+      const { faces } = rollDice(i);
+      expect(faces.filter(countsAsConsonant).length).toBeGreaterThanOrEqual(MIN_CONSONANTS);
+    }
   });
 
   it("kunnioittaa jokerimääräasetusta", () => {
