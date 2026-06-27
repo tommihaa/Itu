@@ -183,7 +183,9 @@ button.sm-primary { background: var(--gold); border-color: var(--gold); color: #
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 1rem;
+  /* Ylimääräinen alapadding nostaa pystykeskitetyn tekstin ~1–2 riviä ylemmäs,
+     jotta laudan keskiruutu (oletuskohde) jää tekstin alle näkyviin. */
+  padding: 1rem 1rem 5rem;
   overflow-wrap: anywhere;
   pointer-events: none;
   color: var(--muted);
@@ -293,6 +295,20 @@ button.sm-primary { background: var(--gold); border-color: var(--gold); color: #
 }
 .sm-cell.sm-valid .sm-tile { border-color: var(--valid); }
 .sm-cell.sm-invalid .sm-tile { border-color: var(--invalid); }
+/* Jalometalli: nopan sävy nousee pistearvon mukaan (puu → kulta) — kaikki kirjaimet eivät
+   ole tasa-arvoisia, joten harvinainen näyttää arvokkaalta. Lämpimässä sävyavaruudessa,
+   erillään tilaväreistä (vihreä/punainen). Asetetun nopan tilareuna (valid/invalid) voittaa
+   spesifisyydellä, joten väri näkyy etenkin telineessä; numero (.sm-val) on rinnalla. */
+.sm-tile.sm-tval-1 { background: #2a2416; color: #bfa658; }
+.sm-tile.sm-tval-2 { background: #322a17; color: #cdab57; }
+.sm-tile.sm-tval-3 { background: #3b3018; color: #dcb85f; }
+.sm-tile.sm-tval-4 { background: #46371c; border-color: #9a7536; color: #ecc873; }
+.sm-tile.sm-tval-7 {
+  background: #564019;
+  border-color: #c79a3e;
+  color: #f4d98c;
+  box-shadow: inset 0 0 8px rgba(199, 154, 62, 0.25);
+}
 .sm-tile .sm-val {
   position: absolute;
   right: 2px;
@@ -538,20 +554,58 @@ input, textarea {
 .sm-bonus-note { color: var(--muted); font-size: 0.8rem; }
 /* 🏆 kesto-välilehtirivi (pistemoodirivin alla): tiiviimpi väli erottamaan riveiksi. */
 .sm-tabs-dur { margin-top: -0.5rem; }
+/* Hyllyteline: lämmin tarjotin, jonka alalaidassa on etureuna (::after) jolla nopat
+   "lepäävät" — tekee laatikosta telineen muodolla, ei värillä. */
 .sm-rack {
+  position: relative;
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
-  min-height: 2.6rem;
-  background: var(--panel);
-  border: 1px dashed var(--line);
-  border-radius: 0.4rem;
-  padding: 4px;
+  align-items: center;
+  min-height: 3.2rem;
+  background: linear-gradient(180deg, #241d12, #1b150c);
+  border: 1px solid var(--tile-edge);
+  border-radius: 0.4rem 0.4rem 0.6rem 0.6rem;
+  padding: 5px 5px 13px;
 }
-.sm-rack.sm-drop { border-color: var(--gold); }
+.sm-rack::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 8px;
+  background: #3a2f1a;
+  border-top: 1px solid #5a4d2c;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+/* Raahauksen aikana: katkoviiva + kulta = "pudota tähän". */
+.sm-rack.sm-drop { border-style: dashed; border-color: var(--gold); }
 .sm-rack .sm-slot { width: 2.1rem; height: 2.1rem; position: relative; }
-/* Ryhmittäin järjestettäessä pieni väli erottaa ryhmät (vokaalit/sointu/pisteet). */
-.sm-rack .sm-slot.sm-gap { margin-left: 0.9rem; }
+/* Äänneryhmä-otsikko: oma täysleveä rivi ennen kutakin ryhmää. */
+.sm-rack-glabel {
+  flex-basis: 100%;
+  color: var(--muted);
+  font-size: 0.72rem;
+  margin: 0.25rem 0 0.05rem;
+}
+.sm-rack-glabel:first-child { margin-top: 0; }
+/* Telineen otsikko: nimi + montako noppaa jäljellä + raahausvihje. */
+.sm-rack-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+.sm-rack-title { color: var(--text); font-weight: 600; font-size: 0.9rem; }
+.sm-rack-count {
+  color: var(--gold);
+  font-size: 0.75rem;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+}
+.sm-rack-drag { color: var(--muted); font-size: 0.75rem; margin-left: auto; }
 
 .sm-words { margin-top: 0.75rem; font-size: 0.9rem; }
 .sm-words .ok { color: var(--valid); }
@@ -629,4 +683,20 @@ input, textarea {
      frameBoard keskittää käytetyn alueen), jotta teline ja kirjaimet näkyvät ilman koko
      sivun vierittämistä. Neliö (aspect-ratio 1/1) oli liian korkea ja työnsi telineen alle. */
   .sm-viewport { height: min(44vh, 22rem); aspect-ratio: auto; }
+  /* Layout C (puhelin): pelinäkymä täyttää ruudun pystyflexinä — lauta venyy keskelle ja
+     vierittyy sisäisesti, teline + sanat jäävät aina näkyviin alalaitaan, Itu-nimi pysyy
+     ylhäällä. PC/tablet ennallaan (tämä on vain mobiili-media queryssä; .sm-game on muuten
+     pelkkä lohko). */
+  .sm-game {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 1rem);
+    height: calc(100dvh - 1rem);
+  }
+  .sm-game .sm-board-wrap { flex: 1 1 auto; min-height: 0; }
+  .sm-game .sm-viewport { height: 100%; }
+  .sm-game .sm-rack-tools,
+  .sm-game .sm-rack,
+  .sm-game .sm-words,
+  .sm-game .sm-kbd-hint { flex: none; }
 }

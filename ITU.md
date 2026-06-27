@@ -10,7 +10,7 @@ domain/ui-erotus, ei Reactia). Dev-portti 5177.
 > kirjainnoppia ja muodostaa niistä sanoja laudalle ristikkomaisesti aikarajan
 > (3 min/kierros) puitteissa; pisteet kirjaimista + aikabonus kun teline on (lähes) ratkaistu.
 > **Offline-yksinpeli** — ei verkkopalvelua, ei ääniä, ei monikielisyyttä (tietoisia
-> valintoja: pelirauhha). Sanojen kelpoisuus tarkistetaan **koko suomen sanastosta**
+> valintoja: pelirauha). Sanojen kelpoisuus tarkistetaan **koko suomen sanastosta**
 > (~2,3 M taivutusmuotoa, pakattuna DAWG-rakenteeseen selaimessa). Teknologia:
 > **Vite + TypeScript, vanilla (ei Reactia)**, tiukka domain/UI-erottelu. Sanasto
 > generoidaan GiellaLT/omorfi-morfologialla (FST) lemmalistasta. Live: tommi-itu.vercel.app.

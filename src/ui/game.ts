@@ -18,7 +18,7 @@ import {
   type PremiumKind,
 } from "../domain/premium";
 import { rollDice } from "../domain/roll";
-import { createRng, randomSeed } from "../domain/rng";
+import { randomSeed } from "../domain/rng";
 import {
   cellKey,
   parseKey,
@@ -108,7 +108,7 @@ const NAME_KEY = "itu:name";
 
 // Telineen järjestysvalinta säilyy heitosta toiseen (localStorage).
 const SORT_KEY = "itu:sort:v1";
-const SORT_KEYS = ["abc", "pts", "con", "harmony"]; // "Härö" poistettu; "vow"→"con" (Konsonantit)
+const SORT_KEYS = ["abc", "aanne"]; // "Pisteet"/"Vokaalisointu" karsittu; "Äänneryhmät" = konsonantit + vokaaliharmonia
 const DEFAULT_SORT = "abc";
 function loadSort(): string {
   try {
@@ -494,7 +494,7 @@ function newRoll(s: string): void {
   }));
   // Järjestysvalinta säilyy heitosta toiseen (oletus: Aakkoset).
   rackSort = loadSort();
-  rackOrder = computeRackOrder(rackSort, createRng(`${s}:rack`));
+  rackOrder = computeRackOrder(rackSort);
   lastRecordRank = 0;
   currentRecord = null;
   // Ei oletuskursoria: tyhjällä laudalla aloitusopaste (sm-board-hint) on ainoa CTA, eikä
@@ -691,6 +691,7 @@ function render(): void {
       : `Aikabonus aukeaa kun ≥${TIME_BONUS_MIN_LETTERS_USED} noppaa on käytetty`;
   const usedChip = `<span class="sm-used${bonusReady ? " sm-used-ready" : ""}" title="${usedTitle}">Kirjaimia: <b>${v.lettersUsed}</b>/${tiles.length}${bonusReady ? " ⚡" : ""}</span>`;
   root.innerHTML = `
+    <div class="sm-game">
     <header class="sm-head">
       <h1>Itu</h1>
       <span class="sm-seed">siemen: ${seed}</span>
@@ -731,6 +732,7 @@ function render(): void {
     ${judge ? "" : '<p class="sm-words pending">Ladataan sanastoa…</p>'}
     ${jokerPicker !== null ? jokerPickerHtml() : ""}
     ${showChallenge ? challengeHtml() : ""}
+    </div>
   `;
   wireEvents();
   frameBoard(); // automaattinen zoom/keskitys käytetyn alueen mukaan
@@ -1380,32 +1382,32 @@ function applyFrame(
 function rackHtml(): string {
   const order = rackOrder.length === tiles.length ? rackOrder : [...tiles.keys()];
   const rackDice = order.filter((die) => !tiles[die].cell);
-  // Ryhmittäin järjestettäessä (vokaalit/sointu/pisteet) pieni väli erottaa ryhmät.
-  let prevGroup: number | null = null;
-  const slots = rackDice
-    .map((die, i) => {
-      const g = rackGroupOf(die);
-      const gap = i > 0 && g !== null && g !== prevGroup ? " sm-gap" : "";
-      prevGroup = g;
-      return `<div class="sm-slot${gap}">${tileHtml(tiles[die])}</div>`;
-    })
-    .join("");
+  // Äänneryhmittäin: himmeä otsikko ennen kutakin ryhmää (konsonantit / vokaaliperheet).
+  const grouped = rackSort === "aanne";
+  let prevGroup = -1;
+  const parts: string[] = [];
+  for (const die of rackDice) {
+    if (grouped) {
+      const g = aanneGroup(die);
+      if (g !== prevGroup) {
+        parts.push(`<span class="sm-rack-glabel">${AANNE_LABELS[g]}</span>`);
+        prevGroup = g;
+      }
+    }
+    parts.push(`<div class="sm-slot">${tileHtml(tiles[die])}</div>`);
+  }
   const tools = roundOver ? "" : rackToolsHtml();
-  return `${tools}<div class="sm-rack" data-rack="1">${slots}</div>`;
+  const head = roundOver ? "" : rackHeadHtml(rackDice.length);
+  return `${tools}${head}<div class="sm-rack" data-rack="1">${parts.join("")}</div>`;
 }
 
-/** Ryhmätunniste nykyiselle järjestykselle; null = ei ryhmittelyä (ei välejä). */
-function rackGroupOf(die: number): number | null {
-  switch (rackSort) {
-    case "con":
-      return consonantGroup(die);
-    case "harmony":
-      return harmonyGroup(die);
-    case "pts":
-      return faceValue(tiles[die].face);
-    default:
-      return null; // haro, abc → yhtenäinen rivi
-  }
+/** Telineen otsikko: nimi + montako noppaa vielä telineessä + raahausvihje. */
+function rackHeadHtml(remaining: number): string {
+  return `<div class="sm-rack-head">
+    <span class="sm-rack-title">Telineesi</span>
+    <span class="sm-rack-count">${remaining} jäljellä</span>
+    <span class="sm-rack-drag">raahaa ruudukkoon</span>
+  </div>`;
 }
 
 function rackToolsHtml(): string {
@@ -1413,7 +1415,7 @@ function rackToolsHtml(): string {
     `<button class="sm-tool${key === rackSort ? " sm-tool-active" : ""}" data-sort="${key}">${label}</button>`;
   return `<div class="sm-rack-tools">
     <span class="sm-tools-label">Järjestys:</span>
-    ${b("abc", "Aakkoset")}${b("con", "Konsonantit")}${b("pts", "Pisteet")}${b("harmony", "Vokaalisointu")}
+    ${b("abc", "Aakkoset")}${b("aanne", "Äänneryhmät")}
   </div>`;
 }
 
@@ -1433,57 +1435,45 @@ function alphaKey(die: number): string {
   return letterOf(tiles[die]) ?? "￿"; // valitsematon jokeri viimeiseksi
 }
 
-/** "Konsonantit"-järjestys: konsonantit ensin (0), vokaalit sitten (1), jokeri viimeiseksi.
- * Täydentää "Vokaalisointua", joka aloittaa vokaaleista. */
-function consonantGroup(die: number): number {
+function isVowel(ch: string): boolean {
+  return BACK_VOWELS.has(ch) || NEUTRAL_VOWELS.has(ch) || FRONT_VOWELS.has(ch);
+}
+
+/** Äänneryhmä: konsonantit (0) → takavokaalit a,o,u (1) → neutraalit e,i (2)
+ * → etuvokaalit ä,ö,y (3) → valitsematon jokeri (4). Yhdistää entisen
+ * "Konsonantit"- ja "Vokaalisointu"-jaon: vokaaliperheet näkyvät erikseen, koska
+ * taka- ja etuvokaalit eivät esiinny samassa suomalaisessa sanassa (vokaalisointu). */
+function aanneGroup(die: number): number {
   const ch = letterOf(tiles[die]);
-  if (ch === null) return 2; // jokeri
-  return BACK_VOWELS.has(ch) || NEUTRAL_VOWELS.has(ch) || FRONT_VOWELS.has(ch) ? 1 : 0;
+  if (ch === null) return 4; // jokeri viimeiseksi
+  if (!isVowel(ch)) return 0; // konsonantit
+  if (BACK_VOWELS.has(ch)) return 1;
+  if (NEUTRAL_VOWELS.has(ch)) return 2;
+  return 3; // etuvokaalit
 }
 
-function harmonyGroup(die: number): number {
-  const ch = letterOf(tiles[die]);
-  if (ch === null) return 4; // jokeri
-  if (BACK_VOWELS.has(ch)) return 0; // a o u
-  if (NEUTRAL_VOWELS.has(ch)) return 1; // e i
-  if (FRONT_VOWELS.has(ch)) return 2; // ä ö y
-  return 3; // konsonantit
-}
+const AANNE_LABELS: Record<number, string> = {
+  0: "konsonantit",
+  1: "takavokaalit",
+  2: "neutraalit (e, i)",
+  3: "etuvokaalit",
+  4: "jokeri",
+};
 
-function shuffled(rand: () => number): number[] {
-  const a = [...tiles.keys()];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-/** Telineen näkymäjärjestys valitulle moodille. "Härö" käyttää annettua rng:tä
- * (heitossa siemenpohjainen → deterministinen; napista Math.random → tuore sekoitus). */
-function computeRackOrder(key: string, rand: () => number): number[] {
+/** Telineen näkymäjärjestys valitulle moodille (deterministinen, ei satunnaisuutta). */
+function computeRackOrder(key: string): number[] {
   const byAlpha = (a: number, b: number) => alphaKey(a).localeCompare(alphaKey(b), "fi");
   const order = [...tiles.keys()];
-  switch (key) {
-    case "abc":
-      return order.sort(byAlpha);
-    case "pts":
-      return order.sort(
-        (a, b) => faceValue(tiles[b].face) - faceValue(tiles[a].face) || byAlpha(a, b),
-      );
-    case "con":
-      return order.sort((a, b) => consonantGroup(a) - consonantGroup(b) || byAlpha(a, b));
-    case "harmony":
-      return order.sort((a, b) => harmonyGroup(a) - harmonyGroup(b) || byAlpha(a, b));
-    default:
-      return shuffled(rand); // haro
+  if (key === "aanne") {
+    return order.sort((a, b) => aanneGroup(a) - aanneGroup(b) || byAlpha(a, b));
   }
+  return order.sort(byAlpha); // "abc" ja tuntemattomat → aakkoset
 }
 
 function applyRackSort(key: string): void {
   rackSort = key;
   saveSort(key); // valinta säilyy seuraaviin heittoihin
-  rackOrder = computeRackOrder(key, Math.random);
+  rackOrder = computeRackOrder(key);
   render();
 }
 
@@ -1786,7 +1776,9 @@ function tileHtml(t: Tile): string {
   // Jokerille, jolla on kirjain, pieni ◇-merkki → näkee että on jokeri ja sen voi vaihtaa.
   const mark = assigned ? `<span class="sm-joker-mark">◇</span>` : "";
   const liftedCls = t.dieIndex === lifted ? " sm-lifted" : "";
-  return `<div class="sm-tile${isJoker ? " sm-joker" : ""}${liftedCls}"
+  // Jalometalli: arvoluokka väritystä varten (puu → kulta). Jokeri (arvo 0) jää neutraaliksi.
+  const valCls = isJoker ? "" : ` sm-tval-${faceValue(t.face)}`;
+  return `<div class="sm-tile${isJoker ? " sm-joker" : ""}${valCls}${liftedCls}"
     data-die="${t.dieIndex}">${glyph}${mark}<span class="sm-val">${faceValue(t.face) || ""}</span></div>`;
 }
 

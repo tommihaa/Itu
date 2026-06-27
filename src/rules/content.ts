@@ -231,4 +231,14 @@ export const CONTROLS: RuleSection[] = [
       "• ⌫ poistaa edellisen kirjaimen. Ctrl+Z kumoaa viimeisimmän. Esc peruuttaa valinnan.\n" +
       "• Enter lukitsee kierroksen.",
   },
+  {
+    heading: "Telineen järjestys: Äänneryhmät",
+    body:
+      "Teline voi järjestää nopat äänneryhmittäin: ensin konsonantit, sitten\n" +
+      "takavokaalit (a, o, u), neutraalit (e, i) ja etuvokaalit (ä, ö, y).\n" +
+      "Miksi tämä auttaa: taka- ja etuvokaalit eivät esiinny samassa\n" +
+      "suomalaisessa sanassa (vokaalisointu) — sana on joko taka- tai\n" +
+      "etuvokaalinen, ja e, i sopivat kumpaankin. Ryhmittely näyttää\n" +
+      "kerralla mitkä vokaalit sopivat yhteen.",
+  },
 ];
