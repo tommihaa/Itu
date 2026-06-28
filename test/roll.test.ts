@@ -23,20 +23,20 @@ describe("heitto", () => {
     }
   });
 
-  it("täyttää vokaalitakuun (>= 4, jokeri lasketaan) kaikilla siemenillä", () => {
+  it("täyttää vokaalitakuun (>= 5, jokeri lasketaan) kaikilla siemenillä", () => {
     let rerollsSeen = 0;
     for (let i = 0; i < 2000; i++) {
       const { faces, rerolls } = rollDice(i);
       expect(faces.filter(countsAsVowel).length).toBeGreaterThanOrEqual(MIN_VOWELS);
       rerollsSeen += rerolls;
     }
-    // Takuun pitää laueta joskus, mutta harvoin. rerolls kattaa nyt sekä vokaali- että
-    // konsonanttitakuun, joten yläraja on väljempi kuin pelkällä vokaalitakuulla.
+    // Takuun pitää laueta joskus, mutta pysyä halpana. rerolls kattaa sekä vokaali- että
+    // konsonanttitakuun (≥5 molempia) → ~0,4 rerollia/heitto, eli reilusti alle 1/heitto.
     expect(rerollsSeen).toBeGreaterThan(0);
-    expect(rerollsSeen).toBeLessThan(400);
+    expect(rerollsSeen).toBeLessThan(2000);
   });
 
-  it("täyttää konsonanttitakuun (>= 4, jokeri lasketaan) kaikilla siemenillä", () => {
+  it("täyttää konsonanttitakuun (>= 5, jokeri lasketaan) kaikilla siemenillä", () => {
     for (let i = 0; i < 2000; i++) {
       const { faces } = rollDice(i);
       expect(faces.filter(countsAsConsonant).length).toBeGreaterThanOrEqual(MIN_CONSONANTS);

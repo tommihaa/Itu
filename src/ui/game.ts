@@ -994,16 +994,22 @@ function learnTargetsHtml(hits: Set<string>, forced?: string[]): string {
   </div>${descs}`;
 }
 
-/** Teemojen selkokuvaukset (nimi — mihin vastaa · esim.). Jaettu pelipalkin ⓘ-laajennuksen
- * ja haastemodaalin kesken. `hits` korostaa jo osutut (pelinäkymä); modaalissa tyhjä. */
-function learnDescListHtml(ids: readonly string[], hits: Set<string> = new Set()): string {
+/** Teemojen selkokuvaukset (nimi — mihin vastaa · esim.). Jaettu pelipalkin ⓘ-laajennuksen,
+ * haastemodaalin ja loppunäytön kesken. `hits` korostaa osutut; `markMissed` näyttää ohitetut
+ * ○:lla (loppunäyttö, jossa "et osunut" on merkityksellinen — pelipalkissa/modaalissa ei). */
+function learnDescListHtml(
+  ids: readonly string[],
+  hits: Set<string> = new Set(),
+  markMissed = false,
+): string {
   const rows = ids
     .map((id) => {
       const t = THEME_BY_ID[id];
       if (!t) return "";
       const hit = hits.has(id);
+      const mark = hit ? "✓ " : markMissed ? "○ " : "";
       return `<li class="sm-learn-desc-row${hit ? " sm-learn-hit-row" : ""}">
-        <span class="sm-learn-desc-name">${hit ? "✓ " : ""}${escapeHtml(t.label)}</span>
+        <span class="sm-learn-desc-name">${mark}${escapeHtml(t.label)}</span>
         <span class="sm-learn-desc-q">${escapeHtml(t.describe)}</span>
         <span class="sm-learn-desc-ex">esim. ${escapeHtml(t.example)}</span>
       </li>`;
@@ -1020,25 +1026,18 @@ function learnResultHtml(): string {
       <p class="sm-words pending">Teemat tallentuvat kun sanasto on latautunut — pelaa uusi kierros.</p>
     </div>`;
   }
-  const chips = lastLearnTargets
-    .map((id) => {
-      const t = THEME_BY_ID[id];
-      const hit = lastLearnAchieved.has(id);
-      return `<span class="sm-learn-chip${hit ? " sm-learn-hit" : ""}" title="${escapeHtml(t?.describe ?? "")}">${hit ? "✓ " : "○ "}${escapeHtml(t?.label ?? id)}</span>`;
-    })
-    .join("");
+  // Kuvaukset + esimerkit myös loppunäytöllä (oppimishetki): osutut ✓, ohitetut ○.
+  const targetList = learnDescListHtml(lastLearnTargets, lastLearnAchieved, true);
   const extra = [...lastLearnAchieved].filter((id) => !lastLearnTargets.includes(id));
   const extraChips = extra.length
-    ? `<p class="sm-learn-extra">Lisäksi osuit: ${extra
-        .map((id) => escapeHtml(THEME_BY_ID[id]?.label ?? id))
-        .join(", ")}</p>`
+    ? `<p class="sm-learn-extra">Lisäksi osuit:</p>${learnDescListHtml(extra, new Set(extra))}`
     : "";
   const wk = weeklyProgress(learnProgress, weekStartKey());
   const pct = wk.goal > 0 ? Math.min(100, Math.round((wk.covered / wk.goal) * 100)) : 0;
   const hitCount = lastLearnTargets.filter((id) => lastLearnAchieved.has(id)).length;
   return `<div class="sm-learn-result">
     <h3>📚 Päivän teemat ${hitCount}/${lastLearnTargets.length}</h3>
-    <div class="sm-learn-chips">${chips}</div>
+    ${targetList}
     ${extraChips}
     <div class="sm-learn-weekbar" title="Viikon eri teemat">
       <div class="sm-learn-weekfill" style="width:${pct}%"></div>

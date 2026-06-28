@@ -100,7 +100,7 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
 - **Jokerimäärä 1–3** (asetus, oletus 1): jokeri #2 korvaa nopan 8 A:n,
   #3 nopan 6 A:n. Jokeri voi edustaa mitä tahansa kirjainta, mutta jos se on
   osa kahta sanaa, sen on edustettava samaa kirjainta molemmissa.
-- **Vokaali- ja konsonanttitakuu**: jos heitossa alle 4 vokaalia TAI alle 4
+- **Vokaali- ja konsonanttitakuu**: jos heitossa alle 5 vokaalia TAI alle 5
   konsonanttia (jokeri lasketaan kumpaankin, koska se voi toimia kumpanakin),
   arvotaan deterministisesti uudelleen samasta satunnaisvirrasta, kunnes
   molemmat rajat täyttyvät. Estää rappeutuneet heitot (esim. 1 konsonantti),

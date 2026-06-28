@@ -1,9 +1,10 @@
 import { countsAsConsonant, countsAsVowel, diceWithJokers, type Face, type JokerCount } from "./dice";
 import { createRng, type Rng } from "./rng";
 
-export const MIN_VOWELS = 4;
+export const MIN_VOWELS = 5;
 // Konsonanteilla sama minimivaatimus kuin vokaaleilla — estää rappeutuneet heitot
-// (esim. 1 konsonantti), joista ei saa ristikkoa kokoon.
+// (esim. 1 konsonantti), joista ei saa ristikkoa kokoon. Nostettu 4 → 5 (käyttäjähavainto:
+// 4 kpl heitot tulivat hylätyiksi kädessä). 13 nopalla 5+5 jättää 3 vapaata → toimii hyvin.
 export const MIN_CONSONANTS = MIN_VOWELS;
 
 export interface RollOptions {
