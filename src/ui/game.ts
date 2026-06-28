@@ -115,6 +115,7 @@ let endWordScores: number[] = []; // ^samassa järjestyksessä: kunkin sanan pis
 let checkerRefresh: (() => void) | null = null; // tarkistimen tuloksen päivitys ilman renderiä
 let jokerPicker: number | null = null; // avoinna olevan jokerin dieIndex (kirjainvalitsin)
 let showChallenge = false; // offline-haastemodaali (aloita haaste / vastaa)
+let learnDescOpen = false; // Opi-moodin teemapalkin ⓘ-toggle: kuvaukset auki/kiinni
 
 // --- Monikierroshaaste (offline, linkki kantaa tulokset 2-suuntaisesti) ---
 const ROUND_OPTIONS = [1, 3, 5, 10];
@@ -981,11 +982,34 @@ function learnTargetsHtml(hits: Set<string>, forced?: string[]): string {
         const wk = weeklyProgress(learnProgress, weekStartKey());
         return `<span class="sm-learn-week" title="Viikon eri teemat">${wk.covered}/${wk.goal}${wk.covered >= wk.goal ? " ✓" : ""} viikossa</span>`;
       })();
+  // ⓘ avaa/sulkee kaikkien teemojen selkokuvaukset (mobiilissa hover ei toimi → tähdättävä
+  // tieto näkyviin ennen peliä). Tila JS:ssä (learnDescOpen) → säilyy renderin yli.
+  const info = `<button id="sm-learn-info" class="sm-learn-info" aria-expanded="${learnDescOpen}" aria-label="${learnDescOpen ? "Piilota teemojen kuvaukset" : "Näytä mitä teemat tarkoittavat"}" title="Mitä teemat tarkoittavat?">ⓘ</button>`;
+  const descs = learnDescOpen ? learnDescListHtml(targets, hits) : "";
   return `<div class="sm-learn-bar" aria-label="Opi-moodin teemat">
     <span class="sm-learn-title">${title}</span>
     ${chips}${loading}
+    ${info}
     ${tail}
-  </div>`;
+  </div>${descs}`;
+}
+
+/** Teemojen selkokuvaukset (nimi — mihin vastaa · esim.). Jaettu pelipalkin ⓘ-laajennuksen
+ * ja haastemodaalin kesken. `hits` korostaa jo osutut (pelinäkymä); modaalissa tyhjä. */
+function learnDescListHtml(ids: readonly string[], hits: Set<string> = new Set()): string {
+  const rows = ids
+    .map((id) => {
+      const t = THEME_BY_ID[id];
+      if (!t) return "";
+      const hit = hits.has(id);
+      return `<li class="sm-learn-desc-row${hit ? " sm-learn-hit-row" : ""}">
+        <span class="sm-learn-desc-name">${hit ? "✓ " : ""}${escapeHtml(t.label)}</span>
+        <span class="sm-learn-desc-q">${escapeHtml(t.describe)}</span>
+        <span class="sm-learn-desc-ex">esim. ${escapeHtml(t.example)}</span>
+      </li>`;
+    })
+    .join("");
+  return `<ul class="sm-learn-desc">${rows}</ul>`;
 }
 
 /** Loppunäytön Opi-yhteenveto: päivän tavoitteet (osuit/et) + bonusosumat + viikkopalkki. */
@@ -1938,20 +1962,16 @@ function challengeHtml(): string {
  * Jaettu tavoitesetti = adaptiiviset teemat napsautettuna; sama linkki molemmille. */
 function themeChallengeSectionHtml(): string {
   const targets = pickDuelThemes(learnProgress, dateKey(), DUEL_THEME_COUNT);
-  const chips = targets
-    .map((id) => {
-      const t = THEME_BY_ID[id];
-      return `<span class="sm-learn-chip" title="${escapeHtml(t?.describe ?? "")}">${escapeHtml(t?.label ?? id)}</span>`;
-    })
-    .join("");
+  // Modaalissa tilaa on → näytetään kuvaukset aina (mitä teemat tarkoittavat ennen aloitusta).
+  const descs = learnDescListHtml(targets);
   const rounds = ROUND_OPTIONS.map(
     (n) =>
       `<button class="sm-tool sm-ch-th-rounds" data-rounds="${n}">${n === 1 ? "1 kierros" : `${n} kierrosta`}</button>`,
   ).join("");
   return `<section class="sm-ch-theme">
     <h4>🎯📚 Teemahaaste <span class="sm-ch-note">(Opi-moodi)</span></h4>
-    <p class="sm-ch-note">Sama heitto JA sama kielioppi-tavoitesetti molemmille. Voittaja = kuka osui useampaan teemaan (pisteet ratkaisevat tasan).</p>
-    <div class="sm-learn-bar sm-ch-theme-chips">${chips}</div>
+    <p class="sm-ch-note">Sama heitto JA sama kielioppi-tavoitesetti molemmille. Voittaja = kuka osui useampaan teemaan (pisteet ratkaisevat tasan). Tavoiteteemat:</p>
+    ${descs}
     <div class="sm-ch-row sm-ch-wrap">${rounds}</div>
   </section>`;
 }
@@ -2209,6 +2229,10 @@ function wireEvents(): void {
     render();
   };
   root.querySelector<HTMLButtonElement>("#sm-lock")?.addEventListener("click", endRound);
+  root.querySelector<HTMLButtonElement>("#sm-learn-info")?.addEventListener("click", () => {
+    learnDescOpen = !learnDescOpen;
+    render();
+  });
   root.querySelector<HTMLButtonElement>("#sm-records")?.addEventListener("click", () => {
     // Avaa oletuksena juuri pelatun (tai aktiivisen) moodin + keston välilehdet.
     recordsTab = currentRecord ? currentRecord.mode : activePremium() ? "scrabble" : "itu";

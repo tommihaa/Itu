@@ -528,6 +528,45 @@ button.sm-primary { background: var(--gold); border-color: var(--gold); color: #
   border-color: var(--gold);
   font-weight: 600;
 }
+/* ⓘ-toggle: avaa teemojen selkokuvaukset (mobiilissa hover ei toimi). */
+.sm-learn-info {
+  font-size: 0.85rem;
+  line-height: 1;
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.3rem;
+  border: 1px solid var(--gold-dim);
+  background: transparent;
+  color: var(--gold);
+  cursor: pointer;
+}
+.sm-learn-info[aria-expanded="true"] { background: var(--gold-dim); color: #1a160d; }
+/* Teemojen kuvauslista (pelipalkin ⓘ-laajennus + haastemodaali). */
+.sm-learn-desc {
+  list-style: none;
+  margin: -0.3rem 0 0.7rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--gold-dim);
+  border-radius: 0.5rem;
+  background: var(--panel);
+  display: grid;
+  gap: 0.3rem;
+}
+.sm-learn-desc-row {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, auto) 1fr auto;
+  gap: 0.25rem 0.6rem;
+  align-items: baseline;
+  font-size: 0.82rem;
+}
+.sm-learn-desc-name { color: var(--gold); font-weight: 600; }
+.sm-learn-desc-q { color: var(--ink, inherit); }
+.sm-learn-desc-ex { color: var(--muted); font-style: italic; white-space: nowrap; }
+.sm-learn-hit-row .sm-learn-desc-name { color: #1a160d; background: var(--gold); border-radius: 0.25rem; padding: 0 0.3rem; }
+@media (max-width: 540px) {
+  /* Kapea näyttö: kysymys + esimerkki omille riveilleen (ei vaakapuristusta). */
+  .sm-learn-desc-row { grid-template-columns: 1fr; gap: 0.1rem; }
+  .sm-learn-desc-ex { white-space: normal; }
+}
 /* Loppunäytön Opi-yhteenveto. */
 .sm-learn-result {
   margin: 0.25rem 0 0.75rem;

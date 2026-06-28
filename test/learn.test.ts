@@ -32,6 +32,12 @@ describe("THEMES", () => {
     const ids = THEMES.map((t) => t.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
+  it("kaikilla selkokuvaus + esimerkki (näytetään ennen peliä)", () => {
+    for (const t of THEMES) {
+      expect(t.describe.length).toBeGreaterThan(0);
+      expect(t.example.length).toBeGreaterThan(0);
+    }
+  });
 });
 
 describe("detectThemes", () => {

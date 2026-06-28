@@ -19,6 +19,7 @@ export interface GrammarTheme {
   label: string; // "inessiivi", "monikko", ...
   group: ThemeGroup;
   describe: string; // selkoselite (sija: CASE_INFO.question; muut: lyhyt vihje)
+  example: string; // esimerkkimuoto (oppimisvihje ennen peliä), esim. "talossa"
   matches: (code: string) => boolean;
 }
 
@@ -34,6 +35,7 @@ const CASE_THEMES: GrammarTheme[] = Object.entries(CASE_INFO).map(([key, info]) 
   label: info.term,
   group: "case",
   describe: info.question,
+  example: info.example,
   matches: tagMatcher(key),
 }));
 
@@ -41,20 +43,21 @@ const CASE_THEMES: GrammarTheme[] = Object.entries(CASE_INFO).map(([key, info]) 
 // (NUMBER, TENSE, DEGREE, PARTICIPLE). Selitteet lyhyitä selkovihjeitä.
 const EXTRA_THEMES: GrammarTheme[] = (
   [
-    { id: "pl", label: "monikko", group: "number", tag: "Pl", describe: "monta (yks. → mon.)" },
-    { id: "prt", label: "imperfekti", group: "tense", tag: "Prt", describe: "mennyt aika (-i-)" },
-    { id: "comp", label: "vertailumuoto", group: "comparison", tag: "Comp", describe: "enemmän (-mpi)" },
-    { id: "superl", label: "yliaste", group: "comparison", tag: "Superl", describe: "eniten (-in)" },
-    { id: "prsprc", label: "1. partisiippi", group: "participle", tag: "PrsPrc", describe: "tekevä (-va/-vä)" },
-    { id: "prfprc", label: "2. partisiippi", group: "participle", tag: "PrfPrc", describe: "tehnyt (-nut/-lut)" },
-    { id: "agprc", label: "agenttipartisiippi", group: "participle", tag: "AgPrc", describe: "tekemä (-ma/-mä)" },
-    { id: "negprc", label: "kieltopartisiippi", group: "participle", tag: "NegPrc", describe: "tekemätön (-maton)" },
+    { id: "pl", label: "monikko", group: "number", tag: "Pl", describe: "monta (yks. → mon.)", example: "talot" },
+    { id: "prt", label: "imperfekti", group: "tense", tag: "Prt", describe: "mennyt aika (-i-)", example: "juoksi" },
+    { id: "comp", label: "vertailumuoto", group: "comparison", tag: "Comp", describe: "enemmän (-mpi)", example: "isompi" },
+    { id: "superl", label: "yliaste", group: "comparison", tag: "Superl", describe: "eniten (-in)", example: "isoin" },
+    { id: "prsprc", label: "1. partisiippi", group: "participle", tag: "PrsPrc", describe: "tekevä (-va/-vä)", example: "lukeva" },
+    { id: "prfprc", label: "2. partisiippi", group: "participle", tag: "PrfPrc", describe: "tehnyt (-nut/-lut)", example: "lukenut" },
+    { id: "agprc", label: "agenttipartisiippi", group: "participle", tag: "AgPrc", describe: "tekemä (-ma/-mä)", example: "lukema" },
+    { id: "negprc", label: "kieltopartisiippi", group: "participle", tag: "NegPrc", describe: "tekemätön (-maton)", example: "lukematon" },
   ] as const
 ).map((t) => ({
   id: t.id,
   label: t.label,
   group: t.group,
   describe: t.describe,
+  example: t.example,
   matches: tagMatcher(t.tag),
 }));
 
