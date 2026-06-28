@@ -584,6 +584,14 @@ button.sm-primary { background: var(--gold); border-color: var(--gold); color: #
 .sm-match-table td:first-child { text-align: left; color: var(--muted); }
 .sm-match-table tr:first-child td { color: var(--gold); font-weight: 600; }
 
+/* --- Kaveri-teemahaaste (Opi-moodi vaihe 2) --- */
+.sm-th-table td:not(:first-child) { text-align: center; }
+.sm-th-yes { color: var(--gold); font-weight: 700; }
+.sm-th-no { color: var(--muted); }
+.sm-th-score td { color: var(--muted); font-size: 0.9rem; }
+.sm-ch-theme { border-top: 1px dashed var(--line); padding-top: 0.6rem; }
+.sm-ch-theme-chips { flex-wrap: wrap; margin: 0.2rem 0 0.5rem; }
+
 /* Syötekentät pysyvät valittavina (globaali user-select:none ei koske niihin). */
 input, textarea {
   -webkit-user-select: text;

@@ -5,8 +5,24 @@
 > UI-kytkennät `src/ui/game.ts` (⚙️-toggle `itu:learnmode:v1`, teemasirut laudan yllä,
 > reaaliaikainen osuma, loppunäyttö + viikkopalkki, edistymä `itu:learn:v1`) + CSS.
 > Todennettu livenä (port 5177): tavoitesirut, "nimet" → nominatiivi+monikko syttyivät,
-> loppunäyttö 2/3, edistymä tallentui, 71/71 testiä, tsc puhdas. **Vaihe 2 (kaveri-moodi)
-> yhä auki** (oma suunnitelma, ks. Vaiheistus). Tagimerkkijonot varmistettu morph.ts:stä.
+> loppunäyttö 2/3, edistymä tallentui, 71/71 testiä, tsc puhdas. Tagimerkkijonot varmistettu morph.ts:stä.
+>
+> **VAIHE 2 (kaveri-teemahaaste) TOTEUTETTU 28.6.2026** (ei vielä deployattu). Päätökset:
+> *erillinen Teemahaaste-moodi*, voittaja *teemakattavuudesta, pisteet tasurina*. Jaettu
+> tavoitesetti (= haastajan `pickDuelThemes`, n=`DUEL_THEME_COUNT`=5) napsautetaan
+> haastelinkkiin → SAMA molemmille (reilu), syrjäyttää vastaajan oman adaptiivisen setin.
+> **Ryhmätasapaino:** `pickDuelThemes` käyttää samaa adaptiivista järjestystä (`rankThemes`,
+> jaettu `pickDailyTargets`:n kanssa) mutta soveltaa per-ryhmä-kattoa `DUEL_GROUP_CAP`
+> (sija≤2, partisiippi≤2, vertailu≤2, luku≤1, aikamuoto≤1) → setti levittyy ryhmien yli eikä
+> painotu sijoihin (14/22 teemasta on sijoja; moni harvinainen sija on vaikea osua laudalle).
+> 2-vaiheinen: jos katot jättävät vajaaksi, 2. vaihe täyttää parhailla jäljellä olevilla.
+> Rakennettu nykyisen ottelu-/haastelinkki-infran päälle (ei backendiä): `ChallengePayload`
+> +`th`/`a.h`/`r.h`, `Match`+`themes`/`myThemeHits`, `Opp`+`themeHits`; uusi `startThemeMatch`,
+> `renderThemeMatchSummary` (kattavuusruudukko + duelWinner-banneri), Teemahaaste-osio
+> Haaste-modaaliin (näkyy kun Opi-moodi päällä). Domain: `coveredTargets`/`duelWinner`/
+> `DUEL_THEME_COUNT` + testit (77/77, tsc puhdas). Todennettu port 5177: modaali-osio,
+> jaettu teemapalkki, loppunäyttö (kattavuusvoitto + pistetasuri-banneri), vastaaja saa
+> haastajan setin. Banneri korjattu: kattavuustasapelissä "voitti pisteillä", ei "useampaan teemaan".
 > Syntyi vertailevasta sanapelitutkimuksesta (ks. lopun liite).
 >
 > **Toteutuksen poikkeamat designista:** (1) toggle ja edistymä eri avaimissa
@@ -123,9 +139,12 @@ päivä, ei toistomäärä**.
 (montako teemaa/päivä), löysä viikkotavoite, pehmeät osumat, ⚙️-kytkin. Koko domain-moduuli
 + UI-kytkennät.
 
-**Vaihe 2 — "Kaveri-moodi" (myöhemmin, oma suunnitelma):** hyödynnä olemassa olevaa
-haastelinkki-infraa (`startMatch()`/`decodeChallenge()`, `c=`-hash). Jaa siemen + teema­setti
-linkissä; vertaa kuka osui teemoihin. Ei vaadi backendiä.
+**Vaihe 2 — "Kaveri-teemahaaste" (TOTEUTETTU 28.6.2026):** rakennettu olemassa olevan
+haastelinkki-infran (`startMatch()`/`decodeChallenge()`, `c=`-hash) päälle. Jaettu siemen +
+teemasetti linkissä; verrataan kuka osui useampaan jaettuun tavoiteteemaan (pisteet tasurina).
+Ei backendiä. Toteutus: erillinen Teemahaaste-moodi (ks. doc-header yllä). Pisteet lasketaan
+silti per kierros (tasuri). Vastaaja pelaa haastajan jaetun setin (ei omaa adaptiivista) →
+reilu vertailu.
 
 ---
 

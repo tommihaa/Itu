@@ -121,6 +121,12 @@ export function pickDailyTargets(
   dateKey: string,
   n: number = DAILY_TARGET_COUNT,
 ): string[] {
+  return rankThemes(p, dateKey).slice(0, Math.max(0, n));
+}
+
+/** Kaikki teemat parhaasta harjoiteltavasta huonoimpaan (deterministinen `(progress, päivä)`:sta).
+ * `pickDailyTargets` ja `pickDuelThemes` rakentuvat tämän varaan (sama priorisointi). */
+export function rankThemes(p: LearnProgress, dateKey: string): string[] {
   const ids = THEMES.map((t) => t.id);
   ids.sort((a, b) => {
     const sa = p[a];
@@ -142,7 +148,81 @@ export function pickDailyTargets(
     // 4. determ. päivärotaatio
     return strHash(dateKey + a) - strHash(dateKey + b);
   });
-  return ids.slice(0, Math.max(0, n));
+  return ids;
+}
+
+/** Per-ryhmä-katto teemahaasteen (vaihe 2) tasapainotukseen. Sijoja on 14/22 teemasta →
+ * tasajakauma painottuisi sijoihin (ja moni harvinainen sija on vaikea osua laudalle).
+ * Katto rajaa sijat/partisiipit ⇒ setti levittyy ryhmien yli (luku, aikamuoto, vertailu). */
+const DUEL_GROUP_CAP: Record<ThemeGroup, number> = {
+  case: 2,
+  participle: 2,
+  comparison: 2,
+  number: 1,
+  tense: 1,
+};
+
+/**
+ * Tasapainotettu teemahaastesetti: poimii `rankThemes`-järjestyksessä mutta kunnioittaa
+ * `DUEL_GROUP_CAP`:ia → ei sija-painottunutta settiä. Determ. `(progress, päivä)`:sta, joten
+ * modaalin esikatselu == aloitettu ottelu. Jos katot estävät n:n täyttymisen (harvinaista),
+ * toinen vaihe täyttää lopuilla → palauttaa aina ≤ n, mahdollisuuksien mukaan tasan n.
+ */
+export function pickDuelThemes(
+  p: LearnProgress,
+  dateKey: string,
+  n: number = DUEL_THEME_COUNT,
+): string[] {
+  const ranked = rankThemes(p, dateKey);
+  const groupOf = (id: string): ThemeGroup => THEME_BY_ID[id].group;
+  const chosen: string[] = [];
+  const used = new Set<string>();
+  const counts: Partial<Record<ThemeGroup, number>> = {};
+  // 1. vaihe: kunnioita ryhmäkattoa (tasapaino ryhmien yli)
+  for (const id of ranked) {
+    if (chosen.length >= n) break;
+    const g = groupOf(id);
+    if ((counts[g] ?? 0) >= DUEL_GROUP_CAP[g]) continue;
+    chosen.push(id);
+    used.add(id);
+    counts[g] = (counts[g] ?? 0) + 1;
+  }
+  // 2. vaihe: jos katot jättivät vajaaksi, täytä parhailla jäljellä olevilla
+  if (chosen.length < n) {
+    for (const id of ranked) {
+      if (chosen.length >= n) break;
+      if (!used.has(id)) chosen.push(id);
+    }
+  }
+  return chosen.slice(0, Math.max(0, n));
+}
+
+/** Montako teemaa jaetaan kaveri-teemahaasteen (vaihe 2) yhteiseksi tavoitesetiksi.
+ * Suurempi kuin päivähaaste → monikierrosottelussa kattavuudessa on liikkumavaraa. */
+export const DUEL_THEME_COUNT = 5;
+
+/** Tavoiteteemat jotka tosiasiassa osuttiin, TAVOITTEEN järjestyksessä (vakaa esitys).
+ * Puhdas joukko-leikkaus; käytetään sekä kierroskeräyksessä että loppuvertailussa. */
+export function coveredTargets(
+  target: readonly string[],
+  hits: ReadonlySet<string>,
+): string[] {
+  return target.filter((id) => hits.has(id));
+}
+
+/**
+ * Teemahaasteen voittaja: ENSISIJAISESTI suurempi teemakattavuus (montako jaettua
+ * tavoiteteemaa osui), TASURINA korkeammat kokonaispisteet. Tasan → "tie". Puhdas.
+ */
+export function duelWinner(
+  aCovered: number,
+  bCovered: number,
+  aScore: number,
+  bScore: number,
+): "a" | "b" | "tie" {
+  if (aCovered !== bCovered) return aCovered > bCovered ? "a" : "b";
+  if (aScore !== bScore) return aScore > bScore ? "a" : "b";
+  return "tie";
 }
 
 /** Viikon koonti: montako eri teemaa on osuttu `weekStartKey`:n (ISO-päivä) jälkeen. */

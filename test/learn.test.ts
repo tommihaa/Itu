@@ -5,8 +5,12 @@ import {
   THEME_BY_ID,
   detectThemes,
   pickDailyTargets,
+  pickDuelThemes,
   weeklyProgress,
   recordThemeSession,
+  coveredTargets,
+  duelWinner,
+  DUEL_THEME_COUNT,
   dateKey,
   weekStartKey,
   type LearnProgress,
@@ -126,6 +130,63 @@ describe("recordThemeSession + weeklyProgress", () => {
     const { covered, goal } = weeklyProgress(p, "2026-06-22");
     expect(covered).toBe(2);
     expect(goal).toBeGreaterThan(0);
+  });
+});
+
+describe("kaveri-teemahaaste (vaihe 2)", () => {
+  it("coveredTargets: leikkaa tavoitteen ja osumat, tavoitejärjestyksessä", () => {
+    const target = ["ine", "pl", "prt", "gen"];
+    const hits = new Set(["prt", "gen", "nom"]); // nom ei kuulu tavoitteeseen
+    expect(coveredTargets(target, hits)).toEqual(["prt", "gen"]);
+  });
+  it("coveredTargets: ei osumia → tyhjä", () => {
+    expect(coveredTargets(["ine", "pl"], new Set(["gen"]))).toEqual([]);
+  });
+  it("duelWinner: suurempi kattavuus voittaa pisteistä riippumatta", () => {
+    expect(duelWinner(3, 2, 10, 999)).toBe("a");
+    expect(duelWinner(1, 4, 999, 10)).toBe("b");
+  });
+  it("duelWinner: kattavuus tasan → pisteet ratkaisevat", () => {
+    expect(duelWinner(2, 2, 50, 40)).toBe("a");
+    expect(duelWinner(2, 2, 40, 50)).toBe("b");
+  });
+  it("duelWinner: kaikki tasan → tie", () => {
+    expect(duelWinner(2, 2, 40, 40)).toBe("tie");
+  });
+  it("DUEL_THEME_COUNT on mielekäs (mahtuu teemoihin)", () => {
+    expect(DUEL_THEME_COUNT).toBeGreaterThan(0);
+    expect(DUEL_THEME_COUNT).toBeLessThanOrEqual(THEMES.length);
+  });
+
+  const groupOf = (id: string) => THEMES.find((t) => t.id === id)!.group;
+
+  it("pickDuelThemes: deterministinen (sama progress+päivä → sama setti)", () => {
+    const p: LearnProgress = {};
+    expect(pickDuelThemes(p, "2026-06-28")).toEqual(pickDuelThemes(p, "2026-06-28"));
+  });
+  it("pickDuelThemes: palauttaa n teemaa (uniikit)", () => {
+    const set = pickDuelThemes({}, "2026-06-28");
+    expect(set).toHaveLength(DUEL_THEME_COUNT);
+    expect(new Set(set).size).toBe(set.length);
+  });
+  it("pickDuelThemes: enintään 2 sijaa (ei sija-painottunut setti)", () => {
+    // Tarkista monelta päivältä — katto pätee hajautuksesta riippumatta.
+    for (const day of ["2026-06-28", "2026-07-01", "2026-07-15", "2026-08-03", "2026-09-09"]) {
+      const set = pickDuelThemes({}, day);
+      const cases = set.filter((id) => groupOf(id) === "case").length;
+      expect(cases).toBeLessThanOrEqual(2);
+    }
+  });
+  it("pickDuelThemes: levittyy useaan ryhmään (≥3 eri ryhmää)", () => {
+    const set = pickDuelThemes({}, "2026-06-28");
+    const groups = new Set(set.map(groupOf));
+    expect(groups.size).toBeGreaterThanOrEqual(3);
+  });
+  it("pickDuelThemes: n suurempi kuin kattojen summa → täyttyy silti (2. vaihe)", () => {
+    // Katot: case2+participle2+comparison2+number1+tense1 = 8; pyydä 12 → fallback täyttää.
+    const set = pickDuelThemes({}, "2026-06-28", 12);
+    expect(set).toHaveLength(12);
+    expect(new Set(set).size).toBe(12);
   });
 });
 

@@ -36,8 +36,12 @@ import {
   THEME_BY_ID,
   detectThemes,
   pickDailyTargets,
+  pickDuelThemes,
   weeklyProgress,
   recordThemeSession,
+  coveredTargets,
+  duelWinner,
+  DUEL_THEME_COUNT,
   dateKey,
   weekStartKey,
   type LearnProgress,
@@ -244,6 +248,7 @@ function activeDuration(): number {
 interface Opp {
   name: string;
   scores: number[];
+  themeHits?: string[]; // teemahaaste: vastapelaajan osumat jaettuun tavoitesettiin
 }
 interface Match {
   base: string; // perussiemen; kierroksen i siemen = roundSeed(base, i)
@@ -255,6 +260,10 @@ interface Match {
   myName: string;
   opp?: Opp; // läsnä kun vastaat haasteeseen tai katsot lopputulosta
   final?: boolean; // molemmat pelanneet → vain katselu (ei jako-osiota)
+  // Kaveri-teemahaaste (Opi-moodi vaihe 2): jaettu kielioppi-tavoitesetti linkissä.
+  // Voittaja kattavuudesta (montako tavoiteteemaa osui), pisteet tasurina.
+  themes?: string[]; // jaetut tavoiteteemat (läsnä ⇒ teemahaaste); sama molemmille
+  myThemeHits?: Set<string>; // omat osumat tavoitteeseen (kumuloituu kierroksittain)
 }
 let match: Match | null = null;
 let showMatchSummary = false;
@@ -429,10 +438,18 @@ function endRound(): void {
   endWordScores = validWords.map((w) => w.points);
   // Opi-moodi: kerää kierroksen kielioppiteemat ja päivitä adaptiivinen edistymä. Vaatii
   // analyysipaketin (esiladattu kun moodi on päällä); jos ei vielä ladannut, ohitetaan.
-  if (learnMode && lemmas) {
+  // Teemahaaste (vaihe 2): tavoitteet tulevat jaetusta setistä (match.themes), eivät
+  // henkilökohtaisesta pickDailyTargets:sta, ja osumat kumuloidaan match.myThemeHits:iin.
+  const themeMatch = !!(match && match.themes);
+  if ((learnMode || themeMatch) && lemmas) {
     const lk = lemmas;
     lastLearnAchieved = detectThemes(endWords, (w) => lk.lookup(w));
-    lastLearnTargets = pickDailyTargets(learnProgress, dateKey());
+    lastLearnTargets = themeMatch ? match!.themes! : pickDailyTargets(learnProgress, dateKey());
+    if (themeMatch) {
+      const acc = match!.myThemeHits ?? new Set<string>();
+      for (const id of coveredTargets(match!.themes!, lastLearnAchieved)) acc.add(id);
+      match!.myThemeHits = acc; // kattavuus kumuloituu kaikista kierroksista
+    }
     learnProgress = recordThemeSession(learnProgress, lastLearnTargets, lastLearnAchieved, dateKey());
     saveLearnProgress(learnProgress);
   } else {
@@ -749,14 +766,16 @@ function render(): void {
     return;
   }
   if (showMatchSummary) {
-    renderMatchSummary();
+    if (match && match.themes) renderThemeMatchSummary();
+    else renderMatchSummary();
     return;
   }
   const v = validate();
   // Opi-moodi: mitkä päivän teemat laudan kelvolliset sanat jo toteuttavat (reaaliaikainen
   // sirujen syttyminen). Vaatii ladatun analyysipaketin; muuten tyhjä → sirut näkyvät himmeinä.
+  const themeMatch = !!(match && match.themes); // kaveri-teemahaaste: jaettu tavoitesetti
   let learnHits: Set<string> = new Set();
-  if (learnMode && lemmas) {
+  if ((learnMode || themeMatch) && lemmas) {
     const lk = lemmas;
     learnHits = detectThemes(
       v.words.filter((w) => w.valid).map((w) => w.text),
@@ -816,7 +835,7 @@ function render(): void {
       </div>
     </div>
     ${activePremium() && !roundOver ? premLegendHtml(true) : ""}
-    ${learnMode && !roundOver ? learnTargetsHtml(learnHits) : ""}
+    ${(learnMode || themeMatch) && !roundOver ? learnTargetsHtml(learnHits, themeMatch ? match!.themes! : undefined) : ""}
     ${roundOver ? resultHtml() : ""}
     ${roundOver && match ? matchNavHtml() : ""}
     ${boardHtml(v)}
@@ -867,7 +886,8 @@ function resultHtml(): string {
       </div>`
     : "";
 
-  const learnHtml = learnMode ? learnResultHtml() : "";
+  // Opi-yhteenveto kierroksen lopussa myös teemahaasteessa (vaikkei Opi-moodi olisi päällä).
+  const learnHtml = learnMode || (match && match.themes) ? learnResultHtml() : "";
 
   return `<div class="sm-result">
     <h2>Lopputulos <small>(${reason})</small></h2>
@@ -940,9 +960,11 @@ function premLegendHtml(game = false): string {
   </div>`;
 }
 
-/** Opi-moodin päivän teemasirut laudan yllä; osutut korostuvat reaaliajassa. */
-function learnTargetsHtml(hits: Set<string>): string {
-  const targets = pickDailyTargets(learnProgress, dateKey());
+/** Opi-moodin päivän teemasirut laudan yllä; osutut korostuvat reaaliajassa.
+ * `forced` = jaettu teemahaastesetti (vaihe 2); kun annettu, syrjäyttää päivätavoitteet
+ * ja viikkokoonti piilotetaan (haasteessa mitataan kattavuus, ei henkilökohtaista viikkoa). */
+function learnTargetsHtml(hits: Set<string>, forced?: string[]): string {
+  const targets = forced ?? pickDailyTargets(learnProgress, dateKey());
   const chips = targets
     .map((id) => {
       const t = THEME_BY_ID[id];
@@ -951,12 +973,18 @@ function learnTargetsHtml(hits: Set<string>): string {
       return `<span class="sm-learn-chip${hit ? " sm-learn-hit" : ""}" title="${escapeHtml(t.describe)}">${hit ? "✓ " : ""}${escapeHtml(t.label)}</span>`;
     })
     .join("");
-  const wk = weeklyProgress(learnProgress, weekStartKey());
   const loading = !lemmas ? ' <span class="sm-learn-loading">(ladataan…)</span>' : "";
-  return `<div class="sm-learn-bar" aria-label="Opi-moodin päivän teemat">
-    <span class="sm-learn-title">📚 Tänään:</span>
+  const title = forced ? "🎯📚 Teemahaaste:" : "📚 Tänään:";
+  const tail = forced
+    ? ""
+    : (() => {
+        const wk = weeklyProgress(learnProgress, weekStartKey());
+        return `<span class="sm-learn-week" title="Viikon eri teemat">${wk.covered}/${wk.goal}${wk.covered >= wk.goal ? " ✓" : ""} viikossa</span>`;
+      })();
+  return `<div class="sm-learn-bar" aria-label="Opi-moodin teemat">
+    <span class="sm-learn-title">${title}</span>
     ${chips}${loading}
-    <span class="sm-learn-week" title="Viikon eri teemat">${wk.covered}/${wk.goal}${wk.covered >= wk.goal ? " ✓" : ""} viikossa</span>
+    ${tail}
   </div>`;
 }
 
@@ -1727,6 +1755,31 @@ function startMatch(rounds: number, base: string, premium: boolean, duration: nu
   newRoll(roundSeed(base, 0));
 }
 
+/**
+ * Aloittaa kaveri-teemahaasteen (Opi-moodi vaihe 2). Jaettu tavoitesetti `themes`
+ * kulkee linkissä molemmille samana → reilu. Pisteet lasketaan silti (tasuri).
+ * Esilataa analyysipaketin, jotta teemasirut syttyvät heti. Pistemoodi seuraa nykyistä.
+ */
+function startThemeMatch(rounds: number, base: string, themes: string[], opp?: Opp): void {
+  match = {
+    base,
+    rounds,
+    premium: premiumMode,
+    duration: gameDuration,
+    current: 0,
+    myScores: [],
+    myName,
+    themes,
+    myThemeHits: new Set(),
+    ...(opp ? { opp } : {}),
+  };
+  showChallenge = false;
+  showMatchSummary = false;
+  if (!opp) location.hash = "";
+  ensureLemmas(); // teemojen tunnistus vaatii analyysipaketin
+  newRoll(roundSeed(base, 0));
+}
+
 function advanceMatch(): void {
   if (!match) return;
   match.current++;
@@ -1750,8 +1803,9 @@ interface ChallengePayload {
   n: number; // kierrokset
   m?: 0 | 1; // pistemoodi: 1 = Scrabble (premium), 0/puuttuu = perinteinen Itu
   d?: number; // kierroskesto sekunteina (puuttuu/tuntematon → oletus 3 min)
-  a: { name: string; s: number[]; t: number }; // haastaja
-  r?: { name: string; s: number[]; t: number }; // vastaaja (paluulinkissä)
+  th?: string[]; // teemahaaste: jaetut tavoiteteemat (läsnä ⇒ kaveri-teemahaaste)
+  a: { name: string; s: number[]; t: number; h?: string[] }; // haastaja (h=teemaosumat)
+  r?: { name: string; s: number[]; t: number; h?: string[] }; // vastaaja (paluulinkissä)
 }
 
 function b64e(s: string): string {
@@ -1775,27 +1829,41 @@ function decodeChallenge(code: string): ChallengePayload | null {
 
 const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
 
+/** Teemahaasteen osumat tavoitejärjestyksessä (tyhjä taulukko jätetään pois linkistä). */
+function myThemeHitsList(m: Match): string[] | undefined {
+  if (!m.themes) return undefined;
+  return coveredTargets(m.themes, m.myThemeHits ?? new Set());
+}
 function myChallengeLink(): string {
   const m = match!;
+  const h = myThemeHitsList(m);
   return challengeLink({
     v: 1,
     b: m.base,
     n: m.rounds,
     m: m.premium ? 1 : 0,
     d: m.duration,
-    a: { name: m.myName, s: m.myScores, t: sum(m.myScores) },
+    ...(m.themes ? { th: m.themes } : {}),
+    a: { name: m.myName, s: m.myScores, t: sum(m.myScores), ...(h ? { h } : {}) },
   });
 }
 function myResultLink(): string {
   const m = match!;
+  const h = myThemeHitsList(m);
   return challengeLink({
     v: 1,
     b: m.base,
     n: m.rounds,
     m: m.premium ? 1 : 0,
     d: m.duration,
-    a: { name: m.opp!.name, s: m.opp!.scores, t: sum(m.opp!.scores) },
-    r: { name: m.myName, s: m.myScores, t: sum(m.myScores) },
+    ...(m.themes ? { th: m.themes } : {}),
+    a: {
+      name: m.opp!.name,
+      s: m.opp!.scores,
+      t: sum(m.opp!.scores),
+      ...(m.opp!.themeHits ? { h: m.opp!.themeHits } : {}),
+    },
+    r: { name: m.myName, s: m.myScores, t: sum(m.myScores), ...(h ? { h } : {}) },
   });
 }
 
@@ -1818,11 +1886,17 @@ function handleIncoming(p: ChallengePayload): void {
       current: p.n,
       myScores: p.a.s,
       myName: p.a.name,
-      opp: { name: p.r.name, scores: p.r.s },
+      opp: { name: p.r.name, scores: p.r.s, ...(p.r.h ? { themeHits: p.r.h } : {}) },
       final: true,
+      ...(p.th ? { themes: p.th, myThemeHits: new Set(p.a.h ?? []) } : {}),
     };
     showMatchSummary = true;
     render();
+  } else if (p.th) {
+    // Kaveri-teemahaaste: vastaa jaettuun tavoitesettiin. Pistemoodi/kesto linkistä.
+    premiumMode = p.m === 1;
+    gameDuration = coerceDuration(p.d);
+    startThemeMatch(p.n, p.b, p.th, { name: p.a.name, scores: p.a.s, ...(p.a.h ? { themeHits: p.a.h } : {}) });
   } else {
     startMatch(p.n, p.b, p.m === 1, coerceDuration(p.d), { name: p.a.name, scores: p.a.s });
   }
@@ -1846,6 +1920,7 @@ function challengeHtml(): string {
         <p class="sm-ch-note">Pelaat valitun määrän kierroksia, sitten lähetät tuloslinkin kaverille. Hän pelaa samat heitot ${premiumMode ? "<b>Scrabble-pistemoodilla</b>" : "perinteisellä Itu-pisteytyksellä"} — näette kumpi voitti.${premiumMode ? "" : " (Vaihda pistemoodi ⚙️ Asetuksista ennen aloitusta.)"}</p>
         <div class="sm-ch-row sm-ch-wrap">${rounds}</div>
       </section>
+      ${learnMode ? themeChallengeSectionHtml() : ""}
       <section>
         <h4>Vastaa haasteeseen</h4>
         <p class="sm-ch-note">Liitä saamasi haastelinkki (tai pelkkä siemen yksittäiseen peliin).</p>
@@ -1857,6 +1932,28 @@ function challengeHtml(): string {
       <button id="sm-ch-close" class="sm-ch-clear">Sulje</button>
     </div>
   </div>`;
+}
+
+/** Haaste-modaalin Teemahaaste-osio (vaihe 2, näkyy kun Opi-moodi on päällä).
+ * Jaettu tavoitesetti = adaptiiviset teemat napsautettuna; sama linkki molemmille. */
+function themeChallengeSectionHtml(): string {
+  const targets = pickDuelThemes(learnProgress, dateKey(), DUEL_THEME_COUNT);
+  const chips = targets
+    .map((id) => {
+      const t = THEME_BY_ID[id];
+      return `<span class="sm-learn-chip" title="${escapeHtml(t?.describe ?? "")}">${escapeHtml(t?.label ?? id)}</span>`;
+    })
+    .join("");
+  const rounds = ROUND_OPTIONS.map(
+    (n) =>
+      `<button class="sm-tool sm-ch-th-rounds" data-rounds="${n}">${n === 1 ? "1 kierros" : `${n} kierrosta`}</button>`,
+  ).join("");
+  return `<section class="sm-ch-theme">
+    <h4>🎯📚 Teemahaaste <span class="sm-ch-note">(Opi-moodi)</span></h4>
+    <p class="sm-ch-note">Sama heitto JA sama kielioppi-tavoitesetti molemmille. Voittaja = kuka osui useampaan teemaan (pisteet ratkaisevat tasan).</p>
+    <div class="sm-learn-bar sm-ch-theme-chips">${chips}</div>
+    <div class="sm-ch-row sm-ch-wrap">${rounds}</div>
+  </section>`;
 }
 
 /** Kierrosten välinen navigointi loppunäytössä (ottelutilassa). */
@@ -1937,6 +2034,108 @@ function renderMatchSummary(): void {
   const link = () => (opp ? myResultLink() : myChallengeLink());
   root.querySelector<HTMLButtonElement>("#sm-ms-share")?.addEventListener("click", () =>
     shareLink(link(), opp ? "Itu — tulokseni" : "Itu — haaste"),
+  );
+  root.querySelector<HTMLButtonElement>("#sm-ms-copy")?.addEventListener("click", (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    copyToClipboard(link());
+    const o = btn.textContent;
+    btn.textContent = "Kopioitu!";
+    setTimeout(() => (btn.textContent = o), 1500);
+  });
+}
+
+/** Kaveri-teemahaasteen (vaihe 2) loppunäyttö: jaetun tavoitesetin kattavuusvertailu.
+ * Voittaja teemakattavuudesta (duelWinner), pisteet tasurina ja toissijaisena tietona. */
+function renderThemeMatchSummary(): void {
+  const m = match!;
+  const themes = m.themes!;
+  const opp = m.opp;
+  const myHits = m.myThemeHits ?? new Set<string>();
+  const oppHits = new Set(opp?.themeHits ?? []);
+  const myCov = coveredTargets(themes, myHits).length;
+  const oppCov = opp ? coveredTargets(themes, oppHits).length : null;
+  const myTotal = sum(m.myScores);
+  const oppTotal = opp ? sum(opp.scores) : null;
+  const myLabel = m.myName || "Sinä";
+  const oppLabel = opp ? opp.name || "Haastaja" : null;
+
+  // Teemarivit: jokainen tavoiteteema + kummankin osuma (✓ / –).
+  const cell = (hit: boolean) => (hit ? `<span class="sm-th-yes">✓</span>` : `<span class="sm-th-no">–</span>`);
+  const themeRows = themes
+    .map((id) => {
+      const t = THEME_BY_ID[id];
+      const label = escapeHtml(t?.label ?? id);
+      const desc = escapeHtml(t?.describe ?? "");
+      return `<tr><td title="${desc}">${label}</td><td>${cell(myHits.has(id))}</td>${
+        opp ? `<td>${cell(oppHits.has(id))}</td>` : ""
+      }</tr>`;
+    })
+    .join("");
+
+  let banner = "";
+  if (oppCov != null && oppTotal != null) {
+    const w = duelWinner(myCov, oppCov, myTotal, oppTotal);
+    const coverTie = myCov === oppCov; // kattavuus tasan → pisteet ratkaisivat voiton
+    const n = themes.length;
+    const winLabel = w === "a" ? myLabel : oppLabel!;
+    if (w === "tie") {
+      banner = `<p class="sm-record-banner">Tasapeli — molemmat ${myCov}/${n} teemaa, pisteet ${myTotal}–${oppTotal}.</p>`;
+    } else if (coverTie) {
+      // Sama teemakattavuus → pisteet ratkaisivat; älä väitä "useampaan teemaan".
+      const ws = Math.max(myTotal, oppTotal);
+      const ls = Math.min(myTotal, oppTotal);
+      banner = `<p class="sm-record-banner">${w === "a" ? "🏆 " : ""}${escapeHtml(winLabel)} voitti pisteillä — molemmat ${myCov}/${n} teemaa, pisteet ${ws}–${ls}.</p>`;
+    } else {
+      const wc = Math.max(myCov, oppCov);
+      const lc = Math.min(myCov, oppCov);
+      banner = `<p class="sm-record-banner">${w === "a" ? "🏆 " : ""}${escapeHtml(winLabel)} osui useampaan teemaan — ${wc}/${n}–${lc}/${n}.</p>`;
+    }
+  } else {
+    banner = `<p class="sm-record-banner">Osuit ${myCov}/${themes.length} teemaan. Lähetä haaste kaverille!</p>`;
+  }
+
+  let share = "";
+  if (!m.final) {
+    const link = (opp ? myResultLink() : myChallengeLink()).replace(/"/g, "&quot;");
+    const heading = opp ? "Lähetä tulos takaisin" : "Lähetä teemahaaste kaverille";
+    const note = opp
+      ? "Näin haastaja näkee kumpi kattoi enemmän teemoja."
+      : `Hän pelaa samat ${m.rounds === 1 ? "kierroksen" : m.rounds + " kierrosta"} ja samat tavoiteteemat — näette kumpi osui useampaan.`;
+    share = `<section>
+      <h4>${heading}</h4>
+      <p class="sm-ch-note">${note}</p>
+      <input class="sm-ch-link" readonly value="${link}" />
+      <div class="sm-ch-row">
+        <button id="sm-ms-share" class="sm-primary">Jaa…</button>
+        <button id="sm-ms-copy">Kopioi linkki</button>
+      </div>
+    </section>`;
+  }
+
+  root.innerHTML = `
+    <div class="sm-bar">
+      <button id="sm-ms-new" class="sm-primary">Uusi peli</button>
+      <h2 class="sm-records-title">🎯📚 Teemahaaste <small>(${m.rounds === 1 ? "1 kierros" : m.rounds + " kierrosta"} · ⏳ ${durationLabel(m.duration)}${m.premium ? " · 🟦 Scrabble" : ""})</small></h2>
+    </div>
+    <div class="sm-result sm-match-result">
+      ${banner}
+      <table class="sm-breakdown sm-match-table sm-th-table">
+        <tr><td>Tavoiteteema</td><td>${escapeHtml(myLabel)}</td>${oppLabel ? `<td>${escapeHtml(oppLabel)}</td>` : ""}</tr>
+        ${themeRows}
+        <tr class="sm-total"><td>Kattavuus</td><td>${myCov}/${themes.length}</td>${oppCov != null ? `<td>${oppCov}/${themes.length}</td>` : ""}</tr>
+        <tr class="sm-th-score"><td>Pisteet (tasuri)</td><td>${myTotal}</td>${oppTotal != null ? `<td>${oppTotal}</td>` : ""}</tr>
+      </table>
+      ${share}
+    </div>
+  `;
+  root.querySelector<HTMLButtonElement>("#sm-ms-new")!.onclick = () => {
+    exitMatch();
+    location.hash = "";
+    newRoll(randomSeed());
+  };
+  const link = () => (opp ? myResultLink() : myChallengeLink());
+  root.querySelector<HTMLButtonElement>("#sm-ms-share")?.addEventListener("click", () =>
+    shareLink(link(), opp ? "Itu — teematulokseni" : "Itu — teemahaaste"),
   );
   root.querySelector<HTMLButtonElement>("#sm-ms-copy")?.addEventListener("click", (e) => {
     const btn = e.currentTarget as HTMLButtonElement;
@@ -2045,6 +2244,15 @@ function wireEvents(): void {
   for (const b of root.querySelectorAll<HTMLElement>(".sm-ch-rounds")) {
     b.addEventListener("click", () =>
       startMatch(Number(b.dataset.rounds), randomSeed(), premiumMode, gameDuration),
+    );
+  }
+  for (const b of root.querySelectorAll<HTMLElement>(".sm-ch-th-rounds")) {
+    b.addEventListener("click", () =>
+      startThemeMatch(
+        Number(b.dataset.rounds),
+        randomSeed(),
+        pickDuelThemes(learnProgress, dateKey(), DUEL_THEME_COUNT),
+      ),
     );
   }
   root.querySelector<HTMLButtonElement>("#sm-ch-open")?.addEventListener("click", () => {
