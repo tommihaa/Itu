@@ -11,7 +11,18 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2314110c'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle'%3E%F0%9F%8C%B1%3C/text%3E%3C/svg%3E"
     />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#14110c" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <title>Itu</title>
+    <script>
+      // Service workerin rekisteröinti → desktop-asennettavuus + offline.
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js").catch(() => {});
+        });
+      }
+    </script>
   </head>
   <body>
     <main id="app"></main>
