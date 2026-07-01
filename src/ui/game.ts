@@ -198,6 +198,32 @@ function saveLearnProgress(p: LearnProgress): void {
 }
 let learnMode = loadLearnMode();
 let learnProgress = loadLearnProgress();
+// Päivän teemasetti JÄÄDYTETÄÄN ensimmäisellä laskennalla (localStorage) → sama setti koko
+// päivän, vaikka edistymä muuttuu pelien välissä (OPIMOODI.md: "avaa uudelleen samana
+// päivänä → samat teemat"). Ilman jäädytystä rankThemes nostaisi joka pelin jälkeen uudet
+// tarjoamattomat teemat kärkeen ja "Päivän teemat" vaihtuisi peli peliltä.
+const LEARN_DAILY_KEY = "itu:learn:daily:v1"; // { date, targets }
+function dailyTargets(): string[] {
+  const today = dateKey();
+  try {
+    const raw = localStorage.getItem(LEARN_DAILY_KEY);
+    if (raw) {
+      const o = JSON.parse(raw) as { date?: string; targets?: string[] };
+      if (o.date === today && Array.isArray(o.targets) && o.targets.every((id) => THEME_BY_ID[id])) {
+        return o.targets;
+      }
+    }
+  } catch {
+    /* rikkinäinen talletus → lasketaan uusi */
+  }
+  const targets = pickDailyTargets(learnProgress, today);
+  try {
+    localStorage.setItem(LEARN_DAILY_KEY, JSON.stringify({ date: today, targets }));
+  } catch {
+    /* yksityistila — setti eläisi pelien välissä, peli toimii silti */
+  }
+  return targets;
+}
 // Viimeisen lukitun kierroksen Opi-tulos (loppunäyttöä varten).
 let lastLearnTargets: string[] = [];
 let lastLearnAchieved: Set<string> = new Set();
@@ -445,7 +471,7 @@ function endRound(): void {
   if ((learnMode || themeMatch) && lemmas) {
     const lk = lemmas;
     lastLearnAchieved = detectThemes(endWords, (w) => lk.lookup(w));
-    lastLearnTargets = themeMatch ? match!.themes! : pickDailyTargets(learnProgress, dateKey());
+    lastLearnTargets = themeMatch ? match!.themes! : dailyTargets();
     if (themeMatch) {
       const acc = match!.myThemeHits ?? new Set<string>();
       for (const id of coveredTargets(match!.themes!, lastLearnAchieved)) acc.add(id);
@@ -965,7 +991,7 @@ function premLegendHtml(game = false): string {
  * `forced` = jaettu teemahaastesetti (vaihe 2); kun annettu, syrjäyttää päivätavoitteet
  * ja viikkokoonti piilotetaan (haasteessa mitataan kattavuus, ei henkilökohtaista viikkoa). */
 function learnTargetsHtml(hits: Set<string>, forced?: string[]): string {
-  const targets = forced ?? pickDailyTargets(learnProgress, dateKey());
+  const targets = forced ?? dailyTargets();
   const chips = targets
     .map((id) => {
       const t = THEME_BY_ID[id];
