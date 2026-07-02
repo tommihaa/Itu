@@ -10,3 +10,7 @@ build/genrun.log
 build/genrun.err
 
 .vercel
+
+# Konekohtainen Claude Code -konfiguraatio (settings.json sisältäisi paikallisia polkuja)
+.claude/launch.json
+.claude/settings.json
