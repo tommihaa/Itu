@@ -788,6 +788,30 @@ input, textarea {
 .sm-rule-group li { margin: 0.1rem 0; }
 .sm-rule-group .hint { color: var(--muted); font-size: 0.8rem; }
 
+/* --- Termimoduuli: napautettavat termit säännöissä + Termit-välilehti --- */
+.sm-term {
+  background: none; border: 0; padding: 0; margin: 0;
+  font: inherit; color: var(--gold); cursor: pointer;
+  border-bottom: 1px dotted var(--gold-dim);
+}
+.sm-term:hover, .sm-term.sm-term-open { color: var(--text); border-bottom-color: var(--gold); }
+.sm-term-def {
+  margin: 0.3rem 0 0.6rem 0.6rem; padding: 0.4rem 0.7rem;
+  background: var(--panel); border-left: 2px solid var(--gold);
+  border-radius: 0 0.4rem 0.4rem 0; font-size: 0.9rem; line-height: 1.55;
+  color: var(--muted);
+}
+.sm-term-def b { color: var(--gold); }
+.sm-term-ex { display: block; color: var(--gold-dim); font-size: 0.85rem; margin-top: 0.15rem; }
+.sm-term-item { display: flex; gap: 0.6rem; padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+.sm-term-item:last-child { border-bottom: 0; }
+.sm-term-name { flex: 0 0 8.5rem; color: var(--gold); font-weight: 600; }
+.sm-term-text { flex: 1; color: var(--text); line-height: 1.5; }
+@media (max-width: 540px) {
+  .sm-term-item { flex-direction: column; gap: 0.1rem; }
+  .sm-term-name { flex-basis: auto; }
+}
+
 /* --- Tulostus: vain säännöt, vaaleana paperille --- */
 @media print {
   .sm-no-print { display: none !important; }
@@ -802,6 +826,12 @@ input, textarea {
   .sm-letter-row.bad .sm-letter { color: #555; }
   .sm-letter-row.ok .sign { color: #1a7a3a; }
   .sm-letter-row.bad .sign { color: #b22; }
+  .sm-term { color: #111; border-bottom-color: #888; }
+  .sm-term-def { display: none; }
+  .sm-term-name { color: #000; }
+  .sm-term-text { color: #111; }
+  .sm-term-ex { color: #444; }
+  .sm-term-item { border-color: #ccc; break-inside: avoid; }
 }
 
 /* --- Mobiili: pienennä ruutuja, jotta 15×15-lauta mahtuu paremmin --- */

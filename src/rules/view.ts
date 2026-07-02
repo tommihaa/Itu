@@ -10,9 +10,27 @@ import {
   type RuleGroup,
   type RuleSection,
 } from "./content";
+import {
+  TERMS,
+  TERM_CATEGORIES,
+  findTerm,
+  splitWithGlossary,
+  type TermEntry,
+} from "./terms";
 
 function escape(s: string): string {
   return s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]!);
+}
+
+/** Escapaa teksti ja kääri termiesiintymät napautettaviksi (termimoduuli). */
+function termify(text: string): string {
+  return splitWithGlossary(text)
+    .map((p) =>
+      p.isTerm
+        ? `<button type="button" class="sm-term" data-term="${escape(p.term!)}">${escape(p.text)}</button>`
+        : escape(p.text),
+    )
+    .join("");
 }
 
 function lettersHtml(rows: LetterRow[]): string {
@@ -49,7 +67,7 @@ function groupHtml(g: RuleGroup): string {
 }
 
 function sectionHtml(s: RuleSection): string {
-  const body = s.body ? `<p>${s.body.split("\n").map(escape).join("<br>")}</p>` : "";
+  const body = s.body ? `<p>${s.body.split("\n").map(termify).join("<br>")}</p>` : "";
   const letters = s.letters ? lettersHtml(s.letters) : "";
   const groups = s.groups ? s.groups.map(groupHtml).join("") : "";
   return `<section class="sm-rule-section">
@@ -65,7 +83,7 @@ export function renderWordsContent(): string {
   return `
     <div class="sm-rules-doc">
       <h2>${escape(RULES_TITLE)}</h2>
-      <p class="sm-rules-lead">${escape(RULES_LEAD)}</p>
+      <p class="sm-rules-lead">${termify(RULES_LEAD)}</p>
       ${RULES.map(sectionHtml).join("")}
     </div>`;
 }
@@ -77,4 +95,56 @@ export function renderControlsContent(): string {
       <h2>${escape(CONTROLS_TITLE)}</h2>
       ${CONTROLS.map(sectionHtml).join("")}
     </div>`;
+}
+
+/** "Termit"-välilehti: pelin termit ryhmittäin — staattinen referenssi (tulostuu kokonaan). */
+export function renderTermsContent(): string {
+  const item = (t: TermEntry) => `
+    <div class="sm-term-item">
+      <span class="sm-term-name">${escape(t.term)}</span>
+      <span class="sm-term-text">${escape(t.selitys)}${
+        t.esimerkki ? ` <span class="sm-term-ex">Esim. ${escape(t.esimerkki)}</span>` : ""
+      }</span>
+    </div>`;
+  const sections = TERM_CATEGORIES.map((c) => {
+    const rows = TERMS.filter((t) => t.kategoria === c.key).map(item).join("");
+    return rows
+      ? `<section class="sm-rule-section"><h3>${escape(c.label)}</h3>${rows}</section>`
+      : "";
+  }).join("");
+  return `
+    <div class="sm-rules-doc">
+      <h2>Termit</h2>
+      <p class="sm-rules-lead">Pelin termit lyhyesti selitettyinä. Samat termit ovat
+      napautettavissa myös sääntöteksteissä (katkoviivalla alleviivatut).</p>
+      ${sections}
+    </div>`;
+}
+
+/** Kytkee sääntötekstien napautettavat termit: klikkaus avaa selitteen kappaleen
+ * alle (toggle; toinen termi korvaa avoimen). Puhdasta DOM-työtä, ei tilaa. */
+export function wireTermClicks(container: HTMLElement): void {
+  for (const btn of container.querySelectorAll<HTMLButtonElement>(".sm-term")) {
+    btn.addEventListener("click", () => {
+      const term = btn.dataset.term ?? "";
+      const entry = findTerm(term);
+      if (!entry) return; // tuntematon → ei näytetä mitään
+      const block = btn.closest("p, h3, h4") ?? btn.parentElement;
+      if (!block) return;
+      const wasOpen =
+        block.nextElementSibling?.classList.contains("sm-term-def") &&
+        (block.nextElementSibling as HTMLElement).dataset.term === term;
+      for (const d of container.querySelectorAll(".sm-term-def")) d.remove();
+      for (const t of container.querySelectorAll(".sm-term-open")) t.classList.remove("sm-term-open");
+      if (wasOpen) return;
+      const div = document.createElement("div");
+      div.className = "sm-term-def";
+      div.dataset.term = term;
+      div.innerHTML = `<b>${escape(entry.term)}</b> — ${escape(entry.selitys)}${
+        entry.esimerkki ? ` <span class="sm-term-ex">Esim. ${escape(entry.esimerkki)}</span>` : ""
+      }`;
+      block.after(div);
+      btn.classList.add("sm-term-open");
+    });
+  }
 }
