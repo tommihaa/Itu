@@ -230,6 +230,10 @@ function dailyTargets(): string[] {
   }
   return targets;
 }
+// Käynnissä olevan kierroksen päivätavoitteet — jäädytetään heiton hetkellä (newRoll), jotta
+// keskiyön päivänvaihto ei vaihda tavoitesettiä kesken kierroksen (dailyTargets() itse voisi
+// muuten laskea uuden setin, koska sitä kutsutaan joka renderissä tiilen asettelun yhteydessä).
+let roundDailyTargets: string[] | null = null;
 // Viimeisen lukitun kierroksen Opi-tulos (loppunäyttöä varten).
 let lastLearnTargets: string[] = [];
 let lastLearnAchieved: Set<string> = new Set();
@@ -480,14 +484,18 @@ function endRound(): void {
   if ((learnMode || themeMatch) && lemmas) {
     const lk = lemmas;
     lastLearnAchieved = detectThemes(endWords, (w) => lk.lookup(w));
-    lastLearnTargets = themeMatch ? match!.themes! : dailyTargets();
+    lastLearnTargets = themeMatch ? match!.themes! : (roundDailyTargets ?? dailyTargets());
     if (themeMatch) {
       const acc = match!.myThemeHits ?? new Set<string>();
       for (const id of coveredTargets(match!.themes!, lastLearnAchieved)) acc.add(id);
       match!.myThemeHits = acc; // kattavuus kumuloituu kaikista kierroksista
     }
-    learnProgress = recordThemeSession(learnProgress, lastLearnTargets, lastLearnAchieved, dateKey());
-    saveLearnProgress(learnProgress);
+    // Henkilökohtainen adaptiivinen edistymä (itu:learn:v1) kertyy vain kun Opi-moodi on itse
+    // päällä — muuten kaverin teemahaasteen jaettu setti vinouttaisi tulevia päivätavoitteita.
+    if (learnMode) {
+      learnProgress = recordThemeSession(learnProgress, lastLearnTargets, lastLearnAchieved, dateKey());
+      saveLearnProgress(learnProgress);
+    }
   } else {
     lastLearnTargets = [];
     lastLearnAchieved = new Set();
@@ -638,6 +646,7 @@ function newRoll(s: string): void {
   history = [];
   currentFrame = null; // uusi heitto kehystää tuoreesti (keskelle)
   viewScroll = null; // keskitä näkymä uudelleen (zoom-off)
+  roundDailyTargets = learnMode ? dailyTargets() : null;
   startRound();
   render();
 }
@@ -838,7 +847,7 @@ function render(): void {
     <div class="sm-game">
     <header class="sm-head">
       <h1>Itu</h1>
-      <span class="sm-seed">siemen: ${seed}</span>
+      <span class="sm-seed">siemen: ${escapeHtml(seed)}</span>
       ${matchTag}
     </header>
     <div class="sm-bar">
@@ -1006,7 +1015,7 @@ function premLegendHtml(game = false): string {
  * `forced` = jaettu teemahaastesetti (vaihe 2); kun annettu, syrjäyttää päivätavoitteet
  * ja viikkokoonti piilotetaan (haasteessa mitataan kattavuus, ei henkilökohtaista viikkoa). */
 function learnTargetsHtml(hits: Set<string>, forced?: string[]): string {
-  const targets = forced ?? dailyTargets();
+  const targets = forced ?? roundDailyTargets ?? dailyTargets();
   const chips = targets
     .map((id) => {
       const t = THEME_BY_ID[id];
@@ -1403,7 +1412,7 @@ function recordHtml(r: ScoreRecord, rank: number, showRate = false): string {
       <span class="sm-record-rank">${rank}.</span>
       ${primary}
       ${isCurrent ? '<span class="sm-record-star">★</span>' : ""}
-      <span class="sm-record-meta">${date} · siemen ${r.seed}</span>
+      <span class="sm-record-meta">${date} · siemen ${escapeHtml(r.seed)}</span>
     </div>
     ${recordBoardHtml(r)}
     ${words ? `<p class="sm-record-words">${words}</p>` : ""}
@@ -1824,12 +1833,19 @@ function startMatch(rounds: number, base: string, premium: boolean, duration: nu
  * kulkee linkissä molemmille samana → reilu. Pisteet lasketaan silti (tasuri).
  * Esilataa analyysipaketin, jotta teemasirut syttyvät heti. Pistemoodi seuraa nykyistä.
  */
-function startThemeMatch(rounds: number, base: string, themes: string[], opp?: Opp): void {
+function startThemeMatch(
+  rounds: number,
+  base: string,
+  themes: string[],
+  opp?: Opp,
+  premium: boolean = premiumMode,
+  duration: number = gameDuration,
+): void {
   match = {
     base,
     rounds,
-    premium: premiumMode,
-    duration: gameDuration,
+    premium,
+    duration,
     current: 0,
     myScores: [],
     myName,
@@ -1882,10 +1898,20 @@ function b64d(s: string): string {
 function challengeLink(p: ChallengePayload): string {
   return `${location.origin}${location.pathname}#c=${b64e(JSON.stringify(p))}`;
 }
+function isScoreArray(s: unknown): s is number[] {
+  return Array.isArray(s) && s.every((n) => typeof n === "number" && Number.isFinite(n));
+}
 function decodeChallenge(code: string): ChallengePayload | null {
   try {
     const p = JSON.parse(b64d(code)) as ChallengePayload;
-    if (p && p.b && p.n && p.a && Array.isArray(p.a.s)) return p;
+    const validBase =
+      p && typeof p.b === "string" && p.b.length > 0 &&
+      typeof p.n === "number" && ROUND_OPTIONS.includes(p.n) &&
+      p.a && typeof p.a.name === "string" && isScoreArray(p.a.s);
+    if (!validBase) return null;
+    if (p.th !== undefined && !(Array.isArray(p.th) && p.th.every((s) => typeof s === "string"))) return null;
+    if (p.r !== undefined && !(typeof p.r.name === "string" && isScoreArray(p.r.s))) return null;
+    return p;
   } catch {
     /* viallinen koodi */
   }
@@ -1966,10 +1992,16 @@ function handleIncoming(p: ChallengePayload): void {
     showMatchSummary = true;
     render();
   } else if (p.th) {
-    // Kaveri-teemahaaste: vastaa jaettuun tavoitesettiin. Pistemoodi/kesto linkistä.
-    premiumMode = p.m === 1;
-    gameDuration = coerceDuration(p.d);
-    startThemeMatch(p.n, p.b, p.th, { name: p.a.name, scores: p.a.s, ...(p.a.h ? { themeHits: p.a.h } : {}) });
+    // Kaveri-teemahaaste: vastaa jaettuun tavoitesettiin. Pistemoodi/kesto linkistä,
+    // vain tämän ottelun ajaksi — pelaajan omat vapaan pelin asetukset eivät saa muuttua.
+    startThemeMatch(
+      p.n,
+      p.b,
+      p.th,
+      { name: p.a.name, scores: p.a.s, ...(p.a.h ? { themeHits: p.a.h } : {}) },
+      p.m === 1,
+      coerceDuration(p.d),
+    );
     if (dictMismatch) {
       match!.dictMismatch = dictMismatch;
       render();

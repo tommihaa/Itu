@@ -45,7 +45,26 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Muut resurssit → cache-first.
+  // Sanasto (/dict/*) → network-first: tiedostonimi ei kanna versiota (sanasto-fi-v1.dawg
+  // pysyy samana kun sanasto regeneroidaan), joten cache-first jättäisi asennetun PWA:n
+  // pysyvästi vanhaan sanastoon eikä dv-haastelinkkitarkistus huomaisi eroa. Offline-fallback
+  // vanhaan välimuistiin, jotta peli toimii silti ilman verkkoa.
+  if (url.pathname.startsWith("/dict/")) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          if (res && res.ok && res.type === "basic") {
+            const copy = res.clone();
+            caches.open(CACHE).then((c) => c.put(req, copy));
+          }
+          return res;
+        })
+        .catch(() => caches.match(req))
+    );
+    return;
+  }
+
+  // Muut resurssit → cache-first (hashatut tiedostonimet, turvallista pitää pysyvästi).
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) return cached;
