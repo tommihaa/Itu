@@ -417,6 +417,8 @@ button.sm-primary { background: var(--gold); border-color: var(--gold); color: #
 .sm-ch h4 { margin: 0 0 0.3rem; font-size: 0.95rem; }
 .sm-ch-note { margin: 0 0 0.5rem; color: var(--muted); font-size: 0.85rem; }
 .sm-ch-note b { color: var(--text); }
+/* Reiluusilmoitus: haastelinkin sanastoversio eroaa omasta (ks. dictMismatchHtml). */
+.sm-dv-note { color: var(--gold); }
 .sm-ch-link {
   width: 100%;
   padding: 0.45rem 0.6rem;

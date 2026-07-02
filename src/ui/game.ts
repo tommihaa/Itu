@@ -30,6 +30,7 @@ import {
 } from "../domain/board";
 import type { WordJudge } from "../dict/judge";
 import { loadJudge } from "../dict/load";
+import { DAWG_VERSION } from "../dict/builder";
 import { loadLemmas, type LemmaLookup } from "../dict/lemmas";
 import { describeCode } from "../dict/morph";
 import {
@@ -291,6 +292,9 @@ interface Match {
   // Voittaja kattavuudesta (montako tavoiteteemaa osui), pisteet tasurina.
   themes?: string[]; // jaetut tavoiteteemat (läsnä ⇒ teemahaaste); sama molemmille
   myThemeHits?: Set<string>; // omat osumat tavoitteeseen (kumuloituu kierroksittain)
+  // Reiluus: haastelinkin sanastoversio kun se eroaa omastamme (PEHMEÄ — ei estä
+  // pelaamista, mutta tulokset eivät ole vertailukelpoisia → näytetään ilmoitus).
+  dictMismatch?: string;
 }
 let match: Match | null = null;
 let showMatchSummary = false;
@@ -811,7 +815,7 @@ function render(): void {
   }
   const anyPlaced = tiles.some((t) => t.cell); // ankkuri-varoitus vasta kun jotain on laudalla
   const matchTag = match
-    ? `<span class="sm-match-tag">🎯 Kierros ${match.current + 1}/${match.rounds} · ⏳ ${durationLabel(match.duration)}${match.premium ? " · 🟦 Scrabble" : ""}</span>`
+    ? `<span class="sm-match-tag"${match.dictMismatch ? ` title="Haastelinkki on tehty eri sanastoversiolla (${escapeHtml(match.dictMismatch)}) — tulokset eivät ole täysin vertailukelpoisia."` : ""}>🎯 Kierros ${match.current + 1}/${match.rounds} · ⏳ ${durationLabel(match.duration)}${match.premium ? " · 🟦 Scrabble" : ""}${match.dictMismatch ? " · ⚠️ eri sanastoversio" : ""}</span>`
     : "";
   // Nappipalkki kolmeen ryhmään: toiminnot (muuttavat pelitilaa) | näkymät (avaavat
   // paneelin) | tila (vain luku). Erotin näkyy vain kun toiminnot-ryhmässä on nappeja.
@@ -1852,6 +1856,7 @@ interface ChallengePayload {
   n: number; // kierrokset
   m?: 0 | 1; // pistemoodi: 1 = Scrabble (premium), 0/puuttuu = perinteinen Itu
   d?: number; // kierroskesto sekunteina (puuttuu/tuntematon → oletus 3 min)
+  dv?: string; // sanastoversio (puuttuu = legacy-linkki ⇒ sanasto-fi-v1); sama sanastototuus molemmille
   th?: string[]; // teemahaaste: jaetut tavoiteteemat (läsnä ⇒ kaveri-teemahaaste)
   a: { name: string; s: number[]; t: number; h?: string[] }; // haastaja (h=teemaosumat)
   r?: { name: string; s: number[]; t: number; h?: string[] }; // vastaaja (paluulinkissä)
@@ -1892,6 +1897,7 @@ function myChallengeLink(): string {
     n: m.rounds,
     m: m.premium ? 1 : 0,
     d: m.duration,
+    dv: DAWG_VERSION,
     ...(m.themes ? { th: m.themes } : {}),
     a: { name: m.myName, s: m.myScores, t: sum(m.myScores), ...(h ? { h } : {}) },
   });
@@ -1905,6 +1911,7 @@ function myResultLink(): string {
     n: m.rounds,
     m: m.premium ? 1 : 0,
     d: m.duration,
+    dv: DAWG_VERSION,
     ...(m.themes ? { th: m.themes } : {}),
     a: {
       name: m.opp!.name,
@@ -1926,6 +1933,11 @@ function shareLink(url: string, text: string): void {
 
 /** Saapuva haaste URL:sta: joko lopputulos (a+r) tai vastattava haaste (vain a). */
 function handleIncoming(p: ChallengePayload): void {
+  // Reiluus: linkki kiinnittää sanastoversion (dv). Puuttuva kenttä = legacy-linkki
+  // ajalta ennen kenttää ⇒ sanasto-fi-v1. Eri versio ei estä pelaamista (PEHMEÄ),
+  // mutta ilmoitetaan ettei tuloksia voi vertailla samalla sanastototuudella.
+  const linkDict = p.dv ?? "sanasto-fi-v1";
+  const dictMismatch = linkDict !== DAWG_VERSION ? linkDict : undefined;
   if (p.r) {
     match = {
       base: p.b,
@@ -1938,6 +1950,7 @@ function handleIncoming(p: ChallengePayload): void {
       opp: { name: p.r.name, scores: p.r.s, ...(p.r.h ? { themeHits: p.r.h } : {}) },
       final: true,
       ...(p.th ? { themes: p.th, myThemeHits: new Set(p.a.h ?? []) } : {}),
+      ...(dictMismatch ? { dictMismatch } : {}),
     };
     showMatchSummary = true;
     render();
@@ -1946,8 +1959,16 @@ function handleIncoming(p: ChallengePayload): void {
     premiumMode = p.m === 1;
     gameDuration = coerceDuration(p.d);
     startThemeMatch(p.n, p.b, p.th, { name: p.a.name, scores: p.a.s, ...(p.a.h ? { themeHits: p.a.h } : {}) });
+    if (dictMismatch) {
+      match!.dictMismatch = dictMismatch;
+      render();
+    }
   } else {
     startMatch(p.n, p.b, p.m === 1, coerceDuration(p.d), { name: p.a.name, scores: p.a.s });
+    if (dictMismatch) {
+      match!.dictMismatch = dictMismatch;
+      render();
+    }
   }
 }
 
@@ -1999,6 +2020,16 @@ function themeChallengeSectionHtml(): string {
     ${descs}
     <div class="sm-ch-row sm-ch-wrap">${rounds}</div>
   </section>`;
+}
+
+/**
+ * Reiluusilmoitus: haastelinkki on tehty eri sanastoversiolla kuin oma pelimme
+ * käyttää → sama sana voi kelvata toisella ja hylkääntyä toisella. PEHMEÄ linja:
+ * pelaaminen sallitaan, mutta vertailukelvottomuus kerrotaan selvästi.
+ */
+function dictMismatchHtml(m: Match): string {
+  if (!m.dictMismatch) return "";
+  return `<p class="sm-ch-note sm-dv-note">⚠️ Haaste on pelattu eri sanastoversiolla (${escapeHtml(m.dictMismatch)}, sinulla ${DAWG_VERSION}) — sama sana voi kelvata vain toisella, joten tulokset eivät ole täysin vertailukelpoisia.</p>`;
 }
 
 /** Kierrosten välinen navigointi loppunäytössä (ottelutilassa). */
@@ -2063,6 +2094,7 @@ function renderMatchSummary(): void {
     </div>
     <div class="sm-result sm-match-result">
       ${banner}
+      ${dictMismatchHtml(m)}
       <table class="sm-breakdown sm-match-table">
         <tr><td></td><td>${escapeHtml(myLabel)}</td>${oppLabel ? `<td>${escapeHtml(oppLabel)}</td>` : ""}</tr>
         ${rows}
@@ -2164,6 +2196,7 @@ function renderThemeMatchSummary(): void {
     </div>
     <div class="sm-result sm-match-result">
       ${banner}
+      ${dictMismatchHtml(m)}
       <table class="sm-breakdown sm-match-table sm-th-table">
         <tr><td>Tavoiteteema</td><td>${escapeHtml(myLabel)}</td>${oppLabel ? `<td>${escapeHtml(oppLabel)}</td>` : ""}</tr>
         ${themeRows}
