@@ -15,10 +15,13 @@ domain/ui-erotus, ei Reactia). Dev-portti 5177.
 > **Vite + TypeScript, vanilla (ei Reactia)**, tiukka domain/UI-erottelu. Sanasto
 > generoidaan GiellaLT/omorfi-morfologialla (FST) lemmalistasta. Live: tommi-itu.vercel.app.
 
-Säädä mukaan tarpeen mukaan: koodiapuun lisää tiedostorakenne + domain/UI-jako;
-peli-/designkeskusteluun offline-filosofia + "ääretön peli" -arvolinssi; sanastoapuun
-omorfi/uralicNLP + DAWG + +Act-infinitiivioppi. (Miksi tuore chat tarvitsee tämän:
-muisti on paikallinen tähän Claude Code -ympäristöön — toinen chat alkaa kylmänä.)
+Ota mukaan vain se, mitä keskustelu tarvitsee:
+- **koodiapu** → tiedostorakenne + domain/UI-jako
+- **peli-/designkeskustelu** → offline-filosofia + "ääretön peli" -arvolinssi
+- **sanastoapu** → omorfi/uralicNLP + DAWG + +Act-infinitiivioppi
+
+(Miksi tuore chat tarvitsee tämän: muisti on paikallinen tähän Claude Code
+-ympäristöön — toinen chat alkaa kylmänä ilman tätä esittelyä.)
 
 ## Ydinmekaniikka
 

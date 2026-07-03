@@ -159,14 +159,18 @@ syvää FST-työtä, jonka hyöty V1:ssä ei vastaa kustannusta. Rajoite on
 **Hinta.** Pelaaja voi muodostaa aidon muodon jonka sanakirja hylkää. Tunnettu,
 hyväksytty kompromissi (ei bugi).
 
-## 12. Vokaalitakuu (noppadatan rajoite)
+## 12. Vokaali- ja konsonanttitakuu (noppadatan rajoite)
 
-**Päätös.** Jos heitossa alle 4 vokaalia (jokeri vokaaliksi laskien), arvotaan
-deterministisesti uudelleen samasta siemenestä.
+**Päätös.** Jos heitossa on alle 5 vokaalia TAI alle 5 konsonanttia (jokeri
+lasketaan kumpaankin, koska se voi toimia kumpanakin), arvotaan deterministisesti
+uudelleen samasta satunnaisvirrasta, kunnes molemmat rajat täyttyvät.
 
-**Perustelu.** Suomen sanat vaativat vokaaleja; konsonanttipainotteinen heitto
-olisi käytännössä pelaamaton. Deterministisyys (sama siemen → sama lopputulos)
-säilyttää toistettavuuden, jota asynkroninen haaste vaatii.
+**Perustelu.** Suomen sanat vaativat sekä vokaaleja että konsonantteja;
+kumpaankin suuntaan rappeutunut heitto (esim. 1 konsonantti) olisi käytännössä
+pelaamaton, koska siitä ei saa ristikkoa kokoon. Molemminpuolinen takuu estää
+tämän. Deterministisyys (sama siemen → sama lopputulos) säilyttää
+toistettavuuden, jota asynkroninen haaste vaatii. Raja nostettiin alun perin
+4:stä 5:een käyttäjähavainnon perusteella.
 
 **Hinta.** Hyvin harvoin tarvitaan uusinta-arvonta; läpinäkyvä ja siemenpohjainen.
 
