@@ -8,6 +8,14 @@ jos ne eroavat, se on bugi. Päivitetty 14.6.2026, vastaa generointiputkea
 > **Miksi näihin rajoitteisiin päädyttiin: [PERUSTELUT.md](PERUSTELUT.md).**
 > Tämä kertoo *mitä* hyväksytään; perustelut kertovat *miksi* (vaihtoehdot + hinnat).
 
+## Lähdeaineiston attribuutio
+
+Pelin sanasto pohjautuu **Kotimaisten kielten keskuksen (Kotus)** nykysuomen sanalistaan:
+
+- **Lähde:** [Nykysuomen sanalista](https://www.kotus.fi/sanakirjat/kielitoimiston-sanakirja/nykysuomen-sana-aineistot/nykysuomen-sanalista/) (ladattu: https://kaino.kotus.fi/lataa/nykysuomensanalista2024.txt)
+- **Lisenssi:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- **Muutokset:** lista on suodatettu (sanaluokka, isot alkukirjaimet pois, ks. yllä) ja taivutusmuodot on generoitu build-aikana [GiellaLT](https://giellalt.uit.no/)/uralicNLP-suomen FST:llä; alkuperäinen lemmalista on repossa sellaisenaan (`data/nykysuomensanalista2024.txt`).
+
 ## Periaate (yhdellä lauseella)
 
 > **Kaikki aito taivutus sisään, produktiivinen liimaus ulos.**
