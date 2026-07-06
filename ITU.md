@@ -9,8 +9,10 @@ domain/ui-erotus, ei Reactia). Dev-portti 5177.
 > **Itu** on suomenkielinen sananmuodostus-noppapeli (selainpeli). Pelaaja heittää
 > kirjainnoppia ja muodostaa niistä sanoja laudalle ristikkomaisesti aikarajan
 > (3 min/kierros) puitteissa; pisteet kirjaimista + aikabonus kun teline on (lähes) ratkaistu.
-> **Offline-yksinpeli** — ei verkkopalvelua, ei ääniä, ei monikielisyyttä (tietoisia
-> valintoja: pelirauha). Sanojen kelpoisuus tarkistetaan **koko suomen sanastosta**
+> **Offline-yksinpeli** — ei verkkopalvelua, ei monikielisyyttä (tietoisia valintoja:
+> pelirauha). Ääni on OLETUKSENA POIS, valinnainen kevyt torvi/kannel-teema
+> (päätös 7.7.2026, ks. alla) — pelirauha koskee oletustilaa, ei kieltoa. Sanojen
+> kelpoisuus tarkistetaan **koko suomen sanastosta**
 > (~2,3 M taivutusmuotoa, pakattuna DAWG-rakenteeseen selaimessa). Teknologia:
 > **Vite + TypeScript, vanilla (ei Reactia)**, tiukka domain/UI-erottelu. Sanasto
 > generoidaan GiellaLT/omorfi-morfologialla (FST) lemmalistasta. Live: tommi-itu.vercel.app.
@@ -158,8 +160,15 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
   → ei näytetä mitään. Data: `public/dict/forms-fi-v1` (lazy, ks. SANASTO.md).
 - **Asetukset (⚙️):** kevyt paneeli (nappipalkki › ⚙️ Asetukset). Nyt: **kierroksen kesto**
   (1/2/3/5 min, `itu:duration:v1`), **aikabonus** on/off (`itu:timebonus:v1`), **Opi-moodi**
-  (`itu:learnmode:v1`) ja **Scrabble-pistemoodi** (premium-ruudut + bingo + keskusankkuri,
-  `itu:premium:v1`). Kaikki tallennetaan localStorageen.
+  (`itu:learnmode:v1`), **Scrabble-pistemoodi** (premium-ruudut + bingo + keskusankkuri,
+  `itu:premium:v1`) ja **äänet** (`itu:sound:v1`, oletus POIS). Kaikki tallennetaan localStorageen.
+- **Äänet (torvi & kantele, oletus POIS):** valinnainen kevyt äänimaisema Web Audiolla
+  synteesillä (ei äänitiedostoja). Sama suunnittelukuvio kuin Superjatsissa ja Jaossa —
+  torviääneke (`horn()`) harvinaisiin, juhlaviin hetkiin ja kantele-nypäisy (`kantele()`,
+  Karplus-Strong-synteesi) toistuviin, arkisiin tapahtumiin. Ei erillistä "oletusteemaa"
+  kuten muissa kahdessa pelissä, koska Itussa ei ollut ääntä ennestään — vain päälle/pois.
+  Päätetty 7.7.2026: pelirauha-periaate (ks. yllä) tarkennettiin koskemaan oletustilaa,
+  ei ääntä kokonaan kieltäväksi.
 - **Ennätykset (🏆):** top-10 per (pistemoodi × kesto). Lajittelu **Kokonaispisteet**
   (valitulla kestolla, reilu sama-aika-vertailu) tai **⚡ Pistettä/min** = sanapisteet ÷ kesto,
   joka yhdistää kestot ja vertaa puhdasta tuottavuutta. Pistettä/min käyttää **vain

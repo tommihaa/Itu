@@ -1,0 +1,62 @@
+<!doctype html>
+<!-- Pysyvä kehitystyökalu (7.7.2026): äänien kuuntelusivu ilman että kaikkia
+     pelitilanteita tarvitsee pelata esiin. Ei osa tuotantobuildia (ei linkitetty
+     index.html:stä) — toimii vain dev-palvelimelta: http://localhost:5177/efektit.html
+     Itussa ei ole visuaalisia efektejä (tarkoituksellista minimalismia, ks.
+     principle_itu_offline) — vain äänet. -->
+<html lang="fi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Itu · efektit</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #14110c; color: #e8e4d8; margin: 0; padding: 24px; }
+    h1 { font-size: 1.3rem; }
+    p  { color: #a8a394; max-width: 40rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; max-width: 60rem; }
+    button { padding: 12px 14px; border: 1px solid #4a453e; border-radius: 8px; background: #241f18;
+             color: inherit; font-size: 0.95rem; cursor: pointer; text-align: left; }
+    button:hover { background: #302a20; }
+    button b { display: block; margin-bottom: 2px; }
+    button small { color: #a8a394; }
+    .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 14px 0 20px; }
+    #mute { background: #5a2f2f; border-color: #8a4a4a; font-weight: 600; }
+    #mute:hover { background: #6a3838; }
+  </style>
+</head>
+<body>
+  <h1>Itu · efektit</h1>
+  <p>Jokainen nappi soittaa yhden pelitilanteen äänen. Itussa on vain yksi ääniteema
+     (torvi &amp; kantele) eikä visuaalisia efektejä — pelirauha-periaate koskee
+     oletustilaa (ääni oletuksena pois), ei kokonaan kieltoa. Pysyvä kehitystyökalu —
+     ei kuulu peliin eikä tuotantobuildiin.</p>
+
+  <div class="toolbar">
+    <button id="mute">🔇 Hiljennä</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <script type="module">
+    import { sfx, setSfxEnabled } from "/src/sfx.ts";
+    setSfxEnabled(true);
+
+    document.getElementById("mute").addEventListener("click", () => setSfxEnabled(false));
+
+    const sounds = [
+      ["roll", "Heitto", "uusi kierros, kolme nopeaa kantele-nypäisyä"],
+      ["place", "Kirjaimen asetus", "yksittäinen hiljainen kantele-nypäisy"],
+      ["unplace", "Kirjaimen poisto", "sama nypäisy matalampana"],
+      ["lock", "Kierros lukittu", "toteava kantele-sointu"],
+      ["record", "Uusi ennätys", "torvifanfaari (harvinainen, juhlava)"],
+      ["learnGoal", "Opi-moodin tavoite osui", "kevyt ylöspäin kimaltava kantele"],
+    ];
+    const grid = document.getElementById("grid");
+    for (const [fn, name, desc] of sounds) {
+      const b = document.createElement("button");
+      b.innerHTML = `<b>${name}</b><small>${desc}</small>`;
+      b.addEventListener("click", () => sfx[fn]());
+      grid.append(b);
+    }
+  </script>
+</body>
+</html>

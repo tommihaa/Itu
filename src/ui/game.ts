@@ -53,6 +53,7 @@ import {
   renderTermsContent,
   wireTermClicks,
 } from "../rules/view";
+import { setSfxEnabled, sfx } from "../sfx";
 
 // Iso sisäinen lauta, jotta tila ei lopu kesken; näkymä kehystää käytetyn alueen.
 const BOARD = 21;
@@ -165,6 +166,36 @@ function savePremiumMode(on: boolean): void {
   }
 }
 let premiumMode = loadPremiumMode();
+
+// Äänet (valinnainen, oletus POIS): kevyt torvi & kantele -teema Web Audio -synteesillä.
+// Pelirauha-periaate (ITU.md) koskee oletustilaa — päätös 7.7.2026, ks. principle_itu_offline.
+const SOUND_KEY = "itu:sound:v1";
+function loadSoundEnabled(): boolean {
+  try {
+    return localStorage.getItem(SOUND_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+function saveSoundEnabled(on: boolean): void {
+  try {
+    localStorage.setItem(SOUND_KEY, on ? "1" : "0");
+  } catch {
+    /* yksityistila — valinta ei säily, peli toimii silti */
+  }
+}
+let soundEnabled = loadSoundEnabled();
+setSfxEnabled(soundEnabled);
+
+/** Näytetään "Kokeile ääniä" -paneelissa asetuksissa — sama lista kuin efektit.html:ssä. */
+const SFX_PREVIEW: [keyof typeof sfx, string][] = [
+  ["roll", "Heitto"],
+  ["place", "Kirjaimen asetus"],
+  ["unplace", "Kirjaimen poisto"],
+  ["lock", "Kierros lukittu"],
+  ["record", "Uusi ennätys"],
+  ["learnGoal", "Opi-tavoite osui"],
+];
 
 // Opi-moodi (valinnainen, oletus POIS): adaptiivinen kielioppi-PÄIVÄHAASTE. Kerää laudan
 // valmiiden sanojen kielioppiteemoja (sija/luku/aikamuoto/…) muutaman päivätavoitteen verran.
@@ -502,6 +533,11 @@ function endRound(): void {
   }
   ensureLemmas(); // analyysit loppunäyttöön + ratkaisijan ehdotuksiin (lazy)
   if (match) match.myScores[match.current] = endBreakdown.total;
+  // Äänipalaute kierroksen lopusta: ennätys (harvinainen) voittaa Opi-osuman, joka voittaa
+  // perus-lukitusäänen — vain yksi ääni kerrallaan, ei päällekkäisiä kerroksia.
+  if (lastRecordRank > 0) sfx.record();
+  else if (lastLearnAchieved.size > 0) sfx.learnGoal();
+  else sfx.lock();
   render();
 }
 
@@ -648,6 +684,7 @@ function newRoll(s: string): void {
   viewScroll = null; // keskitä näkymä uudelleen (zoom-off)
   roundDailyTargets = learnMode ? dailyTargets() : null;
   startRound();
+  sfx.roll();
   render();
 }
 
@@ -1149,6 +1186,25 @@ function renderSettings(): void {
       </label>
       ${premLegendHtml()}
       <p class="sm-ch-note sm-prem-key">K = kirjain, S = sana · ×2 ja ×3 ovat kertoimia. Sama selite näkyy laudan yllä Scrabble-moodissa.</p>
+      <label class="sm-setting-row">
+        <input type="checkbox" id="sm-set-sound"${soundEnabled ? " checked" : ""} />
+        <span class="sm-setting-text">
+          <b>🎵 Äänet (torvi &amp; kantele)</b>
+          <small>Kevyt äänimaisema kirjainten asetukselle ja kierroksen tapahtumille. Oletus
+          pois — pelirauha säilyy, ääni on valinnainen lisä.</small>
+        </span>
+      </label>
+      ${
+        soundEnabled
+          ? `<div class="sm-setting-row">
+               <span class="sm-setting-text"><b>🔊 Kokeile ääniä</b></span>
+             </div>
+             <button class="sm-tool" id="sm-mute-sounds">🔇 Hiljennä äänet</button>
+             <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+               ${SFX_PREVIEW.map(([fn, label]) => `<button class="sm-tool" data-try-sfx="${fn}">${label}</button>`).join("")}
+             </div>`
+          : ""
+      }
     </div>
   `;
   root.querySelector<HTMLButtonElement>("#sm-settings-close")!.onclick = () => {
@@ -1172,12 +1228,28 @@ function renderSettings(): void {
     savePremiumMode(premiumMode);
     renderSettings(); // päivitä valinta heti; lauta päivittyy kun palataan peliin
   };
+  root.querySelector<HTMLInputElement>("#sm-set-sound")!.onchange = (e) => {
+    soundEnabled = (e.target as HTMLInputElement).checked;
+    saveSoundEnabled(soundEnabled);
+    setSfxEnabled(soundEnabled);
+    if (soundEnabled) sfx.lock(); // ääninäyte: kuulet heti että äänet toimivat
+    renderSettings();
+  };
   root.querySelector<HTMLInputElement>("#sm-set-learn")!.onchange = (e) => {
     learnMode = (e.target as HTMLInputElement).checked;
     saveLearnMode(learnMode);
     if (learnMode) ensureLemmas(); // teemasirut tarvitsevat analyysipaketin
     renderSettings(); // päivitä valinta heti; teemasirut näkyvät kun palataan peliin
   };
+  root.querySelectorAll<HTMLButtonElement>("[data-try-sfx]").forEach((b) =>
+    b.addEventListener("click", () => sfx[b.dataset.trySfx as keyof typeof sfx]()),
+  );
+  root.querySelector<HTMLButtonElement>("#sm-mute-sounds")?.addEventListener("click", () => {
+    soundEnabled = false;
+    saveSoundEnabled(false);
+    setSfxEnabled(false);
+    renderSettings();
+  });
 }
 
 /** Lataa lemma-paketti kerran (lazy); valmistuttua päivittää avoinna olevan näkymän. */
@@ -2594,12 +2666,14 @@ function placeTile(die: number, target: string): void {
   }
   dragged.cell = target;
   lifted = null; // asetus kuluttaa mahdollisen noston
+  sfx.place();
   render();
 }
 
 function unplaceTile(die: number): void {
   recordHistory(die); // kumoa: muistiin ruutu ennen poistoa
   tiles[die].cell = null;
+  sfx.unplace();
   render();
 }
 
@@ -2675,6 +2749,7 @@ function typeAt(ch: string): void {
   tiles[die].cell = cellKey(row, col);
   const [nr, nc] = stepCell(row, col, dir);
   caret = inBounds(nr, nc) ? { row: nr, col: nc, dir } : { row, col, dir };
+  sfx.place();
   render();
 }
 
@@ -2686,6 +2761,7 @@ function releaseTile(t: Tile): void {
     t.locked = false; // näppäimistöllä asetettu jokeri vapautuu auto-päättelyyn
   }
   t.cell = null;
+  sfx.unplace();
 }
 
 /** Askelpalautin: tyhjennä aktiivinen ruutu jos varattu (keskeltä poisto), muuten

@@ -23,7 +23,9 @@ Dokumentit ovat kanonisia ja koodia vasten todennettuja. Avaa relevantti ennen k
 - `data/` lähde, `public/dict/` paketoitu sanasto + analyysidata (lazy).
 
 ## Invariantit (älä riko ilman keskustelua)
-- **Offline-pelirauha:** EI ääniä, EI verkkopalvelua, EI monikielisyyttä. Tietoisia valintoja (ks. ITU.md).
+- **Offline-pelirauha:** EI verkkopalvelua, EI monikielisyyttä. Ääni OLETUKSENA POIS, valinnainen
+  kevyt torvi/kannel-teema (`itu:sound:v1`, päätös 7.7.2026) — pelirauha koskee oletustilaa,
+  ei ääntä kokonaan. Tietoisia valintoja (ks. ITU.md).
 - **"Ei korvaa mitään":** Scrabble-pistemoodi (oletus POIS), Opi-moodi (oletus POIS, **PEHMEÄ**) ja aikabonus
   ovat *kerroksia* nykypelin päällä — eivät muuta sanastoa, lautaa, noppia eivätkä perus-ennätyksiä.
 - **Ei hallusinaatiota:** sijamuoto/analyysi tulee build-aikaisesta FST-lähteestä + käsin todennetusta
@@ -31,6 +33,12 @@ Dokumentit ovat kanonisia ja koodia vasten todennettuja. Avaa relevantti ennen k
 - **Determinismi:** sama siemen → sama heitto (`domain/rng.ts`). Sanastoversio on osa identiteettiä
   (`sanasto-fi-v1`) tulevaa asynkronista haastetta varten — älä riko siemen/versio-kiinnitystä.
 - Nopat ja sanaston säännöt on merkitty **LUKITTU** ITU.md:ssä — muutos vaatii eksplisiittisen päätöksen.
+
+## Sopimusmuutos-protokolla
+Jos tilanne (bugi, pelitestilöytö, ideakysymys) rikkoo kanonisen dokumentin sääntöä, älä oleta
+kumpaakaan osapuolta automaattisesti oikeaksi. Nosta eksplisiittisesti pohdittavaksi: korjataanko
+koodi dokumentin mukaiseksi VAI muutetaanko dokumenttia? Dokumenttimuutos kirjataan ensin
+(ITU.md/SANASTO.md/ym.) ja vahvistetaan käyttäjällä, vasta sitten koodiin.
 
 ## Komennot
 - `npm run dev` — devpalvelin (portti 5177, strictPort).
