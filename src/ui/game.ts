@@ -31,6 +31,12 @@ import {
 import type { WordJudge } from "../dict/judge";
 import { loadJudge } from "../dict/load";
 import { DAWG_VERSION } from "../dict/builder";
+import {
+  type ChallengePayload,
+  challengeLink,
+  decodeChallenge,
+  dictMismatchOf,
+} from "../domain/challenge";
 import { loadLemmas, type LemmaLookup } from "../dict/lemmas";
 import { describeCode } from "../dict/morph";
 import {
@@ -628,7 +634,7 @@ export function mountGame(el: HTMLElement): void {
   // URL-hash: #c=… = haaste (ottelu), muuten #siemen = yksittäinen jaettu heitto.
   const rawHash = location.hash.replace(/^#/, "");
   if (rawHash.startsWith("c=")) {
-    const p = decodeChallenge(rawHash.slice(2));
+    const p = decodeChallenge(rawHash.slice(2), ROUND_OPTIONS);
     if (p) handleIncoming(p);
     else newRoll(randomSeed());
   } else {
@@ -1949,46 +1955,9 @@ function exitMatch(): void {
 }
 
 // --- Haastekoodaus (base64url JSON URL-hashiin: #c=…) ---
-interface ChallengePayload {
-  v: number;
-  b: string; // perussiemen
-  n: number; // kierrokset
-  m?: 0 | 1; // pistemoodi: 1 = Scrabble (premium), 0/puuttuu = perinteinen Itu
-  d?: number; // kierroskesto sekunteina (puuttuu/tuntematon → oletus 3 min)
-  dv?: string; // sanastoversio (puuttuu = legacy-linkki ⇒ sanasto-fi-v1); sama sanastototuus molemmille
-  th?: string[]; // teemahaaste: jaetut tavoiteteemat (läsnä ⇒ kaveri-teemahaaste)
-  a: { name: string; s: number[]; t: number; h?: string[] }; // haastaja (h=teemaosumat)
-  r?: { name: string; s: number[]; t: number; h?: string[] }; // vastaaja (paluulinkissä)
-}
-
-function b64e(s: string): string {
-  return btoa(encodeURIComponent(s)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
-function b64d(s: string): string {
-  return decodeURIComponent(atob(s.replace(/-/g, "+").replace(/_/g, "/")));
-}
-function challengeLink(p: ChallengePayload): string {
-  return `${location.origin}${location.pathname}#c=${b64e(JSON.stringify(p))}`;
-}
-function isScoreArray(s: unknown): s is number[] {
-  return Array.isArray(s) && s.every((n) => typeof n === "number" && Number.isFinite(n));
-}
-function decodeChallenge(code: string): ChallengePayload | null {
-  try {
-    const p = JSON.parse(b64d(code)) as ChallengePayload;
-    const validBase =
-      p && typeof p.b === "string" && p.b.length > 0 &&
-      typeof p.n === "number" && ROUND_OPTIONS.includes(p.n) &&
-      p.a && typeof p.a.name === "string" && isScoreArray(p.a.s);
-    if (!validBase) return null;
-    if (p.th !== undefined && !(Array.isArray(p.th) && p.th.every((s) => typeof s === "string"))) return null;
-    if (p.r !== undefined && !(typeof p.r.name === "string" && isScoreArray(p.r.s))) return null;
-    return p;
-  } catch {
-    /* viallinen koodi */
-  }
-  return null;
-}
+// Koodaus/dekoodaus + sanastoversiovertailu on eriytetty puhtaaseen
+// domain/challenge.ts:ään (testattavuus). UI antaa baseUrl:n ja ROUND_OPTIONSin.
+const challengeBaseUrl = (): string => `${location.origin}${location.pathname}`;
 
 const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
 
@@ -2009,7 +1978,7 @@ function myChallengeLink(): string {
     dv: DAWG_VERSION,
     ...(m.themes ? { th: m.themes } : {}),
     a: { name: m.myName, s: m.myScores, t: sum(m.myScores), ...(h ? { h } : {}) },
-  });
+  }, challengeBaseUrl());
 }
 function myResultLink(): string {
   const m = match!;
@@ -2029,7 +1998,7 @@ function myResultLink(): string {
       ...(m.opp!.themeHits ? { h: m.opp!.themeHits } : {}),
     },
     r: { name: m.myName, s: m.myScores, t: sum(m.myScores), ...(h ? { h } : {}) },
-  });
+  }, challengeBaseUrl());
 }
 
 function shareLink(url: string, text: string): void {
@@ -2045,8 +2014,7 @@ function handleIncoming(p: ChallengePayload): void {
   // Reiluus: linkki kiinnittää sanastoversion (dv). Puuttuva kenttä = legacy-linkki
   // ajalta ennen kenttää ⇒ sanasto-fi-v1. Eri versio ei estä pelaamista (PEHMEÄ),
   // mutta ilmoitetaan ettei tuloksia voi vertailla samalla sanastototuudella.
-  const linkDict = p.dv ?? "sanasto-fi-v1";
-  const dictMismatch = linkDict !== DAWG_VERSION ? linkDict : undefined;
+  const dictMismatch = dictMismatchOf(p, DAWG_VERSION);
   if (p.r) {
     match = {
       base: p.b,
@@ -2456,7 +2424,7 @@ function wireEvents(): void {
     const raw = root.querySelector<HTMLInputElement>("#sm-ch-input")?.value ?? "";
     const cm = raw.match(/c=([A-Za-z0-9\-_]+)/);
     if (cm) {
-      const p = decodeChallenge(cm[1]);
+      const p = decodeChallenge(cm[1], ROUND_OPTIONS);
       if (p) {
         showChallenge = false;
         handleIncoming(p);
