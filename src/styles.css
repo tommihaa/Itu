@@ -812,6 +812,33 @@ input, textarea {
   .sm-term-name { flex-basis: auto; }
 }
 
+/* --- Esittely / Tietoja-välilehti --- */
+.sm-about-links { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1rem 0; }
+.sm-about-link {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.45rem 0.8rem; border: 1px solid var(--line); border-radius: 0.5rem;
+  color: var(--text); text-decoration: none; font-weight: 600;
+}
+.sm-about-link:hover { border-color: var(--gold); }
+.sm-about-kofi { border-color: #d9534f; color: #d9534f; }
+.sm-about-kofi:hover { background: #d9534f; color: #fff; }
+.sm-install { display: flex; flex-direction: column; gap: 0.8rem; }
+.sm-install-group h4 { margin: 0 0 0.35rem; color: var(--gold); font-size: 1rem; }
+.sm-install-row { padding: 0.3rem 0; border-bottom: 1px solid var(--line); }
+.sm-install-row:last-child { border-bottom: 0; }
+.sm-install-row b { display: block; }
+.sm-install-row span { color: var(--dim, var(--text)); line-height: 1.5; }
+.sm-other-games { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.sm-other-game {
+  display: flex; flex-direction: column; gap: 0.1rem;
+  padding: 0.5rem 0.8rem; border: 1px solid var(--line); border-radius: 0.5rem;
+  color: var(--text); text-decoration: none; min-width: 8rem;
+}
+.sm-other-game:hover { border-color: var(--gold); }
+.sm-other-game b { color: var(--gold); }
+.sm-other-game span { font-size: 0.85rem; opacity: 0.8; }
+.sm-about-version { margin-top: 1.25rem; color: var(--dim, var(--text)); font-size: 0.85rem; opacity: 0.75; }
+
 /* --- Tulostus: vain säännöt, vaaleana paperille --- */
 @media print {
   .sm-no-print { display: none !important; }

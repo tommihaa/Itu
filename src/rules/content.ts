@@ -242,3 +242,75 @@ export const CONTROLS: RuleSection[] = [
       "kerralla mitkä vokaalit sopivat yhteen.",
   },
 ];
+
+// ── Esittely (Tietoja-välilehti) ─────────────────────────────────────────────
+// Mikä Itu on + yksityisyyslupaus. Oma sisältö (ei kopioitu sisarpeleistä):
+// data on projektikohtaista, vaikka mekanismi on sama kuin Jakossa.
+export const ABOUT_TITLE = "Tietoja Itusta";
+
+/** Esittelykappaleet, selkokieltä (lyhyet lauseet, yksi ajatus kerrallaan).
+ *  Sisältää saavutettavuusrivin (millä laitteilla peli toimii). */
+export const ABOUT_PARAS: string[] = [
+  "Itu on suomen kielen sanapeli. Saat kirjainnopat. Teet niistä sanoja ja ristikon.",
+  "Pelaat yksin ja omassa tahdissasi. Aikaa on rajallisesti. Pisteet tulevat " +
+    "kirjaimista ja pitkistä sanoista.",
+  "Peli toimii näppäimistöllä, hiirellä ja kosketuksella. Voit myös tulostaa " +
+    "säännöt paperille.",
+  "Peli ei kerää sinusta mitään. Ei tiliä, ei mainoksia. Tulokset tallentuvat " +
+    "vain sinun selaimeesi.",
+  "Peli on ilmainen ja tehty jaettavaksi. Voit lähettää palautetta. Voit myös " +
+    "tarjota tekijälle kahvit.",
+];
+
+// ── Muut pelit (sisarpelinosto) ──────────────────────────────────────────────
+// Emergentti glue: kolme erillistä peliä muuttuu löydettäväksi tähdistöksi
+// ilman keskuspalvelinta. Linkit ovat pysyviä tuotanto-URLeja.
+export interface GameLink {
+  name: string;
+  url: string;
+  blurb: string;
+}
+
+export const OTHER_GAMES_TITLE = "Muut pelit";
+export const OTHER_GAMES_INTRO = "Samalta tekijältä. Kaikki ilmaisia ja ilman mainoksia.";
+export const OTHER_GAMES: GameLink[] = [
+  { name: "Superjatsi", url: "https://tommi-superjatsi.vercel.app", blurb: "noppapeli yhdelle" },
+  { name: "Jako", url: "https://tommi-jako.vercel.app", blurb: "yhdeksän korttipeliä" },
+];
+
+// ── Lisää aloitusnäytölle (PWA-asennusohje) ──────────────────────────────────
+// Staattinen selainkohtainen ohjelista, sama rakenne kuin Jakon a2hs-osiossa.
+// Otsikko on peli­kohtainen; askeleet ovat selainkohtaisia (samat kaikissa peleissä).
+export interface InstallGroup {
+  title: string;
+  /** [selain, ohjeaskeleet] -parit. */
+  rows: [browser: string, steps: string][];
+}
+
+export const INSTALL_TITLE = "Lisää Itu aloitusnäytölle 📲";
+
+export const INSTALL_INTRO =
+  "Lisää Itu puhelimen aloitusnäytölle tai tietokoneen työpöydälle, niin se " +
+  "avautuu omasta kuvakkeestaan kuin sovellus, ilman selaimen palkkeja. Kerran " +
+  "avattu peli toimii myös ilman verkkoa.";
+
+export const INSTALL_GROUPS: InstallGroup[] = [
+  {
+    title: "📱 Puhelin ja tabletti",
+    rows: [
+      ["Chrome · Brave · Edge · Opera (Android)", 'Valikko ⋮ → "Lisää aloitusnäyttöön" tai "Asenna sovellus".'],
+      ["Samsung Internet", 'Valikko ≡ → "Lisää sivu kohteeseen" → "Aloitusnäyttö".'],
+      ["Firefox (Android)", 'Valikko ⋮ → "Lisää aloitusnäyttöön".'],
+      ["Safari (iPhone/iPad)", 'Jaa-painike → "Lisää Koti-valikkoon".'],
+      ["Chrome ja muut (iPhone/iPad)", 'Jaa-painike → "Lisää Koti-valikkoon" (iOS sallii asennuksen vain Jaa-valikosta).'],
+    ],
+  },
+  {
+    title: "💻 Tietokone",
+    rows: [
+      ["Chrome · Edge · Brave · Opera · Vivaldi", 'Osoiterivin oikean reunan asennuskuvake ⊕ → "Asenna".'],
+      ["Safari (Mac)", 'Tiedosto-valikko → "Lisää Dockiin".'],
+      ["Firefox (tietokone)", "Ei tue asentamista. Lisää kirjanmerkki nopeaa avaamista varten."],
+    ],
+  },
+];

@@ -57,6 +57,7 @@ import {
   renderWordsContent,
   renderControlsContent,
   renderTermsContent,
+  renderAboutContent,
   wireTermClicks,
 } from "../rules/view";
 import { setSfxEnabled, sfx } from "../sfx";
@@ -116,7 +117,7 @@ let seed = "";
 let judge: WordJudge | null = null;
 let root: HTMLElement;
 let showRules = false;
-let rulesTab: "words" | "controls" | "terms" = "words"; // Säännöt-näkymän aktiivinen välilehti
+let rulesTab: "words" | "controls" | "terms" | "about" = "words"; // Säännöt-näkymän aktiivinen välilehti
 let showChecker = false; // Tarkastaja (pelin ulkopuolinen sanahaku + selitys)
 let showSettings = false; // ⚙️ Asetukset-paneeli (toistaiseksi: Scrabble-pistemoodi)
 
@@ -999,20 +1000,22 @@ function resultHtml(): string {
 
 /** Selkosäännöt + ohjaus eri välilehdillä — sama sisältö pelissä ja tulosteessa (@media print). */
 function renderRules(): void {
-  const tab = (key: "words" | "controls" | "terms", label: string) =>
+  const tab = (key: "words" | "controls" | "terms" | "about", label: string) =>
     `<button class="sm-tab${key === rulesTab ? " sm-tab-active" : ""}" data-rtab="${key}">${label}</button>`;
   const content =
     rulesTab === "controls"
       ? renderControlsContent()
       : rulesTab === "terms"
         ? renderTermsContent()
-        : renderWordsContent();
+        : rulesTab === "about"
+          ? renderAboutContent()
+          : renderWordsContent();
   root.innerHTML = `
     <div class="sm-bar sm-no-print">
       <button id="sm-rules-close">← Takaisin peliin</button>
       <button id="sm-rules-print" class="sm-primary">Tulosta</button>
     </div>
-    <div class="sm-tabs sm-no-print">${tab("words", "Sanat")}${tab("controls", "Ohjaus")}${tab("terms", "Termit")}</div>
+    <div class="sm-tabs sm-no-print">${tab("words", "Sanat")}${tab("controls", "Ohjaus")}${tab("terms", "Termit")}${tab("about", "Esittely")}</div>
     ${content}
   `;
   wireTermClicks(root);
@@ -1023,7 +1026,7 @@ function renderRules(): void {
   root.querySelector<HTMLButtonElement>("#sm-rules-print")!.onclick = () => window.print();
   for (const b of root.querySelectorAll<HTMLElement>("[data-rtab]")) {
     b.addEventListener("click", () => {
-      rulesTab = b.dataset.rtab as "words" | "controls" | "terms";
+      rulesTab = b.dataset.rtab as "words" | "controls" | "terms" | "about";
       renderRules();
     });
   }

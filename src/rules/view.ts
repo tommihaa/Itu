@@ -6,6 +6,14 @@ import {
   RULES_TITLE,
   CONTROLS,
   CONTROLS_TITLE,
+  ABOUT_TITLE,
+  ABOUT_PARAS,
+  OTHER_GAMES_TITLE,
+  OTHER_GAMES_INTRO,
+  OTHER_GAMES,
+  INSTALL_TITLE,
+  INSTALL_INTRO,
+  INSTALL_GROUPS,
   type LetterRow,
   type RuleGroup,
   type RuleSection,
@@ -118,6 +126,62 @@ export function renderTermsContent(): string {
       <p class="sm-rules-lead">Pelin termit lyhyesti selitettyinä. Samat termit ovat
       napautettavissa myös sääntöteksteissä (katkoviivalla alleviivatut).</p>
       ${sections}
+    </div>`;
+}
+
+// Versioleima: Vite `define` syöttää nämä build-aikana (ks. vite.config.ts).
+declare const __APP_VERSION__: string;
+declare const __BUILD_DATE__: string;
+
+// Palaute- ja tukilinkit (sama tekijä kuin sisarpeleissä, linkit uudelleenkäytettäviä).
+const MAILTO = "mailto:no.jopas@gmail.com?subject=Itu-palaute";
+const KOFI = "https://ko-fi.com/tommih";
+
+/** "Esittely / Tietoja"-välilehti: mikä Itu on, palautelinkit ja PWA-asennusohje. */
+export function renderAboutContent(): string {
+  const paras = ABOUT_PARAS.map((p) => `<p>${escape(p)}</p>`).join("");
+  const links = `
+    <div class="sm-about-links sm-no-print">
+      <a class="sm-about-link" href="${MAILTO}">✉ Lähetä palautetta</a>
+      <a class="sm-about-link sm-about-kofi" href="${KOFI}" target="_blank" rel="noopener">☕ Tue Ko-fissa</a>
+    </div>`;
+  const installGroups = INSTALL_GROUPS.map((g) => {
+    const rows = g.rows
+      .map(
+        ([browser, steps]) =>
+          `<div class="sm-install-row"><b>${escape(browser)}</b><span>${escape(steps)}</span></div>`,
+      )
+      .join("");
+    return `<div class="sm-install-group"><h4>${escape(g.title)}</h4>${rows}</div>`;
+  }).join("");
+  const install = `
+    <section class="sm-rule-section">
+      <h3>${escape(INSTALL_TITLE)}</h3>
+      <p>${escape(INSTALL_INTRO)}</p>
+      <div class="sm-install">${installGroups}</div>
+    </section>`;
+  const otherGames = `
+    <section class="sm-rule-section">
+      <h3>${escape(OTHER_GAMES_TITLE)}</h3>
+      <p>${escape(OTHER_GAMES_INTRO)}</p>
+      <div class="sm-other-games">
+        ${OTHER_GAMES.map(
+          (g) =>
+            `<a class="sm-other-game" href="${g.url}" target="_blank" rel="noopener">
+              <b>${escape(g.name)}</b><span>${escape(g.blurb)}</span>
+            </a>`,
+        ).join("")}
+      </div>
+    </section>`;
+  const version = `<p class="sm-about-version">Itu v${escape(__APP_VERSION__)} · ${escape(__BUILD_DATE__)}</p>`;
+  return `
+    <div class="sm-rules-doc">
+      <h2>${escape(ABOUT_TITLE)}</h2>
+      ${paras}
+      ${links}
+      ${otherGames}
+      ${install}
+      ${version}
     </div>`;
 }
 
