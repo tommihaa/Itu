@@ -11,7 +11,7 @@ Dokumentit ovat kanonisia ja koodia vasten todennettuja. Avaa relevantti ennen k
 - **Design / mekaniikka / pisteytys:** [ITU.md](ITU.md) — lukitut päätökset (nopat, pisteytys, sanasto).
 - **Sanaston hyväksymissäännöt:** [SANASTO.md](SANASTO.md) — mitä taivutuksia sisään/ulos, DAWG-formaatti.
 - **Morfologia / FST-generointi:** [build/MORFOLOGIA.md](build/MORFOLOGIA.md) — lemmalista → muodot -putki.
-- **Opi-moodin design:** [OPIMOODI.md](OPIMOODI.md) — adaptiivinen kielioppihaaste (vaihe 2 kesken).
+- **Opi-moodin design:** [OPIMOODI.md](OPIMOODI.md) — adaptiivinen kielioppihaaste (vaihe 1 ja 2 toteutettu).
 - **Perustelut:** [PERUSTELUT.md](PERUSTELUT.md).
 
 ## Rakenne

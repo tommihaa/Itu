@@ -1,13 +1,13 @@
 # Itu — Opi-moodi (adaptiivinen kielioppihaaste)
 
-> Designdokumentti. Status: **VAIHE 1 TOTEUTETTU 28.6.2026** (ei vielä deployattu).
+> Designdokumentti. Status: **VAIHE 1 TOTEUTETTU 28.6.2026** (deployattu 28.6, todennettu 30.6).
 > Toteutus: puhdas domain `src/domain/learn.ts` (+ `test/learn.test.ts`, 18 testiä) +
 > UI-kytkennät `src/ui/game.ts` (⚙️-toggle `itu:learnmode:v1`, teemasirut laudan yllä,
 > reaaliaikainen osuma, loppunäyttö + viikkopalkki, edistymä `itu:learn:v1`) + CSS.
 > Todennettu livenä (port 5177): tavoitesirut, "nimet" → nominatiivi+monikko syttyivät,
 > loppunäyttö 2/3, edistymä tallentui, 71/71 testiä, tsc puhdas. Tagimerkkijonot varmistettu morph.ts:stä.
 >
-> **VAIHE 2 (kaveri-teemahaaste) TOTEUTETTU 28.6.2026** (ei vielä deployattu). Päätökset:
+> **VAIHE 2 (kaveri-teemahaaste) TOTEUTETTU 28.6.2026** (deployattu 28.6, todennettu 30.6). Päätökset:
 > *erillinen Teemahaaste-moodi*, voittaja *teemakattavuudesta, pisteet tasurina*. Jaettu
 > tavoitesetti (= haastajan `pickDuelThemes`, n=`DUEL_THEME_COUNT`=5) napsautetaan
 > haastelinkkiin → SAMA molemmille (reilu), syrjäyttää vastaajan oman adaptiivisen setin.
