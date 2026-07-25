@@ -38,7 +38,7 @@ export const TERMS: TermEntry[] = [
     term: "vokaalisointu",
     match: ["vokaalisoin*"],
     selitys:
-      "Taka- ja etuvokaalit eivät esiinny samassa suomalaisessa sanassa — " +
+      "Taka- ja etuvokaalit eivät esiinny samassa suomalaisessa sanassa: " +
       "sana on joko takavokaalinen tai etuvokaalinen. Neutraalit e ja i sopivat kumpaankin.",
     esimerkki: "talolla ✓ · pöydällä ✓ · talollä ✗",
   },
@@ -77,7 +77,7 @@ export const TERMS: TermEntry[] = [
     match: ["teline*"],
     selitys:
       "Hylly, jossa heitetyt nopat odottavat. Kierroksen lopussa käyttämättä jääneet " +
-      "nopat vähentävät oman pistearvonsa — telineessä ja laudalla irrallaan olevat samalla tavalla.",
+      "nopat vähentävät oman pistearvonsa, telineessä ja laudalla irrallaan olevat samalla tavalla.",
   },
   {
     kategoria: "peli",
@@ -85,7 +85,7 @@ export const TERMS: TermEntry[] = [
     match: ["jokeri*"],
     selitys:
       "Tyhjä noppa, joka voi edustaa mitä tahansa kirjainta. Peli päättelee kirjaimen " +
-      "laudalla automaattisesti; tarvittaessa valitset sen napauttamalla. Arvo 0 pistettä — " +
+      "laudalla automaattisesti; tarvittaessa valitset sen napauttamalla. Arvo 0 pistettä: " +
       "käyttämätönkään jokeri ei maksa mitään.",
   },
   {
@@ -94,7 +94,7 @@ export const TERMS: TermEntry[] = [
     match: ["aikabonu*"],
     selitys:
       "Kun lukitset ennen ajan loppua, saat +1 pisteen jokaisesta 5 säästetystä sekunnista " +
-      "(enintään +6) — mutta vain jos vähintään 11 noppaa 13:sta on kelvollisissa sanoissa.",
+      "(enintään +6), mutta vain jos vähintään 11 noppaa 13:sta on kelvollisissa sanoissa.",
   },
   {
     kategoria: "peli",
@@ -103,7 +103,7 @@ export const TERMS: TermEntry[] = [
     selitys:
       "Pelin tuomari: pakattu sanasto (Kotus-pohjainen, versio sanasto-fi-v1), jossa sanat " +
       "ovat taivutusmuotoineen. Jos muoto ei ole sanakirjassa, se ei kelpaa. Sama lähde myös " +
-      "selittää muodot Sanapoliisissa — hyväksyjä ja selittäjä eivät voi olla eri mieltä.",
+      "selittää muodot Sanapoliisissa: hyväksyjä ja selittäjä eivät voi olla eri mieltä.",
   },
 ];
 

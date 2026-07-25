@@ -873,7 +873,7 @@ function render(): void {
   }
   const anyPlaced = tiles.some((t) => t.cell); // ankkuri-varoitus vasta kun jotain on laudalla
   const matchTag = match
-    ? `<span class="sm-match-tag"${match.dictMismatch ? ` title="Haastelinkki on tehty eri sanastoversiolla (${escapeHtml(match.dictMismatch)}) — tulokset eivät ole täysin vertailukelpoisia."` : ""}>🎯 Kierros ${match.current + 1}/${match.rounds} · ⏳ ${durationLabel(match.duration)}${match.premium ? " · 🟦 Scrabble" : ""}${match.dictMismatch ? " · ⚠️ eri sanastoversio" : ""}</span>`
+    ? `<span class="sm-match-tag"${match.dictMismatch ? ` title="Haastelinkki on tehty eri sanastoversiolla (${escapeHtml(match.dictMismatch)}). Tulokset eivät ole täysin vertailukelpoisia."` : ""}>🎯 Kierros ${match.current + 1}/${match.rounds} · ⏳ ${durationLabel(match.duration)}${match.premium ? " · 🟦 Scrabble" : ""}${match.dictMismatch ? " · ⚠️ eri sanastoversio" : ""}</span>`
     : "";
   // Nappipalkki kolmeen ryhmään: toiminnot (muuttavat pelitilaa) | näkymät (avaavat
   // paneelin) | tila (vain luku). Erotin näkyy vain kun toiminnot-ryhmässä on nappeja.
@@ -882,7 +882,7 @@ function render(): void {
   // jo pelin aikana, ei vasta tulosruudussa. "Auki" = kynnys täynnä ja bonus käytössä.
   const bonusReady = timeBonusEnabled && v.lettersUsed >= TIME_BONUS_MIN_LETTERS_USED;
   const usedTitle = !timeBonusEnabled
-    ? "Aikabonus pois käytöstä — käytä silti mahdollisimman monta noppaa"
+    ? "Aikabonus pois käytöstä. Käytä silti mahdollisimman monta noppaa"
     : bonusReady
       ? "Aikabonus auki"
       : `Aikabonus aukeaa kun ≥${TIME_BONUS_MIN_LETTERS_USED} noppaa on käytetty`;
@@ -950,7 +950,7 @@ function resultHtml(): string {
       ? `<div class="sm-sug">
           ${
             s.leftover.length && s.withLeftover.length
-              ? `<h3>Käyttämättä jäi <b>${s.leftover.map((c) => c.toUpperCase()).join(" ")}</b> — niillä olisi voinut tehdä</h3>
+              ? `<h3>Käyttämättä jäi <b>${s.leftover.map((c) => c.toUpperCase()).join(" ")}</b>, niillä olisi voinut tehdä</h3>
                  ${wordRows(s.withLeftover)}`
               : ""
           }
@@ -963,7 +963,7 @@ function resultHtml(): string {
     ? `<p class="sm-record-banner">🏆 ${
         lastRecordRank === 1
           ? "Uusi paras tulos!"
-          : `Ennätyslistalle — sija ${lastRecordRank}.`
+          : `Ennätyslistalle, sija ${lastRecordRank}.`
       }</p>`
     : "";
 
@@ -987,7 +987,7 @@ function resultHtml(): string {
       <tr><td>Käyttämättä jääneet nopat</td><td>−${b.unusedPenalty}</td></tr>
       <tr><td>Aikabonus${endRemaining > 0 ? ` (${endRemaining} s säästöön)` : ""}${
         b.timeBonus === 0 && endRemaining > 0 && endLettersUsed < TIME_BONUS_MIN_LETTERS_USED
-          ? ` <span class="sm-bonus-note">— vaatii ≥${TIME_BONUS_MIN_LETTERS_USED} käytettyä kirjainta (käytit ${endLettersUsed})</span>`
+          ? ` <span class="sm-bonus-note">· vaatii ≥${TIME_BONUS_MIN_LETTERS_USED} käytettyä kirjainta (käytit ${endLettersUsed})</span>`
           : ""
       }</td><td>+${b.timeBonus}</td></tr>
       ${b.bingo ? `<tr><td>Bingo (kaikki nopat) ⚡</td><td>+${b.bingo}</td></tr>` : ""}
@@ -1090,9 +1090,13 @@ function learnTargetsHtml(hits: Set<string>, forced?: string[]): string {
   </div>${descs}`;
 }
 
-/** Teemojen selkokuvaukset (nimi — mihin vastaa · esim.). Jaettu pelipalkin ⓘ-laajennuksen,
+/** Teemojen selkokuvaukset (nimi · mihin vastaa · esim.). Jaettu pelipalkin ⓘ-laajennuksen,
  * haastemodaalin ja loppunäytön kesken. `hits` korostaa osutut; `markMissed` näyttää ohitetut
- * ○:lla (loppunäyttö, jossa "et osunut" on merkityksellinen — pelipalkissa/modaalissa ei). */
+ * –:llä (loppunäyttö, jossa "et osunut" on merkityksellinen; pelipalkissa/modaalissa ei).
+ * Sama merkki kuin teemahaasteen tulostaulukossa (renderThemeMatchSummary), ja samoin
+ * vaimennettuna (.sm-learn-miss): osuman merkitys kulkee kultakorostuksessa, ohitettu ei
+ * väitä mitään. Merkkivalinta on tietoinen: ○ luetaan japanilaisittain "oikein", ja ✓ on
+ * suomalaisessa koulukäytännössä perinteisesti tarkoittanut virhettä. */
 function learnDescListHtml(
   ids: readonly string[],
   hits: Set<string> = new Set(),
@@ -1103,7 +1107,7 @@ function learnDescListHtml(
       const t = THEME_BY_ID[id];
       if (!t) return "";
       const hit = hits.has(id);
-      const mark = hit ? "✓ " : markMissed ? "○ " : "";
+      const mark = hit ? "✓ " : markMissed ? `<span class="sm-learn-miss">– </span>` : "";
       return `<li class="sm-learn-desc-row${hit ? " sm-learn-hit-row" : ""}">
         <span class="sm-learn-desc-name">${mark}${escapeHtml(t.label)}</span>
         <span class="sm-learn-desc-q">${escapeHtml(t.describe)}</span>
@@ -1119,10 +1123,10 @@ function learnResultHtml(): string {
   if (!lastLearnTargets.length) {
     return `<div class="sm-learn-result">
       <h3>📚 Opi-moodi</h3>
-      <p class="sm-words pending">Teemat tallentuvat kun sanasto on latautunut — pelaa uusi kierros.</p>
+      <p class="sm-words pending">Teemat tallentuvat kun sanasto on latautunut. Pelaa uusi kierros.</p>
     </div>`;
   }
-  // Kuvaukset + esimerkit myös loppunäytöllä (oppimishetki): osutut ✓, ohitetut ○.
+  // Kuvaukset + esimerkit myös loppunäytöllä (oppimishetki): osutut ✓, ohitetut –.
   const targetList = learnDescListHtml(lastLearnTargets, lastLearnAchieved, true);
   const extra = [...lastLearnAchieved].filter((id) => !lastLearnTargets.includes(id));
   const extraChips = extra.length
@@ -1171,7 +1175,7 @@ function renderSettings(): void {
           <b>⏱️ Aikabonus</b>
           <small>Nopeasta ja täydestä ratkaisusta lisäpisteitä: jäljellä oleva aika palkitaan,
           kun käytät ≥${TIME_BONUS_MIN_LETTERS_USED} noppaa. Pois päältä ajastin näkyy yhä, mutta
-          aika ei tuo bonuspisteitä — voit pohtia rauhassa.</small>
+          aika ei tuo bonuspisteitä, voit pohtia rauhassa.</small>
         </span>
       </label>
       <label class="sm-setting-row">
@@ -1179,7 +1183,7 @@ function renderSettings(): void {
         <span class="sm-setting-text">
           <b>📚 Opi-moodi</b>
           <small>Päivän kielioppihaaste: muutama teema (sija, monikko, aikamuoto, …)
-          kerättäväksi laudan sanoilla. Pehmeä — ei estä pelaamista eikä muuta pisteitä,
+          kerättäväksi laudan sanoilla. Pehmeä: ei estä pelaamista eikä muuta pisteitä,
           vaan näyttää mitä muotoja muodostit. Adaptiivinen: tarjoaa sitä mitä harjoittelet
           vähiten, viikkotavoite löysänä koontina. Edistymä tallentuu vain tälle laitteelle.</small>
         </span>
@@ -1189,7 +1193,7 @@ function renderSettings(): void {
         <span class="sm-setting-text">
           <b>🟦 Scrabble-pistemoodi</b>
           <small>Premium-ruudut (kirjain ×2/×3, sana ×2/×3), bingo-bonus kaikkien noppien
-          käytöstä ja keskusankkuri (★). Kerrostuu nykyisen pisteytyksen päälle — aikabonus ja
+          käytöstä ja keskusankkuri (★). Kerrostuu nykyisen pisteytyksen päälle, aikabonus ja
           ajastin säilyvät. Pois päältä peli on perinteinen Itu.</small>
         </span>
       </label>
@@ -1200,7 +1204,7 @@ function renderSettings(): void {
         <span class="sm-setting-text">
           <b>🎵 Äänet (torvi &amp; kantele)</b>
           <small>Kevyt äänimaisema kirjainten asetukselle ja kierroksen tapahtumille. Oletus
-          pois — pelirauha säilyy, ääni on valinnainen lisä.</small>
+          pois: pelirauha säilyy, ääni on valinnainen lisä.</small>
         </span>
       </label>
       ${
@@ -1360,7 +1364,7 @@ function renderChecker(): void {
       <h2 class="sm-records-title">🔎 Sanapoliisi</h2>
     </div>
     <div class="sm-checker">
-      <p class="sm-ch-note">Kokeile käykö jokin sana — esim. <b>kuusta</b>, <b>rankin</b>, <b>kellutetuissa</b>. Pelin sanakirja vastaa kuten pelissä, ja Sanapoliisi kertoo perusmuodon, sijamuodon ja mitä se tarkoittaa.</p>
+      <p class="sm-ch-note">Kokeile käykö jokin sana, esim. <b>kuusta</b>, <b>rankin</b>, <b>kellutetuissa</b>. Pelin sanakirja vastaa kuten pelissä, ja Sanapoliisi kertoo perusmuodon, sijamuodon ja mitä sija tekee. Sanan merkitys aukeaa sanakirjalinkeistä.</p>
       <input id="sm-check-input" class="sm-ch-link" placeholder="Kirjoita sana"
         autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" />
       <p id="sm-check-result" class="sm-check-result"></p>
@@ -1429,8 +1433,8 @@ function renderRecords(): void {
     `<button class="sm-tab${key === recordsSort ? " sm-tab-active" : ""}" data-recsort="${key}">${label}</button>`;
   const modeName = recordsTab === "scrabble" ? "Scrabble-moodin " : "Itu-";
   const empty = rateMode
-    ? `Ei vielä ${modeName}ennätyksiä — pelaa kierros ja lukitse tulos! Pistettä/min vertaa eri kestoja keskenään.`
-    : `Ei vielä ${modeName}ennätyksiä kestolla ${durationLabel(recordsDurationTab)} — pelaa kierros tällä asetuksella ja lukitse tulos!`;
+    ? `Ei vielä ${modeName}ennätyksiä. Pelaa kierros ja lukitse tulos! Pistettä/min vertaa eri kestoja keskenään.`
+    : `Ei vielä ${modeName}ennätyksiä kestolla ${durationLabel(recordsDurationTab)}. Pelaa kierros tällä asetuksella ja lukitse tulos!`;
   const list = recs.length
     ? recs.map((r, i) => recordHtml(r, i + 1, rateMode)).join("")
     : `<p class="sm-words pending">${empty}</p>`;
@@ -1535,8 +1539,8 @@ function controlsHintHtml(): string {
   if (!boardEmpty) {
     parts.push(
       fine
-        ? "Raahaa nappula laudalle — tai napauta nappula, sitten ruutu."
-        : "Napauta nappula ja sitten ruutu — tai raahaa.",
+        ? "Raahaa nappula laudalle, tai napauta nappula ja sitten ruutu."
+        : "Napauta nappula ja sitten ruutu, tai raahaa.",
     );
   }
   // Suunnanvaihto, vain kun kirjoituskohta on auki. Kosketuslaitteella EI näppäimistöä →
@@ -2006,7 +2010,7 @@ function myResultLink(): string {
 
 function shareLink(url: string, text: string): void {
   if (navigator.share) {
-    navigator.share({ title: "Itu — haaste", text, url }).catch(() => {});
+    navigator.share({ title: "Itu: haaste", text, url }).catch(() => {});
   } else {
     copyToClipboard(url);
   }
@@ -2073,7 +2077,7 @@ function challengeHtml(): string {
       </section>
       <section>
         <h4>Aloita haaste</h4>
-        <p class="sm-ch-note">Pelaat valitun määrän kierroksia, sitten lähetät tuloslinkin kaverille. Hän pelaa samat heitot ${premiumMode ? "<b>Scrabble-pistemoodilla</b>" : "perinteisellä Itu-pisteytyksellä"} — näette kumpi voitti.${premiumMode ? "" : " (Vaihda pistemoodi ⚙️ Asetuksista ennen aloitusta.)"}</p>
+        <p class="sm-ch-note">Pelaat valitun määrän kierroksia, sitten lähetät tuloslinkin kaverille. Hän pelaa samat heitot ${premiumMode ? "<b>Scrabble-pistemoodilla</b>" : "perinteisellä Itu-pisteytyksellä"}. Näette kumpi voitti.${premiumMode ? "" : " (Vaihda pistemoodi ⚙️ Asetuksista ennen aloitusta.)"}</p>
         <div class="sm-ch-row sm-ch-wrap">${rounds}</div>
       </section>
       ${learnMode ? themeChallengeSectionHtml() : ""}
@@ -2115,7 +2119,7 @@ function themeChallengeSectionHtml(): string {
  */
 function dictMismatchHtml(m: Match): string {
   if (!m.dictMismatch) return "";
-  return `<p class="sm-ch-note sm-dv-note">⚠️ Haaste on pelattu eri sanastoversiolla (${escapeHtml(m.dictMismatch)}, sinulla ${DAWG_VERSION}) — sama sana voi kelvata vain toisella, joten tulokset eivät ole täysin vertailukelpoisia.</p>`;
+  return `<p class="sm-ch-note sm-dv-note">⚠️ Haaste on pelattu eri sanastoversiolla (${escapeHtml(m.dictMismatch)}, sinulla ${DAWG_VERSION}). Sama sana voi kelvata vain toisella, joten tulokset eivät ole täysin vertailukelpoisia.</p>`;
 }
 
 /** Kierrosten välinen navigointi loppunäytössä (ottelutilassa). */
@@ -2196,7 +2200,7 @@ function renderMatchSummary(): void {
   };
   const link = () => (opp ? myResultLink() : myChallengeLink());
   root.querySelector<HTMLButtonElement>("#sm-ms-share")?.addEventListener("click", () =>
-    shareLink(link(), opp ? "Itu — tulokseni" : "Itu — haaste"),
+    shareLink(link(), opp ? "Itu: tulokseni" : "Itu: haaste"),
   );
   root.querySelector<HTMLButtonElement>("#sm-ms-copy")?.addEventListener("click", (e) => {
     const btn = e.currentTarget as HTMLButtonElement;
@@ -2242,16 +2246,16 @@ function renderThemeMatchSummary(): void {
     const n = themes.length;
     const winLabel = w === "a" ? myLabel : oppLabel!;
     if (w === "tie") {
-      banner = `<p class="sm-record-banner">Tasapeli — molemmat ${myCov}/${n} teemaa, pisteet ${myTotal}–${oppTotal}.</p>`;
+      banner = `<p class="sm-record-banner">Tasapeli, molemmat ${myCov}/${n} teemaa, pisteet ${myTotal}–${oppTotal}.</p>`;
     } else if (coverTie) {
       // Sama teemakattavuus → pisteet ratkaisivat; älä väitä "useampaan teemaan".
       const ws = Math.max(myTotal, oppTotal);
       const ls = Math.min(myTotal, oppTotal);
-      banner = `<p class="sm-record-banner">${w === "a" ? "🏆 " : ""}${escapeHtml(winLabel)} voitti pisteillä — molemmat ${myCov}/${n} teemaa, pisteet ${ws}–${ls}.</p>`;
+      banner = `<p class="sm-record-banner">${w === "a" ? "🏆 " : ""}${escapeHtml(winLabel)} voitti pisteillä: molemmat ${myCov}/${n} teemaa, pisteet ${ws}–${ls}.</p>`;
     } else {
       const wc = Math.max(myCov, oppCov);
       const lc = Math.min(myCov, oppCov);
-      banner = `<p class="sm-record-banner">${w === "a" ? "🏆 " : ""}${escapeHtml(winLabel)} osui useampaan teemaan — ${wc}/${n}–${lc}/${n}.</p>`;
+      banner = `<p class="sm-record-banner">${w === "a" ? "🏆 " : ""}${escapeHtml(winLabel)} osui useampaan teemaan: ${wc}/${n} vastaan ${lc}/${n}.</p>`;
     }
   } else {
     banner = `<p class="sm-record-banner">Osuit ${myCov}/${themes.length} teemaan. Lähetä haaste kaverille!</p>`;
@@ -2263,7 +2267,7 @@ function renderThemeMatchSummary(): void {
     const heading = opp ? "Lähetä tulos takaisin" : "Lähetä teemahaaste kaverille";
     const note = opp
       ? "Näin haastaja näkee kumpi kattoi enemmän teemoja."
-      : `Hän pelaa samat ${m.rounds === 1 ? "kierroksen" : m.rounds + " kierrosta"} ja samat tavoiteteemat — näette kumpi osui useampaan.`;
+      : `Hän pelaa samat ${m.rounds === 1 ? "kierroksen" : m.rounds + " kierrosta"} ja samat tavoiteteemat. Näette kumpi osui useampaan.`;
     share = `<section>
       <h4>${heading}</h4>
       <p class="sm-ch-note">${note}</p>
@@ -2299,7 +2303,7 @@ function renderThemeMatchSummary(): void {
   };
   const link = () => (opp ? myResultLink() : myChallengeLink());
   root.querySelector<HTMLButtonElement>("#sm-ms-share")?.addEventListener("click", () =>
-    shareLink(link(), opp ? "Itu — teematulokseni" : "Itu — teemahaaste"),
+    shareLink(link(), opp ? "Itu: teematulokseni" : "Itu: teemahaaste"),
   );
   root.querySelector<HTMLButtonElement>("#sm-ms-copy")?.addEventListener("click", (e) => {
     const btn = e.currentTarget as HTMLButtonElement;
@@ -2903,13 +2907,13 @@ function jokerPickerHtml(): string {
   ).join("");
   const hint = valid.size
     ? "Korostetut kirjaimet tekevät sanasta kelvollisen."
-    : "Mikään kirjain ei tee kaikista sanoista kelvollisia — valitse silti haluamasi.";
+    : "Mikään kirjain ei tee kaikista sanoista kelvollisia, valitse silti haluamasi.";
   return `<div class="sm-jp-backdrop" data-jp-close="1">
     <div class="sm-jp">
       <h3>Jokerin kirjain</h3>
       <p class="sm-jp-hint">${hint}</p>
       <div class="sm-jp-grid">${btns}</div>
-      <button class="sm-jp-clear" data-jp="">◇ Tyhjennä — anna pelin valita</button>
+      <button class="sm-jp-clear" data-jp="">◇ Tyhjennä, anna pelin valita</button>
     </div>
   </div>`;
 }

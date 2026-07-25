@@ -40,7 +40,7 @@ export interface RuleSection {
 export const RULES_TITLE = "Mitkä sanat kelpaavat?";
 
 export const RULES_LEAD =
-  "Peliin kelpaavat suomen sanat — myös taivutetut muodot. " +
+  "Peliin kelpaavat suomen sanat, myös taivutetut muodot. " +
   "Sanakirja on tuomari. Tämä sivu auttaa sinua arvaamaan etukäteen, " +
   "kelpaako sana vai ei.";
 
@@ -57,7 +57,7 @@ export const RULES: RuleSection[] = [
     body:
       "Käytä vain pelin kirjaimia (alla). Pois jääneet b, c, f, q, w, x, z ja å " +
       "esiintyvät suomessa lähinnä lainasanoissa ja erisnimissä ja ovat hyvin " +
-      "harvinaisia — monet niistä puuttuvat myös suomalaisesta Scrabblesta ja " +
+      "harvinaisia: monet niistä puuttuvat myös suomalaisesta Scrabblesta ja " +
       "Sana Mixistä. G on mukana mutta harvinainen: se tulee taivutuksessa (nk → ng).",
     letters: [
       {
@@ -145,7 +145,7 @@ export const RULES: RuleSection[] = [
       "Liitesanat ja omistusliitteet eivät ole omia sanoja vaan jatkeita: " +
       "ne voi liimata melkein minkä tahansa sanan perään, yhä uudelleen " +
       "(talo → talokin → talonikin → talossammekohan). Jos ne kelpaisivat, " +
-      "lähes kaikki kelpaisi — eikä sanan löytäminen olisi enää haaste. " +
+      "lähes kaikki kelpaisi, eikä sanan löytäminen olisi enää haaste. " +
       "Siksi peliin otetaan itse sanat, ei niiden perään liimattuja jatkeita.",
     groups: [
       {
@@ -193,7 +193,7 @@ export const RULES: RuleSection[] = [
     heading: "Hyvä tietää (rajatapaukset)",
     body:
       "• Joillakin sanoilla on kaksi oikeaa muotoa (talojen ja taloiden). " +
-      "Peli hyväksyy joskus vain toisen — älä hämmenny, kokeile toista.\n" +
+      "Peli hyväksyy joskus vain toisen. Älä hämmenny, kokeile toista.\n" +
       "• Lukusanat (kaksi) ja minä-sanat (minä, sinä, hän) kelpaavat tässä " +
       "versiossa vain perusmuodossa.\n" +
       "• Sana on 2–13 kirjainta pitkä.\n" +
@@ -213,14 +213,14 @@ export const CONTROLS: RuleSection[] = [
     body:
       "• Raahaa nappula telineestä ruutuun (tai ruudusta toiseen).\n" +
       "• Tai napauta nappula ja sitten ruutu, johon se menee.\n" +
-      "• Poista laudalta: oikea klikkaus tai tuplaklikkaus nopan päällä — tai raahaa takaisin telineeseen.\n" +
+      "• Poista laudalta: oikea klikkaus tai tuplaklikkaus nopan päällä, tai raahaa takaisin telineeseen.\n" +
       "• Jokeri: napauta laudalla olevaa jokeria valitaksesi sen kirjaimen.",
   },
   {
     heading: "Kosketus ja kynä",
     body:
-      "• Napauta nappula ja sitten ruutu — tai raahaa nappula paikalleen.\n" +
-      "• Poista laudalta: pidä noppaa pohjassa hetki tai tuplanapauta — tai raahaa takaisin telineeseen.\n" +
+      "• Napauta nappula ja sitten ruutu, tai raahaa nappula paikalleen.\n" +
+      "• Poista laudalta: pidä noppaa pohjassa hetki tai tuplanapauta, tai raahaa takaisin telineeseen.\n" +
       "• Jokeri: napauta laudalla olevaa jokeria valitaksesi sen kirjaimen.",
   },
   {
@@ -237,7 +237,7 @@ export const CONTROLS: RuleSection[] = [
       "Teline voi järjestää nopat äänneryhmittäin: ensin konsonantit, sitten\n" +
       "takavokaalit (a, o, u), neutraalit (e, i) ja etuvokaalit (ä, ö, y).\n" +
       "Miksi tämä auttaa: taka- ja etuvokaalit eivät esiinny samassa\n" +
-      "suomalaisessa sanassa (vokaalisointu) — sana on joko taka- tai\n" +
+      "suomalaisessa sanassa (vokaalisointu): sana on joko taka- tai\n" +
       "etuvokaalinen, ja e, i sopivat kumpaankin. Ryhmittely näyttää\n" +
       "kerralla mitkä vokaalit sopivat yhteen.",
   },
