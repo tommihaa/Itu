@@ -148,7 +148,7 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
   malli kuin `CASE_INFO`). UI: sääntötekstien esiintymät ovat napautettavia (selite
   aukeaa kappaleen alle) + Säännöt-näkymän **Termit-välilehti** (ryhmitelty referenssi).
   Skeema + moottori jaettu Jakon kanssa (Lahja-kokoelman termimoduuli, speksi
-  Projects-juuren `TERMIMODUULI.md`; Jakon kopio `src/shared/glossary.js`). Data on
+  `Kaanon/TERMIMODUULI.md`; Jakon kopio `src/shared/glossary.js`). Data on
   pelin omaa — termistöä ei jaeta, mekanismi jaetaan.
 - **Sanapoliisi** (🔎, ent. "Tarkastaja"; pelin ulkopuolinen sanahaku + loppunäyttö + ratkaisijan
   ehdotukset): kertoo sanan perusmuodon, kaikki pätevät tulkinnat ja sijamuodon
