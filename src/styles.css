@@ -581,6 +581,10 @@ button.sm-primary { background: var(--gold); border-color: var(--gold); color: #
   background: var(--panel);
 }
 .sm-learn-result h3 { margin: 0 0 0.5rem; color: var(--gold); font-size: 1rem; }
+/* Loppunäytössä lista seuraa otsikkoa tai "Lisäksi osuit:" -riviä, ei ⓘ-nappia. Pelipalkin
+   negatiivinen ylämarginaali (.sm-learn-desc) vetäisi kultakorostetun rivin taustan edellisen
+   tekstin päälle, koska osumarivi on ainoa jolla on taustaväri. */
+.sm-learn-result .sm-learn-desc { margin-top: 0.35rem; }
 .sm-learn-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .sm-learn-extra { margin: 0.5rem 0 0; color: var(--muted); font-size: 0.85rem; }
 .sm-learn-weekbar {

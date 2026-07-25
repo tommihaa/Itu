@@ -11,6 +11,17 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
 > numerolla, aiemmat numerot ovat jälkikäteisiä nimilappuja jo tuotannossa olevalle
 > koodille. Tästä eteenpäin versio bumpataan ennen pushia, kuten Superjatsissa.
 
+## [0.7.2] – 2026-07-26
+
+### Korjattu
+- **Loppunäytön "Lisäksi osuit:" -rivi jäi teemalistan alle.** Teemojen kuvauslistalla
+  (`.sm-learn-desc`) on negatiivinen ylämarginaali, jotta se tarttuu kiinni pelipalkin
+  ⓘ-nappiin. Loppunäytössä sama lista seuraa otsikkoa tai "Lisäksi osuit:" -riviä, joten
+  marginaali veti listan reunuksen ja taustan 4,8 px tekstin päälle. Päällekkäisyys näkyi
+  vasta kun bonusosumia oli, koska vain osumarivillä on taustaväri. Korjaus rajattu
+  loppunäyttöön (`.sm-learn-result .sm-learn-desc`), pelipalkin kiinnitys säilyy.
+  Löytyi pelitestissä (Opi-moodi päällä).
+
 ## [0.7.1] – 2026-07-25
 
 ### Korjattu
