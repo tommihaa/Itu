@@ -204,7 +204,7 @@ export function wireTermClicks(container: HTMLElement): void {
       const div = document.createElement("div");
       div.className = "sm-term-def";
       div.dataset.term = term;
-      div.innerHTML = `<b>${escape(entry.term)}</b>: ${escape(entry.selitys)}${
+      div.innerHTML = `<b>${escape(entry.term)}</b> · ${escape(entry.selitys)}${
         entry.esimerkki ? ` <span class="sm-term-ex">Esim. ${escape(entry.esimerkki)}</span>` : ""
       }`;
       block.after(div);
