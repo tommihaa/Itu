@@ -46,6 +46,14 @@ koodi dokumentin mukaiseksi VAI muutetaanko dokumenttia? Dokumenttimuutos kirjat
 - `npm run build` — `tsc --noEmit && vite build` (tyyppivirhe kaataa buildin).
 - `npm run dict:pack` — generoi DAWG (`build/build_dawg.ts`).
 
-## Julkaisu
-`git push origin main` → Vercelin git-integraatio auto-deployaa tuotantoon. EI erillistä CLI-deployta.
-Odota ~30–60 s, todenna tarvittaessa bundle-grepillä. (Universaali `julkaise`-skill kattaa tämän.)
+## Versiointi ja julkaisu
+- **SemVer + [CHANGELOG.md](CHANGELOG.md)** (Superjatsin malli). Bumppaa `package.json`in
+  versio ja kirjaa muutos changelogiin **ennen pushia**. Versionumerot 0.1.0–0.7.0 ovat
+  takautuvia, git-historiasta 26.7.2026 rekonstruoituja nimilappuja; siitä eteenpäin numero
+  kulkee muutoksen mukana.
+- Versio näkyy pelaajalle Tietoja-välilehdellä (`Itu v… · päiväys`). Leima tulee
+  `package.json`ista build-aikana (`vite.config.ts` → `__APP_VERSION__`, `__BUILD_DATE__`),
+  joten `package.json` on ainoa totuuden lähde, ei kovakoodattu merkkijono.
+- `git push origin main` → Vercelin git-integraatio auto-deployaa tuotantoon. EI erillistä
+  CLI-deployta. Odota ~30–60 s, todenna tarvittaessa bundle-grepillä. (Universaali
+  `julkaise`-skill kattaa tämän.)
