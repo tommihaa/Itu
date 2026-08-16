@@ -2,8 +2,12 @@
 
 Kanoninen, koodia vasten todennettu kuvaus siitä **mitkä sanat peli hyväksyy.**
 Tämä dokumentti ja [gen_wordforms.py](build/gen_wordforms.py) pidetään yhtenevinä;
-jos ne eroavat, se on bugi. Päivitetty 14.6.2026, vastaa generointiputkea
+jos ne eroavat, se on bugi. Päivitetty 16.8.2026, vastaa generointiputkea
 (uralicNLP / GiellaLT fin-FST + Kotus 2024).
+
+> **Yhtenevyys on osin koneen tarkistama:** `test/sanasto-doc.test.ts` vertaa alla
+> luetellut väitteet skriptin omiin listoihin, ja `npm test` kaatuu jos ne eroavat.
+> Tarkistin kattaa luetellut väitteet eikä todista koko dokumenttia oikeaksi.
 
 > **Miksi näihin rajoitteisiin päädyttiin: [PERUSTELUT.md](PERUSTELUT.md).**
 > Tämä kertoo *mitä* hyväksytään; perustelut kertovat *miksi* (vaihtoehdot + hinnat).
@@ -74,6 +78,9 @@ superlatiivi). Esim. *suuri, suuremman, suurimmissa*.
 - Imperatiivi (Sg2, Sg3, Pl1, Pl2, Pl3 + kieltomuodot + passiivi).
 - Infinitiivit: A-infinitiivi, E-infinitiivi (inessiivi/instruktiivi),
   MA-infinitiivi (Ine, Ela, Ill, Ade, Abe, Ins).
+- **Teonnimi eli 4. infinitiivi** (*-minen*) taipuu nominina (Sg/Pl × 14 sijaa):
+  *laskeminen, laskemisen, laskemista, laskemisissa*. Lisätty putkeen 22.6.2026
+  (`dd07a0b`); tämä rivi puuttui dokumentista 16.8.2026 asti.
 - Partisiipit nominitaivutuksessa (Sg/Pl × 14 sijaa): preesens & perfekti
   (akt./pass.), agenttipartisiippi, kieltopartisiippi. Esim.
   *juokseva, juossut, juostava, juoksematon* + niiden sijamuodot.
