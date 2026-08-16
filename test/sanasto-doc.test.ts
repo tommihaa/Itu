@@ -15,13 +15,12 @@
 //
 // Jos jokin väite muuttuu tarkoituksella, muutos kuuluu MOLEMPIIN tiedostoihin
 // ja tämän testin poimintaan. Testin kaatuminen kertoo eron, ei kumpi on oikeassa.
-import { readFileSync } from "node:fs";
+// Tiedostot luetaan Viten ?raw-importilla eikä node:fs:llä: tsconfig kattaa myös
+// test-kansion, eikä projektilla ole Node-tyyppejä (types: ["vite/client"]).
+// node:fs kaataisi siis `npm run build`in ja sen mukana tuotantodeployn.
+import DOC from "../SANASTO.md?raw";
+import SCRIPT from "../build/gen_wordforms.py?raw";
 import { describe, expect, it } from "vitest";
-
-const read = (rel: string) => readFileSync(new URL(`../${rel}`, import.meta.url), "utf-8");
-
-const DOC = read("SANASTO.md");
-const SCRIPT = read("build/gen_wordforms.py");
 
 /** Skriptin koodi ilman kommentteja ja docstringejä. Poistaa vain kokonaiset
  *  kommenttirivit, jotta esimerkiksi "+Cmp#" kommentissa ei näytä pyynnöltä. */
