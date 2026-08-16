@@ -138,7 +138,11 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
   sisältäviä muotoja (mahdottomia muodostaa nopilla).
 - UI antaa reaaliaikaisen värikoodatun palautteen sanoista.
 
-## UI (tulossa)
+## UI
+
+> Osio kuvasi alun perin suunniteltua käyttöliittymää ja oli otsikoitu *tulossa* 16.8.2026
+> asti. Kaikki alla kuvattu on tuotannossa: vapaa ruudukko raahauksella, esimerkkivetoiset
+> säännöt, termimoduuli, Sanapoliisi, asetuspaneeli, äänet ja ennätykset.
 
 - Vapaa ruudukko: nopat raahataan Scrabble-tyyliin, risteykset jakavat nopan.
 - **Säännöt esitetään esimerkkivetoisesti** (✓/✗-sanaparit, ei kielioppitermejä).

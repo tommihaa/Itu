@@ -45,10 +45,12 @@ vie tämän edun askeleen pidemmälle: tekee taivutuksen *tavoitteeksi*, ei vain
   mukaan (heikoimmat/harjoittelemattomat ensin, spaced repetition).
 - **Useita teemoja per päivä + viikkotavoite.** Et osu yhteen pakkosijaan vaan *keräät*
   päivän teemoja kohti viikon koontitavoitetta.
-- **Pehmeä, ei-estävä** (työoletus; lopullinen pakko-vs-bonus jäi auki, ks. Avoin päätös).
+- **Pehmeä, ei-estävä** (oli työoletus; pakko-vs-bonus **päätettiin 26.6.2026**, ks. osio
+  *Päätetty: PEHMEÄ*).
 - **Laajuus: kieliopilliset teemat** = sijat + luku (yks./mon.) + aikamuoto + vertailu
   + partisiipit — ei vain 14 sijaa.
-- **Vaiheistus:** "haasta itsesi" (yksinpeli) nyt → "kaveri-moodi" (haastelinkki) myöhemmin.
+- **Vaiheistus:** "haasta itsesi" (yksinpeli) ensin → "kaveri-moodi" (haastelinkki) sen
+  jälkeen. **Molemmat toteutettu 28.6.2026**, ks. doc-header ja osio *Vaiheistus*.
 
 **Miksi tämä on teknisesti halpa:** kaikki tarvittava data on jo olemassa.
 `lemmas.lookup(sana)` → `Analysis[]` koodeilla kuten `N+Sg+Ine`, ja `describeCode()` /
