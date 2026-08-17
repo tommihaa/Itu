@@ -16,6 +16,18 @@ import { GAME_DURATION_SECONDS } from "../domain/scoring";
 export type Panel = "rules" | "records" | "checker" | "settings";
 
 export type RulesTab = "words" | "controls" | "terms" | "about";
+
+/** Laudan kehystys: skaalaus ja siirto (zoom+pan). */
+export interface Frame {
+  scale: number;
+  tx: number;
+  ty: number;
+}
+/** Näkymän vieritysasema pikseleinä. */
+export interface ScrollPos {
+  left: number;
+  top: number;
+}
 export type RecordMode = "itu" | "scrabble";
 export type RecordsSort = "total" | "rate";
 
@@ -60,6 +72,15 @@ export interface ViewState {
   lastTapDie: number;
   /** Tuplanapautus: viimeisimmän napautuksen hetki. */
   lastTapAt: number;
+  /** Viimeksi sovellettu kehystys. Pidetään paikallaan kunnes asetetut nopat eivät enää
+   * mahdu näkyviin → vähemmän "hyppimistä" (ks. `frameBoard`). null = kehystä tuoreesti. */
+  currentFrame: Frame | null;
+  /** Vieritysasema säilyy täällä, koska `render()` rakentaa viewportin uudelleen ja
+   * selaimen vieritys nollautuu sen mukana. null = keskitä seuraavalla renderillä. */
+  viewScroll: ScrollPos | null;
+  /** Tarkastajan tuloksen päivitys ilman renderiä; `renderChecker` asettaa, lemmapaketin
+   * valmistuminen kutsuu. null = Tarkastaja ei ole ollut auki tällä sivulatauksella. */
+  checkerRefresh: (() => void) | null;
 }
 
 export const ui: ViewState = {
@@ -75,6 +96,9 @@ export const ui: ViewState = {
   suppressCellClickUntil: 0,
   lastTapDie: -1,
   lastTapAt: 0,
+  currentFrame: null,
+  viewScroll: null,
+  checkerRefresh: null,
 };
 
 /** Ääniasetuksen ainoa kirjoitustie: tila ja levy pysyvät yhdessä. */

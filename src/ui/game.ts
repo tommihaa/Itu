@@ -111,15 +111,11 @@ interface Tile {
 
 let tiles: Tile[] = [];
 let rackOrder: number[] = []; // telineen näkymäjärjestys (dieIndex-permutaatio)
-// Viimeksi sovellettu kehystys (zoom+siirto). Pidetään paikallaan kunnes asetetut
-// nopat eivät enää mahdu näkyviin → vähemmän "hyppimistä" (ks. frameBoard).
-let currentFrame: { scale: number; tx: number; ty: number } | null = null;
+// Kehystys ja vieritysasema ovat näkymätilassa (`viewstate.ts`:n `ui.currentFrame`,
+// `ui.viewScroll`).
 // Zoom pois käytöstä toistaiseksi (käyttäjän pyyntö): kiinteä koko + vieritettävä näkymä.
 // Vanha automaattinen kehystys (zoom/pan) jää lipun taakse, helppo palauttaa myöhemmin.
 const ZOOM_ENABLED = false;
-// Vieritysasema säilytetään moduulitilassa, koska render() rakentaa viewportin uudelleen
-// (jolloin selaimen vieritys nollautuu). null = keskitä seuraavalla renderillä.
-let viewScroll: { left: number; top: number } | null = null;
 let rackSort = "abc"; // aktiivinen järjestys (ryhmävälejä varten); newRoll asettaa tallennetun
 let seed = "";
 let judge: WordJudge | null = null;
@@ -132,7 +128,7 @@ let lemmas: LemmaLookup | null = null;
 let lemmasLoading = false;
 let endWords: string[] = []; // kierroksen kelvolliset sanat (loppunäytön perusmuodot)
 let endWordScores: number[] = []; // ^samassa järjestyksessä: kunkin sanan pisteet (kertoimineen)
-let checkerRefresh: (() => void) | null = null; // tarkistimen tuloksen päivitys ilman renderiä
+// Tarkastajan tuloksen päivitys ilman renderiä on näkymätilassa (`ui.checkerRefresh`).
 let jokerPicker: number | null = null; // avoinna olevan jokerin dieIndex (kirjainvalitsin)
 let showChallenge = false; // offline-haastemodaali (aloita haaste / vastaa)
 
@@ -609,7 +605,7 @@ export function mountGame(el: HTMLElement): void {
     // Säännöt-paneeli on ainoa jonka aikana ei kehystetä (tuloste käyttää samaa DOMia);
     // muut paneelit eivät estä kehystystä, joten ehto on nimenomaan tämä eikä "mikään auki".
     if (ui.panel !== "rules") {
-      currentFrame = null; // koon muutos → kehystä uudelleen näkymään sopivaksi
+      ui.currentFrame = null; // koon muutos → kehystä uudelleen näkymään sopivaksi
       frameBoard();
     }
   });
@@ -670,8 +666,8 @@ function newRoll(s: string): void {
   kbdMode = false; // tuore heitto: kehystä raahauslogiikalla kunnes pelaaja näppäilee
   lifted = null; // nostot ja kumoa-historia kuuluvat yhteen heittoon
   history = [];
-  currentFrame = null; // uusi heitto kehystää tuoreesti (keskelle)
-  viewScroll = null; // keskitä näkymä uudelleen (zoom-off)
+  ui.currentFrame = null; // uusi heitto kehystää tuoreesti (keskelle)
+  ui.viewScroll = null; // keskitä näkymä uudelleen (zoom-off)
   roundDailyTargets = learnMode ? dailyTargets() : null;
   startRound();
   sfx.roll();
@@ -1247,7 +1243,7 @@ function ensureLemmas(): void {
   loadLemmas()
     .then((l) => {
       lemmas = l;
-      if (ui.panel === "checker") checkerRefresh?.();
+      if (ui.panel === "checker") ui.checkerRefresh?.();
       else render();
     })
     .catch((e) => console.error("Lemma-paketin lataus epäonnistui", e))
@@ -1376,7 +1372,7 @@ function renderChecker(): void {
       result.className = "sm-check-result bad";
     }
   };
-  checkerRefresh = update;
+  ui.checkerRefresh = update;
   input.addEventListener("input", update);
   input.focus();
   ensureLemmas(); // lataa perusmuodot taustalla
@@ -1585,19 +1581,20 @@ function cellCenterScroll(
   };
 }
 
-/** Säätää viewScrollia minimaalisesti niin, että kursoriruutu pysyy näkyvissä (ei zoom). */
+/** Säätää `ui.viewScroll`ia minimaalisesti niin, että kursoriruutu pysyy näkyvissä (ei zoom). */
 function keepCaretVisible(viewport: HTMLElement, board: HTMLElement): void {
-  if (!caret || !viewScroll) return;
+  if (!caret || !ui.viewScroll) return;
   const cell = board.querySelector<HTMLElement>(`[data-cell="${cellKey(caret.row, caret.col)}"]`);
   if (!cell) return;
   const pad = 8;
   const { offsetLeft: cl, offsetTop: ct, offsetWidth: cw, offsetHeight: ch } = cell;
   const vw = viewport.clientWidth;
   const vh = viewport.clientHeight;
-  if (cl < viewScroll.left + pad) viewScroll.left = cl - pad;
-  else if (cl + cw > viewScroll.left + vw - pad) viewScroll.left = cl + cw - vw + pad;
-  if (ct < viewScroll.top + pad) viewScroll.top = ct - pad;
-  else if (ct + ch > viewScroll.top + vh - pad) viewScroll.top = ct + ch - vh + pad;
+  const vs = ui.viewScroll;
+  if (cl < vs.left + pad) vs.left = cl - pad;
+  else if (cl + cw > vs.left + vw - pad) vs.left = cl + cw - vw + pad;
+  if (ct < vs.top + pad) vs.top = ct - pad;
+  else if (ct + ch > vs.top + vh - pad) vs.top = ct + ch - vh + pad;
 }
 
 /**
@@ -1624,16 +1621,16 @@ function frameBoard(): void {
     if (!viewport.dataset.scrollBound) {
       viewport.dataset.scrollBound = "1";
       viewport.addEventListener("scroll", () => {
-        viewScroll = { left: viewport.scrollLeft, top: viewport.scrollTop };
+        ui.viewScroll = { left: viewport.scrollLeft, top: viewport.scrollTop };
       });
     }
-    if (viewScroll === null) {
-      viewScroll = cellCenterScroll(viewport, board, BOARD_MID, BOARD_MID); // keskitä aloitus
+    if (ui.viewScroll === null) {
+      ui.viewScroll = cellCenterScroll(viewport, board, BOARD_MID, BOARD_MID); // keskitä aloitus
     } else if (kbdMode && caret && !roundOver) {
       keepCaretVisible(viewport, board); // pidä kirjoituskohta näkyvissä vierittämällä
     }
-    viewport.scrollLeft = viewScroll.left; // selain rajaa kelvolliseen väliin
-    viewport.scrollTop = viewScroll.top;
+    viewport.scrollLeft = ui.viewScroll.left; // selain rajaa kelvolliseen väliin
+    viewport.scrollTop = ui.viewScroll.top;
     return;
   }
 
@@ -1669,18 +1666,18 @@ function frameBoard(): void {
 
   // Mahtuuko sisältö yhä nykyisellä kehyksellä? Jos kyllä, pidä se (vain uudelleenaseta
   // transform tuoreelle DOM:lle ilman animaatiota) → ei hyppimistä.
-  if (currentFrame) {
+  if (ui.currentFrame) {
     const ctl = board.querySelector<HTMLElement>(`[data-cell="${cellKey(cMinR, cMinC)}"]`);
     const cbr = board.querySelector<HTMLElement>(`[data-cell="${cellKey(cMaxR, cMaxC)}"]`);
     if (ctl && cbr) {
-      const { scale, tx, ty } = currentFrame;
+      const { scale, tx, ty } = ui.currentFrame;
       const pad = 6; // px-turvamarginaali reunaan
       const sx0 = ctl.offsetLeft * scale + tx;
       const sy0 = ctl.offsetTop * scale + ty;
       const sx1 = (cbr.offsetLeft + cbr.offsetWidth) * scale + tx;
       const sy1 = (cbr.offsetTop + cbr.offsetHeight) * scale + ty;
       if (sx0 >= pad && sy0 >= pad && sx1 <= vw - pad && sy1 <= vh - pad) {
-        applyFrame(board, currentFrame, false);
+        applyFrame(board, ui.currentFrame, false);
         return;
       }
     }
@@ -1705,8 +1702,8 @@ function frameBoard(): void {
   const ty = (vh - boxH * scale) / 2 - boxTop * scale;
   const next = { scale, tx, ty };
   // Animoi edellisestä kehyksestä uuteen (jos sellainen on); muuten aseta suoraan.
-  applyFrame(board, next, currentFrame !== null);
-  currentFrame = next;
+  applyFrame(board, next, ui.currentFrame !== null);
+  ui.currentFrame = next;
 }
 
 /**
@@ -1720,8 +1717,8 @@ function applyFrame(
   animate: boolean,
 ): void {
   const css = `translate(${f.tx}px, ${f.ty}px) scale(${f.scale})`;
-  if (animate && currentFrame) {
-    const p = currentFrame;
+  if (animate && ui.currentFrame) {
+    const p = ui.currentFrame;
     board.style.transform = `translate(${p.tx}px, ${p.ty}px) scale(${p.scale})`;
     void board.offsetWidth; // pakota reflow → transition lähtee edellisestä arvosta
     requestAnimationFrame(() => {
