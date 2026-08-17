@@ -1,0 +1,31 @@
+name: Testit
+
+# Sama portti kuin Jaossa, ja peruste on sisarmittaus eikä oma vika: Itussa pakettia ei ole
+# päästetty rikki tuotantoon, mutta mikään ei myöskään ajanut sitä pushin ja Vercelin välissä.
+#
+# Tyyppitarkistus on tässä mukana omasta syystään. 16.8.2026 (7d3f26e) uusi tarkistintesti
+# toi mukanaan node:fs-importin: testit pysyivät vihreinä ja build kaatui, koska tsconfigin
+# include kattaa testikansion mutta types ei sisällä Nodea. Vain tsc näkee sen.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: testit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  vitest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npx tsc --noEmit
