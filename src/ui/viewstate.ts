@@ -17,6 +17,33 @@ export type Panel = "rules" | "records" | "checker" | "settings";
 
 export type RulesTab = "words" | "controls" | "terms" | "about";
 
+/** Kirjoitussuunta laudalla. */
+export type Dir = "H" | "V";
+/** Kirjoituskursori: ruutu ja suunta. */
+export interface Caret {
+  row: number;
+  col: number;
+  dir: Dir;
+}
+
+/**
+ * Osoitinpohjainen raahaus (hiiri + kosketus + kynä). HTML5 DnD ei toimi mobiilissa,
+ * joten käytämme pointer-eventtejä + kelluvaa "haamulaattaa" kaikille. Haamu luodaan
+ * vasta ensimmäisellä liikkeellä, jotta paikallaan pysyvä painallus voi muuttua pitkäksi
+ * painallukseksi (= poisto) ilman haamun vilkkumista.
+ */
+export interface Drag {
+  die: number;
+  tileEl: HTMLElement; // lähde-elementti (sm-dragging-luokkaa varten)
+  ghost: HTMLElement | null; // null kunnes raahaus alkaa (liike > kynnys)
+  startX: number;
+  startY: number;
+  moved: boolean;
+  hover: HTMLElement | null;
+  longPress?: ReturnType<typeof setTimeout>; // pitkän painalluksen ajastin
+  consumed?: boolean; // pitkä painallus jo hoiti → pointerup ei käsittele napautusta
+}
+
 /** Laudan kehystys: skaalaus ja siirto (zoom+pan). */
 export interface Frame {
   scale: number;
@@ -96,6 +123,16 @@ export interface ViewState {
   /** Telineen näkymäjärjestys: dieIndex-permutaatio. Tyhjä tai eri mittainen kuin nopat
    * ⇒ näkymä käyttää heiton omaa järjestystä. */
   rackOrder: number[];
+  /** Kirjoituskursori laudalla, tai null kun sitä ei ole. */
+  caret: Caret | null;
+  /** Näppäilytila: tosi kun pelaaja ohjaa kursoria (klikkaa ruutua / näppäilee), epätosi
+   * raahatessa. Kehystys pitää kursorin näkyvissä VAIN näppäiltäessä, jotta raahauksen
+   * "ei hyppimistä" -logiikka säilyy ennallaan (ks. `frameBoard`). */
+  kbdMode: boolean;
+  /** Napauta-ja-aseta: telineestä "nostettu" nappula (dieIndex) odottaa ruudun napautusta. */
+  lifted: number | null;
+  /** Käynnissä oleva raahaus, tai null. */
+  drag: Drag | null;
 }
 
 export const ui: ViewState = {
@@ -120,6 +157,10 @@ export const ui: ViewState = {
   // Sama oletus kuin `game.ts`:n DEFAULT_SORT; `newRoll` korvaa tämän levyltä luetulla.
   rackSort: "abc",
   rackOrder: [],
+  caret: null,
+  kbdMode: false,
+  lifted: null,
+  drag: null,
 };
 
 /** Ääniasetuksen ainoa kirjoitustie: tila ja levy pysyvät yhdessä. */

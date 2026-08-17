@@ -64,6 +64,7 @@ import { setSfxEnabled, sfx } from "../sfx";
 import {
   ui,
   setSoundEnabled,
+  type Dir,
   type Panel,
   type RulesTab,
   type RecordMode,
@@ -331,25 +332,8 @@ interface Match {
 let match: Match | null = null;
 let myName = loadName();
 
-// Osoitinpohjainen raahaus (hiiri + kosketus + kynä). HTML5 DnD ei toimi mobiilissa,
-// joten käytämme pointer-eventtejä + kelluvaa "haamulaattaa" kaikille.
-// Haamu luodaan vasta ensimmäisellä liikkeellä, jotta paikallaan pysyvä painallus
-// voi muuttua pitkäksi painallukseksi (= poisto) ilman haamun vilkkumista.
-interface Drag {
-  die: number;
-  tileEl: HTMLElement; // lähde-elementti (sm-dragging-luokkaa varten)
-  ghost: HTMLElement | null; // null kunnes raahaus alkaa (liike > kynnys)
-  startX: number;
-  startY: number;
-  moved: boolean;
-  hover: HTMLElement | null;
-  longPress?: ReturnType<typeof setTimeout>; // pitkän painalluksen ajastin
-  consumed?: boolean; // pitkä painallus jo hoiti → pointerup ei käsittele napautusta
-}
-let drag: Drag | null = null;
-
-// Napauta-ja-aseta: telineestä "nostettu" nappula (dieIndex) odottaa ruudun napautusta.
-let lifted: number | null = null;
+// Raahaus (`ui.drag`, tyyppi `Drag`) ja napauta-ja-aseta -nosto (`ui.lifted`) ovat
+// näkymätilassa, samoin kirjoituskursori (`ui.caret`) ja näppäilytila (`ui.kbdMode`).
 // Kumoa-pino (Ctrl+Z): viimeisimmät lautamuutokset (die + ruutu ennen muutosta).
 let history: { die: number; prevCell: string | null }[] = [];
 // Napautuksen vaimennus ja tuplanapautuksen muisti ovat näkymätilassa (`viewstate.ts`:n
@@ -357,18 +341,6 @@ let history: { die: number; prevCell: string | null }[] = [];
 const LONG_PRESS_MS = 450;
 const DOUBLE_TAP_MS = 300;
 
-// Näppäimistösyöttö: kirjoituskursori laudalla (suunta H/V). Drag toimii rinnalla.
-type Dir = "H" | "V";
-interface Caret {
-  row: number;
-  col: number;
-  dir: Dir;
-}
-let caret: Caret | null = null;
-// Näppäilytila: tosi kun pelaaja ohjaa kursoria (klikkaa ruutua / näppäilee),
-// epätosi raahatessa. Kehystys pitää kursorin näkyvissä VAIN näppäiltäessä, jotta
-// raahauksen "ei hyppimistä" -logiikka säilyy ennallaan (ks. frameBoard).
-let kbdMode = false;
 
 // Kierroksen tila: ajastin loppuu hetkellä roundEndsAt; lukitus tai aika lopettaa.
 let roundEndsAt = 0;
@@ -661,9 +633,9 @@ function newRoll(s: string): void {
   // Ei oletuskursoria: tyhjällä laudalla aloitusopaste (sm-board-hint) on ainoa CTA, eikä
   // keskelle piirretty kursori kilpaile sen kanssa. Näppäily luo kursorin keskelle itse
   // (typeAt), ja ruudun napautus asettaa sen — kummassakin opaste väistyy.
-  caret = null;
-  kbdMode = false; // tuore heitto: kehystä raahauslogiikalla kunnes pelaaja näppäilee
-  lifted = null; // nostot ja kumoa-historia kuuluvat yhteen heittoon
+  ui.caret = null;
+  ui.kbdMode = false; // tuore heitto: kehystä raahauslogiikalla kunnes pelaaja näppäilee
+  ui.lifted = null; // nostot ja kumoa-historia kuuluvat yhteen heittoon
   history = [];
   ui.currentFrame = null; // uusi heitto kehystää tuoreesti (keskelle)
   ui.viewScroll = null; // keskitä näkymä uudelleen (zoom-off)
@@ -1503,7 +1475,7 @@ function controlsHintHtml(): string {
   // Yksi ydinrivi per syöttötapa; täysi komentolista (poisto, Ctrl+Z, ⌫) elää
   // Säännöt › Ohjaus -välilehdellä (rules/content.ts CONTROLS) — ei kahdenneta tähän.
   const boardEmpty = tiles.every((t) => !t.cell);
-  const arrow = caret ? (caret.dir === "V" ? "↓" : "→") : "";
+  const arrow = ui.caret ? (ui.caret.dir === "V" ? "↓" : "→") : "";
   const parts: string[] = [];
   // Tyhjällä laudalla aloitusopaste (sm-board-hint) kantaa "raahaa"-pääviestin → ei toisteta tässä.
   if (!boardEmpty) {
@@ -1515,7 +1487,7 @@ function controlsHintHtml(): string {
   }
   // Suunnanvaihto, vain kun kirjoituskohta on auki. Kosketuslaitteella EI näppäimistöä →
   // näytä napautusohje (napauta valittua ruutua = setCaret vaihtaa suunnan), ei väli/sarkain.
-  if (caret) {
+  if (ui.caret) {
     parts.push(
       fine
         ? `Kirjoita: väli tai sarkain vaihtaa suunnan ${arrow}.`
@@ -1540,10 +1512,10 @@ function boardHtml(v: Validation): string {
       // Premium-moodi: ruudun pohjaväri (laji) + keskiruudun ★ (näkyy vain tyhjänä).
       const premKind = activePremium() ? premiumKindAt(key) : null;
       const premCls = premKind ? ` sm-prem sm-prem-${premKind.toLowerCase()}` : "";
-      const isCaret = !roundOver && caret !== null && caret.row === r && caret.col === c;
+      const isCaret = !roundOver && ui.caret !== null && ui.caret.row === r && ui.caret.col === c;
       const caretCls = isCaret ? " sm-caret" : "";
       // Kursorinuoli piirretään myös asetetun nopan PÄÄLLE, jotta sanan päällä näkee missä mennään.
-      const caretMark = isCaret ? `<span class="sm-caret-arrow">${caret!.dir === "H" ? "→" : "↓"}</span>` : "";
+      const caretMark = isCaret ? `<span class="sm-caret-arrow">${ui.caret!.dir === "H" ? "→" : "↓"}</span>` : "";
       const starMark =
         activePremium() && key === CENTER ? `<span class="sm-center-star">★</span>` : "";
       const inner = tile ? `${tileHtml(tile)}${caretMark}` : `${starMark}${caretMark}`;
@@ -1555,7 +1527,7 @@ function boardHtml(v: Validation): string {
   // pointer-events:none (CSS) → ei estä raahausta; katoaa heti kun ensimmäinen noppa on laudalla.
   // Opaste vain ennen ensimmäistä toimintoa: piilota heti kun kursori on asetettu (pelaaja
   // valitsi ruudun) tai noppa on laudalla → valittu ruutu ei koskaan jää tekstin alle.
-  const boardEmpty = !roundOver && !caret && tiles.every((t) => !t.cell);
+  const boardEmpty = !roundOver && !ui.caret && tiles.every((t) => !t.cell);
   const startHint = boardEmpty
     ? `<div class="sm-board-hint">Raahaa kirjaimia ruudukkoon ja kokoa niistä sanaristikko</div>`
     : "";
@@ -1582,8 +1554,8 @@ function cellCenterScroll(
 
 /** Säätää `ui.viewScroll`ia minimaalisesti niin, että kursoriruutu pysyy näkyvissä (ei zoom). */
 function keepCaretVisible(viewport: HTMLElement, board: HTMLElement): void {
-  if (!caret || !ui.viewScroll) return;
-  const cell = board.querySelector<HTMLElement>(`[data-cell="${cellKey(caret.row, caret.col)}"]`);
+  if (!ui.caret || !ui.viewScroll) return;
+  const cell = board.querySelector<HTMLElement>(`[data-cell="${cellKey(ui.caret.row, ui.caret.col)}"]`);
   if (!cell) return;
   const pad = 8;
   const { offsetLeft: cl, offsetTop: ct, offsetWidth: cw, offsetHeight: ch } = cell;
@@ -1625,7 +1597,7 @@ function frameBoard(): void {
     }
     if (ui.viewScroll === null) {
       ui.viewScroll = cellCenterScroll(viewport, board, BOARD_MID, BOARD_MID); // keskitä aloitus
-    } else if (kbdMode && caret && !roundOver) {
+    } else if (ui.kbdMode && ui.caret && !roundOver) {
       keepCaretVisible(viewport, board); // pidä kirjoituskohta näkyvissä vierittämällä
     }
     viewport.scrollLeft = ui.viewScroll.left; // selain rajaa kelvolliseen väliin
@@ -1656,11 +1628,11 @@ function frameBoard(): void {
   // Näppäiltäessä kirjoituskohta (kursori) kuuluu näkyvään sisältöön: muuten kursori
   // karkaa reunan yli ja jokainen kirjain laukaisee yllättävän uudelleenkehystyksen
   // (etenkin kapealla näytöllä → "kohdistin hyppii"). Raahatessa kursoria ei huomioida.
-  if (kbdMode && !roundOver && caret) {
-    cMinR = Math.min(cMinR, caret.row);
-    cMaxR = Math.max(cMaxR, caret.row);
-    cMinC = Math.min(cMinC, caret.col);
-    cMaxC = Math.max(cMaxC, caret.col);
+  if (ui.kbdMode && !roundOver && ui.caret) {
+    cMinR = Math.min(cMinR, ui.caret.row);
+    cMaxR = Math.max(cMaxR, ui.caret.row);
+    cMinC = Math.min(cMinC, ui.caret.col);
+    cMaxC = Math.max(cMaxC, ui.caret.col);
   }
 
   // Mahtuuko sisältö yhä nykyisellä kehyksellä? Jos kyllä, pidä se (vain uudelleenaseta
@@ -2318,7 +2290,7 @@ function tileHtml(t: Tile): string {
   const glyph = isJoker ? (assigned ? t.letter.toUpperCase() : "◇") : t.face;
   // Jokerille, jolla on kirjain, pieni ◇-merkki → näkee että on jokeri ja sen voi vaihtaa.
   const mark = assigned ? `<span class="sm-joker-mark">◇</span>` : "";
-  const liftedCls = t.dieIndex === lifted ? " sm-lifted" : "";
+  const liftedCls = t.dieIndex === ui.lifted ? " sm-lifted" : "";
   // Jalometalli: arvoluokka väritystä varten (puu → kulta). Jokeri (arvo 0) jää neutraaliksi.
   const valCls = isJoker ? "" : ` sm-tval-${faceValue(t.face)}`;
   return `<div class="sm-tile${isJoker ? " sm-joker" : ""}${valCls}${liftedCls}"
@@ -2450,13 +2422,13 @@ function wireEvents(): void {
   // Ruudun klikkaus asettaa kirjoituskursorin (näppäimistösyöttö).
   for (const cellEl of root.querySelectorAll<HTMLElement>(".sm-cell")) {
     cellEl.addEventListener("click", () => {
-      if (drag) return; // raahauksen pudotus hoitaa oman renderinsä
+      if (ui.drag) return; // raahauksen pudotus hoitaa oman renderinsä
       if (performance.now() < ui.suppressCellClickUntil) {
         ui.suppressCellClickUntil = 0; // nopan napautus hoiti tämän eleen jo
         return;
       }
-      if (lifted !== null) {
-        placeTile(lifted, cellEl.dataset.cell!); // napauta-ja-aseta (placeTile nollaa noston)
+      if (ui.lifted !== null) {
+        placeTile(ui.lifted, cellEl.dataset.cell!); // napauta-ja-aseta (placeTile nollaa noston)
         return;
       }
       const { row, col } = parseKey(cellEl.dataset.cell!);
@@ -2468,18 +2440,18 @@ function wireEvents(): void {
 // --- Osoitinraahaus (hiiri + kosketus) ---
 
 function onTilePointerDown(e: PointerEvent, tileEl: HTMLElement): void {
-  if (roundOver || drag) return;
+  if (roundOver || ui.drag) return;
   if (e.button !== 0) return; // vain ykköspainike/kosketus/kynä raahaa (oikea = poisto, ks. contextmenu)
   e.preventDefault();
   const die = Number(tileEl.dataset.die);
-  drag = { die, tileEl, ghost: null, startX: e.clientX, startY: e.clientY, moved: false, hover: null };
+  ui.drag = { die, tileEl, ghost: null, startX: e.clientX, startY: e.clientY, moved: false, hover: null };
   // Laudalla olevan nopan paikallaan painaminen = pitkä painallus → poisto telineeseen.
   if (tiles[die]?.cell) {
-    drag.longPress = setTimeout(() => {
-      if (!drag || drag.die !== die || drag.moved) return;
-      drag.consumed = true; // pointerup ei enää käsittele napautusta
+    ui.drag.longPress = setTimeout(() => {
+      if (!ui.drag || ui.drag.die !== die || ui.drag.moved) return;
+      ui.drag.consumed = true; // pointerup ei enää käsittele napautusta
       teardownDrag();
-      drag = null;
+      ui.drag = null;
       unplaceTile(die);
     }, LONG_PRESS_MS);
   }
@@ -2490,62 +2462,63 @@ function onTilePointerDown(e: PointerEvent, tileEl: HTMLElement): void {
 
 /** Luo kelluva haamulaatta (vasta kun raahaus oikeasti alkaa). */
 function startGhost(): void {
-  if (!drag || drag.ghost) return;
-  kbdMode = false; // raahaus: kehystä ilman kursorinseurantaa (säilytä "ei hyppimistä")
-  const tileEl = drag.tileEl;
+  if (!ui.drag || ui.drag.ghost) return;
+  ui.kbdMode = false; // raahaus: kehystä ilman kursorinseurantaa (säilytä "ei hyppimistä")
+  const tileEl = ui.drag.tileEl;
   const size = tileEl.offsetWidth;
   const ghost = tileEl.cloneNode(true) as HTMLElement;
   ghost.classList.add("sm-ghost");
   ghost.style.width = `${size}px`;
   ghost.style.height = `${size}px`;
   document.body.appendChild(ghost);
-  drag.ghost = ghost;
+  ui.drag.ghost = ghost;
   tileEl.classList.add("sm-dragging");
 }
 
 function moveGhost(x: number, y: number): void {
-  if (!drag?.ghost) return;
-  const g = drag.ghost;
+  if (!ui.drag?.ghost) return;
+  const g = ui.drag.ghost;
   g.style.left = `${x - g.offsetWidth / 2}px`;
   g.style.top = `${y - g.offsetHeight / 2}px`;
 }
 
 function setHover(el: HTMLElement | null): void {
-  if (!drag || drag.hover === el) return;
-  drag.hover?.classList.remove("sm-drop");
+  if (!ui.drag || ui.drag.hover === el) return;
+  ui.drag.hover?.classList.remove("sm-drop");
   el?.classList.add("sm-drop");
-  drag.hover = el;
+  ui.drag.hover = el;
 }
 
 function onPointerMove(e: PointerEvent): void {
-  if (!drag) return;
-  if (!drag.moved && Math.hypot(e.clientX - drag.startX, e.clientY - drag.startY) > 6) {
-    drag.moved = true;
-    if (drag.longPress) clearTimeout(drag.longPress); // liike → ei pitkä painallus
+  const d = ui.drag;
+  if (!d) return;
+  if (!d.moved && Math.hypot(e.clientX - d.startX, e.clientY - d.startY) > 6) {
+    d.moved = true;
+    if (d.longPress) clearTimeout(d.longPress); // liike → ei pitkä painallus
     startGhost();
   }
-  if (!drag.moved) return;
+  if (!d.moved) return;
   moveGhost(e.clientX, e.clientY);
   const under = document.elementFromPoint(e.clientX, e.clientY);
   setHover(under?.closest<HTMLElement>(".sm-cell") ?? null);
 }
 
 function teardownDrag(): void {
-  if (drag?.longPress) clearTimeout(drag.longPress);
+  if (ui.drag?.longPress) clearTimeout(ui.drag.longPress);
   window.removeEventListener("pointermove", onPointerMove);
   window.removeEventListener("pointerup", onPointerUp);
   window.removeEventListener("pointercancel", onPointerCancel);
-  drag?.hover?.classList.remove("sm-drop");
-  drag?.ghost?.remove();
+  ui.drag?.hover?.classList.remove("sm-drop");
+  ui.drag?.ghost?.remove();
 }
 
 function onPointerUp(e: PointerEvent): void {
-  if (!drag) return;
-  const { die, moved, consumed } = drag;
+  if (!ui.drag) return;
+  const { die, moved, consumed } = ui.drag;
   const x = e.clientX;
   const y = e.clientY;
   teardownDrag();
-  drag = null;
+  ui.drag = null;
   if (consumed) return; // pitkä painallus jo hoiti
   if (!moved) {
     onTileTap(die);
@@ -2567,10 +2540,10 @@ function onTileTap(die: number): void {
   if (t.cell) ui.suppressCellClickUntil = performance.now() + 350;
   // Nostettu nappula odottaa: napautus laudan nopan päälle = aseta sen ruutuun (vaihto);
   // telineen nopan napautus = vaihda/peru nosto.
-  if (lifted !== null) {
-    if (t.cell) placeTile(lifted, t.cell);
+  if (ui.lifted !== null) {
+    if (t.cell) placeTile(ui.lifted, t.cell);
     else {
-      lifted = lifted === die ? null : die;
+      ui.lifted = ui.lifted === die ? null : die;
       render();
     }
     return;
@@ -2591,14 +2564,14 @@ function onTileTap(die: number): void {
       setCaret(row, col); // laudan noppa: aseta kirjoituskursori
     }
   } else {
-    lifted = die; // telineen nappula: nosta (napauta-ja-aseta)
+    ui.lifted = die; // telineen nappula: nosta (napauta-ja-aseta)
     render();
   }
 }
 
 function onPointerCancel(): void {
   teardownDrag();
-  drag = null;
+  ui.drag = null;
   render();
 }
 
@@ -2611,7 +2584,7 @@ function placeTile(die: number, target: string): void {
     occupant.cell = dragged.cell;
   }
   dragged.cell = target;
-  lifted = null; // asetus kuluttaa mahdollisen noston
+  ui.lifted = null; // asetus kuluttaa mahdollisen noston
   sfx.place();
   render();
 }
@@ -2659,23 +2632,23 @@ function stepCell(r: number, c: number, dir: Dir, back = false): [number, number
 function setCaret(row: number, col: number): void {
   if (roundOver) return;
   // Klikkaus EI saa liikuttaa näkymää: kursori ilmestyy juuri napautettuun ruutuun.
-  // Vasta kirjoittaminen/nuolet kytkee kursorinseurannan (kbdMode) takaisin päälle.
-  kbdMode = false;
-  caret =
-    caret && caret.row === row && caret.col === col
-      ? { row, col, dir: caret.dir === "H" ? "V" : "H" }
-      : { row, col, dir: caret?.dir ?? "H" };
+  // Vasta kirjoittaminen/nuolet kytkee kursorinseurannan (ui.kbdMode) takaisin päälle.
+  ui.kbdMode = false;
+  ui.caret =
+    ui.caret && ui.caret.row === row && ui.caret.col === col
+      ? { row, col, dir: ui.caret.dir === "H" ? "V" : "H" }
+      : { row, col, dir: ui.caret?.dir ?? "H" };
   render();
 }
 
 /** Kirjoita kirjain kursorin kohdalle (telineestä; jokeri jos kirjainta ei ole). */
 function typeAt(ch: string): void {
   if (roundOver) return;
-  kbdMode = true;
-  if (!caret) caret = { row: BOARD_MID, col: BOARD_MID, dir: "H" };
+  ui.kbdMode = true;
+  if (!ui.caret) ui.caret = { row: BOARD_MID, col: BOARD_MID, dir: "H" };
   // Ohita varatut ruudut → ensimmäinen tyhjä suunnassa.
-  let { row, col } = caret;
-  const dir = caret.dir;
+  let { row, col } = ui.caret;
+  const dir = ui.caret.dir;
   while (inBounds(row, col) && tileAt(cellKey(row, col))) {
     [row, col] = stepCell(row, col, dir);
   }
@@ -2694,7 +2667,7 @@ function typeAt(ch: string): void {
   recordHistory(die); // kumoa: muistiin ruutu (null) ennen asetusta
   tiles[die].cell = cellKey(row, col);
   const [nr, nc] = stepCell(row, col, dir);
-  caret = inBounds(nr, nc) ? { row: nr, col: nc, dir } : { row, col, dir };
+  ui.caret = inBounds(nr, nc) ? { row: nr, col: nc, dir } : { row, col, dir };
   sfx.place();
   render();
 }
@@ -2713,42 +2686,42 @@ function releaseTile(t: Tile): void {
 /** Askelpalautin: tyhjennä aktiivinen ruutu jos varattu (keskeltä poisto), muuten
  * astu taakse ja poista edellinen (kirjoituksen perän poisto). */
 function backspaceCaret(): void {
-  if (roundOver || !caret) return;
-  kbdMode = true;
-  const dir = caret.dir;
+  if (roundOver || !ui.caret) return;
+  ui.kbdMode = true;
+  const dir = ui.caret.dir;
   // Aktiivinen ruutu varattu → tyhjennä SE; kursori jää paikalleen (intuitiivinen).
-  const here = tileAt(cellKey(caret.row, caret.col));
+  const here = tileAt(cellKey(ui.caret.row, ui.caret.col));
   if (here) {
     releaseTile(here);
     render();
     return;
   }
   // Aktiivinen ruutu tyhjä → astu taakse ja poista edellinen.
-  const [pr, pc] = stepCell(caret.row, caret.col, dir, true);
+  const [pr, pc] = stepCell(ui.caret.row, ui.caret.col, dir, true);
   if (!inBounds(pr, pc)) return;
   const t = tileAt(cellKey(pr, pc));
   if (t) releaseTile(t);
-  caret = { row: pr, col: pc, dir };
+  ui.caret = { row: pr, col: pc, dir };
   render();
 }
 
 function arrowCaret(dir: Dir, back: boolean): void {
   if (roundOver) return;
-  kbdMode = true;
-  if (!caret) {
-    caret = { row: BOARD_MID, col: BOARD_MID, dir };
+  ui.kbdMode = true;
+  if (!ui.caret) {
+    ui.caret = { row: BOARD_MID, col: BOARD_MID, dir };
   } else {
-    const [nr, nc] = stepCell(caret.row, caret.col, dir, back);
-    caret = inBounds(nr, nc) ? { row: nr, col: nc, dir } : { ...caret, dir };
+    const [nr, nc] = stepCell(ui.caret.row, ui.caret.col, dir, back);
+    ui.caret = inBounds(nr, nc) ? { row: nr, col: nc, dir } : { ...ui.caret, dir };
   }
   render();
 }
 
 function toggleCaretDir(): void {
   if (roundOver) return;
-  kbdMode = true;
-  caret = caret
-    ? { ...caret, dir: caret.dir === "H" ? "V" : "H" }
+  ui.kbdMode = true;
+  ui.caret = ui.caret
+    ? { ...ui.caret, dir: ui.caret.dir === "H" ? "V" : "H" }
     : { row: BOARD_MID, col: BOARD_MID, dir: "H" };
   render();
 }
@@ -2770,13 +2743,13 @@ function handleEscape(): boolean {
     render();
     return true;
   }
-  if (lifted !== null) {
-    lifted = null; // peru napauta-ja-aseta -nosto
+  if (ui.lifted !== null) {
+    ui.lifted = null; // peru napauta-ja-aseta -nosto
     render();
     return true;
   }
-  if (caret) {
-    caret = null; // tyhjennä kirjoituskursori
+  if (ui.caret) {
+    ui.caret = null; // tyhjennä kirjoituskursori
     render();
     return true;
   }
