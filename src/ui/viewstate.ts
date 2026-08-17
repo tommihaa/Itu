@@ -81,6 +81,15 @@ export interface ViewState {
   /** Tarkastajan tuloksen päivitys ilman renderiä; `renderChecker` asettaa, lemmapaketin
    * valmistuminen kutsuu. null = Tarkastaja ei ole ollut auki tällä sivulatauksella. */
   checkerRefresh: (() => void) | null;
+  /** Lemmapaketin lataus on kesken: analyysirivin tilalle latausmerkki, ja `ensureLemmas`
+   * käyttää samaa lippua estämään päällekkäisen latauksen. */
+  lemmasLoading: boolean;
+  /** Telineen aktiivinen järjestys (`SORT_KEYS`, ryhmävälejä varten). Levylle tallennettu
+   * valinta luetaan `game.ts`:n `loadSort`illa, tässä on vain käytössä oleva arvo. */
+  rackSort: string;
+  /** Telineen näkymäjärjestys: dieIndex-permutaatio. Tyhjä tai eri mittainen kuin nopat
+   * ⇒ näkymä käyttää heiton omaa järjestystä. */
+  rackOrder: number[];
 }
 
 export const ui: ViewState = {
@@ -99,6 +108,10 @@ export const ui: ViewState = {
   currentFrame: null,
   viewScroll: null,
   checkerRefresh: null,
+  lemmasLoading: false,
+  // Sama oletus kuin `game.ts`:n DEFAULT_SORT; `newRoll` korvaa tämän levyltä luetulla.
+  rackSort: "abc",
+  rackOrder: [],
 };
 
 /** Ääniasetuksen ainoa kirjoitustie: tila ja levy pysyvät yhdessä. */

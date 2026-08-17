@@ -110,13 +110,12 @@ interface Tile {
 }
 
 let tiles: Tile[] = [];
-let rackOrder: number[] = []; // telineen näkymäjärjestys (dieIndex-permutaatio)
 // Kehystys ja vieritysasema ovat näkymätilassa (`viewstate.ts`:n `ui.currentFrame`,
 // `ui.viewScroll`).
 // Zoom pois käytöstä toistaiseksi (käyttäjän pyyntö): kiinteä koko + vieritettävä näkymä.
 // Vanha automaattinen kehystys (zoom/pan) jää lipun taakse, helppo palauttaa myöhemmin.
 const ZOOM_ENABLED = false;
-let rackSort = "abc"; // aktiivinen järjestys (ryhmävälejä varten); newRoll asettaa tallennetun
+// Telineen järjestys ja näkymäjärjestys ovat näkymätilassa (`ui.rackSort`, `ui.rackOrder`).
 let seed = "";
 let judge: WordJudge | null = null;
 let root: HTMLElement;
@@ -125,7 +124,7 @@ let root: HTMLElement;
 
 // Opettavuus: muoto -> lemma (lazy-ladattu paketti, ks. dict/lemmas.ts).
 let lemmas: LemmaLookup | null = null;
-let lemmasLoading = false;
+// Lemmapaketin latauslippu on näkymätilassa (`ui.lemmasLoading`).
 let endWords: string[] = []; // kierroksen kelvolliset sanat (loppunäytön perusmuodot)
 let endWordScores: number[] = []; // ^samassa järjestyksessä: kunkin sanan pisteet (kertoimineen)
 // Tarkastajan tuloksen päivitys ilman renderiä on näkymätilassa (`ui.checkerRefresh`).
@@ -655,8 +654,8 @@ function newRoll(s: string): void {
     cell: null,
   }));
   // Järjestysvalinta säilyy heitosta toiseen (oletus: Aakkoset).
-  rackSort = loadSort();
-  rackOrder = computeRackOrder(rackSort);
+  ui.rackSort = loadSort();
+  ui.rackOrder = computeRackOrder(ui.rackSort);
   lastRecordRank = 0;
   currentRecord = null;
   // Ei oletuskursoria: tyhjällä laudalla aloitusopaste (sm-board-hint) on ainoa CTA, eikä
@@ -1238,8 +1237,8 @@ function renderSettings(): void {
 
 /** Lataa lemma-paketti kerran (lazy); valmistuttua päivittää avoinna olevan näkymän. */
 function ensureLemmas(): void {
-  if (lemmas || lemmasLoading) return;
-  lemmasLoading = true;
+  if (lemmas || ui.lemmasLoading) return;
+  ui.lemmasLoading = true;
   loadLemmas()
     .then((l) => {
       lemmas = l;
@@ -1248,7 +1247,7 @@ function ensureLemmas(): void {
     })
     .catch((e) => console.error("Lemma-paketin lataus epäonnistui", e))
     .finally(() => {
-      lemmasLoading = false;
+      ui.lemmasLoading = false;
     });
 }
 
@@ -1314,7 +1313,7 @@ function wordRows(words: string[], scores?: number[]): string {
       const lines = analysisLines(w);
       const body = lines.length
         ? lines.map((l) => `<div class="sm-ana">${l}</div>`).join("")
-        : lemmasLoading
+        : ui.lemmasLoading
           ? `<div class="sm-ana">…</div>`
           : "";
       const pts =
@@ -1362,7 +1361,7 @@ function renderChecker(): void {
       const lines = analysisLines(w);
       const body = lines.length
         ? `<div class="sm-ana-list">${lines.map((l) => `<div class="sm-ana">${l}</div>`).join("")}</div>`
-        : lemmasLoading
+        : ui.lemmasLoading
           ? ` <span class="sm-lemma">…</span>`
           : "";
       result.innerHTML = `<span class="sm-check-ok-line">✓ ”${escapeHtml(w)}” kelpaa</span>${body}`;
@@ -1730,10 +1729,10 @@ function applyFrame(
 }
 
 function rackHtml(): string {
-  const order = rackOrder.length === tiles.length ? rackOrder : [...tiles.keys()];
+  const order = ui.rackOrder.length === tiles.length ? ui.rackOrder : [...tiles.keys()];
   const rackDice = order.filter((die) => !tiles[die].cell);
   // Äänneryhmittäin: himmeä otsikko ennen kutakin ryhmää (konsonantit / vokaaliperheet).
-  const grouped = rackSort === "aanne";
+  const grouped = ui.rackSort === "aanne";
   let prevGroup = -1;
   const parts: string[] = [];
   for (const die of rackDice) {
@@ -1764,7 +1763,7 @@ function rackHeadHtml(remaining: number): string {
 
 function rackToolsHtml(): string {
   const b = (key: string, label: string) =>
-    `<button class="sm-tool${key === rackSort ? " sm-tool-active" : ""}" data-sort="${key}">${label}</button>`;
+    `<button class="sm-tool${key === ui.rackSort ? " sm-tool-active" : ""}" data-sort="${key}">${label}</button>`;
   return `<div class="sm-rack-tools">
     <span class="sm-tools-label">Järjestys:</span>
     ${b("abc", "Aakkoset")}${b("aanne", "Äänneryhmät")}
@@ -1834,9 +1833,9 @@ function computeRackOrder(key: string): number[] {
 }
 
 function applyRackSort(key: string): void {
-  rackSort = key;
+  ui.rackSort = key;
   saveSort(key); // valinta säilyy seuraaviin heittoihin
-  rackOrder = computeRackOrder(key);
+  ui.rackOrder = computeRackOrder(key);
   render();
 }
 
