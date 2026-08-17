@@ -24,7 +24,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          # Node 24 (npm 11) on sama kuin kehityskoneella. Jaossa mitattiin 17.8.2026, että
+          # Node 22:n npm 10 rakentaa samasta lukkotiedostosta eri puun ja kaataa npm ci:n.
+          # Täällä se ei ole lauennut, ja tämä poistaa sen mahdollisuuden.
+          node-version: '24'
           cache: npm
       - run: npm ci
       - run: npm test
