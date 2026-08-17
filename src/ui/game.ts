@@ -64,6 +64,7 @@ import { setSfxEnabled, sfx } from "../sfx";
 import {
   ui,
   setSoundEnabled,
+  type Panel,
   type RulesTab,
   type RecordMode,
   type RecordsSort,
@@ -123,9 +124,8 @@ let rackSort = "abc"; // aktiivinen järjestys (ryhmävälejä varten); newRoll 
 let seed = "";
 let judge: WordJudge | null = null;
 let root: HTMLElement;
-let showRules = false;
-let showChecker = false; // Tarkastaja (pelin ulkopuolinen sanahaku + selitys)
-let showSettings = false; // ⚙️ Asetukset-paneeli (toistaiseksi: Scrabble-pistemoodi)
+// Säännöt, Tarkastaja (pelin ulkopuolinen sanahaku + selitys), ⚙️ Asetukset ja 🏆 Ennätykset
+// ovat yksi poissulkeva paneelikenttä näkymätilassa (`viewstate.ts`:n `ui.panel`).
 
 // Opettavuus: muoto -> lemma (lazy-ladattu paketti, ks. dict/lemmas.ts).
 let lemmas: LemmaLookup | null = null;
@@ -428,8 +428,7 @@ function fmtRate(rate: number): string {
 }
 
 // 🏆-näkymän kolme välilehtivalintaa ovat näkymätilassa (`viewstate.ts`:n `recordsTab`,
-// `recordsDurationTab`, `recordsSort`).
-let showRecords = false;
+// `recordsDurationTab`, `recordsSort`), samoin näkymän avaus (`ui.panel === "records"`).
 let lastRecordRank = 0; // tämän pelin sija OMAN (moodi × kesto) -listansa top-10:ssä (0 = ei listalle)
 let currentRecord: ScoreRecord | null = null; // tämän pelin merkintä (★-korostus)
 
@@ -607,7 +606,9 @@ export function mountGame(el: HTMLElement): void {
   root = el;
   // Ikkunan koon muuttuessa kehystä uudelleen (responsiivinen zoom).
   window.addEventListener("resize", () => {
-    if (!showRules) {
+    // Säännöt-paneeli on ainoa jonka aikana ei kehystetä (tuloste käyttää samaa DOMia);
+    // muut paneelit eivät estä kehystystä, joten ehto on nimenomaan tämä eikä "mikään auki".
+    if (ui.panel !== "rules") {
       currentFrame = null; // koon muutos → kehystä uudelleen näkymään sopivaksi
       frameBoard();
     }
@@ -820,20 +821,14 @@ function validate(): Validation {
 }
 
 function render(): void {
-  if (showRules) {
-    renderRules();
-    return;
-  }
-  if (showRecords) {
-    renderRecords();
-    return;
-  }
-  if (showChecker) {
-    renderChecker();
-    return;
-  }
-  if (showSettings) {
-    renderSettings();
+  if (ui.panel) {
+    const panels: Record<Panel, () => void> = {
+      rules: renderRules,
+      records: renderRecords,
+      checker: renderChecker,
+      settings: renderSettings,
+    };
+    panels[ui.panel]();
     return;
   }
   if (showMatchSummary) {
@@ -1002,7 +997,7 @@ function renderRules(): void {
   `;
   wireTermClicks(root);
   root.querySelector<HTMLButtonElement>("#sm-rules-close")!.onclick = () => {
-    showRules = false;
+    ui.panel = null;
     render();
   };
   root.querySelector<HTMLButtonElement>("#sm-rules-print")!.onclick = () => window.print();
@@ -1203,7 +1198,7 @@ function renderSettings(): void {
     </div>
   `;
   root.querySelector<HTMLButtonElement>("#sm-settings-close")!.onclick = () => {
-    showSettings = false;
+    ui.panel = null;
     render();
   };
   for (const b of root.querySelectorAll<HTMLElement>("[data-dur]")) {
@@ -1252,7 +1247,7 @@ function ensureLemmas(): void {
   loadLemmas()
     .then((l) => {
       lemmas = l;
-      if (showChecker) checkerRefresh?.();
+      if (ui.panel === "checker") checkerRefresh?.();
       else render();
     })
     .catch((e) => console.error("Lemma-paketin lataus epäonnistui", e))
@@ -1386,7 +1381,7 @@ function renderChecker(): void {
   input.focus();
   ensureLemmas(); // lataa perusmuodot taustalla
   root.querySelector<HTMLButtonElement>("#sm-check-close")!.onclick = () => {
-    showChecker = false;
+    ui.panel = null;
     render();
   };
 }
@@ -1430,7 +1425,7 @@ function renderRecords(): void {
     <div class="sm-records">${list}</div>
   `;
   root.querySelector<HTMLButtonElement>("#sm-records-close")!.onclick = () => {
-    showRecords = false;
+    ui.panel = null;
     render();
   };
   for (const b of root.querySelectorAll<HTMLElement>("[data-rectab]")) {
@@ -2353,7 +2348,7 @@ function wireEvents(): void {
     newRoll(randomSeed()),
   );
   root.querySelector<HTMLButtonElement>("#sm-rules")!.onclick = () => {
-    showRules = true;
+    ui.panel = "rules";
     render();
   };
   root.querySelector<HTMLButtonElement>("#sm-lock")?.addEventListener("click", endRound);
@@ -2365,15 +2360,15 @@ function wireEvents(): void {
     // Avaa oletuksena juuri pelatun (tai aktiivisen) moodin + keston välilehdet.
     ui.recordsTab = currentRecord ? currentRecord.mode : activePremium() ? "scrabble" : "itu";
     ui.recordsDurationTab = currentRecord?.duration ?? activeDuration();
-    showRecords = true;
+    ui.panel = "records";
     render();
   });
   root.querySelector<HTMLButtonElement>("#sm-checker")?.addEventListener("click", () => {
-    showChecker = true;
+    ui.panel = "checker";
     render();
   });
   root.querySelector<HTMLButtonElement>("#sm-settings")?.addEventListener("click", () => {
-    showSettings = true;
+    ui.panel = "settings";
     render();
   });
 
@@ -2774,8 +2769,8 @@ function handleEscape(): boolean {
     render();
     return true;
   }
-  if (showRules || showRecords || showChecker || showSettings) {
-    showRules = showRecords = showChecker = showSettings = false;
+  if (ui.panel) {
+    ui.panel = null;
     render();
     return true;
   }
@@ -2807,10 +2802,7 @@ function onKeyDown(e: KeyboardEvent): void {
   // Muut näppäimet vain pelinäkymässä (ei modaalien/loppunäytön päällä).
   if (
     roundOver ||
-    showRules ||
-    showRecords ||
-    showChecker ||
-    showSettings ||
+    ui.panel !== null ||
     showMatchSummary ||
     showChallenge ||
     jokerPicker !== null

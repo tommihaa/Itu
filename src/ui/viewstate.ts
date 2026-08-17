@@ -11,6 +11,10 @@
 // tämä ei virtaa mistään.
 import { GAME_DURATION_SECONDS } from "../domain/scoring";
 
+/** Pelinäkymän päälle avautuvat paneelit. Poissulkevat: yksi kerrallaan tai ei mitään,
+ * ja tyyppi kantaa sen sijaan että neljä totuusarvoa nollattaisiin erikseen. */
+export type Panel = "rules" | "records" | "checker" | "settings";
+
 export type RulesTab = "words" | "controls" | "terms" | "about";
 export type RecordMode = "itu" | "scrabble";
 export type RecordsSort = "total" | "rate";
@@ -36,6 +40,8 @@ function saveSoundEnabled(on: boolean): void {
 }
 
 export interface ViewState {
+  /** Avoin paneeli, tai null kun pelinäkymä on esillä. */
+  panel: Panel | null;
   /** Säännöt-näkymän aktiivinen välilehti. */
   rulesTab: RulesTab;
   /** Opi-moodin teemapalkin ⓘ-toggle: kuvaukset auki/kiinni. */
@@ -57,6 +63,7 @@ export interface ViewState {
 }
 
 export const ui: ViewState = {
+  panel: null,
   rulesTab: "words",
   learnDescOpen: false,
   soundEnabled: loadSoundEnabled(),
