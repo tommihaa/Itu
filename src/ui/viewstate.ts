@@ -54,6 +54,12 @@ function saveSoundEnabled(on: boolean): void {
 export interface ViewState {
   /** Avoin paneeli, tai null kun pelinäkymä on esillä. */
   panel: Panel | null;
+  /** Haastemodaali (aloita haaste / vastaa) laudan päällä. Oma kenttä eikä `panel`in arvo,
+   * koska Esc sulkee tämän ENNEN paneeleita ja modaali elää pelinäkymän päällä. */
+  showChallenge: boolean;
+  /** Ottelun loppuyhteenveto. Oma kenttä eikä `panel`in arvo, koska Esc ei sulje tätä:
+   * yhteenvedosta poistutaan ottelun omilla napeilla (`exitMatch`, `advanceMatch`). */
+  showMatchSummary: boolean;
   /** Säännöt-näkymän aktiivinen välilehti. */
   rulesTab: RulesTab;
   /** Opi-moodin teemapalkin ⓘ-toggle: kuvaukset auki/kiinni. */
@@ -94,6 +100,8 @@ export interface ViewState {
 
 export const ui: ViewState = {
   panel: null,
+  showChallenge: false,
+  showMatchSummary: false,
   rulesTab: "words",
   learnDescOpen: false,
   soundEnabled: loadSoundEnabled(),

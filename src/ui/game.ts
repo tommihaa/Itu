@@ -129,7 +129,8 @@ let endWords: string[] = []; // kierroksen kelvolliset sanat (loppunäytön peru
 let endWordScores: number[] = []; // ^samassa järjestyksessä: kunkin sanan pisteet (kertoimineen)
 // Tarkastajan tuloksen päivitys ilman renderiä on näkymätilassa (`ui.checkerRefresh`).
 let jokerPicker: number | null = null; // avoinna olevan jokerin dieIndex (kirjainvalitsin)
-let showChallenge = false; // offline-haastemodaali (aloita haaste / vastaa)
+// Haastemodaali ja ottelun loppuyhteenveto ovat näkymätilassa (`ui.showChallenge`,
+// `ui.showMatchSummary`).
 
 // --- Monikierroshaaste (offline, linkki kantaa tulokset 2-suuntaisesti) ---
 const ROUND_OPTIONS = [1, 3, 5, 10];
@@ -328,7 +329,6 @@ interface Match {
   dictMismatch?: string;
 }
 let match: Match | null = null;
-let showMatchSummary = false;
 let myName = loadName();
 
 // Osoitinpohjainen raahaus (hiiri + kosketus + kynä). HTML5 DnD ei toimi mobiilissa,
@@ -826,7 +826,7 @@ function render(): void {
     panels[ui.panel]();
     return;
   }
-  if (showMatchSummary) {
+  if (ui.showMatchSummary) {
     if (match && match.themes) renderThemeMatchSummary();
     else renderMatchSummary();
     return;
@@ -905,7 +905,7 @@ function render(): void {
     ${wordsHtml(v)}
     ${judge ? "" : '<p class="sm-words pending">Ladataan sanastoa…</p>'}
     ${jokerPicker !== null ? jokerPickerHtml() : ""}
-    ${showChallenge ? challengeHtml() : ""}
+    ${ui.showChallenge ? challengeHtml() : ""}
     </div>
   `;
   wireEvents();
@@ -1878,8 +1878,8 @@ function roundSeed(base: string, i: number): string {
 
 function startMatch(rounds: number, base: string, premium: boolean, duration: number, opp?: Opp): void {
   match = { base, rounds, premium, duration, current: 0, myScores: [], myName, ...(opp ? { opp } : {}) };
-  showChallenge = false;
-  showMatchSummary = false;
+  ui.showChallenge = false;
+  ui.showMatchSummary = false;
   if (!opp) location.hash = ""; // haastaja aloittaa puhtaalta; vastaajan #c=… säilyy URL:ssa
   newRoll(roundSeed(base, 0));
 }
@@ -1909,8 +1909,8 @@ function startThemeMatch(
     myThemeHits: new Set(),
     ...(opp ? { opp } : {}),
   };
-  showChallenge = false;
-  showMatchSummary = false;
+  ui.showChallenge = false;
+  ui.showMatchSummary = false;
   if (!opp) location.hash = "";
   ensureLemmas(); // teemojen tunnistus vaatii analyysipaketin
   newRoll(roundSeed(base, 0));
@@ -1922,14 +1922,14 @@ function advanceMatch(): void {
   if (match.current < match.rounds) {
     newRoll(roundSeed(match.base, match.current));
   } else {
-    showMatchSummary = true;
+    ui.showMatchSummary = true;
     render();
   }
 }
 
 function exitMatch(): void {
   match = null;
-  showMatchSummary = false;
+  ui.showMatchSummary = false;
 }
 
 // --- Haastekoodaus (base64url JSON URL-hashiin: #c=…) ---
@@ -2007,7 +2007,7 @@ function handleIncoming(p: ChallengePayload): void {
       ...(p.th ? { themes: p.th, myThemeHits: new Set(p.a.h ?? []) } : {}),
       ...(dictMismatch ? { dictMismatch } : {}),
     };
-    showMatchSummary = true;
+    ui.showMatchSummary = true;
     render();
   } else if (p.th) {
     // Kaveri-teemahaaste: vastaa jaettuun tavoitesettiin. Pistemoodi/kesto linkistä,
@@ -2370,11 +2370,11 @@ function wireEvents(): void {
 
   // Offline-haaste: avaus + modaalin toiminnot (toimii myös loppunäytössä).
   root.querySelector<HTMLButtonElement>("#sm-challenge")?.addEventListener("click", () => {
-    showChallenge = true;
+    ui.showChallenge = true;
     render();
   });
   const closeChallenge = () => {
-    showChallenge = false;
+    ui.showChallenge = false;
     render();
   };
   root.querySelector<HTMLButtonElement>("#sm-ch-close")?.addEventListener("click", closeChallenge);
@@ -2404,14 +2404,14 @@ function wireEvents(): void {
     if (cm) {
       const p = decodeChallenge(cm[1], ROUND_OPTIONS);
       if (p) {
-        showChallenge = false;
+        ui.showChallenge = false;
         handleIncoming(p);
         return;
       }
     }
     const s = parseSeed(raw);
     if (s) {
-      showChallenge = false;
+      ui.showChallenge = false;
       exitMatch();
       location.hash = encodeURIComponent(s);
       newRoll(s);
@@ -2760,8 +2760,8 @@ function handleEscape(): boolean {
     render();
     return true;
   }
-  if (showChallenge) {
-    showChallenge = false;
+  if (ui.showChallenge) {
+    ui.showChallenge = false;
     render();
     return true;
   }
@@ -2799,8 +2799,8 @@ function onKeyDown(e: KeyboardEvent): void {
   if (
     roundOver ||
     ui.panel !== null ||
-    showMatchSummary ||
-    showChallenge ||
+    ui.showMatchSummary ||
+    ui.showChallenge ||
     jokerPicker !== null
   )
     return;
