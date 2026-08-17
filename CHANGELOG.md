@@ -11,6 +11,20 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
 > numerolla, aiemmat numerot ovat jälkikäteisiä nimilappuja jo tuotannossa olevalle
 > koodille. Tästä eteenpäin versio bumpataan ennen pushia, kuten Superjatsissa.
 
+## [0.8.0] – 2026-08-17
+
+### Muutettu
+- **Näkymän tila ja pelaajan valinnat omiin moduuleihinsa.** `src/ui/game.ts` piti sisällään
+  53 moduulitason muuttujaa, joissa näkymän tila, syöttötila, pelaajan asetukset ja pelin
+  oma tila olivat samassa kasassa. Uusi `src/ui/viewstate.ts` omistaa sen mikä katoaa sivun
+  uudelleenlatauksessa (avoin paneeli, välilehtivalinnat, kursori, nosto, raahaus, kehystys
+  ja vieritys) ja uusi `src/ui/settings.ts` sen mikä ei katoa (pistemoodi, aikabonus, kesto,
+  Opi-moodin kytkin, äänet, telineen järjestys, nimimerkki) levytallennuksineen. Muuttujia
+  jäi 23. Pelaajalle ei näy mitään muutosta: sama peli, samat asetukset, samat tallennukset.
+- **Neljä paneelilippua yhdeksi kentäksi.** Säännöt, Ennätykset, Sanapoliisi ja Asetukset
+  olivat neljä erillistä totuusarvoa, vaikka vain yksi voi olla auki kerrallaan. Nyt
+  poissulkevuus on tyypissä, joten kahta paneelia ei voi enää vahingossa avata yhtä aikaa.
+
 ## [0.7.3] – 2026-07-26
 
 ### Korjattu
