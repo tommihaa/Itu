@@ -61,6 +61,13 @@ import {
   wireTermClicks,
 } from "../rules/view";
 import { setSfxEnabled, sfx } from "../sfx";
+import {
+  ui,
+  setSoundEnabled,
+  type RulesTab,
+  type RecordMode,
+  type RecordsSort,
+} from "./viewstate";
 
 // Iso sisäinen lauta, jotta tila ei lopu kesken; näkymä kehystää käytetyn alueen.
 const BOARD = 21;
@@ -117,7 +124,6 @@ let seed = "";
 let judge: WordJudge | null = null;
 let root: HTMLElement;
 let showRules = false;
-let rulesTab: "words" | "controls" | "terms" | "about" = "words"; // Säännöt-näkymän aktiivinen välilehti
 let showChecker = false; // Tarkastaja (pelin ulkopuolinen sanahaku + selitys)
 let showSettings = false; // ⚙️ Asetukset-paneeli (toistaiseksi: Scrabble-pistemoodi)
 
@@ -129,7 +135,6 @@ let endWordScores: number[] = []; // ^samassa järjestyksessä: kunkin sanan pis
 let checkerRefresh: (() => void) | null = null; // tarkistimen tuloksen päivitys ilman renderiä
 let jokerPicker: number | null = null; // avoinna olevan jokerin dieIndex (kirjainvalitsin)
 let showChallenge = false; // offline-haastemodaali (aloita haaste / vastaa)
-let learnDescOpen = false; // Opi-moodin teemapalkin ⓘ-toggle: kuvaukset auki/kiinni
 
 // --- Monikierroshaaste (offline, linkki kantaa tulokset 2-suuntaisesti) ---
 const ROUND_OPTIONS = [1, 3, 5, 10];
@@ -174,25 +179,9 @@ function savePremiumMode(on: boolean): void {
 }
 let premiumMode = loadPremiumMode();
 
-// Äänet (valinnainen, oletus POIS): kevyt torvi & kantele -teema Web Audio -synteesillä.
-// Pelirauha-periaate (ITU.md) koskee oletustilaa — päätös 7.7.2026, ks. principle_itu_offline.
-const SOUND_KEY = "itu:sound:v1";
-function loadSoundEnabled(): boolean {
-  try {
-    return localStorage.getItem(SOUND_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-function saveSoundEnabled(on: boolean): void {
-  try {
-    localStorage.setItem(SOUND_KEY, on ? "1" : "0");
-  } catch {
-    /* yksityistila — valinta ei säily, peli toimii silti */
-  }
-}
-let soundEnabled = loadSoundEnabled();
-setSfxEnabled(soundEnabled);
+// Ääniasetus ja sen levytallennus asuvat näkymätilassa (`viewstate.ts`); tässä vain
+// äänimoottorin kytkentä käynnistyksessä, jotta tila ja moottori lähtevät samasta arvosta.
+setSfxEnabled(ui.soundEnabled);
 
 /** Näytetään "Kokeile ääniä" -paneelissa asetuksissa — sama lista kuin efektit.html:ssä. */
 const SFX_PREVIEW: [keyof typeof sfx, string][] = [
@@ -368,11 +357,8 @@ let drag: Drag | null = null;
 let lifted: number | null = null;
 // Kumoa-pino (Ctrl+Z): viimeisimmät lautamuutokset (die + ruutu ennen muutosta).
 let history: { die: number; prevCell: string | null }[] = [];
-// Napautuksen jälkeen tuleva synteettinen ruutuklikkaus vaimennetaan (estää tuplakäsittely).
-let suppressCellClickUntil = 0;
-// Tuplanapautus (kosketus/hiiri): viimeisin napautettu noppa + aika.
-let lastTapDie = -1;
-let lastTapAt = 0;
+// Napautuksen vaimennus ja tuplanapautuksen muisti ovat näkymätilassa (`viewstate.ts`:n
+// `suppressCellClickUntil`, `lastTapDie`, `lastTapAt`).
 const LONG_PRESS_MS = 450;
 const DOUBLE_TAP_MS = 300;
 
@@ -413,8 +399,6 @@ let endSuggestions: Suggestions | null = null;
 const RECORDS_KEY = "itu:records:v2";
 const MAX_RECORDS = 10;
 
-type RecordMode = "itu" | "scrabble";
-
 interface ScoreRecord {
   total: number;
   wordPoints: number;
@@ -443,11 +427,9 @@ function fmtRate(rate: number): string {
   return (Math.round(rate * 10) / 10).toFixed(1);
 }
 
-type RecordsSort = "total" | "rate";
+// 🏆-näkymän kolme välilehtivalintaa ovat näkymätilassa (`viewstate.ts`:n `recordsTab`,
+// `recordsDurationTab`, `recordsSort`).
 let showRecords = false;
-let recordsTab: RecordMode = "itu"; // 🏆-näkymän aktiivinen pistemoodi-välilehti
-let recordsDurationTab = DEFAULT_DURATION; // 🏆-näkymän aktiivinen kesto-välilehti (s)
-let recordsSort: RecordsSort = "total"; // 🏆 lajittelu: kokonaispisteet (per kesto) vs sanapistettä/min (kestot yhdessä)
 let lastRecordRank = 0; // tämän pelin sija OMAN (moodi × kesto) -listansa top-10:ssä (0 = ei listalle)
 let currentRecord: ScoreRecord | null = null; // tämän pelin merkintä (★-korostus)
 
@@ -1000,14 +982,14 @@ function resultHtml(): string {
 
 /** Selkosäännöt + ohjaus eri välilehdillä — sama sisältö pelissä ja tulosteessa (@media print). */
 function renderRules(): void {
-  const tab = (key: "words" | "controls" | "terms" | "about", label: string) =>
-    `<button class="sm-tab${key === rulesTab ? " sm-tab-active" : ""}" data-rtab="${key}">${label}</button>`;
+  const tab = (key: RulesTab, label: string) =>
+    `<button class="sm-tab${key === ui.rulesTab ? " sm-tab-active" : ""}" data-rtab="${key}">${label}</button>`;
   const content =
-    rulesTab === "controls"
+    ui.rulesTab === "controls"
       ? renderControlsContent()
-      : rulesTab === "terms"
+      : ui.rulesTab === "terms"
         ? renderTermsContent()
-        : rulesTab === "about"
+        : ui.rulesTab === "about"
           ? renderAboutContent()
           : renderWordsContent();
   root.innerHTML = `
@@ -1026,7 +1008,7 @@ function renderRules(): void {
   root.querySelector<HTMLButtonElement>("#sm-rules-print")!.onclick = () => window.print();
   for (const b of root.querySelectorAll<HTMLElement>("[data-rtab]")) {
     b.addEventListener("click", () => {
-      rulesTab = b.dataset.rtab as "words" | "controls" | "terms" | "about";
+      ui.rulesTab = b.dataset.rtab as RulesTab;
       renderRules();
     });
   }
@@ -1079,9 +1061,9 @@ function learnTargetsHtml(hits: Set<string>, forced?: string[]): string {
         return `<span class="sm-learn-week" title="Viikon eri teemat">${wk.covered}/${wk.goal}${wk.covered >= wk.goal ? " ✓" : ""} viikossa</span>`;
       })();
   // ⓘ avaa/sulkee kaikkien teemojen selkokuvaukset (mobiilissa hover ei toimi → tähdättävä
-  // tieto näkyviin ennen peliä). Tila JS:ssä (learnDescOpen) → säilyy renderin yli.
-  const info = `<button id="sm-learn-info" class="sm-learn-info" aria-expanded="${learnDescOpen}" aria-label="${learnDescOpen ? "Piilota teemojen kuvaukset" : "Näytä mitä teemat tarkoittavat"}" title="Mitä teemat tarkoittavat?">ⓘ</button>`;
-  const descs = learnDescOpen ? learnDescListHtml(targets, hits) : "";
+  // tieto näkyviin ennen peliä). Tila näkymätilassa (ui.learnDescOpen) → säilyy renderin yli.
+  const info = `<button id="sm-learn-info" class="sm-learn-info" aria-expanded="${ui.learnDescOpen}" aria-label="${ui.learnDescOpen ? "Piilota teemojen kuvaukset" : "Näytä mitä teemat tarkoittavat"}" title="Mitä teemat tarkoittavat?">ⓘ</button>`;
+  const descs = ui.learnDescOpen ? learnDescListHtml(targets, hits) : "";
   return `<div class="sm-learn-bar" aria-label="Opi-moodin teemat">
     <span class="sm-learn-title">${title}</span>
     ${chips}${loading}
@@ -1200,7 +1182,7 @@ function renderSettings(): void {
       ${premLegendHtml()}
       <p class="sm-ch-note sm-prem-key">K = kirjain, S = sana · ×2 ja ×3 ovat kertoimia. Sama selite näkyy laudan yllä Scrabble-moodissa.</p>
       <label class="sm-setting-row">
-        <input type="checkbox" id="sm-set-sound"${soundEnabled ? " checked" : ""} />
+        <input type="checkbox" id="sm-set-sound"${ui.soundEnabled ? " checked" : ""} />
         <span class="sm-setting-text">
           <b>🎵 Äänet (torvi &amp; kantele)</b>
           <small>Kevyt äänimaisema kirjainten asetukselle ja kierroksen tapahtumille. Oletus
@@ -1208,7 +1190,7 @@ function renderSettings(): void {
         </span>
       </label>
       ${
-        soundEnabled
+        ui.soundEnabled
           ? `<div class="sm-setting-row">
                <span class="sm-setting-text"><b>🔊 Kokeile ääniä</b></span>
              </div>
@@ -1242,10 +1224,9 @@ function renderSettings(): void {
     renderSettings(); // päivitä valinta heti; lauta päivittyy kun palataan peliin
   };
   root.querySelector<HTMLInputElement>("#sm-set-sound")!.onchange = (e) => {
-    soundEnabled = (e.target as HTMLInputElement).checked;
-    saveSoundEnabled(soundEnabled);
-    setSfxEnabled(soundEnabled);
-    if (soundEnabled) sfx.lock(); // ääninäyte: kuulet heti että äänet toimivat
+    setSoundEnabled((e.target as HTMLInputElement).checked);
+    setSfxEnabled(ui.soundEnabled);
+    if (ui.soundEnabled) sfx.lock(); // ääninäyte: kuulet heti että äänet toimivat
     renderSettings();
   };
   root.querySelector<HTMLInputElement>("#sm-set-learn")!.onchange = (e) => {
@@ -1258,8 +1239,7 @@ function renderSettings(): void {
     b.addEventListener("click", () => sfx[b.dataset.trySfx as keyof typeof sfx]()),
   );
   root.querySelector<HTMLButtonElement>("#sm-mute-sounds")?.addEventListener("click", () => {
-    soundEnabled = false;
-    saveSoundEnabled(false);
+    setSoundEnabled(false);
     setSfxEnabled(false);
     renderSettings();
   });
@@ -1415,8 +1395,8 @@ function renderChecker(): void {
  * pistemoodi (Itu / Scrabble) ja kesto (1/2/3/5 min). Lista suodattuu molemmilla. */
 function renderRecords(): void {
   const all = loadRecords();
-  const modeRecs = all.filter((r) => (r.mode ?? "itu") === recordsTab);
-  const rateMode = recordsSort === "rate";
+  const modeRecs = all.filter((r) => (r.mode ?? "itu") === ui.recordsTab);
+  const rateMode = ui.recordsSort === "rate";
   // Tuottavuuslajittelu yhdistää kestot (vertailu kestojen yli); kokonaispistelajittelu
   // suodattaa valitulla kestolla (sama aika kaikille = reilu vertailu).
   const recs = rateMode
@@ -1424,17 +1404,17 @@ function renderRecords(): void {
         .slice()
         .sort((a, b) => wordRate(b) - wordRate(a) || b.wordPoints - a.wordPoints || a.date - b.date)
         .slice(0, MAX_RECORDS)
-    : modeRecs.filter((r) => (r.duration ?? DEFAULT_DURATION) === recordsDurationTab);
+    : modeRecs.filter((r) => (r.duration ?? DEFAULT_DURATION) === ui.recordsDurationTab);
   const modeTab = (key: RecordMode, label: string) =>
-    `<button class="sm-tab${key === recordsTab ? " sm-tab-active" : ""}" data-rectab="${key}">${label}</button>`;
+    `<button class="sm-tab${key === ui.recordsTab ? " sm-tab-active" : ""}" data-rectab="${key}">${label}</button>`;
   const durTab = (s: number) =>
-    `<button class="sm-tab${s === recordsDurationTab ? " sm-tab-active" : ""}" data-recdur="${s}">${durationLabel(s)}</button>`;
+    `<button class="sm-tab${s === ui.recordsDurationTab ? " sm-tab-active" : ""}" data-recdur="${s}">${durationLabel(s)}</button>`;
   const sortTab = (key: RecordsSort, label: string) =>
-    `<button class="sm-tab${key === recordsSort ? " sm-tab-active" : ""}" data-recsort="${key}">${label}</button>`;
-  const modeName = recordsTab === "scrabble" ? "Scrabble-moodin " : "Itu-";
+    `<button class="sm-tab${key === ui.recordsSort ? " sm-tab-active" : ""}" data-recsort="${key}">${label}</button>`;
+  const modeName = ui.recordsTab === "scrabble" ? "Scrabble-moodin " : "Itu-";
   const empty = rateMode
     ? `Ei vielä ${modeName}ennätyksiä. Pelaa kierros ja lukitse tulos! Pistettä/min vertaa eri kestoja keskenään.`
-    : `Ei vielä ${modeName}ennätyksiä kestolla ${durationLabel(recordsDurationTab)}. Pelaa kierros tällä asetuksella ja lukitse tulos!`;
+    : `Ei vielä ${modeName}ennätyksiä kestolla ${durationLabel(ui.recordsDurationTab)}. Pelaa kierros tällä asetuksella ja lukitse tulos!`;
   const list = recs.length
     ? recs.map((r, i) => recordHtml(r, i + 1, rateMode)).join("")
     : `<p class="sm-words pending">${empty}</p>`;
@@ -1455,19 +1435,19 @@ function renderRecords(): void {
   };
   for (const b of root.querySelectorAll<HTMLElement>("[data-rectab]")) {
     b.addEventListener("click", () => {
-      recordsTab = b.dataset.rectab as RecordMode;
+      ui.recordsTab = b.dataset.rectab as RecordMode;
       renderRecords();
     });
   }
   for (const b of root.querySelectorAll<HTMLElement>("[data-recsort]")) {
     b.addEventListener("click", () => {
-      recordsSort = b.dataset.recsort as RecordsSort;
+      ui.recordsSort = b.dataset.recsort as RecordsSort;
       renderRecords();
     });
   }
   for (const b of root.querySelectorAll<HTMLElement>("[data-recdur]")) {
     b.addEventListener("click", () => {
-      recordsDurationTab = Number(b.dataset.recdur);
+      ui.recordsDurationTab = Number(b.dataset.recdur);
       renderRecords();
     });
   }
@@ -2378,13 +2358,13 @@ function wireEvents(): void {
   };
   root.querySelector<HTMLButtonElement>("#sm-lock")?.addEventListener("click", endRound);
   root.querySelector<HTMLButtonElement>("#sm-learn-info")?.addEventListener("click", () => {
-    learnDescOpen = !learnDescOpen;
+    ui.learnDescOpen = !ui.learnDescOpen;
     render();
   });
   root.querySelector<HTMLButtonElement>("#sm-records")?.addEventListener("click", () => {
     // Avaa oletuksena juuri pelatun (tai aktiivisen) moodin + keston välilehdet.
-    recordsTab = currentRecord ? currentRecord.mode : activePremium() ? "scrabble" : "itu";
-    recordsDurationTab = currentRecord?.duration ?? activeDuration();
+    ui.recordsTab = currentRecord ? currentRecord.mode : activePremium() ? "scrabble" : "itu";
+    ui.recordsDurationTab = currentRecord?.duration ?? activeDuration();
     showRecords = true;
     render();
   });
@@ -2480,8 +2460,8 @@ function wireEvents(): void {
   for (const cellEl of root.querySelectorAll<HTMLElement>(".sm-cell")) {
     cellEl.addEventListener("click", () => {
       if (drag) return; // raahauksen pudotus hoitaa oman renderinsä
-      if (performance.now() < suppressCellClickUntil) {
-        suppressCellClickUntil = 0; // nopan napautus hoiti tämän eleen jo
+      if (performance.now() < ui.suppressCellClickUntil) {
+        ui.suppressCellClickUntil = 0; // nopan napautus hoiti tämän eleen jo
         return;
       }
       if (lifted !== null) {
@@ -2593,7 +2573,7 @@ function onTileTap(die: number): void {
   const t = tiles[die];
   // Vain laudan noppa on .sm-cell:n sisällä → vaimenna sen synteettinen ruutuklikkaus.
   // Telineen nappula ei ole ruudussa, joten seuraava ruutuklikkaus jää koskemattomaksi.
-  if (t.cell) suppressCellClickUntil = performance.now() + 350;
+  if (t.cell) ui.suppressCellClickUntil = performance.now() + 350;
   // Nostettu nappula odottaa: napautus laudan nopan päälle = aseta sen ruutuun (vaihto);
   // telineen nopan napautus = vaihda/peru nosto.
   if (lifted !== null) {
@@ -2606,13 +2586,13 @@ function onTileTap(die: number): void {
   }
   // Tuplanapautus laudan nopan päällä → poisto telineeseen.
   const now = performance.now();
-  if (t.cell && lastTapDie === die && now - lastTapAt < DOUBLE_TAP_MS) {
-    lastTapDie = -1;
+  if (t.cell && ui.lastTapDie === die && now - ui.lastTapAt < DOUBLE_TAP_MS) {
+    ui.lastTapDie = -1;
     unplaceTile(die);
     return;
   }
-  lastTapDie = die;
-  lastTapAt = now;
+  ui.lastTapDie = die;
+  ui.lastTapAt = now;
   if (t.cell) {
     if (t.face === JOKER) assignJoker(t); // laudan jokeri: kirjainvalitsin
     else {

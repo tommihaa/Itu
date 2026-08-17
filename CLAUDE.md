@@ -18,7 +18,10 @@ Dokumentit ovat kanonisia ja koodia vasten todennettuja. Avaa relevantti ennen k
 - `src/domain/` — puhdas pelilogiikka, testattu (`board, dice, roll, rng, scoring, learn, premium`).
 - `src/dict/` — sanakirja: `dawg` (haku), `judge` (WordJudge-rajapinta), `morph` (sijataulukko), `lemmas/load/builder`.
 - `src/rules/` — sääntötekstien sisältö + näkymä (esimerkkivetoinen, ei kielioppitermejä pelissä).
-- `src/ui/game.ts` — DOM/näkymä. `src/main.ts` — entry. `src/styles.css`.
+- `src/ui/game.ts` — DOM/näkymä. `src/ui/viewstate.ts` — näkymän oma tila (`ui`-objekti):
+  ne kentät joita luetaan vain näkymä- ja elefunktioista, ei yhdestäkään domainkutsusta.
+  Uusi näkymätila kuuluu tänne, ei moduulitason `let`-muuttujaksi `game.ts`:hen.
+  `src/main.ts` — entry. `src/styles.css`.
 - `build/` — **offline-build-putki** (Python + `build_dawg.ts`): Kotuksen lista → DAWG. EI runtime-WASMia.
 - `data/` lähde, `public/dict/` paketoitu sanasto + analyysidata (lazy).
 
