@@ -6,7 +6,6 @@ import {
   faceValue,
   finalScore,
   scoreWord,
-  GAME_DURATION_SECONDS,
   TIME_BONUS_MIN_LETTERS_USED,
   type ScoreBreakdown,
 } from "../domain/scoring";
@@ -62,8 +61,20 @@ import {
 } from "../rules/view";
 import { setSfxEnabled, sfx } from "../sfx";
 import {
-  ui,
+  settings,
+  setPremiumMode,
+  setTimeBonusEnabled,
+  setGameDuration,
+  setLearnMode,
   setSoundEnabled,
+  setRackSort,
+  setMyName,
+  coerceDuration,
+  DURATION_OPTIONS,
+  DEFAULT_DURATION,
+} from "./settings";
+import {
+  ui,
   type Dir,
   type Panel,
   type RulesTab,
@@ -77,26 +88,6 @@ const BOARD = 21;
 // suurin sallittu zoom (ettei yksi noppa zoomaa liikaa).
 const FRAME_MARGIN = 2;
 const MAX_SCALE = 2.8;
-// Aikabonus (valinnainen asetus, oletus PÄÄLLÄ). Bonus vaatii ≥11 käytettyä noppaa
-// (scoring.ts TIME_BONUS_MIN_LETTERS_USED) → palkitsee nopean JA täyden ratkaisun.
-// Pois → ajastin näkyy yhä, mutta jäljellä oleva aika ei tuo bonuspisteitä.
-// Kuten premiumMode: paikallinen, pelkkä pistesääntö (ei muuta lautaa) → ei riko siemenjakoa.
-const TIME_BONUS_KEY = "itu:timebonus:v1";
-function loadTimeBonus(): boolean {
-  try {
-    return localStorage.getItem(TIME_BONUS_KEY) !== "0"; // oletus päällä
-  } catch {
-    return true;
-  }
-}
-function saveTimeBonus(on: boolean): void {
-  try {
-    localStorage.setItem(TIME_BONUS_KEY, on ? "1" : "0");
-  } catch {
-    /* yksityistila — valinta ei säily, peli toimii silti */
-  }
-}
-let timeBonusEnabled = loadTimeBonus();
 
 // Pelin kirjaimet (jokerin valittavissa olevat); sama joukko kuin nopissa/sanastossa.
 const PLAY_LETTERS = "adeghijklmnoprstuvyäö".split("");
@@ -116,7 +107,8 @@ let tiles: Tile[] = [];
 // Zoom pois käytöstä toistaiseksi (käyttäjän pyyntö): kiinteä koko + vieritettävä näkymä.
 // Vanha automaattinen kehystys (zoom/pan) jää lipun taakse, helppo palauttaa myöhemmin.
 const ZOOM_ENABLED = false;
-// Telineen järjestys ja näkymäjärjestys ovat näkymätilassa (`ui.rackSort`, `ui.rackOrder`).
+// Telineen näkymäjärjestys on näkymätilassa (`ui.rackOrder`), valinta asetuksissa
+// (`settings.rackSort`).
 let seed = "";
 let judge: WordJudge | null = null;
 let root: HTMLElement;
@@ -135,50 +127,10 @@ let jokerPicker: number | null = null; // avoinna olevan jokerin dieIndex (kirja
 
 // --- Monikierroshaaste (offline, linkki kantaa tulokset 2-suuntaisesti) ---
 const ROUND_OPTIONS = [1, 3, 5, 10];
-const NAME_KEY = "itu:name";
-
-// Telineen järjestysvalinta säilyy heitosta toiseen (localStorage).
-const SORT_KEY = "itu:sort:v1";
-const SORT_KEYS = ["abc", "aanne"]; // "Pisteet"/"Vokaalisointu" karsittu; "Äänneryhmät" = konsonantit + vokaaliharmonia
-const DEFAULT_SORT = "abc";
-function loadSort(): string {
-  try {
-    const s = localStorage.getItem(SORT_KEY);
-    return s && SORT_KEYS.includes(s) ? s : DEFAULT_SORT; // vanha "haro" → oletus
-  } catch {
-    return DEFAULT_SORT;
-  }
-}
-function saveSort(k: string): void {
-  try {
-    localStorage.setItem(SORT_KEY, k);
-  } catch {
-    /* yksityistila — valinta ei säily, peli toimii silti */
-  }
-}
-
-// Scrabble-pistemoodi (valinnainen): premium-ruudut + bingo + keskusankkuri.
-// Kerrostuu nykyisen päälle; OFF = identtinen perinteinen Itu. Säilyy localStoragessa.
-const PREMIUM_KEY = "itu:premium:v1";
-function loadPremiumMode(): boolean {
-  try {
-    return localStorage.getItem(PREMIUM_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-function savePremiumMode(on: boolean): void {
-  try {
-    localStorage.setItem(PREMIUM_KEY, on ? "1" : "0");
-  } catch {
-    /* yksityistila — valinta ei säily, peli toimii silti */
-  }
-}
-let premiumMode = loadPremiumMode();
-
-// Ääniasetus ja sen levytallennus asuvat näkymätilassa (`viewstate.ts`); tässä vain
-// äänimoottorin kytkentä käynnistyksessä, jotta tila ja moottori lähtevät samasta arvosta.
-setSfxEnabled(ui.soundEnabled);
+// Ääniasetus, pistemoodi, telineen järjestysvalinta ja nimimerkki asuvat
+// asetusmoduulissa (`settings.ts`); tässä vain äänimoottorin kytkentä käynnistyksessä,
+// jotta asetus ja moottori lähtevät samasta arvosta.
+setSfxEnabled(settings.soundEnabled);
 
 /** Näytetään "Kokeile ääniä" -paneelissa asetuksissa — sama lista kuin efektit.html:ssä. */
 const SFX_PREVIEW: [keyof typeof sfx, string][] = [
@@ -194,22 +146,7 @@ const SFX_PREVIEW: [keyof typeof sfx, string][] = [
 // valmiiden sanojen kielioppiteemoja (sija/luku/aikamuoto/…) muutaman päivätavoitteen verran.
 // PEHMEÄ: ei estä pelaamista, EI muuta pisteytystä/sanastoa/lautaa → ei riko siemenjakoa eikä
 // ennätyksiä. Domain src/domain/learn.ts (puhdas); tämä on vain näkymä + tallennus.
-const LEARN_MODE_KEY = "itu:learnmode:v1"; // päällä/pois
 const LEARN_PROGRESS_KEY = "itu:learn:v1"; // LearnProgress (seen/hits/lastHit per teema)
-function loadLearnMode(): boolean {
-  try {
-    return localStorage.getItem(LEARN_MODE_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-function saveLearnMode(on: boolean): void {
-  try {
-    localStorage.setItem(LEARN_MODE_KEY, on ? "1" : "0");
-  } catch {
-    /* yksityistila — valinta ei säily, peli toimii silti */
-  }
-}
 function loadLearnProgress(): LearnProgress {
   try {
     const raw = localStorage.getItem(LEARN_PROGRESS_KEY);
@@ -226,7 +163,6 @@ function saveLearnProgress(p: LearnProgress): void {
     /* tila täynnä tai yksityistila — peli toimii silti */
   }
 }
-let learnMode = loadLearnMode();
 let learnProgress = loadLearnProgress();
 // Päivän teemasetti JÄÄDYTETÄÄN ensimmäisellä laskennalla (localStorage) → sama setti koko
 // päivän, vaikka edistymä muuttuu pelien välissä (OPIMOODI.md: "avaa uudelleen samana
@@ -264,31 +200,9 @@ let lastLearnAchieved: Set<string> = new Set();
 
 // Kierroksen kesto (valinnainen asetus, oletus 3 min = GAME_DURATION_SECONDS).
 // Presetit 1/2/3/5 min; tietokoneajan dynaaminen valinta, ei kiveen hakattu. Kuten
-// premiumMode ja aikabonus: pelkkä aikaraamikerros — EI kosketa lautaa/siementä/noppia,
+// settings.premiumMode ja aikabonus: pelkkä aikaraamikerros — EI kosketa lautaa/siementä/noppia,
 // joten saman siemenen ratkaisut pysyvät vertailukelpoisina. Aikabonus laskee yhä
 // jäljellä olevasta ajasta riippumatta kestosta (lyhyt kesto ≠ enemmän bonusta).
-const DURATION_KEY = "itu:duration:v1";
-const DURATION_OPTIONS: number[] = [60, 120, 180, 300];
-const DEFAULT_DURATION = GAME_DURATION_SECONDS; // 180 s = 3 min
-/** Sallittu kesto tai oletus (saapuva haastelinkki + rikki/tuntematon storage). */
-function coerceDuration(n: unknown): number {
-  return typeof n === "number" && DURATION_OPTIONS.includes(n) ? n : DEFAULT_DURATION;
-}
-function loadDuration(): number {
-  try {
-    return coerceDuration(Number(localStorage.getItem(DURATION_KEY)));
-  } catch {
-    return DEFAULT_DURATION;
-  }
-}
-function saveDuration(s: number): void {
-  try {
-    localStorage.setItem(DURATION_KEY, String(s));
-  } catch {
-    /* yksityistila — valinta ei säily, peli toimii silti */
-  }
-}
-let gameDuration = loadDuration();
 /** Kesto-presetin lyhyt suomenkielinen otsikko (60 → "1 min", muuten "N s"). */
 function durationLabel(s: number): string {
   return s % 60 === 0 ? `${s / 60} min` : `${s} s`;
@@ -299,10 +213,10 @@ function durationLabel(s: number): string {
 // 5 min samalla siemenellä). Oma ⚙️-asetus on vapaapelin oletus eikä vaikuta käynnissä
 // olevaan otteluun. Vapaapelissä = oma asetus.
 function activePremium(): boolean {
-  return match ? match.premium : premiumMode;
+  return match ? match.premium : settings.premiumMode;
 }
 function activeDuration(): number {
-  return match ? match.duration : gameDuration;
+  return match ? match.duration : settings.gameDuration;
 }
 
 /** Vastustajan tulokset (haasteessa toinen osapuoli). */
@@ -330,7 +244,6 @@ interface Match {
   dictMismatch?: string;
 }
 let match: Match | null = null;
-let myName = loadName();
 
 // Raahaus (`ui.drag`, tyyppi `Drag`) ja napauta-ja-aseta -nosto (`ui.lifted`) ovat
 // näkymätilassa, samoin kirjoituskursori (`ui.caret`) ja näppäilytila (`ui.kbdMode`).
@@ -454,7 +367,7 @@ function endRound(): void {
     unusedFaces: v.unusedFaces, // teline + laudalle jääneet ei-sanat (sama logiikka)
     secondsRemaining: endRemaining,
     lettersUsed: v.lettersUsed, // ≥11 → aikabonus aukeaa
-    timeBonusEnabled,
+    timeBonusEnabled: settings.timeBonusEnabled,
     bingo: v.bingo, // premium-moodi: kaikki nopat käytetty + keskusankkuri
   });
   computeSuggestions();
@@ -467,7 +380,7 @@ function endRound(): void {
   // Teemahaaste (vaihe 2): tavoitteet tulevat jaetusta setistä (match.themes), eivät
   // henkilökohtaisesta pickDailyTargets:sta, ja osumat kumuloidaan match.myThemeHits:iin.
   const themeMatch = !!(match && match.themes);
-  if ((learnMode || themeMatch) && lemmas) {
+  if ((settings.learnMode || themeMatch) && lemmas) {
     const lk = lemmas;
     lastLearnAchieved = detectThemes(endWords, (w) => lk.lookup(w));
     lastLearnTargets = themeMatch ? match!.themes! : (roundDailyTargets ?? dailyTargets());
@@ -478,7 +391,7 @@ function endRound(): void {
     }
     // Henkilökohtainen adaptiivinen edistymä (itu:learn:v1) kertyy vain kun Opi-moodi on itse
     // päällä — muuten kaverin teemahaasteen jaettu setti vinouttaisi tulevia päivätavoitteita.
-    if (learnMode) {
+    if (settings.learnMode) {
       learnProgress = recordThemeSession(learnProgress, lastLearnTargets, lastLearnAchieved, dateKey());
       saveLearnProgress(learnProgress);
     }
@@ -610,7 +523,7 @@ export function mountGame(el: HTMLElement): void {
   if (ric) ric(startDictLoad, { timeout: 1500 });
   else setTimeout(startDictLoad, 200);
   // Opi-moodi päällä → esilataa analyysipaketti, jotta teemasirut syttyvät reaaliajassa.
-  if (learnMode) ensureLemmas();
+  if (settings.learnMode) ensureLemmas();
 }
 
 function newRoll(s: string): void {
@@ -626,8 +539,7 @@ function newRoll(s: string): void {
     cell: null,
   }));
   // Järjestysvalinta säilyy heitosta toiseen (oletus: Aakkoset).
-  ui.rackSort = loadSort();
-  ui.rackOrder = computeRackOrder(ui.rackSort);
+  ui.rackOrder = computeRackOrder(settings.rackSort);
   lastRecordRank = 0;
   currentRecord = null;
   // Ei oletuskursoria: tyhjällä laudalla aloitusopaste (sm-board-hint) on ainoa CTA, eikä
@@ -639,7 +551,7 @@ function newRoll(s: string): void {
   history = [];
   ui.currentFrame = null; // uusi heitto kehystää tuoreesti (keskelle)
   ui.viewScroll = null; // keskitä näkymä uudelleen (zoom-off)
-  roundDailyTargets = learnMode ? dailyTargets() : null;
+  roundDailyTargets = settings.learnMode ? dailyTargets() : null;
   startRound();
   sfx.roll();
   render();
@@ -808,7 +720,7 @@ function render(): void {
   // sirujen syttyminen). Vaatii ladatun analyysipaketin; muuten tyhjä → sirut näkyvät himmeinä.
   const themeMatch = !!(match && match.themes); // kaveri-teemahaaste: jaettu tavoitesetti
   let learnHits: Set<string> = new Set();
-  if ((learnMode || themeMatch) && lemmas) {
+  if ((settings.learnMode || themeMatch) && lemmas) {
     const lk = lemmas;
     learnHits = detectThemes(
       v.words.filter((w) => w.valid).map((w) => w.text),
@@ -824,8 +736,8 @@ function render(): void {
   const hasActions = !match || !roundOver;
   // Elävä kirjainmittari: tekee aikabonuksen piilokynnyksen (≥11/13) näkyväksi maaliksi
   // jo pelin aikana, ei vasta tulosruudussa. "Auki" = kynnys täynnä ja bonus käytössä.
-  const bonusReady = timeBonusEnabled && v.lettersUsed >= TIME_BONUS_MIN_LETTERS_USED;
-  const usedTitle = !timeBonusEnabled
+  const bonusReady = settings.timeBonusEnabled && v.lettersUsed >= TIME_BONUS_MIN_LETTERS_USED;
+  const usedTitle = !settings.timeBonusEnabled
     ? "Aikabonus pois käytöstä. Käytä silti mahdollisimman monta noppaa"
     : bonusReady
       ? "Aikabonus auki"
@@ -868,7 +780,7 @@ function render(): void {
       </div>
     </div>
     ${activePremium() && !roundOver ? premLegendHtml(true) : ""}
-    ${(learnMode || themeMatch) && !roundOver ? learnTargetsHtml(learnHits, themeMatch ? match!.themes! : undefined) : ""}
+    ${(settings.learnMode || themeMatch) && !roundOver ? learnTargetsHtml(learnHits, themeMatch ? match!.themes! : undefined) : ""}
     ${roundOver ? resultHtml() : ""}
     ${roundOver && match ? matchNavHtml() : ""}
     ${boardHtml(v)}
@@ -920,7 +832,7 @@ function resultHtml(): string {
     : "";
 
   // Opi-yhteenveto kierroksen lopussa myös teemahaasteessa (vaikkei Opi-moodi olisi päällä).
-  const learnHtml = learnMode || (match && match.themes) ? learnResultHtml() : "";
+  const learnHtml = settings.learnMode || (match && match.themes) ? learnResultHtml() : "";
 
   return `<div class="sm-result">
     <h2>Lopputulos <small>(${reason})</small></h2>
@@ -1109,12 +1021,12 @@ function renderSettings(): void {
         <div class="sm-duration-opts" role="group" aria-label="Kierroksen kesto">
           ${DURATION_OPTIONS.map(
             (s) =>
-              `<button class="sm-tool sm-dur-opt${s === gameDuration ? " sm-tool-active" : ""}" data-dur="${s}" aria-pressed="${s === gameDuration}">${durationLabel(s)}</button>`,
+              `<button class="sm-tool sm-dur-opt${s === settings.gameDuration ? " sm-tool-active" : ""}" data-dur="${s}" aria-pressed="${s === settings.gameDuration}">${durationLabel(s)}</button>`,
           ).join("")}
         </div>
       </div>
       <label class="sm-setting-row">
-        <input type="checkbox" id="sm-set-timebonus"${timeBonusEnabled ? " checked" : ""} />
+        <input type="checkbox" id="sm-set-timebonus"${settings.timeBonusEnabled ? " checked" : ""} />
         <span class="sm-setting-text">
           <b>⏱️ Aikabonus</b>
           <small>Nopeasta ja täydestä ratkaisusta lisäpisteitä: jäljellä oleva aika palkitaan,
@@ -1123,7 +1035,7 @@ function renderSettings(): void {
         </span>
       </label>
       <label class="sm-setting-row">
-        <input type="checkbox" id="sm-set-learn"${learnMode ? " checked" : ""} />
+        <input type="checkbox" id="sm-set-learn"${settings.learnMode ? " checked" : ""} />
         <span class="sm-setting-text">
           <b>📚 Opi-moodi</b>
           <small>Päivän kielioppihaaste: muutama teema (sija, monikko, aikamuoto, …)
@@ -1133,7 +1045,7 @@ function renderSettings(): void {
         </span>
       </label>
       <label class="sm-setting-row">
-        <input type="checkbox" id="sm-set-premium"${premiumMode ? " checked" : ""} />
+        <input type="checkbox" id="sm-set-premium"${settings.premiumMode ? " checked" : ""} />
         <span class="sm-setting-text">
           <b>🟦 Scrabble-pistemoodi</b>
           <small>Premium-ruudut (kirjain ×2/×3, sana ×2/×3), bingo-bonus kaikkien noppien
@@ -1144,7 +1056,7 @@ function renderSettings(): void {
       ${premLegendHtml()}
       <p class="sm-ch-note sm-prem-key">K = kirjain, S = sana · ×2 ja ×3 ovat kertoimia. Sama selite näkyy laudan yllä Scrabble-moodissa.</p>
       <label class="sm-setting-row">
-        <input type="checkbox" id="sm-set-sound"${ui.soundEnabled ? " checked" : ""} />
+        <input type="checkbox" id="sm-set-sound"${settings.soundEnabled ? " checked" : ""} />
         <span class="sm-setting-text">
           <b>🎵 Äänet (torvi &amp; kantele)</b>
           <small>Kevyt äänimaisema kirjainten asetukselle ja kierroksen tapahtumille. Oletus
@@ -1152,7 +1064,7 @@ function renderSettings(): void {
         </span>
       </label>
       ${
-        ui.soundEnabled
+        settings.soundEnabled
           ? `<div class="sm-setting-row">
                <span class="sm-setting-text"><b>🔊 Kokeile ääniä</b></span>
              </div>
@@ -1170,31 +1082,27 @@ function renderSettings(): void {
   };
   for (const b of root.querySelectorAll<HTMLElement>("[data-dur]")) {
     b.addEventListener("click", () => {
-      gameDuration = coerceDuration(Number(b.dataset.dur));
-      saveDuration(gameDuration);
+      setGameDuration(Number(b.dataset.dur));
       renderSettings(); // päivitä valinta heti; huomioidaan seuraavan kierroksen alkaessa
     });
   }
   root.querySelector<HTMLInputElement>("#sm-set-timebonus")!.onchange = (e) => {
-    timeBonusEnabled = (e.target as HTMLInputElement).checked;
-    saveTimeBonus(timeBonusEnabled);
+    setTimeBonusEnabled((e.target as HTMLInputElement).checked);
     renderSettings(); // päivitä valinta heti; huomioidaan kun lukitset kierroksen
   };
   root.querySelector<HTMLInputElement>("#sm-set-premium")!.onchange = (e) => {
-    premiumMode = (e.target as HTMLInputElement).checked;
-    savePremiumMode(premiumMode);
+    setPremiumMode((e.target as HTMLInputElement).checked);
     renderSettings(); // päivitä valinta heti; lauta päivittyy kun palataan peliin
   };
   root.querySelector<HTMLInputElement>("#sm-set-sound")!.onchange = (e) => {
     setSoundEnabled((e.target as HTMLInputElement).checked);
-    setSfxEnabled(ui.soundEnabled);
-    if (ui.soundEnabled) sfx.lock(); // ääninäyte: kuulet heti että äänet toimivat
+    setSfxEnabled(settings.soundEnabled);
+    if (settings.soundEnabled) sfx.lock(); // ääninäyte: kuulet heti että äänet toimivat
     renderSettings();
   };
   root.querySelector<HTMLInputElement>("#sm-set-learn")!.onchange = (e) => {
-    learnMode = (e.target as HTMLInputElement).checked;
-    saveLearnMode(learnMode);
-    if (learnMode) ensureLemmas(); // teemasirut tarvitsevat analyysipaketin
+    setLearnMode((e.target as HTMLInputElement).checked);
+    if (settings.learnMode) ensureLemmas(); // teemasirut tarvitsevat analyysipaketin
     renderSettings(); // päivitä valinta heti; teemasirut näkyvät kun palataan peliin
   };
   root.querySelectorAll<HTMLButtonElement>("[data-try-sfx]").forEach((b) =>
@@ -1704,7 +1612,7 @@ function rackHtml(): string {
   const order = ui.rackOrder.length === tiles.length ? ui.rackOrder : [...tiles.keys()];
   const rackDice = order.filter((die) => !tiles[die].cell);
   // Äänneryhmittäin: himmeä otsikko ennen kutakin ryhmää (konsonantit / vokaaliperheet).
-  const grouped = ui.rackSort === "aanne";
+  const grouped = settings.rackSort === "aanne";
   let prevGroup = -1;
   const parts: string[] = [];
   for (const die of rackDice) {
@@ -1735,7 +1643,7 @@ function rackHeadHtml(remaining: number): string {
 
 function rackToolsHtml(): string {
   const b = (key: string, label: string) =>
-    `<button class="sm-tool${key === ui.rackSort ? " sm-tool-active" : ""}" data-sort="${key}">${label}</button>`;
+    `<button class="sm-tool${key === settings.rackSort ? " sm-tool-active" : ""}" data-sort="${key}">${label}</button>`;
   return `<div class="sm-rack-tools">
     <span class="sm-tools-label">Järjestys:</span>
     ${b("abc", "Aakkoset")}${b("aanne", "Äänneryhmät")}
@@ -1805,8 +1713,7 @@ function computeRackOrder(key: string): number[] {
 }
 
 function applyRackSort(key: string): void {
-  ui.rackSort = key;
-  saveSort(key); // valinta säilyy seuraaviin heittoihin
+  setRackSort(key); // valinta säilyy seuraaviin heittoihin
   ui.rackOrder = computeRackOrder(key);
   render();
 }
@@ -1826,22 +1733,6 @@ function parseSeed(input: string): string {
   }
 }
 
-// --- Nimimerkki (localStorage) ---
-function loadName(): string {
-  try {
-    return localStorage.getItem(NAME_KEY) ?? "";
-  } catch {
-    return "";
-  }
-}
-function saveName(n: string): void {
-  myName = n;
-  try {
-    localStorage.setItem(NAME_KEY, n);
-  } catch {
-    /* yksityistila — nimi ei säily, peli toimii silti */
-  }
-}
 
 // --- Ottelun kulku ---
 function roundSeed(base: string, i: number): string {
@@ -1849,7 +1740,16 @@ function roundSeed(base: string, i: number): string {
 }
 
 function startMatch(rounds: number, base: string, premium: boolean, duration: number, opp?: Opp): void {
-  match = { base, rounds, premium, duration, current: 0, myScores: [], myName, ...(opp ? { opp } : {}) };
+  match = {
+    base,
+    rounds,
+    premium,
+    duration,
+    current: 0,
+    myScores: [],
+    myName: settings.myName,
+    ...(opp ? { opp } : {}),
+  };
   ui.showChallenge = false;
   ui.showMatchSummary = false;
   if (!opp) location.hash = ""; // haastaja aloittaa puhtaalta; vastaajan #c=… säilyy URL:ssa
@@ -1866,8 +1766,8 @@ function startThemeMatch(
   base: string,
   themes: string[],
   opp?: Opp,
-  premium: boolean = premiumMode,
-  duration: number = gameDuration,
+  premium: boolean = settings.premiumMode,
+  duration: number = settings.gameDuration,
 ): void {
   match = {
     base,
@@ -1876,7 +1776,7 @@ function startThemeMatch(
     duration,
     current: 0,
     myScores: [],
-    myName,
+    myName: settings.myName,
     themes,
     myThemeHits: new Set(),
     ...(opp ? { opp } : {}),
@@ -2006,7 +1906,7 @@ function handleIncoming(p: ChallengePayload): void {
 }
 
 function challengeHtml(): string {
-  const nameEsc = myName.replace(/"/g, "&quot;");
+  const nameEsc = settings.myName.replace(/"/g, "&quot;");
   const rounds = ROUND_OPTIONS.map(
     (n) =>
       `<button class="sm-tool sm-ch-rounds" data-rounds="${n}">${n === 1 ? "1 kierros" : `${n} kierrosta`}</button>`,
@@ -2020,10 +1920,10 @@ function challengeHtml(): string {
       </section>
       <section>
         <h4>Aloita haaste</h4>
-        <p class="sm-ch-note">Pelaat valitun määrän kierroksia, sitten lähetät tuloslinkin kaverille. Hän pelaa samat heitot ${premiumMode ? "<b>Scrabble-pistemoodilla</b>" : "perinteisellä Itu-pisteytyksellä"}. Näette kumpi voitti.${premiumMode ? "" : " (Vaihda pistemoodi ⚙️ Asetuksista ennen aloitusta.)"}</p>
+        <p class="sm-ch-note">Pelaat valitun määrän kierroksia, sitten lähetät tuloslinkin kaverille. Hän pelaa samat heitot ${settings.premiumMode ? "<b>Scrabble-pistemoodilla</b>" : "perinteisellä Itu-pisteytyksellä"}. Näette kumpi voitti.${settings.premiumMode ? "" : " (Vaihda pistemoodi ⚙️ Asetuksista ennen aloitusta.)"}</p>
         <div class="sm-ch-row sm-ch-wrap">${rounds}</div>
       </section>
-      ${learnMode ? themeChallengeSectionHtml() : ""}
+      ${settings.learnMode ? themeChallengeSectionHtml() : ""}
       <section>
         <h4>Vastaa haasteeseen</h4>
         <p class="sm-ch-note">Liitä saamasi haastelinkki (tai pelkkä siemen yksittäiseen peliin).</p>
@@ -2354,11 +2254,11 @@ function wireEvents(): void {
     if (e.target === e.currentTarget) closeChallenge();
   });
   root.querySelector<HTMLInputElement>("#sm-ch-name")?.addEventListener("input", (e) => {
-    saveName((e.target as HTMLInputElement).value.trim());
+    setMyName((e.target as HTMLInputElement).value.trim());
   });
   for (const b of root.querySelectorAll<HTMLElement>(".sm-ch-rounds")) {
     b.addEventListener("click", () =>
-      startMatch(Number(b.dataset.rounds), randomSeed(), premiumMode, gameDuration),
+      startMatch(Number(b.dataset.rounds), randomSeed(), settings.premiumMode, settings.gameDuration),
     );
   }
   for (const b of root.querySelectorAll<HTMLElement>(".sm-ch-th-rounds")) {

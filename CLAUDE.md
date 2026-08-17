@@ -18,10 +18,16 @@ Dokumentit ovat kanonisia ja koodia vasten todennettuja. Avaa relevantti ennen k
 - `src/domain/` — puhdas pelilogiikka, testattu (`board, dice, roll, rng, scoring, learn, premium`).
 - `src/dict/` — sanakirja: `dawg` (haku), `judge` (WordJudge-rajapinta), `morph` (sijataulukko), `lemmas/load/builder`.
 - `src/rules/` — sääntötekstien sisältö + näkymä (esimerkkivetoinen, ei kielioppitermejä pelissä).
-- `src/ui/game.ts` — DOM/näkymä. `src/ui/viewstate.ts` — näkymän oma tila (`ui`-objekti):
-  ne kentät joita luetaan vain näkymä- ja elefunktioista, ei yhdestäkään domainkutsusta.
-  Uusi näkymätila kuuluu tänne, ei moduulitason `let`-muuttujaksi `game.ts`:hen.
-  `src/main.ts` — entry. `src/styles.css`.
+- `src/ui/game.ts` — DOM/näkymä. `src/main.ts` — entry. `src/styles.css`.
+- `src/ui/viewstate.ts` — näkymän oma tila (`ui`-objekti): mikä paneeli on auki, mitä
+  pelaaja on tekemässä (kursori, nosto, raahaus), kehystys ja vieritys. Katoaa sivun
+  uudelleenlatauksessa. **Uusi näkymätila kuuluu tänne**, ei moduulitason `let`-muuttujaksi
+  `game.ts`:hen.
+- `src/ui/settings.ts` — pelaajan valinnat (`settings`-objekti + kirjoitusfunktio per
+  kenttä, joka tallentaa levylle samassa lauseessa): pistemoodi, aikabonus, kesto,
+  Opi-moodin kytkin, äänet, telineen järjestys, nimimerkki. **Uusi localStorage-avain
+  valinnalle kuuluu tänne.** Kerätty data (Opi-edistymä, päivän tavoitteet) ja tulokset
+  (ennätykset) ovat yhä `game.ts`:ssä, koska ne eivät ole valintoja.
 - `build/` — **offline-build-putki** (Python + `build_dawg.ts`): Kotuksen lista → DAWG. EI runtime-WASMia.
 - `data/` lähde, `public/dict/` paketoitu sanasto + analyysidata (lazy).
 
