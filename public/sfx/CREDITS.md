@@ -1,6 +1,6 @@
 # Ääninäytteiden lähteet (torvi-kannel-teema)
 
-Nämä neljä tiedostoa ovat lyhyitä, pitch-shiftattavia yksittäisnuotteja —
+Nämä neljä tiedostoa ovat lyhyitä, pitch-shiftattavia yksittäisnuotteja,
 ei koko sävelkulkuja. Peli valitsee lähimmän ankkurin (matala/korkea) ja
 pitch-shiftaa sen kohdetaajuuteen (ks. `src/ui/sfx.ts`).
 

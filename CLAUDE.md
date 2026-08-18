@@ -1,4 +1,4 @@
-# Itu — sananmuodostus-noppapeli
+# Itu: sananmuodostus-noppapeli
 
 ## Projekti
 Offline-yksinpeli: kirjainnopista muodostetaan ristikko aikarajassa, pisteet kirjaimista.
@@ -8,40 +8,40 @@ Repo-kansion nimi on `SanaMix` (vanha työnimi); peli = **Itu**.
 
 ## Lue ENNEN muutosta (älä päättele koodista tai muistista)
 Dokumentit ovat kanonisia ja koodia vasten todennettuja. Avaa relevantti ennen kuin kosket logiikkaan:
-- **Design / mekaniikka / pisteytys:** [ITU.md](ITU.md) — lukitut päätökset (nopat, pisteytys, sanasto).
-- **Sanaston hyväksymissäännöt:** [SANASTO.md](SANASTO.md) — mitä taivutuksia sisään/ulos, DAWG-formaatti.
-- **Morfologia / FST-generointi:** [build/MORFOLOGIA.md](build/MORFOLOGIA.md) — lemmalista → muodot -putki.
-- **Opi-moodin design:** [OPIMOODI.md](OPIMOODI.md) — adaptiivinen kielioppihaaste (vaihe 1 ja 2 toteutettu).
+- **Design / mekaniikka / pisteytys:** [ITU.md](ITU.md): lukitut päätökset (nopat, pisteytys, sanasto).
+- **Sanaston hyväksymissäännöt:** [SANASTO.md](SANASTO.md): mitä taivutuksia sisään/ulos, DAWG-formaatti.
+- **Morfologia / FST-generointi:** [build/MORFOLOGIA.md](build/MORFOLOGIA.md): lemmalista → muodot -putki.
+- **Opi-moodin design:** [OPIMOODI.md](OPIMOODI.md): adaptiivinen kielioppihaaste (vaihe 1 ja 2 toteutettu).
 - **Perustelut:** [PERUSTELUT.md](PERUSTELUT.md).
 
 ## Rakenne
-- `src/domain/` — puhdas pelilogiikka, testattu (`board, dice, roll, rng, scoring, learn, premium`).
-- `src/dict/` — sanakirja: `dawg` (haku), `judge` (WordJudge-rajapinta), `morph` (sijataulukko), `lemmas/load/builder`.
-- `src/rules/` — sääntötekstien sisältö + näkymä (esimerkkivetoinen, ei kielioppitermejä pelissä).
-- `src/ui/game.ts` — DOM/näkymä. `src/main.ts` — entry. `src/styles.css`.
-- `src/ui/viewstate.ts` — näkymän oma tila (`ui`-objekti): mikä paneeli on auki, mitä
+- `src/domain/`: puhdas pelilogiikka, testattu (`board, dice, roll, rng, scoring, learn, premium`).
+- `src/dict/`: sanakirja: `dawg` (haku), `judge` (WordJudge-rajapinta), `morph` (sijataulukko), `lemmas/load/builder`.
+- `src/rules/`: sääntötekstien sisältö + näkymä (esimerkkivetoinen, ei kielioppitermejä pelissä).
+- `src/ui/game.ts`: DOM/näkymä. `src/main.ts`: entry. `src/styles.css`.
+- `src/ui/viewstate.ts`: näkymän oma tila (`ui`-objekti): mikä paneeli on auki, mitä
   pelaaja on tekemässä (kursori, nosto, raahaus), kehystys ja vieritys. Katoaa sivun
   uudelleenlatauksessa. **Uusi näkymätila kuuluu tänne**, ei moduulitason `let`-muuttujaksi
   `game.ts`:hen.
-- `src/ui/settings.ts` — pelaajan valinnat (`settings`-objekti + kirjoitusfunktio per
+- `src/ui/settings.ts`: pelaajan valinnat (`settings`-objekti + kirjoitusfunktio per
   kenttä, joka tallentaa levylle samassa lauseessa): pistemoodi, aikabonus, kesto,
   Opi-moodin kytkin, äänet, telineen järjestys, nimimerkki. **Uusi localStorage-avain
   valinnalle kuuluu tänne.** Kerätty data (Opi-edistymä, päivän tavoitteet) ja tulokset
   (ennätykset) ovat yhä `game.ts`:ssä, koska ne eivät ole valintoja.
-- `build/` — **offline-build-putki** (Python + `build_dawg.ts`): Kotuksen lista → DAWG. EI runtime-WASMia.
+- `build/`: **offline-build-putki** (Python + `build_dawg.ts`): Kotuksen lista → DAWG. EI runtime-WASMia.
 - `data/` lähde, `public/dict/` paketoitu sanasto + analyysidata (lazy).
 
 ## Invariantit (älä riko ilman keskustelua)
 - **Offline-pelirauha:** EI verkkopalvelua, EI monikielisyyttä. Ääni OLETUKSENA POIS, valinnainen
-  kevyt torvi/kannel-teema (`itu:sound:v1`, päätös 7.7.2026) — pelirauha koskee oletustilaa,
+  kevyt torvi/kannel-teema (`itu:sound:v1`, päätös 7.7.2026), pelirauha koskee oletustilaa,
   ei ääntä kokonaan. Tietoisia valintoja (ks. ITU.md).
 - **"Ei korvaa mitään":** Scrabble-pistemoodi (oletus POIS), Opi-moodi (oletus POIS, **PEHMEÄ**) ja aikabonus
-  ovat *kerroksia* nykypelin päällä — eivät muuta sanastoa, lautaa, noppia eivätkä perus-ennätyksiä.
+  ovat *kerroksia* nykypelin päällä, eivät muuta sanastoa, lautaa, noppia eivätkä perus-ennätyksiä.
 - **Ei hallusinaatiota:** sijamuoto/analyysi tulee build-aikaisesta FST-lähteestä + käsin todennetusta
   `src/dict/morph.ts`-taulukosta (sama lähde joka muodon hyväksyy). Tuntematon → näytä tyhjä, älä arvaa.
 - **Determinismi:** sama siemen → sama heitto (`domain/rng.ts`). Sanastoversio on osa identiteettiä
-  (`sanasto-fi-v1`) tulevaa asynkronista haastetta varten — älä riko siemen/versio-kiinnitystä.
-- Nopat ja sanaston säännöt on merkitty **LUKITTU** ITU.md:ssä — muutos vaatii eksplisiittisen päätöksen.
+  (`sanasto-fi-v1`) tulevaa asynkronista haastetta varten, älä riko siemen/versio-kiinnitystä.
+- Nopat ja sanaston säännöt on merkitty **LUKITTU** ITU.md:ssä: muutos vaatii eksplisiittisen päätöksen.
 
 ## Sopimusmuutos-protokolla
 Jos tilanne (bugi, pelitestilöytö, ideakysymys) rikkoo kanonisen dokumentin sääntöä, älä oleta
@@ -50,10 +50,10 @@ koodi dokumentin mukaiseksi VAI muutetaanko dokumenttia? Dokumenttimuutos kirjat
 (ITU.md/SANASTO.md/ym.) ja vahvistetaan käyttäjällä, vasta sitten koodiin.
 
 ## Komennot
-- `npm run dev` — devpalvelin (portti 5177, strictPort).
-- `npm test` — Vitest (domain-testit, node-ympäristö).
-- `npm run build` — `tsc --noEmit && vite build` (tyyppivirhe kaataa buildin).
-- `npm run dict:pack` — generoi DAWG (`build/build_dawg.ts`).
+- `npm run dev`: devpalvelin (portti 5177, strictPort).
+- `npm test`: Vitest (domain-testit, node-ympäristö).
+- `npm run build`: `tsc --noEmit && vite build` (tyyppivirhe kaataa buildin).
+- `npm run dict:pack`: generoi DAWG (`build/build_dawg.ts`).
 
 ## Versiointi ja julkaisu
 - **SemVer + [CHANGELOG.md](CHANGELOG.md)** (Superjatsin malli). Bumppaa `package.json`in

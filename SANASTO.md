@@ -1,4 +1,4 @@
-# Sanaston hyväksymissäännöt — Itu
+# Sanaston hyväksymissäännöt: Itu
 
 Kanoninen, koodia vasten todennettu kuvaus siitä **mitkä sanat peli hyväksyy.**
 Tämä dokumentti ja [gen_wordforms.py](build/gen_wordforms.py) pidetään yhtenevinä;
@@ -24,7 +24,7 @@ Pelin sanasto pohjautuu **Kotimaisten kielten keskuksen (Kotus)** nykysuomen san
 
 > **Kaikki aito taivutus sisään, produktiivinen liimaus ulos.**
 
-Myös kilpa-Scrabble (suomi) sallii taivutusmuodot — ero ei ole *perusmuoto vs
+Myös kilpa-Scrabble (suomi) sallii taivutusmuodot, ero ei ole *perusmuoto vs
 taivutus* vaan **tuomarin tyyppi**: Scrabblessa kelpoisuus on käsin kuratoitu sanalista,
 tässä pelissä se on **generaattori** (FST tuottaa lemman koko paradigman build-aikana).
 Mekaniikka palkitsee mahdollisimman monen nopan käytön (sanapisteet − käyttämättömät),
@@ -66,10 +66,10 @@ Sanaluokat **substantiivi, adjektiivi, verbi** taivutetaan koko paradigmassa.
 Jos lemma on **duaaliluokkainen** (esim. Kotuksen "adjektiivi, substantiivi"),
 generoidaan **kaikkien** sen N/A/V-luokkien muotojen unioni.
 
-**Substantiivit** — luku × sija: Sg/Pl × {Nom, Gen, Par, Ess, Tra, Ine, Ela,
+**Substantiivit**, luku × sija: Sg/Pl × {Nom, Gen, Par, Ess, Tra, Ine, Ela,
 Ill, Ade, Abl, All, Abe, Com, Ins} (14 sijaa).
 
-**Adjektiivit** — kuten substantiivit + **vertailuasteet** (perus, komparatiivi,
+**Adjektiivit**, kuten substantiivit + **vertailuasteet** (perus, komparatiivi,
 superlatiivi). Esim. *suuri, suuremman, suurimmissa*.
 
 **Verbit:**
@@ -90,12 +90,12 @@ superlatiivi). Esim. *suuri, suuremman, suurimmissa*.
 
 ## 3. Mitä jätetään perusmuotoon (ei taivuteta)
 
-Sanaluokat joiden taivutus ei kuulu V1:een — **vain lemma** hyväksytään, jos se
+Sanaluokat joiden taivutus ei kuulu V1:een, **vain lemma** hyväksytään, jos se
 läpäisee merkistösuodatuksen:
 
-- **Adverbit** (esim. *nopeasti* ✓, mutta *nopeammin* ✗ — vertailu puuttuu)
-- **Numeraalit** (*kaksi* ✓, mutta *kahden* ✗) — päätös 14.6, V1-rajoite
-- **Pronominit** (*minä* ✓, mutta *minun* ✗) — päätös 14.6, V1-rajoite
+- **Adverbit** (esim. *nopeasti* ✓, mutta *nopeammin* ✗: vertailu puuttuu)
+- **Numeraalit** (*kaksi* ✓, mutta *kahden* ✗): päätös 14.6, V1-rajoite
+- **Pronominit** (*minä* ✓, mutta *minun* ✗): päätös 14.6, V1-rajoite
 - Interjektiot, partikkelit, konjunktiot, pre-/postpositiot, tyhjä sanaluokka
 
 ## 4. Mitä EI koskaan hyväksytä
@@ -107,7 +107,7 @@ Näitä ei pyydetä generaattorilta, joten ne eivät voi päätyä sanastoon:
 - **Vapaat/keksityt yhdyssanat** (+Cmp): *noppatalo, sanapeli*-tyyppinen
   itse liimattu yhdistelmä ✗ (ks. kohta 5)
 - **Erisnimet ja lyhenteet**: kaikki isolla alkavat Kotus-lemmat pudotetaan
-  (*Ahti, ALV, AMK, ADHD*) — päätös 14.6.
+  (*Ahti, ALV, AMK, ADHD*), päätös 14.6.
 
 ## 5. Yhdyssanat
 
@@ -123,7 +123,7 @@ Näitä ei pyydetä generaattorilta, joten ne eivät voi päätyä sanastoon:
 ## 6. Validoinnin semantiikka (laudalla)
 
 - **Kirjainkoko:** validointi normalisoi gemenaksi; sanasto on gemenaa.
-- **Jokeri:** edustaa yhtä **pelin 21 kirjaimesta** (ei b/c/f — niillä ei olisi
+- **Jokeri:** edustaa yhtä **pelin 21 kirjaimesta** (ei b/c/f: niillä ei olisi
   sanastossa osumia). Sanan kelvollisuus arvioidaan jokerin valitulla kirjaimella.
   Jos jokeri on osa kahta sanaa, sen on edustettava samaa kirjainta molemmissa.
 - **Sana = ≥2 ruudun yhtenäinen vaaka-/pystyjono.** Risteysnoppa kuuluu kahteen
@@ -145,7 +145,7 @@ Näitä ei pyydetä generaattorilta, joten ne eivät voi päätyä sanastoon:
 
 - **Sanastoversio on osa pelin identiteettiä:** DAWG nimetään versiolla
   (`sanasto-fi-v1`). Tuleva asynkroninen haaste kiinnittää siemenluvun LISÄKSI
-  sanastoversion — kaksi pelaajaa ei saa pelata samaa heittoa eri totuuksilla.
+  sanastoversion, kaksi pelaajaa ei saa pelata samaa heittoa eri totuuksilla.
 - **Validointi on rajapinnan takana** (`WordJudge`): `ExactJudge` (DAWG, suomi)
   nyt; `AdvisoryJudge` (kolmas väri "en tunne") ja `HumanJudge` (tuomarimoodi)
   mahdollistavat muut kielet myöhemmin ilman pelikoodin muutoksia.
@@ -157,5 +157,5 @@ Näitä ei pyydetä generaattorilta, joten ne eivät voi päätyä sanastoon:
   Sanapoliisi (🔎, ks. ITU.md) näyttää näistä **kaikki pätevät tulkinnat**:
   perusmuodon, sijamuodon ja sen vaikutuksen selkoesimerkein. Koodi→suomi-muunto
   on kiinteä, käsin todennettu taulukko `src/dict/morph.ts` (suomen sijajärjestelmä
-  on suljettu) — **ei ajonaikaista päättelyä, ei hallusinaatiota; tuntematon koodi
+  on suljettu), **ei ajonaikaista päättelyä, ei hallusinaatiota; tuntematon koodi
   → ei näytetä mitään.** Asset on erillinen DAWG-tuomarista (validointi ennallaan).

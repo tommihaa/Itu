@@ -1,4 +1,4 @@
-# Perustelut — miksi nämä sanaston ja noppien rajoitteet?
+# Perustelut: miksi nämä sanaston ja noppien rajoitteet?
 
 Tämä dokumentti kokoaa **miksi** kukin rajoite valittiin. *Mitä* hyväksytään:
 [SANASTO.md](SANASTO.md). Noppadata: [ITU.md](ITU.md). Jokainen kohta:
@@ -11,7 +11,7 @@ Tämä dokumentti kokoaa **miksi** kukin rajoite valittiin. *Mitä* hyväksytä�
 **Päätös.** Hyväksytään suomen sanojen kaikki taivutusmuodot, mutta ei
 liitepartikkeleita, omistusliitteitä eikä itse keksittyjä yhdyssanoja.
 
-**Perustelu.** Scrabble "runnoo suomea" perusmuotosäännöillä — se sopii englantiin,
+**Perustelu.** Scrabble "runnoo suomea" perusmuotosäännöillä, se sopii englantiin,
 jossa taivutusta on vähän, mutta suomessa se tuntuu väärältä. Pelin koko
 lisäarvo on sallia taivutus. Lisäksi mekaniikka palkitsee mahdollisimman monen
 nopan käytön (sanapisteet − käyttämättömät): taivutusmuotojen salliminen
@@ -26,11 +26,11 @@ se on äärellinen ja sanakirjamainen; produktiivinen liimaus on ääretöntä.
 selaimessa `isValidWord` on puhdas joukkohaku.
 
 **Perustelu.** Kolme syytä yhdellä valinnalla:
-1. **Estää keksityt yhdyssanat luonnostaan** — runtime-Voikko hyväksyisi minkä
+1. **Estää keksityt yhdyssanat luonnostaan**, runtime-Voikko hyväksyisi minkä
    tahansa produktiivisen yhdistelmän; me tunnemme vain listatuista lemmoista
    tuotetut muodot.
-2. **Nollaviive** — ei WASM-latausta eikä ajonaikaista morfologiaa.
-3. **Kiinteä, jaettava sanastoversio** — pakollinen tulevalle asynkroniselle
+2. **Nollaviive**: ei WASM-latausta eikä ajonaikaista morfologiaa.
+3. **Kiinteä, jaettava sanastoversio**, pakollinen tulevalle asynkroniselle
    haasteelle: kahden pelaajan on pelattava sama heitto samalla totuudella.
 
 **Hinta.** Generointi kestää (~2,5 h); sanaston päivitys = uusinta-ajo + paketointi.
@@ -43,29 +43,29 @@ selaimessa `isValidWord` on puhdas joukkohaku.
 hyväksyä. Sanakirja ja noppadata sanovat näin saman asian. Yksittäiskirjaimet
 eivät ole sanoja; 13 = noppien määrä = pisin mahdollinen muodostettava sana.
 
-**Hinta.** Osa aidoista sanoista (väärillä kirjaimilla) jää ulos — mutta niitä ei
+**Hinta.** Osa aidoista sanoista (väärillä kirjaimilla) jää ulos, mutta niitä ei
 voisi laudalle muodostaakaan, joten poisjättö on oikein.
 
-## 4. b, c, f, q, w, x, z, å pois — mutta g sisään
+## 4. b, c, f, q, w, x, z, å pois: mutta g sisään
 
 **Päätös.** b/c/f sekä q/w/x/z/å (samoin š/ž) eivät ole noppadatassa eivätkä
 sanastossa; **g on** (lisätty 14.6).
 
 **Perustelu.** Nämä ovat suomen *vieraskirjaimia*: ne esiintyvät vain
-lainasanoissa ja erisnimissä ja ovat frekvenssiltään häviävän pieniä — b/c/f
+lainasanoissa ja erisnimissä ja ovat frekvenssiltään häviävän pieniä, b/c/f
 (banaani, curry, fakta), q/w/x/z (taxi, pizza, watti, qigong), å (Åland,
 ångström, ruotsalaisperäiset nimet). Poisjättö hävittää vain lainoja, ei
 kotoperäisiä sanoja. Rajaus on myös linjassa vakiintuneen suomalaisen
 sanapelikäytännön kanssa: **c, q, w, x, z ja å puuttuvat suomalaisesta
 Scrabblesta** (ja monilta Sana Mix -tyyppisiltä noppasanapeleiltä); b ja f ovat
 Scrabblessa mukana harvinaisina kalliina kivinä, mutta jätimme nekin pois
-pitääksemme pelin puhtaasti kotoperäisenä — kohdan 3 koherenssin (vain
+pitääksemme pelin puhtaasti kotoperäisenä, kohdan 3 koherenssin (vain
 heitettävissä olevat kirjaimet kelpaavat) ja tämän pelin "harjoittele oikeaa
 suomea" -hengen mukaisesti. **g on eri tapaus:** se on natiivin ng-yhtymän kirjain (hengittää, rengas, sangen) JA
 astevaihtelun nk→ng tuotos (kenkä→**kengät**, kaupunki→**kaupungin**, lanka→**langan**).
 Datassa ~2 187 nk-vartaloista lemmaa tuottaa g:n taivutuksessa. Ilman g:tä peli
 olisi hyväksynyt nk-sanan perusmuodon mutta hylännyt sen taivutusmuodot
-(kenkä ✓, kengät ✗) — eli rikkonut kohdan 1 ydinlupauksen juuri siellä missä se
+(kenkä ✓, kengät ✗), eli rikkonut kohdan 1 ydinlupauksen juuri siellä missä se
 näkyy. Siksi g ansaitsi nopan (harvinaisena, arvo 7).
 
 **Hinta.** Lukittua noppajakaumaa piti säätää (noppa 8: T6→T5, jakauma pysyi
@@ -79,7 +79,7 @@ omistusliitteellisiä infinitiivejä (juostakseen).
 
 **Perustelu.** Nämä ovat **produktiivista morfologiaa**, jonka voi liimata lähes
 mihin tahansa sanaan (talo→talokin→talonikin→talossammekohan…). Ne räjäyttäisivät
-sanaston ja tekisivät lähes kaikesta kelvollista — pelistä katoaisi mielekkyys.
+sanaston ja tekisivät lähes kaikesta kelvollista, pelistä katoaisi mielekkyys.
 Ne eivät ole "sanoja" vaan jatkeita, jotka pelaaja voisi aina lisätä.
 
 **Hinta.** Pelaaja ei voi pelata aidolta tuntuvaa muotoa kuten "talokin".
@@ -93,7 +93,7 @@ uusi yhdyssana ei kelpaa.
 **Perustelu.** Johdonmukainen sovellus kohdasta 1: lekikaalistunut yhdyssana
 (jääkiekko) on sanakirjan sana; laudalla keksitty yhdistelmä (noppakortti) on
 produktiivista liimausta. Build-aikainen generointi toteuttaa tämän rajan
-itsestään — emme koskaan pyydä +Cmp-muotoja.
+itsestään, emme koskaan pyydä +Cmp-muotoja.
 
 **Hinta.** Jotkin oikeat mutta listaamattomat yhdyssanat jäävät ulos. Hyväksytty,
 koska vaihtoehto (kaikki produktiiviset yhdyssanat) tekisi pelistä rajattoman.
@@ -119,7 +119,7 @@ merkistö-/väliviivasuodatuksesta.
 kattavuus vaatisi omat FST-tagsetit. Suhteeton työ V1:een nähden; perusmuodot
 ovat silti pelattavissa. Dokumentoitu rajoite, johon voi palata myöhemmin.
 
-**Hinta.** Lukusanojen ja pronominien taivutusmuodot puuttuvat — pelaajalle
+**Hinta.** Lukusanojen ja pronominien taivutusmuodot puuttuvat, pelaajalle
 kerrottu selkosäännöissä.
 
 ## 9. Duaaliluokkaiset sanat taivutetaan kaikkien luokkiensa mukaan
@@ -129,7 +129,7 @@ substantiivin muodot (unioni).
 
 **Perustelu.** Korjaa bugin, jossa `pos.split()[0]` säilytti pilkun ja pudotti
 **1 533 yleissanaa** taivuttamatta. Sana joka on sekä adjektiivi että
-substantiivi kuuluu taivuttaa molempina — muuten kohdan 1 lupaus pettää
+substantiivi kuuluu taivuttaa molempina, muuten kohdan 1 lupaus pettää
 hiljaisesti yleissanoilla. Maksimaalinen koherentti kattavuus.
 
 **Hinta.** Hieman enemmän muotoja per duaalilemma (toivottua).
@@ -139,8 +139,8 @@ hiljaisesti yleissanoilla. Maksimaalinen koherentti kattavuus.
 **Päätös.** DAWG nimetään versiolla (sanasto-fi-v1); validointi on rajapinnan
 (`WordJudge`) takana.
 
-**Perustelu.** Asynkroninen haaste kiinnittää siemenen **lisäksi** sanastoversion
-— kaksi pelaajaa ei saa pelata samaa heittoa eri totuuksilla. Rajapinta sallii
+**Perustelu.** Asynkroninen haaste kiinnittää siemenen **lisäksi** sanastoversion,
+kaksi pelaajaa ei saa pelata samaa heittoa eri totuuksilla. Rajapinta sallii
 muut kielet ja tuomarimoodin (ExactJudge / AdvisoryJudge / HumanJudge) ilman
 pelikoodin muutoksia → markkina-ajatus (kielipaketti per kieli, rajakustannus ~0).
 
@@ -154,7 +154,7 @@ usein vain toinen kelpaa.
 
 **Perustelu (miksi tämä hyväksytään):** Täysi rinnakkaismuotojen kattavuus on
 syvää FST-työtä, jonka hyöty V1:ssä ei vastaa kustannusta. Rajoite on
-*dokumentoitu* — selkosäännöt kehottavat live-pelaajaa kokeilemaan toista muotoa.
+*dokumentoitu*, selkosäännöt kehottavat live-pelaajaa kokeilemaan toista muotoa.
 
 **Hinta.** Pelaaja voi muodostaa aidon muodon jonka sanakirja hylkää. Tunnettu,
 hyväksytty kompromissi (ei bugi).
@@ -180,8 +180,8 @@ toistettavuuden, jota asynkroninen haaste vaatii. Raja nostettiin alun perin
 
 Kaikki rajoitteet palautuvat **kahteen periaatteeseen**:
 
-1. **Koherenssi** — sanakirja ja nopat sanovat saman asian (merkistö, g, pituus).
-2. **Aito taivutus kyllä, ääretön liimaus ei** — raja vedetään siihen mikä on
+1. **Koherenssi**: sanakirja ja nopat sanovat saman asian (merkistö, g, pituus).
+2. **Aito taivutus kyllä, ääretön liimaus ei**: raja vedetään siihen mikä on
    äärellistä ja sanakirjamaista (taivutus) vastaan siihen mikä on rajattomasti
    tuotettavaa (liitteet, keksityt yhdyssanat).
 

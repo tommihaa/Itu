@@ -1,4 +1,4 @@
-# Itu — Opi-moodi (adaptiivinen kielioppihaaste)
+# Itu: Opi-moodi (adaptiivinen kielioppihaaste)
 
 > Designdokumentti. Status: **VAIHE 1 TOTEUTETTU 28.6.2026** (deployattu 28.6, todennettu 30.6).
 > Toteutus: puhdas domain `src/domain/learn.ts` (+ `test/learn.test.ts`, 18 testiä) +
@@ -26,7 +26,7 @@
 > Syntyi vertailevasta sanapelitutkimuksesta (ks. lopun liite).
 >
 > **Toteutuksen poikkeamat designista:** (1) toggle ja edistymä eri avaimissa
-> (`itu:learnmode:v1` vs `itu:learn:v1`) — design ehdotti samaa avainta molemmille,
+> (`itu:learnmode:v1` vs `itu:learn:v1`), design ehdotti samaa avainta molemmille,
 > mikä ei toimi (boolean vs objekti). (2) `lastHit` on ISO-päivästringi ("YYYY-MM-DD",
 > ""=ei koskaan), ei ms-aikaleima → ISO-stringit vertautuvat kronologisesti suoraan
 > (`weeklyProgress` käyttää `>=`). (3) Lisätty `recordThemeSession` (puhdas edistymäpäivitys)
@@ -37,7 +37,7 @@
 ## Konteksti
 
 Itun aito kilpailuetu sanapelikentässä on **kielioppiselite pelin sisällä** (Sanapoliisi)
-+ **täysi taivutus hyväksytään** — lähes yksikään kilpailija ei tee kumpaakaan. Opi-moodi
++ **täysi taivutus hyväksytään**, lähes yksikään kilpailija ei tee kumpaakaan. Opi-moodi
 vie tämän edun askeleen pidemmälle: tekee taivutuksen *tavoitteeksi*, ei vain sallituksi.
 
 **Malli:**
@@ -48,7 +48,7 @@ vie tämän edun askeleen pidemmälle: tekee taivutuksen *tavoitteeksi*, ei vain
 - **Pehmeä, ei-estävä** (oli työoletus; pakko-vs-bonus **päätettiin 26.6.2026**, ks. osio
   *Päätetty: PEHMEÄ*).
 - **Laajuus: kieliopilliset teemat** = sijat + luku (yks./mon.) + aikamuoto + vertailu
-  + partisiipit — ei vain 14 sijaa.
+  + partisiipit, ei vain 14 sijaa.
 - **Vaiheistus:** "haasta itsesi" (yksinpeli) ensin → "kaveri-moodi" (haastelinkki) sen
   jälkeen. **Molemmat toteutettu 28.6.2026**, ks. doc-header ja osio *Vaiheistus*.
 
@@ -56,7 +56,7 @@ vie tämän edun askeleen pidemmälle: tekee taivutuksen *tavoitteeksi*, ei vain
 `lemmas.lookup(sana)` → `Analysis[]` koodeilla kuten `N+Sg+Ine`, ja `describeCode()` /
 `CASE_INFO` muuntaa ne selkokieleksi. "Osuiko pelaaja inessiiviin laudalla" = katso
 laudan sanojen analyysit, tarkista sisältääkö joku koodi `+Ine`. Sama auktoritatiivinen
-FST-lähde kuin Sanapoliisissa — ei hallusinaatiota.
+FST-lähde kuin Sanapoliisissa, ei hallusinaatiota.
 
 ---
 
@@ -64,7 +64,7 @@ FST-lähde kuin Sanapoliisissa — ei hallusinaatiota.
 
 ### Uusi puhdas domain-moduuli: `src/domain/learn.ts`
 
-Ei DOM:ia, ei localStoragea — testattava yksikkötesteillä (kuten `premium.ts`).
+Ei DOM:ia, ei localStoragea, testattava yksikkötesteillä (kuten `premium.ts`).
 
 **1. Teema = predikaatti analyysikoodin yli** (OOP: Strategy/`Predicate<Analysis>`)
 ```ts
@@ -77,10 +77,10 @@ interface GrammarTheme {
 }
 export const THEMES: GrammarTheme[];
 ```
-- Sijateemat **johdetaan `CASE_INFO`:sta** (`src/dict/morph.ts`) — ei kahdenneta dataa.
+- Sijateemat **johdetaan `CASE_INFO`:sta** (`src/dict/morph.ts`): ei kahdenneta dataa.
 - Luku/aikamuoto/vertailu/partisiippi: pieni lisätaulukko tageille (`+Pl`, `+Prt`,
   `+Comp`/`+Superl`, partisiipit). **Toteutus enumeroi todelliset tagit morph.ts:n
-  pohjalta** — varmista tagimerkkijonot koodista ennen lukitsemista.
+  pohjalta**, varmista tagimerkkijonot koodista ennen lukitsemista.
 
 **2. Teemojen tunnistus laudalta** (puhdas, lookup injektoituna)
 ```ts
@@ -117,7 +117,7 @@ function weeklyProgress(p: LearnProgress, weekStartKey: string): { covered: numb
 | Loppunäyttö | Mitkä teemat osuit tänään + viikkopalkki; per sana mikä teema täyttyi (Sanapoliisi-tyyliin `describeCode`) | `endRound()` ~345, `analysisLines()` ~951 |
 | Edistymisen tallennus | `itu:learn:v1` (LearnProgress), erillään pistennätyksistä | `itu:premium:v1`-kuvio; `recordResult()` ~371 |
 
-- **Pisteytys säilyy ennallaan** — Opi-moodi ei muuta pisteytystä eikä sanastoa
+- **Pisteytys säilyy ennallaan**: Opi-moodi ei muuta pisteytystä eikä sanastoa
   (Itun "ei korvaa mitään" -periaate). LearnProgress on erillinen `itu:records:v2`:sta;
   ei uutta ennätyskategoriaa v1:ssä.
 - Lemmat: `endRound()` lataa lemmat jo (`ensureLemmas()`); reaaliaikaisiin siruihin
@@ -128,7 +128,7 @@ function weeklyProgress(p: LearnProgress, weekStartKey: string): { covered: numb
 ## Suunnitteluperiaate: ei grindausta (päivähaaste, ei koukku)
 
 "Haasta itsesi" = **päivähaaste**: montako sijamuotoa tai muuta haluttua kielioppi­ominaisuutta
-teet *päivässä*. Tavoite on **rajattu päivän settiin** — teet sen ja olet valmis; ei
+teet *päivässä*. Tavoite on **rajattu päivän settiin**: teet sen ja olet valmis; ei
 loputonta grindiä eikä "ei osaa lopettaa" -efektiä (ei vaihtelevan palkinnon
 pakkosilmukkaa, ei putki-/sarjastressiä joka vetää takaisin). Tämä on linjassa Itun
 "ääretön peli" -arvolinssin ja käyttäjän lähtötoiveen kanssa (ei koukuttavuutta tavoitella).
@@ -137,11 +137,11 @@ päivä, ei toistomäärä**.
 
 ## Vaiheistus
 
-**Vaihe 1 — "Haasta itsesi":** yksinpeli, adaptiiviset päivän teemat, rajattu päivähaaste
+**Vaihe 1, "Haasta itsesi":** yksinpeli, adaptiiviset päivän teemat, rajattu päivähaaste
 (montako teemaa/päivä), löysä viikkotavoite, pehmeät osumat, ⚙️-kytkin. Koko domain-moduuli
 + UI-kytkennät.
 
-**Vaihe 2 — "Kaveri-teemahaaste" (TOTEUTETTU 28.6.2026):** rakennettu olemassa olevan
+**Vaihe 2, "Kaveri-teemahaaste" (TOTEUTETTU 28.6.2026):** rakennettu olemassa olevan
 haastelinkki-infran (`startMatch()`/`decodeChallenge()`, `c=`-hash) päälle. Jaettu siemen +
 teemasetti linkissä; verrataan kuka osui useampaan jaettuun tavoiteteemaan (pisteet tasurina).
 Ei backendiä. Toteutus: erillinen Teemahaaste-moodi (ks. doc-header yllä). Pisteet lasketaan
@@ -156,7 +156,7 @@ reilu vertailu.
 kerättäviä tavoitteita, ei estä pelaamista, toimii millä tahansa heitolla. Useat
 teemat/päivä + viikkotavoite + adaptiivisuus kaikki edellyttävät tätä, ja se on linjassa
 "ei koukkua" -periaatteen kanssa. *Pakollinen* variantti (haaste "ratkeaa" vain käyttämällä
-teemaa) olisi vaatinut kuratoidun siemenen muodostettavuuden takaamiseksi — **hylätty.**
+teemaa) olisi vaatinut kuratoidun siemenen muodostettavuuden takaamiseksi, **hylätty.**
 
 ---
 

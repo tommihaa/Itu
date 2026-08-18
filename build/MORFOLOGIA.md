@@ -1,9 +1,9 @@
 # Itun sanaston morfologinen kattavuus
 
-Mitä taivutusmuotoja peli hyväksyy ja **mitä ei — sekä miksi**. Totuuden lähde on
+Mitä taivutusmuotoja peli hyväksyy ja **mitä ei, sekä miksi**. Totuuden lähde on
 [`gen_wordforms.py`](gen_wordforms.py):n tagisto, joka pyydetään GiellaLT/omorfi
 "fin"-generaattorilta (uralicNLP). Kartta on auditoitu ajamalla koko tagisto
-edustavilla lemmoilla — validointityökalu [`audit_morph.py`](audit_morph.py).
+edustavilla lemmoilla, validointityökalu [`audit_morph.py`](audit_morph.py).
 
 Päivitetty 21.6.2026.
 
@@ -25,7 +25,7 @@ Abl, All, Abe × (Sg, Pl). Lisäksi **monikon instruktiivi** (Pl+Ins: *jaloin, k
 - Partisiipit täydessä sijataivutuksessa: VA/NUT (akt.), TA/TU (pass.),
   agenttipartisiippi -ma (*laskema*), kieltopartisiippi -maton (*laskematon*)
 
-## Pois jätetty — tietoiset rajaukset (pelisäännöt)
+## Pois jätetty: tietoiset rajaukset (pelisäännöt)
 
 - **Omistusliitteet** (+Px): *taloni, koiransa*. → Tämän seurauksena myös **komitatiivin
   vakiomuoto puuttuu**: komitatiivi vaatii omistusliitteen (*koirineen* = koira+Com+PxSg3);
@@ -35,26 +35,26 @@ Abl, All, Abe × (Sg, Pl). Lisäksi **monikon instruktiivi** (Pl+Ins: *jaloin, k
 - **Erisnimet ja lyhenteet** (iso alkukirjain Kotus-listassa).
 - **Kirjaimisto:** vain `a d e g h i j k l m n o p r s t u v y ä ö`; pituus 2–13.
 
-## Tunnetut rajoitteet (upstream omorfi — ei korjattavissa tageilla)
+## Tunnetut rajoitteet (upstream omorfi: ei korjattavissa tageilla)
 
 - **-is-adjektiivien superlatiivi:** omorfi tuottaa *kaunis* → *kaunin/kauniin*, EI
   *kaunein* → **kaunein puuttuu**. (Säännöllisemmät nopein/suurin/pienin ovat mukana.)
   Ei tagikorjattavissa; vaatisi omorfin korjauksen. Sääntöesimerkit välttävät kaunein.
 
 - **Ei-leksikalisoidut tekijännimet (-ja/-jä):** omorfin "fin"-malli **ei tue tuottavaa
-  tekijännimijohdosta** — `Der/ja` palauttaa tyhjän kaikilla tagiformaateilla (vrt. `Der/minen` ✓
+  tekijännimijohdosta**, `Der/ja` palauttaa tyhjän kaikilla tagiformaateilla (vrt. `Der/minen` ✓
   ja kausatiivi-VERBI *laskettaa* ✓ ovat tuettuja). Siksi tekijännimet ovat sanastossa **vain jos
-  Kotus on ne leksikalisoinut** (*laskija, tappaja, kuljettaja, näyttäjä* — n. 367 -ttaja/-ttäjä-
+  Kotus on ne leksikalisoinut** (*laskija, tappaja, kuljettaja, näyttäjä*, n. 367 -ttaja/-ttäjä-
   lemmaa on jo mukana). **Ei-leksikalisoidut kausatiivin tekijännimet** (*laskettaja, juoksuttaja*)
-  jäävät pois: omorfi ei generoi eikä taivuta niitä (suljettu leksikko). Tietoinen pysyväistila —
+  jäävät pois: omorfi ei generoi eikä taivuta niitä (suljettu leksikko). Tietoinen pysyväistila:
   ei-leksikalisoitu kausatiivin tekijännimi on **produktiivinen johdos, ei taivutus** → kuuluu
   ITU.md:n "produktiivinen liimaus ulos" -linjalle. Empiirisesti probattu 25.6.2026; lisääminen olisi
   vaatinut FST:n ohittavan käsintaivuttimen (rikkoisi "analyysi samasta FST:stä" -invariantin).
 
-## "Kuolleet" tagit (pyydetään, mutta tuottavat tyhjää nykymallilla — vaarattomia)
+## "Kuolleet" tagit (pyydetään, mutta tuottavat tyhjää nykymallilla: vaarattomia)
 
 Eivät lisää mitään, mutta eivät myöskään haittaa (dokumentoitu ettei jää epäselväksi):
-- Verbi: redundantit ConNeg-variantit (Prs+ConNeg+Sg, Prt+ConNeg, Imprt+ConNeg+Sg2 —
+- Verbi: redundantit ConNeg-variantit (Prs+ConNeg+Sg, Prt+ConNeg, Imprt+ConNeg+Sg2,
   vastinvariantti kattaa muodon); partisiippien Com- ja Sg+Ins-sijat.
 - Nomini/adj: Sg+Com, Pl+Com, Sg+Ins (komitatiivi vaatii Px:n; instruktiivi vain monikossa).
 - (Voi siivota myöhemmin nopeuttamaan ajoa; ei muuta tulosta, koska tuottavat tyhjää.)

@@ -1,7 +1,7 @@
-# Itu — sananmuodostus-noppapeli
+# Itu: sananmuodostus-noppapeli
 
 Selaimessa pelattava sananmuodostuspeli kirjainnopilla: heitä nopat ja muodosta niistä
-sanoja laudalle ristikkomaisesti aikarajan puitteissa. Offline-yksinpeli — ei tiliä,
+sanoja laudalle ristikkomaisesti aikarajan puitteissa. Offline-yksinpeli, ei tiliä,
 ei verkkopalvelua, ei mainoksia, ei seurantaa.
 
 - **Live:** https://tommi-itu.vercel.app (asennettava PWA)

@@ -28,7 +28,7 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
 ## [0.7.3] – 2026-07-26
 
 ### Korjattu
-- **Ajatusviiva `index.html`:n meta-kuvauksesta.** "Itu — suomenkielinen sananmuodostuspeli"
+- **Ajatusviiva `index.html`:n meta-kuvauksesta.** "Itu: suomenkielinen sananmuodostuspeli"
   → "Itu on suomenkielinen sananmuodostuspeli". Kuvaus näkyy hakutuloksissa ja linkin
   esikatselussa, joten se on käyttäjälle näkyvää tekstiä. Ohitus 25.7. passista: haku oli
   rajattu nimettyihin polkuihin. `ajatusviivat`-skill hakee nyt koko reposta.

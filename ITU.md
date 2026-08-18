@@ -1,4 +1,4 @@
-# Itu — designdokumentti
+# Itu: designdokumentti
 
 Web-pohjainen sananmuodostuspeli kirjainnopilla, Tacticin Sana Mix -matkapelin hengessä.
 Päätökset lukittu 12.6.2026. Arkkitehtuurimalli: Superjatsi (Vite + TS + Web Components,
@@ -9,9 +9,9 @@ domain/ui-erotus, ei Reactia). Dev-portti 5177.
 > **Itu** on suomenkielinen sananmuodostus-noppapeli (selainpeli). Pelaaja heittää
 > kirjainnoppia ja muodostaa niistä sanoja laudalle ristikkomaisesti aikarajan
 > (3 min/kierros) puitteissa; pisteet kirjaimista + aikabonus kun teline on (lähes) ratkaistu.
-> **Offline-yksinpeli** — ei verkkopalvelua, ei monikielisyyttä (tietoisia valintoja:
+> **Offline-yksinpeli**: ei verkkopalvelua, ei monikielisyyttä (tietoisia valintoja:
 > pelirauha). Ääni on OLETUKSENA POIS, valinnainen kevyt torvi/kannel-teema
-> (päätös 7.7.2026, ks. alla) — pelirauha koskee oletustilaa, ei kieltoa. Sanojen
+> (päätös 7.7.2026, ks. alla), pelirauha koskee oletustilaa, ei kieltoa. Sanojen
 > kelpoisuus tarkistetaan **koko suomen sanastosta**
 > (~2,3 M taivutusmuotoa, pakattuna DAWG-rakenteeseen selaimessa). Teknologia:
 > **Vite + TypeScript, vanilla (ei Reactia)**, tiukka domain/UI-erottelu. Sanasto
@@ -23,7 +23,7 @@ Ota mukaan vain se, mitä keskustelu tarvitsee:
 - **sanastoapu** → omorfi/uralicNLP + DAWG + +Act-infinitiivioppi
 
 (Miksi tuore chat tarvitsee tämän: muisti on paikallinen tähän Claude Code
--ympäristöön — toinen chat alkaa kylmänä ilman tätä esittelyä.)
+-ympäristöön, toinen chat alkaa kylmänä ilman tätä esittelyä.)
 
 ## Ydinmekaniikka
 
@@ -31,7 +31,7 @@ Ota mukaan vain se, mitä keskustelu tarvitsee:
   (sanat liittyvät toisiinsa kuten sanaristikossa) ennen kuin aika loppuu.
 - Peliaika 3 min. Pelaaja voi lukita laudan aiemmin.
 - **V1 lokaali**: yksinpeli + pass-and-play. Siemenpohjainen arvonta rakennetaan
-  alusta asti niin, että sama siemen tuottaa saman heiton — tulevaa
+  alusta asti niin, että sama siemen tuottaa saman heiton, tulevaa
   asynkronista/online-haastetta varten (v2+, vaatii backendin).
 
 ## Pisteytys
@@ -49,7 +49,7 @@ Ota mukaan vain se, mitä keskustelu tarvitsee:
 
 ### Scrabble-pistemoodi (asetus, oletus POIS)
 
-Valinnainen kerros nykyisen pisteytyksen **päälle** — ei korvaa mitään (aikabonus ja
+Valinnainen kerros nykyisen pisteytyksen **päälle**, ei korvaa mitään (aikabonus ja
 3 min ajastin säilyvät). Tekee *sijoittelusta* merkityksellistä, ei vain siitä mitä sanoja
 muodostaa ("mahdollisuuksien maksimointi"). Domain: `src/domain/premium.ts` (puhdas).
 
@@ -61,13 +61,13 @@ muodostaa ("mahdollisuuksien maksimointi"). Domain: `src/domain/premium.ts` (puh
 - **Bingo-bonus** (+20): kun KAIKKI 13 noppaa on käytetty kelvollisissa sanoissa ja ankkuri
   katettu. Itun vastine Scrabblen "kaikki nappulat" -bonukselle.
 
-**Ei** muuta sanaston validointia (DAWG), noppia eikä heittoa — puhdas pistemekaniikka.
+**Ei** muuta sanaston validointia (DAWG), noppia eikä heittoa, puhdas pistemekaniikka.
 **Ei** Scrabble-suomen pelitoteutus (ei vastustajaa, ei kuratoitua sanalistaa, ei b/c/f).
 
-### Opi-moodi (asetus, oletus POIS) — adaptiivinen kielioppi-päivähaaste
+### Opi-moodi (asetus, oletus POIS): adaptiivinen kielioppi-päivähaaste
 
 Valinnainen oppimiskerros: päivän muutama kielioppiteema (sija/luku/aikamuoto/vertailu/
-partisiippi) kerättäväksi laudan sanoilla. **PEHMEÄ** — ei estä pelaamista, **EI muuta
+partisiippi) kerättäväksi laudan sanoilla. **PEHMEÄ**: ei estä pelaamista, **EI muuta
 pisteytystä, sanastoa, lautaa eikä ennätyksiä** ("ei korvaa mitään"). Vain LUKEE valmiit
 sanat ja kerää teemoja. Ei grindiä: rajattu päiväsetti + löysä viikkokoonti, ei streak-kuria.
 
@@ -99,7 +99,7 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
 | 5 | A E O N L V | | 12 | I Ä K L R J |
 | 6 | A I U S T H | | 13 | O U N V D ⬦ |
 
-- Saman nopan kirjaimet eivät voi näkyä samassa heitossa (poissulkevuus) —
+- Saman nopan kirjaimet eivät voi näkyä samassa heitossa (poissulkevuus):
   Ö on nopalla 11, D ja jokeri jakavat nopan 13, joten samassa heitossa näkyy
   korkeintaan yksi kustakin eikä koskaan D:tä ja jokeria yhdessä.
 - **Jokerimäärä 1–3** (asetus, oletus 1): jokeri #2 korvaa nopan 8 A:n,
@@ -113,13 +113,13 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
 
 ## Sanakirja (LUKITTU)
 
-> **Täydet hyväksymissäännöt: [SANASTO.md](SANASTO.md)** — se on kanoninen,
+> **Täydet hyväksymissäännöt: [SANASTO.md](SANASTO.md)**, se on kanoninen,
 > koodia vasten todennettu kuvaus. Alla vain tiivistelmä.
 
 
 - Pohja: Kotuksen nykysuomen sanalista. Muodot generoidaan **build-aikana**
   Voikolla ja paketoidaan tiiviiksi hakurakenteeksi (DAWG/trie).
-  EI runtime-WASMia — `isValidWord(s)` on puhdas set-haku, nollaviive.
+  EI runtime-WASMia, `isValidWord(s)` on puhdas set-haku, nollaviive.
 - Periaate: *kaikki aito taivutus sisään, produktiivinen liimaus ulos.*
   - ✓ sijat, persoonat, tempukset, partisiipit täydessä taivutuksessaan,
     vertailumuodot (talojen, juoksevissa, suurin)
@@ -128,7 +128,7 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
 - Build-generointi estää keksityt yhdyssanat luonnostaan; runtime-Voikko ei estäisi.
 - **Sanastoversio on osa pelin identiteettiä**: DAWG-tiedosto nimetään versiolla
   (esim. `sanasto-fi-v1.dawg`), ja tuleva asynkroninen haaste kiinnittää
-  siemenluvun LISÄKSI sanastoversion — kaksi pelaajaa ei saa pelata samaa
+  siemenluvun LISÄKSI sanastoversion, kaksi pelaajaa ei saa pelata samaa
   heittoa eri totuuksilla.
 - Validointi on rajapinta (WordJudge): ExactJudge (DAWG, suomi) nyt;
   AdvisoryJudge (korpuslista, kolmas väri "en tunne tätä") ja HumanJudge
@@ -147,17 +147,17 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
 - Vapaa ruudukko: nopat raahataan Scrabble-tyyliin, risteykset jakavat nopan.
 - **Säännöt esitetään esimerkkivetoisesti** (✓/✗-sanaparit, ei kielioppitermejä).
 - **Termit (termimoduuli):** pelin termit (vokaalisointu, äänneryhmät, teline, jokeri,
-  aikabonus, sanakirja…) määritellään kerran `src/rules/terms.ts`-taulukossa — jokainen
+  aikabonus, sanakirja…) määritellään kerran `src/rules/terms.ts`-taulukossa, jokainen
   selitys käsin todennettu tätä dokumenttia / koodia vasten (ei hallusinaatiota; sama
   malli kuin `CASE_INFO`). UI: sääntötekstien esiintymät ovat napautettavia (selite
   aukeaa kappaleen alle) + Säännöt-näkymän **Termit-välilehti** (ryhmitelty referenssi).
   Skeema + moottori jaettu Jakon kanssa (Lahja-kokoelman termimoduuli, speksi
   `Kaanon/TERMIMODUULI.md`; Jakon kopio `src/shared/glossary.js`). Data on
-  pelin omaa — termistöä ei jaeta, mekanismi jaetaan.
+  pelin omaa, termistöä ei jaeta, mekanismi jaetaan.
 - **Sanapoliisi** (🔎, ent. "Tarkastaja"; pelin ulkopuolinen sanahaku + loppunäyttö + ratkaisijan
   ehdotukset): kertoo sanan perusmuodon, kaikki pätevät tulkinnat ja sijamuodon
-  *sekä sen vaikutuksen* selkoesimerkein (esim. "inessiivi — 'missä?' sisällä;
-  kuten *talossa*"). Tässä kielioppitermi näytetään, koska tavoite on oppia —
+  *sekä sen vaikutuksen* selkoesimerkein (esim. "inessiivi: 'missä?' sisällä;
+  kuten *talossa*"). Tässä kielioppitermi näytetään, koska tavoite on oppia,
   mutta aina selkoselityksen ja esimerkin kanssa. **Ei hallusinaatiota:** analyysi
   tulee build-aikaisesta FST-generoinnista (sama lähde joka muodon hyväksyy) +
   kiinteästä, käsin todennetusta sijataulukosta (`src/dict/morph.ts`); tuntematon
@@ -167,10 +167,10 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
   (`itu:learnmode:v1`), **Scrabble-pistemoodi** (premium-ruudut + bingo + keskusankkuri,
   `itu:premium:v1`) ja **äänet** (`itu:sound:v1`, oletus POIS). Kaikki tallennetaan localStorageen.
 - **Äänet (torvi & kantele, oletus POIS):** valinnainen kevyt äänimaisema Web Audiolla
-  synteesillä (ei äänitiedostoja). Sama suunnittelukuvio kuin Superjatsissa ja Jaossa —
+  synteesillä (ei äänitiedostoja). Sama suunnittelukuvio kuin Superjatsissa ja Jaossa:
   torviääneke (`horn()`) harvinaisiin, juhlaviin hetkiin ja kantele-nypäisy (`kantele()`,
   Karplus-Strong-synteesi) toistuviin, arkisiin tapahtumiin. Ei erillistä "oletusteemaa"
-  kuten muissa kahdessa pelissä, koska Itussa ei ollut ääntä ennestään — vain päälle/pois.
+  kuten muissa kahdessa pelissä, koska Itussa ei ollut ääntä ennestään, vain päälle/pois.
   Päätetty 7.7.2026: pelirauha-periaate (ks. yllä) tarkennettiin koskemaan oletustilaa,
   ei ääntä kokonaan kieltäväksi.
 - **Ennätykset (🏆):** top-10 per (pistemoodi × kesto). Lajittelu **Kokonaispisteet**
