@@ -187,3 +187,10 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
   joka yhdistää kestot ja vertaa puhdasta tuottavuutta. Pistettä/min käyttää **vain
   sanapisteitä** (ei aikabonusta/sakkoja) → ei kasaannu aikabonuksen kanssa. Taaksepäin­-
   yhteensopiva: laskettu tallennetusta `wordPoints`/`duration`-kentästä (vanha tietue → 3 min).
+
+## Jatkoideat (varasto, ei päätöksiä)
+
+- **Pahviversio (kirjattu 20.8.2026, hautuva):** Itun fyysinen versio, jonka sanat
+  tarkistettaisiin Itulle generoidusta sanastosta. Kiinnostuksen aste on Tommin omin sanoin
+  *vähän*, eli tämä on varasto eikä suunnitelma. Tausta, sanamuoto ja se miksi suunta on
+  merkittävä: `SUBSTANSSI.md` kohta 34.
