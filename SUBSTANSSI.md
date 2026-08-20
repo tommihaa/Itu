@@ -13,9 +13,17 @@ kanna sitä mitä maailmasta tiedetään. Sisardokumentit ovat `DGAndroid/SUBSTA
 **Lukija on malli, ja tiedosto noudetaan kun aihe tulee vastaan.** Muoto on siksi väitelauseita
 eikä proosaa.
 
-**Kokoavaa teesiä ei ole vielä kysytty.** Se kirjataan tähän kun haastattelu on edennyt
-tarpeeksi pitkälle, ja se on Tommin lause eikä kirjoittajan tiivistelmä; sama järjestys kuin
-Jakon dokumentissa.
+## Tiivistelmä: teesi on yksi lause, ja se on Tommin
+
+Lause lausuttiin erässä 8 oma-aloitteisesti, kysymysten ohi, ja Tommi kuittasi sen
+dokumentin kokoavaksi teesiksi erässä 9 (20.8.2026):
+
+> **"Minusta pelikulttuuri oli arvokasta ja siksi otin niitä projekteiksemme verkkoon
+> opeteltaviksi ja pelattaviksi"**
+
+Kaikki alla oleva asettuu tämän ympärille: mistä kulttuuri tuli (kohdat 1, 7, 9, 21), mikä
+siinä veti (11, 12, 25), miten se siirrettiin (13, 15, 18, 23) ja miten se palautettiin
+(17, 20). Mitä *opeteltaviksi* tarkoittaa, on avattu kohdassa 26.
 
 ## Menetelmä: jokainen väite on Tommin vastaus
 
@@ -357,7 +365,8 @@ jonka piirissä Laiturilla pelattiin loppuu vuoden 2026 loppuun:
 
 Toiminnan laji on rajattu tämän julkisen tiedoston ulkopuolelle samalla varovaisuudella
 jolla Laiturin osallistumisen muoto on rajattu Jakon dokumentin ulkopuolelle
-(`Jako-pelini/SUBSTANSSI.md`, rajaus 20.8.2026).
+(`Jako-pelini/SUBSTANSSI.md`, rajaus 20.8.2026). **Rajaus kuitattu Tommin päätökseksi
+20.8.2026 (erä 9): jätetään pois julkisesta.**
 
 **Seuraus:** tämä on koko pelikolmikon motiivi sanottuna ääneen: säilytys. Pelikulttuurin
 fyysinen koti loppuu, ja pelit siirrettiin verkkoon ennen sitä. Kohdan 20 lähetys asettuu
@@ -403,3 +412,24 @@ Tommi 20.8.2026 (erä 8), kysyttäessä ratkooko hän sanaristikkoja tai muita s
 tehtävälajina (vihjeestä ruudukkoon) vaan sanojen rakentaminen kirjaimista niin että ne
 liittyvät toisiinsa. Itussa ristikko on muodostamisen muoto eikä ratkottava tehtävä, ja se
 vastaa täsmälleen sitä mistä Tommi sanapeleissä pitää ja mistä ei.
+
+## 26. Opeteltaviksi tarkoittaa kahta: tekijän omaa koetta ja pelaajaa jolla ei ole ohjaajaa
+
+Tommi 20.8.2026 (erä 9), kysyttäessä keitä hän ajatteli kirjoittaessaan *opeteltaviksi*:
+
+> *pystynkö, osaanko ja ketä tahansa, jolla ei ole ohjaajaa selittämässä pelin sääntöjä ja
+> katsomassa perään*
+
+Vastauksessa on kaksi tasoa. Ensimmäinen on tekijän oma koe: pystyykö ja osaako hän tehdä
+tämän. Toinen on yleisö: kuka tahansa jolla ei ole ohjaajaa selittämässä sääntöjä ja
+katsomassa perään.
+
+**Seuraus:** sovelluksen on tehtävä ohjaajan työ, ja se selittää kolmikon
+suunnitteluratkaisuja täsmällisemmin kuin mikään aiemmin kirjattu vaatimus. Itussa
+esimerkkivetoiset säännöt, termimoduuli ja Sanapoliisi selityksineen, Jakossa Mestarin neuvo
+ja vuoro-opaste ovat kaikki ohjaajan kaksi tehtävää koodattuna: selittää säännöt ja katsoa
+perään. Ohjaaja on lisäksi todellinen rooli eikä kielikuva: Laiturin pelikulttuurissa
+ohjaaja kehitti variaatioita ja laati tietokilpailuja (`Jako-pelini/SUBSTANSSI.md`).
+
+**Seuraus:** *pystynkö, osaanko* asettaa projektit myös tekijän oman kyvyn mittariksi, eli
+sama työ on yhtä aikaa kulttuurin säilytystä ja sen tekijän koe. Tämä saa kaatua.
