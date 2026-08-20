@@ -346,3 +346,60 @@ pelivaraston sattumaa: pieni matkapeli joka oli kertynyt hyllyyn muiden joukossa
 jonka mekaniikka kantoi sovellukseksi asti ei erottunut hankintahetkellä mitenkään, ja sen
 arvo näkyi vasta pöydässä. Tämä sopii kohdan 11 kanssa samaan kuvaan: pelin hyvyys oli
 Laiturilla pelaamisen eikä esineen ominaisuus.
+
+## 22. Pelikulttuuri oli arvokasta, ja siksi pelit otettiin projekteiksi verkkoon
+
+Tommi 20.8.2026 (erä 8), oma-aloitteisesti kysymysten ohi, kerrottuaan ensin että toiminta
+jonka piirissä Laiturilla pelattiin loppuu vuoden 2026 loppuun:
+
+> *Minusta pelikulttuuri oli arvokasta ja siksi otin niitä projekteiksemme verkkoon
+> opeteltaviksi ja pelattaviksi*
+
+Toiminnan laji on rajattu tämän julkisen tiedoston ulkopuolelle samalla varovaisuudella
+jolla Laiturin osallistumisen muoto on rajattu Jakon dokumentin ulkopuolelle
+(`Jako-pelini/SUBSTANSSI.md`, rajaus 20.8.2026).
+
+**Seuraus:** tämä on koko pelikolmikon motiivi sanottuna ääneen: säilytys. Pelikulttuurin
+fyysinen koti loppuu, ja pelit siirrettiin verkkoon ennen sitä. Kohdan 20 lähetys asettuu
+samaan kuvaan: pelit eivät vain palanneet Laiturille, ne palasivat sinne juuri kun niiden
+alkuperäinen koti on päättymässä, opeteltavina ja pelattavina sen jälkeenkin.
+
+**Seuraus:** sanamuoto *projekteiksemme* on monikon ensimmäisessä: työ on Tommin ja Clauden
+yhteinen, ja se sanotaan tässä suoraan koska yhteistyötä ei häivytetä ulospäin näkyvästä
+tekstistä. Ja *opeteltaviksi ja pelattaviksi* nimeää kaksi tehtävää, ei yhtä: sovellus ei ole
+vain pelipaikka vaan myös tapa oppia pelit joiden opettajat eivät enää kokoonnu samaan
+pöytään.
+
+## 23. Sanamixin tiimalasi oli 2–3 minuuttia
+
+Tommi 20.8.2026 (erä 8):
+
+> *2-3 minuuttia*
+
+**Seuraus:** Itun oletuskesto (3 min) on esikuvan mitta eikä keksitty luku, ja kestoasetuksen
+vaihtoehdot (1/2/3/5 min) ympäröivät sen. Aikaraja ei siis ole vain mekaniikkaa vaan
+peritty tuntuma siitä kuinka kauan yhtä heittoa on hyvä katsoa.
+
+## 24. Pöydässä ei ollut sanakirjaa
+
+Tommi 20.8.2026 (erä 8), kysyttäessä oliko Laiturilla sanakirja esillä:
+
+> *ei*
+
+**Seuraus:** kortin sääntö *löydyttävä tavallisesta sanakirjasta* eli pöydässä periaatteena
+eikä esineenä: kukaan ei tarkistanut mitään, ja silti kiistoja ei juuri syntynyt (kohta 1).
+Kelpoisuus lepäsi pöydän yhteisellä kielitajulla. Itun DAWG ei siis korvaa sanakirjaa jota
+käytettiin, vaan rakentaa ensimmäistä kertaa sen tarkistuksen jonka sääntö lupasi mutta jota
+pöytä ei koskaan tarvinnut. Yksinpelissä kielitaju ei riitä, koska kiistan toista osapuolta
+ei ole.
+
+## 25. Tommi ei ratko sanaristikkoja
+
+Tommi 20.8.2026 (erä 8), kysyttäessä ratkooko hän sanaristikkoja tai muita sanatehtäviä:
+
+> *en*
+
+**Seuraus:** kohdan 12 ristikon vetovoima tarkentuu. Vetävä asia ei ole ristikko
+tehtävälajina (vihjeestä ruudukkoon) vaan sanojen rakentaminen kirjaimista niin että ne
+liittyvät toisiinsa. Itussa ristikko on muodostamisen muoto eikä ratkottava tehtävä, ja se
+vastaa täsmälleen sitä mistä Tommi sanapeleissä pitää ja mistä ei.
