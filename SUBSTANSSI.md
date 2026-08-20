@@ -501,3 +501,38 @@ merkityksettömänkin. Itun ennätyslista on siis uusi kerros eikä perintöä: 
 vertailun jota pöydässä ei ollut, ja yksinpelissä se on ainoa vastustaja (kohta 2:n
 seuraus). Kortti- ja sanamix-kulttuurin ero toistuu tässäkin: korttipelien turnaussarjan
 pisteet kirjattiin paperille (`Jako-pelini/SUBSTANSSI.md` kohta 41), sanamixin ei mitään.
+
+## 32. Englanninkieliset apit jäivät pois
+
+Tommi 20.8.2026 (erä 12), kysyttäessä pelaako hän niitä yhä:
+
+> *jäi pois*
+
+Milloin ja miksi, ei kysytty, joten yhteyttä Itun valmistumiseen ei väitetä.
+
+## 33. Scrabblea pelataan yhä
+
+Tommi 20.8.2026 (erä 12), kysyttäessä pelataanko sitä yhä suvussa ja tuttujen kesken:
+
+> *kyllä*
+
+**Seuraus:** kohdan 6 kolmesta sanapeliympäristöstä kaksi on päättynyt (Laituri, apit) ja
+yksi elää: lautapeli suvun ja tuttujen kesken. Ainoa elävä sanapeliympäristö on fyysinen ja
+seurallinen, mikä antaa taustan kohdan 34 idealle.
+
+## 34. Idea: Itun pahviversio, jonka sanat tarkistettaisiin sovelluksen sanastosta
+
+Tommi 20.8.2026 (erä 12), kysyttäessä onko jotain olennaista jota ei ole osattu kysyä:
+
+> *suomenkielelle lokalisoitu pahviversio kiinnostaa vähän, sanat voisi tarkistaa Itulle
+> generoidusta sanastosta*
+
+Kiinnostuksen aste on vastauksessa itsessään (*vähän*), eli tämä on hautuva idea eikä
+päätös.
+
+**Seuraus:** suunta on tämän dokumentin kaaren käännös. Peli kulki pahvista verkkoon
+(kohta 22), ja idea veisi sen takaisin pahviin, mutta paluumatkalla mukana olisi se mitä
+verkossa rakennettiin: Itun omat nopat (78 tahkoa omine jakaumineen) ja generoitu sanasto
+pöydän tuomarina. Pahviversio saisi siis sen tarkistuksen jota alkuperäisellä pöydällä ei
+koskaan ollut (kohta 24: ei sanakirjaa), sovelluksesta. Ja se palaisi siihen ainoaan
+ympäristöön jossa sanapeli yhä elää (kohta 33).
