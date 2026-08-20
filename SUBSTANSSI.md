@@ -146,3 +146,47 @@ aikabonus ja yksinpelimuoto.
 **Seuraus:** kortin sääntö *löydyttävä tavallisesta sanakirjasta* ja kohdan 1 pöytäkäytäntö
 *sai olla taivutettu* eivät ole sama sääntö: sanakirjasta löytyy perusmuoto, pöytä hyväksyi
 taivutuksen. `SANASTO.md`:n linja on siis pöydän eikä kortin perintöä.
+
+## 8. Kuvattu kappale on sama peli jota Laiturilla pelattiin
+
+Tommi 20.8.2026 (erä 3), kysyttäessä onko kuvattu kappale sama peli jota Laiturilla
+pelattiin vai oma myöhemmin hankittu:
+
+> *sama*
+
+**Seuraus:** kohdan 7 asiakirjalähde ei ole vain sama tuote vaan sama esine. Itun
+innoittanut fyysinen peli on olemassa, Tommin ulottuvilla ja kuvattu tähän dokumenttiin.
+Miten kappale on päätynyt hänelle, ei ole kysytty.
+
+## 9. Laiturilla pelattiin virallisilla säännöillä
+
+Tommi 20.8.2026 (erä 3), kysyttäessä pelattiinko kortin virallisilla säännöillä
+tiimalaseineen ja vuoroineen vai omalla sovelletulla tavalla:
+
+> *kyllä*
+
+**Seuraus:** kohdan 1 taivutuskäytäntö ei ollut talon sääntö vaan virallisen säännön väljä
+luenta: kortti vaatii että sana löytyy tavallisesta sanakirjasta, eikä se ota kantaa
+taivutukseen, joten taivutetun muodon hyväksyminen mahtui säännön sisään. Itu peri siis
+esikuvaltaan sekä kirjaimellisen säännöstön (kohta 7) että yhden tulkinnan (taivutus sisään),
+ja jälkimmäinen on se jonka `SANASTO.md` koneellisti.
+
+**Seuraus:** tämä on Jakon dokumentin teesin (*siksi ei standardia vaan vaihtoehtoja*)
+vastakappale samasta pöydästä: korttipeleissä Laituri pelasi paikallisin säännöin, sanamixissä
+virallisin. Ero voi selittyä sillä että sanamix tuli laatikosta sääntökortteineen ja
+korttipelit perinteenä ilman kirjoitettua sääntöä, mutta syytä ei ole kysytty. Tämä saa
+kaatua.
+
+## 10. Apeista jäi mieleen Words of Wonders
+
+Tommi 20.8.2026 (erä 3), kysyttäessä mitkä englanninkieliset sanapeliapit jäivät parhaiten
+mieleen:
+
+> *word of wonders, muita en muista mutta niitä oli*
+
+Yksi nimi muistuu (Words of Wonders), ja appeja oli useita.
+
+**Seuraus:** kirjoittajan tieto eikä Tommin sanoma: Words of Wonders on peli jossa annetuista
+kirjaimista muodostetaan sanoja ristikkopohjaan. Molemmat Tommin nimeltä muistamat
+sanapelikokemukset (Scrabble, Words of Wonders) rakentuvat siis ristikkomuotoon, samaan jonka
+sanamix vaatii ja Itu toteuttaa. Tämä saa kaatua.
