@@ -433,3 +433,46 @@ ohjaaja kehitti variaatioita ja laati tietokilpailuja (`Jako-pelini/SUBSTANSSI.m
 
 **Seuraus:** *pystynkö, osaanko* asettaa projektit myös tekijän oman kyvyn mittariksi, eli
 sama työ on yhtä aikaa kulttuurin säilytystä ja sen tekijän koe. Tämä saa kaatua.
+
+## 27. Sanamixiä pelattiin enintään noin viidellä, ja isompi porukka näkyi korttipeleissä toisena pakkana
+
+Tommi 20.8.2026 (erä 10), kysyttäessä pelattiinko sanamixiä täydessä pöydässä vai
+pienemmällä porukalla kuin korttipelejä:
+
+> *enintään 5 taisi olla, korttipeleissä otettiin isommalla porukalla käyttöön toinen pakka
+> eli pelattiin 104 kortilla*
+
+Sanamixin pöytä oli enintään noin viisi pelaajaa (*taisi* on muistinvarainen), vaikka kortti
+sallii kahdeksan. Vastauksen jälkiosa on korttipelien substanssia: iso porukka ei jakanut
+pöytää vaan kaksinkertaisti pakan.
+
+**Seuraus:** jälkiosan koti on `Jako-pelini/SUBSTANSSI.md`, koska se kertoo miten pöytä
+skaalasi korttipelit pelaajamäärään, ja Jakon sovellus tuntee vain 2–4 pelaajaa ja yhden
+pakan. Sitä ei viedä sinne ilman kuittausta.
+
+## 28. Jokeria käytettiin ahkerasti
+
+Tommi 20.8.2026 (erä 10):
+
+> *käytettiin ahkerasti*
+
+**Seuraus:** jokeri ei anna pisteitä (kortin sääntö, kohta 7), joten ahkera käyttö kertoo
+että sen arvo oli ristikon kokoaminen eikä pisteet. Tämä on sama arvojärjestys kuin kohdassa
+11: täysi ratkaisu ennen pistemaksimointia. Itun jokerimääräasetus (1–3, oletus 1) laajentaa
+juuri sitä osaa pelistä jota pöytä käytti mieluiten.
+
+## 29. Laituri päättyi Tommin osalta podcastin tallennukseen 4.5., ja sanamixiä luultavasti pelattiin vielä
+
+Tommi 20.8.2026 (erä 10), kysyttäessä pelattiinko sanamixiä vielä kun Itua alettiin rakentaa:
+
+> *luulen, että pelattiin mutta laituri päättyi osaltani podcastin tallennukseen 4.5*
+
+Epävarmuus on vastauksessa itsessään (*luulen*). Vuosiluku 2026 on kirjoittajan luenta
+asiayhteydestä, ei Tommin sanoma.
+
+**Seuraus:** aikajana asettuu kohdan 22 alle ja tarkentaa sitä. Peli-ideat syntyivät
+verkkochatissa huhtikuussa 2026 eli kun Laituri vielä jatkui, oma osallistuminen päättyi
+4.5.2026, Itun toteutus alkoi 17.6.2026 ja linkit lähtivät ohjaajille elokuussa. Säilytys
+tehtiin siis viikkojen sisällä kodin päättymisestä ja tuoreesta muistista, ei vuosien päästä
+kaipuusta. Ja viimeinen oma Laituri-päivä oli itsessään tallennus, eli päättymispäivänäkin
+kulttuuria pantiin talteen, eri välineellä.
