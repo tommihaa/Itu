@@ -154,9 +154,19 @@ pelattiin vai oma myöhemmin hankittu:
 
 > *sama*
 
-**Seuraus:** kohdan 7 asiakirjalähde ei ole vain sama tuote vaan sama esine. Itun
-innoittanut fyysinen peli on olemassa, Tommin ulottuvilla ja kuvattu tähän dokumenttiin.
+**Seuraus:** kohdan 7 asiakirjalähde ei ole vain sama tuote vaan sama esine. ~~Itun
+innoittanut fyysinen peli on olemassa, Tommin ulottuvilla ja kuvattu tähän dokumenttiin.~~
 Miten kappale on päätynyt hänelle, ei ole kysytty.
+
+**Korjaus 20.8.2026 (erä 5):** kysyttäessä miten kappale päätyi hänelle, Tommi vastasi:
+
+> *tuo on vanha kuva*
+
+Yliviivattu osa kaatui: kuvaa ei otettu tätä dokumenttia varten, eikä vastauksesta selviä
+onko esine Tommilla nyt. Voimaan jää että kuva esittää Laiturin kappaletta. Tämä on
+menetelmäosion nimeämä vikamuoto toteutuneena tässä dokumentissa ensimmäistä kertaa: tosi
+lähtökohta (kuva toimitettiin haastattelun aikana) ja liian pitkä johtopäätös (esine on
+ulottuvilla ja kuvattu nyt). Jätetään näkyviin kumottuna.
 
 ## 9. Laiturilla pelattiin virallisilla säännöillä
 
@@ -231,4 +241,32 @@ Syy on ajan kilpailu eikä pelin vika: muut projektit vievät saman ajan.
 voittaa. Tämä sopii yhteen sen kanssa mitä työtavoista tiedetään (kiinnostus on paras
 motivaattori), mutta se jättää pelin ilman jatkuvaa omaa koetinta: asetusten ja bonusten
 viritys ei tällä hetkellä koetu kenenkään pelaamisessa. Tämä on havainto eikä moite, ja se
-saa kaatua.
+saa kaatua. *(Tarkentui erässä 5: koetin oli olemassa ja se oli kehitysaikainen, ks. kohta 15.)*
+
+## 14. Itua ovat pelanneet muutkin, mutta heiltä ei ole kysytty
+
+Tommi 20.8.2026 (erä 5), kysyttäessä onko joku muu pelannut Itua ja mitä hän on kuullut:
+
+> *on, en ole kysynyt*
+
+**Seuraus:** pelin vastaanotto on olemassa mutta lukematta. Se on halvin noutamaton koetin
+jonka tämä dokumentti tuntee: pelaajat ovat jo pelanneet, ja puuttuva askel on kysymys.
+Kysyminen on Tommin valinta eikä tämän dokumentin tehtävä.
+
+## 15. Kehitysvaiheessa pelattiin kyllästymiseen asti, jotta pelistä tulisi mieleinen
+
+Tommi 20.8.2026 (erä 5), kysyttäessä pelasiko hän Itua enemmän kun sitä rakennettiin:
+
+> *kyllä, jako ja superjatsi ja itu kyllästymiseen asti että tulisi mieleinen*
+
+Vastaus nimeää menetelmän ja sen laajuuden: kaikki kolme peliä (Jako, Superjatsi, Itu)
+pelattiin kehitysvaiheessa kyllästymiseen asti, ja tavoite oli että pelistä tulee mieleinen.
+
+**Seuraus:** kohta 13 tarkentuu eikä kaadu. Itu ei ole peli jolta puuttui koetin, vaan peli
+jonka koetin oli kehitysaikainen ja päättyi kun tehtävä oli tehty: kyllästyminen oli
+menetelmän päätepiste eikä vika. Mittapuu oli tekijän oma maku (*mieleinen*), ei ulkoinen
+standardi, ja pelaaminen loppui kun peli saavutti sen.
+
+**Seuraus:** menetelmä on kolmen pelin yhteinen, joten tämä kohta kuuluu asiallisesti myös
+Superjatsin substanssiin jos se joskus kirjoitetaan. Jakolla on lisäksi koneellinen koetin
+(`docs/BOTBENCH.md`), eli sama peli on koeteltu kahdella eri lajilla.
