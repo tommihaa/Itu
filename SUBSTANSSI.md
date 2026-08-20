@@ -311,3 +311,38 @@ peluu ei tuottanut muutoslistaa vaan vahvisti että peli on mieleinen, ja se tap
 tekijänkin mittapuulla yllättävän nopeasti. Uskottava selitys on kohdassa 7: ydinmekaniikka
 oli peritty pelistä joka oli jo koeteltu Laiturin pöydässä, joten virittämistä vaativa osa
 oli valmiiksi viritetty. Tämä on kirjoittajan päätelmä ja saa kaatua.
+
+## 19. Itu voitti Verson ytimekkyydellään
+
+Tommi 20.8.2026 (erä 7), kysyttäessä mikä sai Idun voittamaan Verson:
+
+> *ytimekäs*
+
+Peruste oli siis nimen oma ominaisuus: Itu on ytimekäs. Kohdan 16 luennasta vahvistuu
+lyhyyden osuus; kasvukuvaston valintaa peruste ei selitä, joten se osa jää luennaksi.
+
+## 20. Laiturin ohjaajille lähti koko kolmikko: Jako, Superjatsi ja Itu
+
+Tommi 20.8.2026 (erä 7), kysyttäessä lähetettiinkö vain Itu vai myös muita pelejä:
+
+> *jako, superjatsi ja itu*
+
+**Seuraus:** kohdan 17 kehä on isompi kuin yksi peli. Laiturille palasi koko pelikolmikko,
+mukaan lukien Jako jonka yhdeksästä pelistä viisi on opittu juuri siellä
+(`Jako-pelini/SUBSTANSSI.md` kohta 1). Ohjaajat saivat siis sekä oman pöytänsä pelit
+sovelluksena että sen pelin jälkeläisen jota pöydässä pelattiin nopilla.
+
+## 21. Sanamix oli talon peli, ja talon pelit olivat halpoja ja vuosien mittaan kertyneitä
+
+Tommi 20.8.2026 (erä 7), kysyttäessä oliko sanamix talon peli vai jonkun tuoma:
+
+> *talon pelejä, ne ovat todella halpoja ja vuosien mittaan kertyneitä*
+
+Sanamix kuului talon peleihin, ja talon pelivarasto oli kertynyt vuosien mittaan halvoista
+peleistä.
+
+**Seuraus:** Itun innoittaja ei ollut kenenkään valitsema tai tuoma vaan halvan
+pelivaraston sattumaa: pieni matkapeli joka oli kertynyt hyllyyn muiden joukossa. Peli
+jonka mekaniikka kantoi sovellukseksi asti ei erottunut hankintahetkellä mitenkään, ja sen
+arvo näkyi vasta pöydässä. Tämä sopii kohdan 11 kanssa samaan kuvaan: pelin hyvyys oli
+Laiturilla pelaamisen eikä esineen ominaisuus.
