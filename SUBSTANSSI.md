@@ -190,3 +190,45 @@ Yksi nimi muistuu (Words of Wonders), ja appeja oli useita.
 kirjaimista muodostetaan sanoja ristikkopohjaan. Molemmat Tommin nimeltä muistamat
 sanapelikokemukset (Scrabble, Words of Wonders) rakentuvat siis ristikkomuotoon, samaan jonka
 sanamix vaatii ja Itu toteuttaa. Tämä saa kaatua.
+
+## 11. Pöydässä arvostettiin sitä että sai kaikki kirjaimet käytettyä määräajassa
+
+Tommi 20.8.2026 (erä 4), kysyttäessä millainen suoritus keräsi arvostusta pisteiden lisäksi:
+
+> *kun sai kaikki kirjaimet käytettyä määräajassa*
+
+**Seuraus:** Itun kaksi bonusmekanismia koodaavat täsmälleen tämän pöydän arvostuksen.
+Aikabonus aukeaa vain kun vähintään 11/13 noppaa on käytetty kelvollisissa sanoissa, ja
+Scrabble-pistemoodin bingo (+20) vaatii kaikki 13. Kumpikaan ei palkitse pelkkää nopeutta
+eikä pelkkää pistemaksimointia vaan täyden ratkaisun ajassa, eli sen minkä pöytä luki hyväksi
+peliksi. Kortin oma pisteenlasku kannustaa samaan toista kautta (käyttämättömät vähennetään),
+mutta pöydän arvostus oli kynnysmäinen (kaikki käytetty) eikä lineaarinen, ja Itun bonukset
+ovat kynnysmäisiä.
+
+## 12. Words of Wondersissa piti otteessaan ristikko
+
+Tommi 20.8.2026 (erä 4), kysyttäessä mikä siinä piti otteessaan:
+
+> *ristikko*
+
+Kohdan 10 seuraus vahvistui vastauksesta: ristikkomuoto on se joka kantaa läpi kaikkien
+nimettyjen sanapelien (Scrabble, sanamix, Words of Wonders), ja se on nimenomaan se mikä
+appipelissä veti puoleensa.
+
+**Seuraus:** Itun ydinvalinta (nopat muodostavat ristikon, eivät irtosanoja) ei ole vain
+esikuvan sääntöjen perintöä vaan pelaajan oman vetovoimakokemuksen toisto. Sanan liittäminen
+toiseen on se mielihyvä jonka ympärille peli on rakennettu.
+
+## 13. Tommi ei pelaa Itua nykyään
+
+Tommi 20.8.2026 (erä 4), kysyttäessä pelaako hän Itua ja millä asetuksilla:
+
+> *en pelaa, on niin paljon muuta tekemistä kuten muut projektit*
+
+Syy on ajan kilpailu eikä pelin vika: muut projektit vievät saman ajan.
+
+**Seuraus:** pelin rakentaminen ja pelaaminen kilpailevat samasta ajasta, ja rakentaminen
+voittaa. Tämä sopii yhteen sen kanssa mitä työtavoista tiedetään (kiinnostus on paras
+motivaattori), mutta se jättää pelin ilman jatkuvaa omaa koetinta: asetusten ja bonusten
+viritys ei tällä hetkellä koetu kenenkään pelaamisessa. Tämä on havainto eikä moite, ja se
+saa kaatua.
