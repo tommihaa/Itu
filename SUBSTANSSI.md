@@ -270,3 +270,44 @@ standardi, ja pelaaminen loppui kun peli saavutti sen.
 **Seuraus:** menetelmä on kolmen pelin yhteinen, joten tämä kohta kuuluu asiallisesti myös
 Superjatsin substanssiin jos se joskus kirjoitetaan. Jakolla on lisäksi koneellinen koetin
 (`docs/BOTBENCH.md`), eli sama peli on koeteltu kahdella eri lajilla.
+
+## 16. Nimen kilpailija oli Verso, ja Itu voitti
+
+Tommi 20.8.2026 (erä 6), kysyttäessä miksi pelin nimeksi tuli juuri Itu:
+
+> *pohdin mm. nimeä verso, mutta itu voitti*
+
+Ehdokkaita oli useampia (*mm.*), ja nimetty kilpailija on Verso. Miksi Itu voitti, ei
+sanottu.
+
+**Seuraus:** molemmat nimetyt ehdokkaat ovat itämisen sanoja, joten kasvun kuvasto oli
+valittu ennen nimeä: peli jossa sanat versovat kirjaimista ristikoksi. Kumpikin on lisäksi
+itse pelissä muodostettavissa oleva lyhyt suomen sana, toisin kuin työnimet SanaMix ja
+*13 kirjainta sanoiksi*. Tämä on kirjoittajan luenta eikä Tommin perustelu, ja se saa kaatua.
+
+## 17. Itua ovat pelanneet veli ja siskontyttö, ja linkit on lähetetty Laiturin ohjaajille
+
+Tommi 20.8.2026 (erä 6), kysyttäessä ketkä Itua ovat pelanneet:
+
+> *veli, siskontyttö, laiturin ohjaajille lähetin linkit pari viikkoa sitten*
+
+Pelaajia ovat veli ja siskontyttö, ja Laiturin ohjaajille Tommi lähetti linkit elokuun 2026
+alkupuolella (*pari viikkoa sitten* 20.8.2026 kirjattuna).
+
+**Seuraus:** kehä sulkeutui. Laiturin pöydän peli innoitti Itun (kohta 7, `ITU.md`), ja Itu
+on nyt lähetetty takaisin Laiturin ohjaajille. Se on tämän dokumentin ensimmäinen kirjaus
+jossa vaikutus kulkee toiseen suuntaan, Tommilta Laiturille. Ovatko ohjaajat avanneet linkit,
+ei tiedetä (kohta 14: pelanneilta ei ole kysytty).
+
+## 18. Kyllästymispeluu ei tuottanut Ituun muutoksia, koska peli valmistui nopeasti
+
+Tommi 20.8.2026 (erä 6), kysyttäessä muistaako hän jonkin asian jonka muutti oman
+pelaamisensa perusteella:
+
+> *en, siitä tuli valmis yllättävän nopeasti ja siirryin eteenpäin*
+
+**Seuraus:** kohdan 15 menetelmän päätepiste oli Itussa valmius eikä kyllästyminen:
+peluu ei tuottanut muutoslistaa vaan vahvisti että peli on mieleinen, ja se tapahtui
+tekijänkin mittapuulla yllättävän nopeasti. Uskottava selitys on kohdassa 7: ydinmekaniikka
+oli peritty pelistä joka oli jo koeteltu Laiturin pöydässä, joten virittämistä vaativa osa
+oli valmiiksi viritetty. Tämä on kirjoittajan päätelmä ja saa kaatua.
