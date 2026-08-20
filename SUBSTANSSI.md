@@ -84,3 +84,65 @@ aukon syy (tarjonta vai valinta) on vielä auki.
 
 **Seuraus:** Itun pistemalli (kirjainarvot = suomalainen Scrabble) lainaa pelistä jota Tommi
 on itse pelannut lautapelinä, ei vain tunnetusta esikuvasta.
+
+## 4. Voittaja ratkesi pisteillä, ja pisteitä saivat sanassa olevat kirjaimet
+
+Tommi 20.8.2026 (erä 2), kysyttäessä miten voittaja ratkesi:
+
+> *kirjaimet, jotka oli osana sanaa, niin niistä sai pisteitä*
+
+Vastaus on todennettu asiakirjasta samassa erässä: Tommi toimitti valokuvan Tacticin Sana Mix
+-sääntökortista, jonka pisteenlasku sanoo saman (ks. kohta 7).
+
+## 5. Apit olivat englanninkielisiä, koska suomenkielisiä ei ollut tarjolla
+
+Tommi 20.8.2026 (erä 2), kysyttäessä pelasiko hän englanninkielisiä sanapeliappeja siksi
+ettei suomenkielisiä ollut tarjolla, vai muusta syystä:
+
+> *kyllä*
+
+Kohdan 3 avoin kysymys sulkeutuu: aukon syy oli tarjonta eikä valinta.
+
+**Seuraus:** Itu ei täytä vain sen tekijän omaa aukkoa vaan markkinan: suomenkielistä
+sanapeliappia ei ollut sille pelaajalle joka niitä aktiivisesti etsi ja pelasi. Tämä on sama
+aukko joka on kirjattu muistiin toisesta suunnasta (Bionic Reading ei käänny agglutinoivaan
+kieleen): suomen kieli jää digitaalisissa sanatuotteissa väliinputoajaksi.
+
+## 6. Scrabblea pelattiin tuttujen ja sukulaisten kanssa kotona ja kylässä
+
+Tommi 20.8.2026 (erä 2), kysyttäessä kenen kanssa ja missä:
+
+> *tuttujen ja sukulaisten kanssa kotona ja kylässä*
+
+**Seuraus:** sanapelien kolme ympäristöä ovat nyt kirjattuna eri kohdissa: Laituri (sanamix,
+kohta 1), koti ja kyläily (Scrabble, tämä kohta) ja yksin ruudulla (apit, kohta 3). Sanapeli
+on ollut Tommille sekä seurapeli että yksinpeli jo ennen Itua, eli Itun yksinpelimuoto ei
+ollut poikkeama tottumuksesta vaan toisen olemassa olevan tavan jatke. Tämä saa kaatua.
+
+## 7. Asiakirjalähde: Tacticin Sana Mix -sääntökortti, ja Itu on lähempänä esikuvaansa kuin kanoni tiesi
+
+Tommi toimitti 20.8.2026 (erä 2) valokuvan pelin suomenkielisestä sääntökortista. Tämä kohta
+on luettu kortista eikä haastatteluvastauksesta, ja se on dokumentin ensimmäinen
+asiakirjalähde. Kortin sisältö tiivistettynä:
+
+- Sisältö: 13 kirjainnoppaa, lehtiö, kynä ja tiimalasi. 1–8 pelaajaa, 8+ vuotta, 15+ min.
+- Tavoite: kerää eniten pisteitä muodostamalla sanoja niin monesta nopasta kuin mahdollista.
+- Kulku: kukin heittää vuorollaan kaikki nopat, tiimalasi käännetään. Jos heitossa on
+  vähemmän kuin kaksi vokaalia, heitto uusitaan. Sanojen on oltava yhteydessä toisiinsa
+  kuten sanaristikossa ja löydyttävä tavallisesta sanakirjasta.
+- Jokeri: yhden nopan yhdellä sivulla, käy minkä tahansa kirjaimen sijaan, ei anna pisteitä,
+  ja kahden sanan osana sen on edustettava samaa kirjainta molemmissa.
+- Pisteenlasku: sanoissa olevien noppien arvot yhteen, kahden sanan osana oleva noppa
+  lasketaan kahdesti, käyttämättä jääneiden noppien arvot vähennetään.
+- Päättyminen: sovittujen erien jälkeen korkein kokonaispistemäärä voittaa.
+
+**Seuraus:** Itu on perinyt esikuvastaan enemmän kuin `ITU.md`:n ilmaus *hengessä* antaa
+ymmärtää. Sama noppamäärä (13), sama ristikkovaatimus, sama risteysnopan kaksoislasku, sama
+käyttämättömien sakko ja sama jokerisääntö (arvo 0, sama kirjain molemmissa sanoissa) ovat
+kaikki kortissa. Itun omia ovat kirjainarvot (suomalainen Scrabble), vokaali- ja
+konsonanttitakuu (kortissa vain kahden vokaalin raja), kiinteä aikaraja tiimalasin sijaan,
+aikabonus ja yksinpelimuoto.
+
+**Seuraus:** kortin sääntö *löydyttävä tavallisesta sanakirjasta* ja kohdan 1 pöytäkäytäntö
+*sai olla taivutettu* eivät ole sama sääntö: sanakirjasta löytyy perusmuoto, pöytä hyväksyi
+taivutuksen. `SANASTO.md`:n linja on siis pöydän eikä kortin perintöä.
