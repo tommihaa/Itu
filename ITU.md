@@ -38,7 +38,10 @@ Ota mukaan vain se, mitä keskustelu tarvitsee:
 
 - 13 kirjainnoppaa heitetään kerralla; pelaaja muodostaa nopista ristikon
   (sanat liittyvät toisiinsa kuten sanaristikossa) ennen kuin aika loppuu.
-- Peliaika 3 min. Pelaaja voi lukita laudan aiemmin.
+- Peliaika **oletuksena 3 min ja asetuksesta säädettävissä** (1/2/3/5 min, ks. Asetukset).
+  Pelaaja voi lukita laudan aiemmin. *Oletus löytyi pelitestaamalla eikä esikuvasta:*
+  *Laiturin sanamixin tiimalasi oli 2–3 minuuttia, ja samankaltaisuus on yhteensattuma*
+  *(`SUBSTANSSI.md` kohta 36, kirjattu 21.8.2026).*
 - **V1 lokaali**: yksinpeli + pass-and-play. Siemenpohjainen arvonta rakennetaan
   alusta asti niin, että sama siemen tuottaa saman heiton, tulevaa
   asynkronista/online-haastetta varten (v2+, vaatii backendin).

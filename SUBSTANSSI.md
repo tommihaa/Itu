@@ -602,8 +602,27 @@ mielivaltaiselta juuri siksi ettei sitä voi vastustaa. Näin ei käynyt, ja syy
 kiistäjä ei ole ohjelmoijan lista vaan Kotus, eli sama auktoriteetti johon pöydässäkin olisi
 vedottu jos sanakirja olisi ollut mukana.
 
-**Seuraus, joka on tässä kysymys eikä väite:** *perusteli* viittaa siihen että perustelu
-haettiin, eikä siihen että sovellus näytti sen. Se jäi kysymättä, joten en väitä kumpaakaan.
+**Kysymys esitettiin erässä 14 ja se sulkeutui.** Tommi 21.8.2026:
+
+> *sanakirja haettiin itse ja siinä on järkeviä rajoitteita että koko pysyy hallinnassa*
+
+Sovellus ei siis perustellut mitään, vaan perustelu haettiin. Kelpoisuus ratkesi kahdessa
+vaiheessa: kone hylkäsi, ja ihminen kävi katsomassa miksi.
+
+**Seuraus:** hyväksyntä ei koskenut yksittäistä sanaa vaan **sanaston rajausperiaatetta**.
+`SANASTO.md`:n pykälät 3, 4 ja 7 luettelevat mitä jätetään ulkopuolelle (adverbien vertailu,
+numeraalien ja pronominien taivutus, liitepartikkelit, omistusliitteet, keksityt yhdyssanat,
+generaattorin rinnakkaismuodot), ja juuri ne ovat ne tapaukset joissa aito suomen sana
+hylätään. Dokumentti kutsuu niitä V1-rajoitteiksi eli laajuudeksi, Tommi hallittavana pysyvänä
+kokona; en yhdistä näitä kahta sanaa toisiinsa, koska ne voivat tarkoittaa eri asiaa.
+
+**Seuraus:** tämä on kohdan 1 kaari loppuun asti. Pöydässä tuomarina oli hiljainen
+yksimielisyys, Itussa generaattori, ja generaattorin päätös kesti tarkistuksen. Kelpoisuus ei
+siis siirtynyt pöydästä koneeseen sokeana luottamuksena vaan tarkistettuna.
+
+**Mitä ei tiedetä:** kumpi `SANASTO.md`:n luettelemista tapauksista oli se johon Tommi törmäsi.
+Rinnakkaismuoto (*talojen* / *taloiden*) on niistä todennäköisin, koska dokumentti ennustaa sen
+itse, mutta sitä ei kysytty eikä sitä arvata.
 
 ## 38. Sanapeliappi oli puuhaa radion rinnalle
 
@@ -624,9 +643,24 @@ jakamattoman huomion suorituksen, eikä sellaista pelata radion rinnalla. Kohdan
 ei pelaa Itua nykyään) on saanut tässä ensimmäisen mahdollisen selityksensä, ja se on eri kuin
 tekijän kyllästyminen omaan peliinsä (kohta 15).
 
-Jännitettä ei ratkaista tässä eikä sitä pidä lukea vaatimukseksi muuttaa peliä. Se on kirjattu
-siksi, että se on tarkistettavissa vain kysymällä: sopiiko Itun oletusmuoto siihen tilanteeseen
-jossa sanapeliä oikeasti pelataan, vai onko se tietoisesti eri peli eri hetkeen.
+**Jännite ratkesi erässä 14, ja se ratkesi jälkimmäiseen suuntaan.** Tommi 21.8.2026,
+kysyttäessä onko Itu tietoisesti eri peli eri hetkeen:
+
+> *eri peli eri hetkeen*
+
+**Itun muoto on siis valinta eikä huomaamaton ero esikuvaansa.** Kysymys oli aseteltu niin että
+myöntävä vastaus olisi ollut mukavampi kuulla kuin kieltävä, ja vastaus on se joka sulkee
+kehitysehdotuksen eikä avaa sitä: jakamatonta huomiota vaativa kierros on se mitä Itulta
+halutaan, eikä radion rinnalle sopiva täytepeli ole tavoite jota se ei saavuta.
+
+**Seuraus:** tämä sulkee kokonaisen ehdotusluokan ennen kuin sitä ehdotettiin. Kevyempi tila,
+ajastimen poisto oletuksesta tai kynnyksen madaltaminen olisivat kaikki Itun muuttamista siihen
+suuntaan josta tässä juuri sanottiin että se on eri peli. Ehdotukset eivät ole kiellettyjä,
+mutta ne eivät voi enää nojata siihen että appien käyttötilanne olisi Itun tavoite.
+
+**Seuraus:** kohdan 13 tieto (Tommi ei pelaa Itua nykyään) jää siis ilman tätä selitystä. Se ei
+ole todiste väärästä muodosta vaan seuraus siitä että peli vaatii oman hetkensä, ja niitä on
+harvemmin kuin radionkuunteluhetkiä.
 
 ## 39. Palautetta ei pyydetä, ja toinen pelanneista pelaa mieluummin Ristiseiskaa
 
