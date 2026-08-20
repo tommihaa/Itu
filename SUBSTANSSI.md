@@ -476,3 +476,28 @@ verkkochatissa huhtikuussa 2026 eli kun Laituri vielä jatkui, oma osallistumine
 tehtiin siis viikkojen sisällä kodin päättymisestä ja tuoreesta muistista, ei vuosien päästä
 kaipuusta. Ja viimeinen oma Laituri-päivä oli itsessään tallennus, eli päättymispäivänäkin
 kulttuuria pantiin talteen, eri välineellä.
+
+*Kohdan 27 jälkiosa vietiin `Jako-pelini/SUBSTANSSI.md`:hen kohdaksi 43 Tommin kuittauksella
+20.8.2026 (erä 11).*
+
+## 30. Onko pass-and-playta pelattu, ei tiedetä
+
+Tommi 20.8.2026 (erä 11), kysyttäessä onko Itun pass-and-play-muotoa pelattu porukalla:
+
+> *en tiedä*
+
+Kohdan 14 tila laajenee muodosta toiseen: pelaajilta ei ole kysytty, joten myöskään
+pelimuotojen käytöstä ei tiedetä mitään.
+
+## 31. Sanamixistä ei pidetty tilastoja, ja pelaajat vaihtuivat
+
+Tommi 20.8.2026 (erä 11), kysyttäessä oliko sanamixissä vakiovoittaja:
+
+> *ei tilastoja, pelaajat vaihtui*
+
+**Seuraus:** kilpailu oli kertaluontoista: pelillä oli voittaja (kohta 2), mutta voitot
+eivät kumuloituneet mihinkään, ja vaihtuva pelaajisto olisi tehnyt tilastosta
+merkityksettömänkin. Itun ennätyslista on siis uusi kerros eikä perintöä: se tuo pysyvän
+vertailun jota pöydässä ei ollut, ja yksinpelissä se on ainoa vastustaja (kohta 2:n
+seuraus). Kortti- ja sanamix-kulttuurin ero toistuu tässäkin: korttipelien turnaussarjan
+pisteet kirjattiin paperille (`Jako-pelini/SUBSTANSSI.md` kohta 41), sanamixin ei mitään.
