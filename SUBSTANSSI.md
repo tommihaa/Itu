@@ -22,8 +22,8 @@ dokumentin kokoavaksi teesiksi erässä 9 (20.8.2026):
 > opeteltaviksi ja pelattaviksi"**
 
 Kaikki alla oleva asettuu tämän ympärille: mistä kulttuuri tuli (kohdat 1, 7, 9, 21), mikä
-siinä veti (11, 12, 25), miten se siirrettiin (13, 15, 18, 23) ja miten se palautettiin
-(17, 20). Mitä *opeteltaviksi* tarkoittaa, on avattu kohdassa 26.
+siinä veti (11, 12, 25, 38), miten se siirrettiin (13, 15, 18, 23, 35) ja miten se palautettiin
+(17, 20, 39). Mitä *opeteltaviksi* tarkoittaa, on avattu kohdassa 26.
 
 ## Menetelmä: jokainen väite on Tommin vastaus
 
@@ -385,9 +385,19 @@ Tommi 20.8.2026 (erä 8):
 
 > *2-3 minuuttia*
 
-**Seuraus:** Itun oletuskesto (3 min) on esikuvan mitta eikä keksitty luku, ja kestoasetuksen
-vaihtoehdot (1/2/3/5 min) ympäröivät sen. Aikaraja ei siis ole vain mekaniikkaa vaan
-peritty tuntuma siitä kuinka kauan yhtä heittoa on hyvä katsoa.
+~~**Seuraus:** Itun oletuskesto (3 min) on esikuvan mitta eikä keksitty luku, ja
+kestoasetuksen vaihtoehdot (1/2/3/5 min) ympäröivät sen. Aikaraja ei siis ole vain mekaniikkaa
+vaan peritty tuntuma siitä kuinka kauan yhtä heittoa on hyvä katsoa.~~
+
+**Seuraus kaatui erässä 13, ja se jätetään näkyviin** (kohta 36). Kysyin asian, ja vastaus oli
+että kesto löytyi pelitestaamalla. Samankaltaisuus tiimalasin kanssa on siis yhteensattuma
+eikä perintö, ja tämä oli juuri se päätelmä jota menetelmäosio varoittaa tekemästä: tosi
+lähtökohta (pöydässä oli 2–3 minuutin tiimalasi) ja liian pitkä johtopäätös (siitä tuli Itun
+kesto). Kestoasetuksen neljä vaihtoehtoa ovat yhä olemassa, mutta ne eivät ympäröi mitään
+perittyä lukua.
+
+**Mitä kohdasta jää voimaan:** tiimalasi oli 2–3 minuuttia. Se on vastaus, ja vastaus ei kaadu
+päätelmän mukana.
 
 ## 24. Pöydässä ei ollut sanakirjaa
 
@@ -536,3 +546,108 @@ verkossa rakennettiin: Itun omat nopat (78 tahkoa omine jakaumineen) ja generoit
 pöydän tuomarina. Pahviversio saisi siis sen tarkistuksen jota alkuperäisellä pöydällä ei
 koskaan ollut (kohta 24: ei sanakirjaa), sovelluksesta. Ja se palaisi siihen ainoaan
 ympäristöön jossa sanapeli yhä elää (kohta 33).
+
+## 35. Yksinpeli oli se mikä oli mahdollista ilman palvelinta
+
+Tommi 21.8.2026 (erä 13), kysyttäessä oliko yksinpeli päätös jotain vastaan vai se muoto joka
+oli mahdollinen ilman palvelinta:
+
+> *mahdollinen ilman palvelinta*
+
+**Kohdan 2 seuraus kaatuu osittain, ja se jätetään näkyviin.** Kirjasin sinne että Itu muutti
+esikuvansa muotoa kilpailullisesta seurapelistä yksinpeliksi, ja luin muodonmuutoksen samaksi
+lajiksi kuin pelirauha-periaatteen. Muodonmuutos on totta, mutta **se ei ollut designvalinta
+vaan alustan raja.** Ero on olennainen: valinta kertoisi mitä pelistä haluttiin, raja kertoo
+mitä sillä hetkellä pystyttiin tekemään.
+
+**Seuraus:** ennätyslista ei ole vastustajan tietoinen korvike vaan se mikä jäi jäljelle kun
+vastustajaa ei voinut olla. Tämä sopii `ITU.md`:n omaan kirjaukseen siitä että siemenpohjainen
+arvonta rakennettiin alusta asti asynkronista haastetta varten: moninpeliä ei hylätty, se
+lykättiin, ja rakenne varattiin sille etukäteen. Kohdan 2 sana *muodonmuutos* jää siis
+voimaan, mutta sen syy vaihtuu.
+
+## 36. Peliaika löytyi testaamalla, ja se on asetus eikä vakio
+
+Tommi 21.8.2026 (erä 13), kysyttäessä tuliko 3 minuutin peliaika pöydän tiimalasista vai
+pelitestaamalla:
+
+> *testaamalla, sitähän on mahdollista muuttaa asetuksista*
+
+**Väite tarkistettiin koodista, ja se pitää paikkansa.** `src/ui/settings.ts` tuntee neljä
+kestoa (60, 120, 180 ja 300 sekuntia), oletus on 180. Tarkistus tehtiin siksi, että tämä on
+ainoa erän vastauksista joka on tarkistettavissa koneellisesti, eikä tarkistamatta jättäminen
+olisi ollut halvempaa.
+
+**Seuraus:** kohdan 23 tiimalasin (2–3 minuuttia) ja Itun oletuksen (3 minuuttia)
+samankaltaisuus on yhteensattuma eikä lainaus. Se on merkille pantavaa, koska tämä dokumentti
+on täynnä aitoja lainauksia pöydästä (pisteytys, taivutussalliva sanasto, kirjainnopat), ja
+juuri siksi seuraava samankaltaisuus olisi luettu lainaukseksi ilman tätä riviä.
+
+**Seuraus:** `ITU.md`:n ydinmekaniikka sanoo *Peliaika 3 min* mainitsematta että se on
+säädettävissä. Kanoni ei ole väärässä mutta on vajaa, ja tämä on kirjattu tänne eikä korjattu
+sinne, koska kanonin muutos on eri työ kuin haastattelun kirjaus.
+
+## 37. Sanakirjan hylkäys tuntui perustellulta silloinkin kun sana tuntui sanalta
+
+Tommi 21.8.2026 (erä 13), kysyttäessä onko Itua pelatessa tullut vastaan sana jonka koneen
+hylkäys tuntui väärältä:
+
+> *on, mutta sanakirja perusteli hyvin*
+
+Tapauksia on siis ollut, mutta ne eivät jääneet erimielisyyksiksi.
+
+**Seuraus:** tämä sulkee kohtien 1 ja 24 jättämän jännitteen suotuisasti. Pöydässä sana kelpasi
+ellei kukaan kiistänyt sitä, Itussa kiistäjä on kone, ja pelko oli että koneen kiista tuntuisi
+mielivaltaiselta juuri siksi ettei sitä voi vastustaa. Näin ei käynyt, ja syy on lähteen laatu:
+kiistäjä ei ole ohjelmoijan lista vaan Kotus, eli sama auktoriteetti johon pöydässäkin olisi
+vedottu jos sanakirja olisi ollut mukana.
+
+**Seuraus, joka on tässä kysymys eikä väite:** *perusteli* viittaa siihen että perustelu
+haettiin, eikä siihen että sovellus näytti sen. Se jäi kysymättä, joten en väitä kumpaakaan.
+
+## 38. Sanapeliappi oli puuhaa radion rinnalle
+
+Tommi 21.8.2026 (erä 13), kysyttäessä mikä englanninkielisissä apeissa sai palaamaan takaisin
+päivästä toiseen:
+
+> *se oli puuhaa mitä voi tehdä samalla kun kuuntelee radiota*
+
+**Tämä on erän painavin vastaus, koska se nimeää käyttötilanteen eikä ominaisuutta.** Kysymys
+etsi koukkua pelistä, ja vastaus sanoo ettei koukku ollut pelissä vaan siinä mihin peli
+mahtui: **toissijainen tekeminen ensisijaisen rinnalla.** Se selittää sekä sen miksi appeja
+tuli pelattua paljon (kohta 3) että sen miksi ne jäivät pois ilman erillistä syytä (kohta 32),
+sillä toissijainen tekeminen ei vaadi lopettamispäätöstä.
+
+**Seuraus, ja se on jännite eikä vahvistus:** Itu ei ole tämän muotoinen. Kolmen minuutin
+ajastin, 13 nopan yhtenäinen ristikko ja aikabonuksen 11/13 kynnys tekevät kierroksesta
+jakamattoman huomion suorituksen, eikä sellaista pelata radion rinnalla. Kohdan 13 tieto (Tommi
+ei pelaa Itua nykyään) on saanut tässä ensimmäisen mahdollisen selityksensä, ja se on eri kuin
+tekijän kyllästyminen omaan peliinsä (kohta 15).
+
+Jännitettä ei ratkaista tässä eikä sitä pidä lukea vaatimukseksi muuttaa peliä. Se on kirjattu
+siksi, että se on tarkistettavissa vain kysymällä: sopiiko Itun oletusmuoto siihen tilanteeseen
+jossa sanapeliä oikeasti pelataan, vai onko se tietoisesti eri peli eri hetkeen.
+
+## 39. Palautetta ei pyydetä, ja toinen pelanneista pelaa mieluummin Ristiseiskaa
+
+Tommi 21.8.2026 (erä 13), kysyttäessä sanoivatko veli ja siskontyttö Itusta jotain
+oma-aloitteisesti:
+
+> *palautteessa uskon vapaaehtoisuuteen, toinen tykkää pelata ristiseiskaa*
+
+Vastaus on kaksiosainen ja osat ovat eri lajia. Ensimmäinen on periaate: palaute otetaan
+vastaan mutta sitä ei pyydetä. Toinen on ainoa tähän asti kirjattu havainto pelanneilta, eikä
+kumpi heistä on kyseessä käy vastauksesta ilmi, joten sitä ei arvata.
+
+**Kohta 14 tarkentuu eikä sulkeudu.** Se sanoi ettei pelanneilta ole kysytty, ja tästä käy ilmi
+**miksi**: kysymättä jättäminen on periaate eikä unohdus. Kohta 30 (pass-and-playn käytöstä ei
+tiedetä) jää siis auki pysyvästi tällä menetelmällä, ja se on hyväksytty hinta eikä puute.
+
+**Seuraus:** havainto on Itun kannalta kielteinen ja siksi arvokas. Kolmikosta (Jako,
+Superjatsi, Itu) lähetetty linkki tuotti pelaajan joka valitsi korttipelin sanapelin sijaan,
+eli valinta tehtiin oman kokoelman sisällä. Se ei kerro Itusta vikaa vaan makujaon, ja se on
+ensimmäinen mitattu vihje siitä että kokoelman pelit kilpailevat keskenään samasta pelaajasta.
+
+**Projektiraja:** havainto koskee myös Jakoa, koska Ristiseiska on sen yhdeksästä pelistä yksi.
+Sitä ei kirjoitettu `Jako-pelini/SUBSTANSSI.md`:hen tässä erässä, koska projektirajan ylitys
+tehdään kuittauksella eikä oletuksella.
