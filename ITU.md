@@ -4,6 +4,15 @@ Web-pohjainen sananmuodostuspeli kirjainnopilla, Tacticin Sana Mix -matkapelin h
 Päätökset lukittu 12.6.2026. Arkkitehtuurimalli: Superjatsi (Vite + TS + Web Components,
 domain/ui-erotus, ei Reactia). Dev-portti 5177.
 
+## Nimen ja innoituksen alkuperä (kirjattu 20.8.2026)
+
+Alkuperäinen työnimi SanaMix tulee yllä mainitusta matkapelistä, jota Tommi pelasi
+Laiturilla yhteisissä pelituokioissa: kirjainnopat heitettiin ja sanoja muodostettiin
+määräajassa. Tommi vahvisti 20.8.2026 että juuri se innoitti projektin. Laajempi konteksti
+ja lähde: korttipelihaastattelu, `Jako-pelini/SUBSTANSSI.md` kohta 15 (Laituri kuvattu
+saman tiedoston kohdassa 1). Pelin nimi vaihtui Ituksi myöhemmin, ja repo-kansion nimi
+`SanaMix` kantaa yhä työnimeä.
+
 ## Esittely (kopioi tuoreeseen chattiin / kuvaukseksi)
 
 > **Itu** on suomenkielinen sananmuodostus-noppapeli (selainpeli). Pelaaja heittää
