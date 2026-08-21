@@ -691,6 +691,18 @@ mutta ne eivät voi enää nojata siihen että appien käyttötilanne olisi Itun
 ole todiste väärästä muodosta vaan seuraus siitä että peli vaatii oman hetkensä, ja niitä on
 harvemmin kuin radionkuunteluhetkiä.
 
+**Laiturin korttipöytä oli samaa muotoa kuin apit, ja se laajentaa tämän kohdan koskemaan
+koko taustaa** *(kirjoittajan yhteys Jakon haastattelusta, ei Tommin lause; viety tänne Tommin
+kuittauksella 21.8.2026)*. `Jako-pelini/SUBSTANSSI.md` kertoo (kohdat 73, 74, 90 ja 91) että
+Laiturilla korttia pelattiin kahdessa puolen tunnin ikkunassa ja muun tekemisen lomassa
+samassa pöydässä jossa syötiin ja tehtiin ryhmän jutut, eli toissijaisena tekemisenä
+ensisijaisen rinnalla. Molemmat Itun taustalla olevat peliympäristöt, englanninkieliset apit
+ja Laiturin pöytä josta pelin nimen antanut sanamix-innoitus tuli (kirjaus `ITU.md`:ssä),
+olivat siis samaa muotoa, ja Itu valitsi tietoisesti päinvastaisen: jakamattoman huomion
+kierroksen. Kohdan ratkaisu (*eri peli eri hetkeen*) ei siis poikkea vain apeista vaan koko
+siitä pelikulttuurista josta peli sai nimensä ja innoituksensa. Tämä saa kaatua ilman että
+kohdan vastaukset kaatuvat.
+
 ## 39. Palautetta ei pyydetä, ja toinen pelanneista pelaa mieluummin Ristiseiskaa
 
 Tommi 21.8.2026 (erä 13), kysyttäessä sanoivatko veli ja siskontyttö Itusta jotain
