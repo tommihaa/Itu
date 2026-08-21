@@ -293,14 +293,25 @@ valittu ennen nimeä: peli jossa sanat versovat kirjaimista ristikoksi. Kumpikin
 itse pelissä muodostettavissa oleva lyhyt suomen sana, toisin kuin työnimet SanaMix ja
 *13 kirjainta sanoiksi*. Tämä on kirjoittajan luenta eikä Tommin perustelu, ja se saa kaatua.
 
-## 17. Itua ovat pelanneet veli ja siskontyttö, ja linkit on lähetetty Laiturin ohjaajille
+## 17. Itua ovat pelanneet kaksi lähisukulaista, ja linkit on lähetetty Laiturin ohjaajille
+
+*(Otsikko ja sitaatti anonymisoitiin 21.8.2026, ks. yksityisyysrajaus alla. Vanhaa muotoa ei
+toisteta tässä, toisin kuin kohdan 39 otsikkokäytännössä, koska juuri se on poistettava sisältö.)*
 
 Tommi 20.8.2026 (erä 6), kysyttäessä ketkä Itua ovat pelanneet:
 
-> *veli, siskontyttö, laiturin ohjaajille lähetin linkit pari viikkoa sitten*
+> *[lähisukulainen], [lähisukulainen], laiturin ohjaajille lähetin linkit pari viikkoa sitten*
 
-Pelaajia ovat veli ja siskontyttö, ja Laiturin ohjaajille Tommi lähetti linkit elokuun 2026
-alkupuolella (*pari viikkoa sitten* 20.8.2026 kirjattuna).
+Pelaajia ovat kaksi Tommin lähisukulaista, ja Laiturin ohjaajille Tommi lähetti linkit elokuun
+2026 alkupuolella (*pari viikkoa sitten* 20.8.2026 kirjattuna).
+
+**Yksityisyysrajaus, ja se on Tommin päätös 21.8.2026:** vastauksessa oli kaksi sukulaisuussuhdetta,
+ja ne on korvattu merkinnällä `[lähisukulainen]`. Nimiä ei ollut, mutta suhde yksilöi ihmisen
+lähipiirissä yhtä tarkasti kuin nimi, ja repo on julkinen. Rajaus on samaa lajia kuin kohdan 7
+sääntökortin ja kohtien 10 ja 34 nimipoistot Superjatsissa: poisto merkitään näkyviin eikä
+sisältöä pyyhitä jälkiä jättämättä. Substanssi säilyy, koska kohtien 14, 30 ja 39 päätelmät
+lepäävät sillä **että** peliä on pelattu ja ettei palautetta ole pyydetty, eivät sillä kuka
+pelasi.
 
 **Seuraus:** kehä sulkeutui. Laiturin pöydän peli innoitti Itun (kohta 7, `ITU.md`), ja Itu
 on nyt lähetetty takaisin Laiturin ohjaajille. Se on tämän dokumentin ensimmäinen kirjaus
@@ -363,10 +374,21 @@ jonka piirissä Laiturilla pelattiin loppuu vuoden 2026 loppuun:
 > *Minusta pelikulttuuri oli arvokasta ja siksi otin niitä projekteiksemme verkkoon
 > opeteltaviksi ja pelattaviksi*
 
-Toiminnan laji on rajattu tämän julkisen tiedoston ulkopuolelle samalla varovaisuudella
-jolla Laiturin osallistumisen muoto on rajattu Jakon dokumentin ulkopuolelle
-(`Jako-pelini/SUBSTANSSI.md`, rajaus 20.8.2026). **Rajaus kuitattu Tommin päätökseksi
-20.8.2026 (erä 9): jätetään pois julkisesta.**
+Toiminnan laji on rajattu tämän julkisen tiedoston ulkopuolelle. **Rajaus kuitattu Tommin
+päätökseksi 20.8.2026 (erä 9): jätetään pois julkisesta.**
+
+**Tämä rajaus oli 21.8.2026 asti tiukempi kuin Jakon, ja ero ratkaistiin tämän hyväksi.** Rivi
+sanoi että laji on rajattu *samalla varovaisuudella* kuin Laiturin osallistumisen muoto Jakon
+dokumentissa, ja se oli väärin kirjoitushetkellä: `Jako-pelini/SUBSTANSSI.md` rajasi ulos vain
+osallistumisen muodon ja sen osapuolet, ja nimesi toiminnan lajin kohdassaan 1. Kokoelmassa oli
+siis kaksi eri tasoista rajausta samasta asiasta. Tommi päätti 21.8.2026 että **tämän
+dokumentin rajaus on se joka jää**, ja laji poistettiin Jakosta. Lause on nyt tosi, muttei ollut
+sitä silloin kun se kirjoitettiin.
+
+*Miksi tämä kirjattiin eikä korjattu hiljaa:* kahden dokumentin väite samasta rajauksesta oli
+eri, eli sama tila jota sopimusmuutos-protokolla estää (`Kaanon/TYÖTAVAT.md`). Kumpi tahansa
+dokumentti yksin luettuna antoi väärän kuvan siitä mitä toisessa lukee, ja korjaus tehtiin
+kanoniin ennen kuin kumpaakaan tekstiä muutettiin muualta.
 
 **Seuraus:** tämä on koko pelikolmikon motiivi sanottuna ääneen: säilytys. Pelikulttuurin
 fyysinen koti loppuu, ja pelit siirrettiin verkkoon ennen sitä. Kohdan 20 lähetys asettuu
@@ -705,7 +727,7 @@ kohdan vastaukset kaatuvat.
 
 ## 39. Palautetta ei pyydetä, ja toinen pelanneista pelaa mieluummin Ristiseiskaa
 
-Tommi 21.8.2026 (erä 13), kysyttäessä sanoivatko veli ja siskontyttö Itusta jotain
+Tommi 21.8.2026 (erä 13), kysyttäessä sanoivatko kohdan 17 kaksi pelannutta Itusta jotain
 oma-aloitteisesti:
 
 > *palautteessa uskon vapaaehtoisuuteen, toinen tykkää pelata ristiseiskaa*
