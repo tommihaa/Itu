@@ -620,9 +620,38 @@ kokona; en yhdistä näitä kahta sanaa toisiinsa, koska ne voivat tarkoittaa er
 yksimielisyys, Itussa generaattori, ja generaattorin päätös kesti tarkistuksen. Kelpoisuus ei
 siis siirtynyt pöydästä koneeseen sokeana luottamuksena vaan tarkistettuna.
 
-**Mitä ei tiedetä:** kumpi `SANASTO.md`:n luettelemista tapauksista oli se johon Tommi törmäsi.
+~~**Mitä ei tiedetä:** kumpi `SANASTO.md`:n luettelemista tapauksista oli se johon Tommi törmäsi.
 Rinnakkaismuoto (*talojen* / *taloiden*) on niistä todennäköisin, koska dokumentti ennustaa sen
-itse, mutta sitä ei kysytty eikä sitä arvata.
+itse, mutta sitä ei kysytty eikä sitä arvata.~~
+
+**Vastaus 21.8.2026, ja se kaataa yllä olevan todennäköisimmän:**
+
+> *törmäsin rajoitteeseen, jossa sanan perään oli liimattuja jatkeita kuten liitesanat ja
+> omistusliitteet*
+
+**Tapaus ei ole `SANASTO.md` §7 vaan §4, ja ero on periaatteellinen eikä luettelotekninen.**
+§7:n rinnakkaismuoto on tunnustettu vajaus: generaattori antaa vain toisen normimuodon, ja
+dokumentti sanoo itse että pelaaja voi muodostaa aidon muodon jonka sanakirja hylkää.
+Täysmitigaatio on siellä syvää FST-työtä, eli kyse on siitä mihin ei ole ylletty. §4 on
+päinvastainen: liitepartikkeleita (+Foc, *talokin*, *menisitköhän*) ja omistusliitteitä (+Px,
+*taloni*, *kirjamme*) ei pyydetä generaattorilta lainkaan, joten ne eivät voi päätyä sanastoon.
+**Se on siis valinta eikä puute.**
+
+**Seuraus, ja se on tämän kohdan painavin rivi.** Yllä kuitattu perustelu (*järkeviä rajoitteita
+että koko pysyy hallinnassa*) hyväksyy juuri sen rajauksen johon Tommi itse törmäsi, ja
+hyväksyntä annettiin sen jälkeen. Rajausperiaate kesti siis oman tekijänsä kokeman hylkäyksen,
+ei vain teoreettisen. Tämä erottaa sen kohdan 1 tuomariketjusta: pöydässä hylkäyksen teki
+yksimielisyys, jota vastaan saattoi väittää, tässä hylkäyksen teki sääntö jonka tekijä on
+kuitannut järkeväksi.
+
+**Sanaero jätetään näkyviin:** Tommi sanoo *liitesana*, dokumentti *liitepartikkeli*. Ne
+tarkoittavat samaa ilmiötä, mutta vastaus on kirjattu sillä sanalla jolla se annettiin.
+
+**Kirjoittajan päätelmä kaatui toisen kerran tässä dokumentissa** (edellinen: kolmen minuutin
+oletuksen periytyminen pöydän tiimalasista, kohta 23). Molemmissa lähtökohta oli tosi ja
+johtopäätös liian pitkä: dokumentti todella ennustaa rinnakkaismuoto-ongelman itse, mutta siitä
+ei seuraa että se olisi se johon pelaaja törmää ensin. Ennustettu vika ei ole sama asia kuin
+kohdattu vika.
 
 ## 38. Sanapeliappi oli puuhaa radion rinnalle
 
