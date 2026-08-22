@@ -802,8 +802,8 @@ liian pitkä johtopäätös, ja se toistui saman kohdan ympärillä toisen kerra
 **Avoin, ja se on yhden rivin kysymys:** onko sukulaisten kappale eri esine kuin Laiturin
 kappale. Sitä ei päätellä tässä.
 
-*Kysytty erässä 15, ks. kohta 42: sama tuote vahvistui, esineen identiteetti ei, ja kysymyksen
-paino laskee koska väitteet lepäävät tuotteessa.*
+*Kysytty erässä 15, ks. kohta 42: sama tuote vahvistui, esineen identiteetti ei. Sulkeutui
+erässä 16, ks. kohta 43: eri esine, samaa sarjaa.*
 
 **Seuraus, ja se on ajoitus.** Kuva otettiin kun Tommi mietti uutta projektia Jakon oheen, eli
 Itun idean ja toteutuksen väliin: Jakon ensimmäinen commit on 6.5.2026 ja Itun 17.6.2026. Se
@@ -829,7 +829,8 @@ paikaksi jossa peliä säilytettiin, ja se oli väärä luenta: rasia on tuottee
 jossa kaikki tarvittava on mukana. Kyse on siis samasta tuotteesta, ja kohdan 7 sääntökortti on
 sen rasian sisältöä.
 
-**Kohdan 41 avoin kapenee muttei sulkeudu.** Vastaus vahvistaa että kyse on samasta pelistä,
+**Kohdan 41 avoin kapenee muttei sulkeudu.** *(Sulkeutui erässä 16, ks. kohta 43: eri esine,
+samaa sarjaa.)* Vastaus vahvistaa että kyse on samasta pelistä,
 muttei sano onko sukulaisten kappale sama esine kuin Laiturin kappale. Kysymyksen paino laskee
 silti, koska dokumentin väitteet lepäävät tuotteessa eivätkä yksittäisessä kappaleessa: kohdan 7
 sääntökortti on sama kortti riippumatta siitä kenen rasiasta se on kuvattu.
@@ -844,3 +845,36 @@ lautapeli sopisi. Peli oli
 suunniteltu liikkumaan ja mahtumaan pieneen tilaan, ja Itu on saman ominaisuuden toinen muoto:
 puhelin on sekin alusta joka kulkee mukana. Yhtäläisyys ei ole suunniteltu vaan havaittu, eikä
 siitä seuraa mitään sovellukseen.
+
+
+## 43. Kuvattu kappale on eri esine mutta samaa sarjaa, ja kuva otettiin konkretisoimaan lähtökohtaa
+
+Tommi 22.8.2026 (erä 16), kohdan 41 avoimeen:
+
+> *sääntökortti ei ollut fyysisesti sama esine, mutta samaa sarjaa, otin kuvan
+> konkretisoidakseni lähtökohtaa*
+
+**Kohtien 41 ja 42 avoin sulkeutuu, ja se sulkeutuu kieltävästi.** Sukulaisten kappale on eri
+esine kuin Laiturin kappale. Kyse on samasta tuotteesta ja samasta painoksesta, joten kohdan 7
+sääntökortin sisältö on sama teksti jota Laiturilla luettiin, mutta esineen jatkumoa Laiturilta
+Tommille ei ole. Kohdan 8 luenta *sama esine* on nyt lopullisesti kumottu, ja voimaan jää
+*samaa sarjaa*.
+
+**Seuraus dokumentin todistusarvoon, ja se on tarkoituksella rajattu:** kohta 7 on yhä
+asiakirjalähde säännöistä, koska säännöt ovat painettua tekstiä eivätkä yksilöllisiä. Se ei ole
+asiakirjalähde Laiturin kappaleesta eikä siitä miten sitä siellä käsiteltiin. Kohdan 9
+havainto (Laiturilla pelattiin virallisilla säännöillä) lepää Tommin vastauksessa eikä tässä
+kortissa, ja se on hyvä että ne ovat eri lähteitä.
+
+**Kuvan tarkoitus oli suunnittelu eikä dokumentointi.** *Konkretisoidakseni lähtökohtaa*
+tarkoittaa että kuva otettiin projektia harkittaessa (kohta 41) sitä varten että lähtökohta
+olisi käsin kosketeltava, ei sitä varten että se dokumentoitaisiin jälkipolville. Kuva päätyi
+tähän dokumenttiin noin kolme kuukautta myöhemmin sivutuotteena (kuva keväältä 2026, haastattelu
+20.8.2026).
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** tämä vahvistaa kohdan 41
+havainnon kahden pelin yhteisestä liikkeestä ja tarkentaa sen. Itussa haettiin esikuvan
+kappale käsiin ja Superjatsissa kaivettiin vuoden 2002 taulukko esiin
+(`Superjatsi/SUBSTANSSI.md` kohta 17), ja kummassakin teko oli sama: lähtökohta tehtiin
+konkreettiseksi ennen rakentamista. Sana on nyt Tommin eikä kirjoittajan, joten päätelmä on
+tältä osin varmemmalla pohjalla kuin kohdassa 41.
