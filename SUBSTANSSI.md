@@ -962,3 +962,44 @@ roolissa jotka osoittavat vastakkaisiin suuntiin. Kohta 7 kirjaa että Itun kirj
 suomalaisen Scrabblen arvot, eli pisteytys on lainaa. Tämä kohta sanoo että saman pelin
 kirjaimisto oli osa sitä mikä harmitti. Itu ottaa siis esikuviltaan sen mikä toimi ja korjaa
 sen mikä ei, eikä valinta kulje pelien vaan yksityiskohtien rajaa pitkin.
+
+
+## 46. Vetovoima oli aikarajoite ja ristikkomaisuus, ja sanaston ratkaisu kelpaa epäpuhtaana
+
+Tommi 22.8.2026 (erä 18), samassa yhteydessä kuin kohta 45:
+
+> *aikarajoite ja ristikkomainen pelaaminen veti puoleensa, itu ratkaisi sanaston mielestäni
+> hyvin, ei puhtaasti mutta hyvin*
+
+Vastauksessa on kaksi eri lajia: vetovoiman lähde ja arvio lopputuloksesta.
+
+**Ristikkomaisuus vahvistuu kolmannen kerran, aikarajoite on uusi.** Kohta 12 nimeää ristikon
+siksi mikä Words of Wondersissa piti otteessaan, ja kohta 10 kantaa saman läpi kaikkien
+nimettyjen sanapelien. Aikarajoitetta ei ole aiemmin nimetty vetovoimaksi, ja se muuttaa yhden
+luennan: esikuvan tiimalasi on kohdassa 7 kirjattu säännöksi jonka Itu korvasi kiinteällä
+aikarajalla, eli mekaniikan siirtona. Tämä sanoo että aikaraja ei ollut peritty rakenne vaan
+yksi kahdesta asiasta jotka vetivät puoleensa.
+
+**Seuraus:** kohta 36 saa syyn. Siellä kerrotaan että peliaika löytyi testaamalla ja että se on
+asetus eikä vakio, mikä on työtapa; tämä kertoo miksi juuri sitä lukua kannatti hakea
+testaamalla. Aikaraja ei ole Itussa rajoite jota siedetään vaan toinen kahdesta vetovoiman
+lähteestä, joten sen suuruus on pelin ydintä eikä sen reunaa. Tämä on kirjoittajan päätelmä
+eikä Tommin lause.
+
+**Sanaston arvio on lähteen toinen myönteinen arvio Itusta, ja se on varauksellinen.** Kohta 44
+sanoo että lopputulos ylitti odotukset, ja tämä lisää arvion siitä ratkaisusta joka on Itun
+kiistanalaisin: mitkä sanat kelpaavat. *Ei puhtaasti mutta hyvin* on tarkka kuvaus siitä mitä
+`SANASTO.md` itse sanoo linjastaan. Sen periaate on *kaikki aito taivutus sisään, produktiivinen
+liimaus ulos*, ja se on nimenomaan kompromissi: tuomari on generaattori eikä käsin kuratoitu
+lista, joten raja kulkee koneen tuottaman paradigman mukaan eikä ihmisen harkinnan.
+Vaihtoehdot ja niiden hinnat on kirjattu erikseen (`PERUSTELUT.md`).
+
+**Seuraus, ja se sitoo pöytään asti:** kohdat 1 ja 9 kertovat että Laiturilla taivutettu muoto
+kelpasi, vaikka kortti vaati sanakirjasta löytymistä, eli pöytä luki virallista sääntöä väljästi.
+`SANASTO.md` koneellisti juuri tuon tulkinnan. Tommin arvio koskee siis sitä, kuinka hyvin kone
+tavoittaa pöydän oman tulkinnan, ja vastaus on että hyvin muttei puhtaasti. Se on sama arvio
+jonka kohta 37 antaa toisesta suunnasta: sanakirjan hylkäys tuntui perustellulta silloinkin kun
+sana tuntui sanalta.
+
+**Rajaus:** vastaus ei nimeä missä epäpuhtaus on, eikä sitä kysytty. Se on kysyttävissä
+myöhemmin ja olisi suoraan hyödyllistä `SANASTO.md`:n kannalta, mutta arvaus ei kelpaa tähän.
