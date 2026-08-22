@@ -802,6 +802,9 @@ liian pitkä johtopäätös, ja se toistui saman kohdan ympärillä toisen kerra
 **Avoin, ja se on yhden rivin kysymys:** onko sukulaisten kappale eri esine kuin Laiturin
 kappale. Sitä ei päätellä tässä.
 
+*Kysytty erässä 15, ks. kohta 42: sama tuote vahvistui, esineen identiteetti ei, ja kysymyksen
+paino laskee koska väitteet lepäävät tuotteessa.*
+
 **Seuraus, ja se on ajoitus.** Kuva otettiin kun Tommi mietti uutta projektia Jakon oheen, eli
 Itun idean ja toteutuksen väliin: Jakon ensimmäinen commit on 6.5.2026 ja Itun 17.6.2026. Se
 selittää mitä kohdan 8 *vanha kuva* tarkoitti: vanha suhteessa haastatteluun elokuussa 2026, ei
@@ -812,3 +815,32 @@ liike kuin `Superjatsi/SUBSTANSSI.md` kohdassa 17, jossa vuoden 2002 taulukko ka
 ennen toteutusta. Kahden pelin kolmesta lähtökohta oli siis olemassa oleva esine eikä
 muistikuva, ja se on menetelmällinen yhtäläisyys eikä sattuma. Tämä on kirjoittajan päätelmä
 eikä Tommin lause.
+
+
+## 42. Pahvirasia on pelin oma matkapakkaus, ja siihen heitetään nopat
+
+Tommi 22.8.2026 (erä 15), kohdan 41 avoimeen:
+
+> *Sama peli sanamix, matkapeli eli pahvirasia tai laatikko jossa kaikki tarvittavat ja
+> pahvirasiaan voi heittää nopat*
+
+**Sana *pahvirasia* tarkoitti pelin omaa pakkausta eikä säilytyslaatikkoa.** Kohta 41 luki sen
+paikaksi jossa peliä säilytettiin, ja se oli väärä luenta: rasia on tuotteen oma matkapakkaus
+jossa kaikki tarvittava on mukana. Kyse on siis samasta tuotteesta, ja kohdan 7 sääntökortti on
+sen rasian sisältöä.
+
+**Kohdan 41 avoin kapenee muttei sulkeudu.** Vastaus vahvistaa että kyse on samasta pelistä,
+muttei sano onko sukulaisten kappale sama esine kuin Laiturin kappale. Kysymyksen paino laskee
+silti, koska dokumentin väitteet lepäävät tuotteessa eivätkä yksittäisessä kappaleessa: kohdan 7
+sääntökortti on sama kortti riippumatta siitä kenen rasiasta se on kuvattu.
+
+**Uusi tieto, jota ei kysytty: rasia on myös heittoalusta.** Nopat heitetään rasiaan, joten
+peliin ei kuulu erillistä alustaa eikä pöytää ole pakko olla. Se tekee matkapelistä matkapelin
+käytännössä eikä vain pakkauksena.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** matkapelimuoto sopii Laiturin
+yhteisen puolen tunnin peliaikaan (`Jako-pelini/SUBSTANSSI.md` kohdat 25 ja 26) paremmin kuin
+lautapeli sopisi. Peli oli
+suunniteltu liikkumaan ja mahtumaan pieneen tilaan, ja Itu on saman ominaisuuden toinen muoto:
+puhelin on sekin alusta joka kulkee mukana. Yhtäläisyys ei ole suunniteltu vaan havaittu, eikä
+siitä seuraa mitään sovellukseen.
