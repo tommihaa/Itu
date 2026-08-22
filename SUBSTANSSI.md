@@ -913,7 +913,8 @@ ennen kuin repo oli olemassa, mikä sopii sanaan *ilmeni*: ongelma tuli vastaan 
 suunnittelupöydässä.
 
 **Avoin, ja se on yhden rivin kysymys:** oliko epäideaali lähtökohta esikuvan omat nopat vai
-Itun ensimmäinen oma yritys. Vastaus ei sano kumpaa, eikä sitä päätellä. Edellinen olisi
+Itun ensimmäinen oma yritys. *(Sulkeutui erässä 18, ks. kohta 45: esikuvan nopat, ja arvaus
+alla osui.)* Vastaus ei sano kumpaa, eikä sitä päätellä. Edellinen olisi
 odotettavaa, koska Tacticin peli on käännetty tuote ja sen nopat voivat olla yhteiset useille
 kielille, mutta se on arvaus eikä havainto.
 
@@ -922,3 +923,42 @@ rakenne toistuu Itun kohdalla. Kohta 5 sanoo ettei suomenkielistä sanapeliappia
 että englanninkieliset apit palvelivat kielenoppimista, ja tämä että esikuvan kirjaimistokaan ei
 istunut suomeen sellaisenaan. Suomen kieli on siis kolmesti erikseen se kohta jossa valmis
 ratkaisu ei kelpaa, ja Itun sisältö on suurelta osin juuri sen kohdan täyttämistä.
+
+
+## 45. Epäideaali lähtökohta oli esikuvan nopat, ja haitta oli koettu myös Scrabblessa
+
+Tommi 22.8.2026 (erä 18), kohdan 44 avoimeen:
+
+> *epäideaali lähtökohta oli esikuvan omat nopat. minua sanamix- ja scrabble-peleissä haittasi
+> kirjaimet B ja C ja vokaalien puute*
+
+**Kohdan 44 avoin sulkeutuu:** epäideaali oli esikuvan kirjaimisto eikä Itun ensimmäinen oma
+yritys. Itu ei siis korjannut omaa virhettään vaan peri ongelman ja ratkaisi sen.
+
+**Uutta on se, että haitta on koettu kahdessa pelissä eikä yhdessä.** Sama kolmen asian ongelma
+(B, C ja vokaalien vähyys) vaivasi sekä Laiturin sanamixiä että Scrabblea, jotka ovat kohtien 3
+ja 6 mukaan eri peli, eri paikka ja eri seura. Kyse ei siis ole yhden tuotteen valmistusvirheestä
+vaan siitä mitä tapahtuu kun kansainväliselle kirjaimistolle rakennettu sanapeli pelataan
+suomeksi.
+
+**Tämä on dokumentin ensimmäinen kerta kun Itun suunnitteluratkaisu jäljittyy koettuun
+harmiin.** `ITU.md`:n lukittu noppaosio perustelee B:n ja C:n poisjätön sillä että ne esiintyvät
+suomessa vain lainasanoissa, eli kanoni antaa kielellisen perustelun. Vastaus antaa toisen ja
+aiemman: kirjaimet olivat pelatessa tiellä. Perustelut eivät ole ristiriidassa, ja järjestys on
+merkille pantava, koska kielellinen perustelu on kirjattu ja kokemus ei ollut.
+
+**Sama pätee vokaaleihin, ja siellä ratkaisu on kaksiosainen.** Vokaalien puute näkyy `ITU.md`:ssä
+kahtena eri asiana: tahkojakaumassa (37 vokaalitahkoa 78:sta) ja heiton uusintaehdossa (alle
+viisi vokaalia tai alle viisi konsonanttia arvotaan uudelleen). Edellinen nostaa vokaalien
+osuutta pysyvästi, jälkimmäinen estää huonon yksittäisen heiton. Esikuvan kortissa on vain
+jälkimmäisen heikompi muoto, alle kahden vokaalin uusinta.
+
+**Rajaus:** vastaus nimeää B:n ja C:n, ja `ITU.md` jättää pois myös F:n. Kolmatta kirjainta ei
+mainittu, eikä tästä päätellä haittasiko sekin. Kanonin oma perustelu (vain lainasanoissa)
+kattaa kaikki kolme.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** Scrabble on nyt Itussa kahdessa
+roolissa jotka osoittavat vastakkaisiin suuntiin. Kohta 7 kirjaa että Itun kirjainarvot ovat
+suomalaisen Scrabblen arvot, eli pisteytys on lainaa. Tämä kohta sanoo että saman pelin
+kirjaimisto oli osa sitä mikä harmitti. Itu ottaa siis esikuviltaan sen mikä toimi ja korjaa
+sen mikä ei, eikä valinta kulje pelien vaan yksityiskohtien rajaa pitkin.
