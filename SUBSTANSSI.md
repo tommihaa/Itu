@@ -878,3 +878,47 @@ kappale käsiin ja Superjatsissa kaivettiin vuoden 2002 taulukko esiin
 (`Superjatsi/SUBSTANSSI.md` kohta 17), ja kummassakin teko oli sama: lähtökohta tehtiin
 konkreettiseksi ennen rakentamista. Sana on nyt Tommin eikä kirjoittajan, joten päätelmä on
 tältä osin varmemmalla pohjalla kuin kohdassa 41.
+
+
+## 44. Kirjainvalikoiman ja suomen suhde ei ollut ideaali, ja lopputulos ylitti odotukset
+
+Tommi 22.8.2026 (erä 17), oma-aloitteisesti kysymysten ohi:
+
+> *onnistuimme odotuksiani paremmin kun ilmeni että suomenkielen ja aakkosvalikoiman, sekä
+> määrän suhteet ei olleet ideaaliset*
+
+Vastaus kertoo kolme asiaa. Ongelma **ilmeni** työn aikana eikä ollut lähtöoletus. Se koski
+kolmen asian suhdetta: suomen kieli, mitkä kirjaimet ovat mukana, ja kuinka monta kutakin. Ja
+lopputulos ylitti Tommin oman odotuksen, mikä on dokumentin ensimmäinen kerta kun lähde arvioi
+Itua paremmaksi kuin odotti.
+
+**Työ on tarkistettavissa kanonista, ja se on mittava.** `ITU.md`:n noppaosio on lukittu ja se
+kuvaa täysin uudelleen suunnitellun kirjainvalikoiman: 78 tahkoa jakautuen 37 vokaaliin, 40
+konsonanttiin ja yhteen jokeriin, ilman B-, C- ja F-kirjaimia koska ne esiintyvät suomessa vain
+lainasanoissa. Tahkomäärät on painotettu erikseen kirjaimittain (A 8, I 7, E 6, ... P 1, D 1,
+G 1), saman nopan kirjaimet eivät voi esiintyä samassa heitossa, ja heitto arvotaan uudelleen
+jos vokaaleja tai konsonantteja on alle viisi. Nämä ovat kaikki vastauksen kolmen suhteen
+ratkaisuja: mitkä kirjaimet, kuinka monta, ja mikä yhdistelmä kelpaa suomeksi.
+
+**Esikuva ratkaisi saman asian yhdellä säännöllä, ja se on ero jonka kohta 7 kirjasi mutta
+jonka syytä se ei tiennyt.** Tacticin sääntökortissa on vain yksi ehto: jos heitossa on
+vähemmän kuin kaksi vokaalia, heitto uusitaan. Itussa raja on viisi vokaalia **ja** viisi
+konsonanttia, eli sama mekanismi tiukennettuna molempiin suuntiin. Kohta 7 luetteli tämän Itun
+omaksi lisäykseksi; tässä kerrotaan miksi lisäys oli tarpeen.
+
+**Löydös on päivättävissä ja se edeltää repoa.** `ITU.md` kirjaa G-kirjaimen lisäyksen
+14.6.2026 perusteluna nk-ng-astevaihtelu ja sen tuottamat tuhannet natiivit muodot, ja
+`SanaMix`-repon ensimmäinen commit on 17.6.2026. Kirjainvalikoiman viilaus oli siis käynnissä
+ennen kuin repo oli olemassa, mikä sopii sanaan *ilmeni*: ongelma tuli vastaan kokeillessa eikä
+suunnittelupöydässä.
+
+**Avoin, ja se on yhden rivin kysymys:** oliko epäideaali lähtökohta esikuvan omat nopat vai
+Itun ensimmäinen oma yritys. Vastaus ei sano kumpaa, eikä sitä päätellä. Edellinen olisi
+odotettavaa, koska Tacticin peli on käännetty tuote ja sen nopat voivat olla yhteiset useille
+kielille, mutta se on arvaus eikä havainto.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** tämä on kolmas kerta kun sama
+rakenne toistuu Itun kohdalla. Kohta 5 sanoo ettei suomenkielistä sanapeliappia ollut, kohta 40
+että englanninkieliset apit palvelivat kielenoppimista, ja tämä että esikuvan kirjaimistokaan ei
+istunut suomeen sellaisenaan. Suomen kieli on siis kolmesti erikseen se kohta jossa valmis
+ratkaisu ei kelpaa, ja Itun sisältö on suurelta osin juuri sen kohdan täyttämistä.
