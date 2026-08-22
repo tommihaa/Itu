@@ -1069,3 +1069,31 @@ kokonaisuudessaan myönteinen arvio, jossa varaus on nimetty eikä epämääräi
 sanakirjan hylkäys tuntui perustellulta silloinkin kun sana tuntui sanalta, kohta 46 että
 ratkaisu on hyvä muttei puhdas, ja tämä nimeää missä epäpuhtaus asuu. Kaikki kolme kuvaavat
 samaa rajaa pelaajan puolelta, ja `PERUSTELUT.md` kuvaa sen rakentajan puolelta.
+
+
+## 49. D oli pohdintalistalla ja läpäisi ennen G:tä
+
+Tommi 22.8.2026 (erä 20), täydentäen kohtaa 47:
+
+> *myös d oli kirjainten pohdintalistalla, mutta läpäisi jopa ennen g-kirjainta*
+
+**Kirjainjana saa viidennen nimen ja aikajärjestyksen.** Pohdintalistalla olivat siis ainakin
+B, C, F, G ja D. B ja C jäivät ulos, F jäi ulos lievempänä tapauksena, D läpäisi ensin ja G
+myöhemmin. `ITU.md` kirjaa lopputuloksen mutta ei kumpaakaan välivaihetta: D ja G ovat siellä
+molemmat mukana yhden tahkon painolla (D nopalla 13, G nopalla 8), eikä mikään rivi kerro että
+kummastakin olisi käyty erillinen keskustelu.
+
+**Seuraus:** kirjainvalinta oli menettely eikä yksi päätös. Kohta 44 sanoo että ongelma *ilmeni*
+työn aikana, ja tämä näyttää miltä ilmeneminen näytti käytännössä: lista jota käytiin läpi
+kirjain kerrallaan, ja jokainen tapaus ratkaistiin erikseen omalla perusteellaan. Se on sama
+työtapa jonka kohta 97 `Jako-pelini/SUBSTANSSI.md`:ssä kuvaa Kasinosta (*vei aikaa ottaa tarkasti
+selvää säännöistä ja tehdä valintoja*), eli tekijän sama ote kahdessa eri projektissa.
+
+**Miksi D läpäisi ensin, on kirjoittajan luenta eikä Tommin lause.** Vastaus kertoo
+järjestyksen muttei perustetta. Suomessa d on t:n heikko aste (*katu → kadun*, *pöytä →
+pöydän*), joten sen poisjättö katkaisisi astevaihtelun suurelta sanajoukolta. Se olisi sama
+perustelun laji kuin G:llä (nk-ng) mutta laajempi, mikä sopisi siihen että D läpäisi
+aikaisemmin ja helpommin. Luenta saa kaatua, koska sitä ei kysytty.
+
+**Rajaus:** ei tiedetä oliko pohdintalistalla muita kirjaimia kuin nämä viisi, eikä sitä
+kysytty.
