@@ -111,6 +111,9 @@ ettei suomenkielisiä ollut tarjolla, vai muusta syystä:
 
 Kohdan 3 avoin kysymys sulkeutuu: aukon syy oli tarjonta eikä valinta.
 
+*Toinen syy kirjattiin erässä 14, ks. kohta 40: apit palvelivat samalla kieliopintoja, eikä se
+kumoa tätä vaan vastaa eri kysymykseen.*
+
 **Seuraus:** Itu ei täytä vain sen tekijän omaa aukkoa vaan markkinan: suomenkielistä
 sanapeliappia ei ollut sille pelaajalle joka niitä aktiivisesti etsi ja pelasi. Tämä on sama
 aukko joka on kirjattu muistiin toisesta suunnasta (Bionic Reading ei käänny agglutinoivaan
@@ -171,7 +174,9 @@ Miten kappale on päätynyt hänelle, ei ole kysytty.
 > *tuo on vanha kuva*
 
 Yliviivattu osa kaatui: kuvaa ei otettu tätä dokumenttia varten, eikä vastauksesta selviä
-onko esine Tommilla nyt. Voimaan jää että kuva esittää Laiturin kappaletta. Tämä on
+onko esine Tommilla nyt. ~~Voimaan jää että kuva esittää Laiturin kappaletta.~~ *(Myös tämä
+kaatui erässä 14, ks. kohta 41: kuva on sukulaisten kappaleesta, ja se onko se Laiturin
+kappale jää auki.)* Tämä on
 menetelmäosion nimeämä vikamuoto toteutuneena tässä dokumentissa ensimmäistä kertaa: tosi
 lähtökohta (kuva toimitettiin haastattelun aikana) ja liian pitkä johtopäätös (esine on
 ulottuvilla ja kuvattu nyt). Jätetään näkyviin kumottuna.
@@ -748,3 +753,62 @@ ensimmäinen mitattu vihje siitä että kokoelman pelit kilpailevat keskenään 
 **Projektiraja:** havainto koskee myös Jakoa, koska Ristiseiska on sen yhdeksästä pelistä yksi.
 Sitä ei kirjoitettu `Jako-pelini/SUBSTANSSI.md`:hen tässä erässä, koska projektirajan ylitys
 tehdään kuittauksella eikä oletuksella.
+
+
+## 40. Apit palvelivat kieliopintoja, ja se on toinen syy kohdan 5 rinnalla
+
+Tommi 22.8.2026 (erä 14), kysyttäessä miksi sanapeliapit olivat englanninkielisiä:
+
+> *sanakieliapit oli englanninkielisiä, koska opiskelin kieliä siihen aikaan, englannista
+> sanastoa toistoilla*
+
+(vastauksen *sanakieliapit* luettu tässä sanapeliapeiksi)
+
+**Kohta 5 ei kaadu, se saa rinnalleen toisen syyn.** Siellä kysyttiin oliko syy tarjonta, ja
+Tommi vastasi *kyllä*. Tässä hän kertoo mitä apit hänelle olivat: opiskeluväline. Englanti oli
+opintojen kohde, ja sanapeli toisti sanastoa. Kaksi syytä voivat olla yhtä aikaa tosia, koska
+ne vastaavat eri kysymykseen: toinen kertoo miksi suomenkielistä ei pelattu, toinen miksi
+englanninkielistä pelattiin.
+
+**Seuraus, ja se muuttaa kohdan 5 johtopäätöksen painoa:** siellä pääteltiin että Itu täyttää
+markkinan aukon jonka pelaaja oli itse kohdannut. Väite pitää yhä, mutta sen rinnalle tulee
+havainto joka osoittaa toiseen suuntaan: osa englanninkielisten appien vetovoimasta ei ollut
+sanapeli vaan kielenoppiminen, eikä sitä tarvetta suomenkielinen appi täytä. Itu ei siis ole
+niiden appien suomenkielinen vastine kaikilta osin, vaan vastine siltä osin kuin ne olivat
+sanapelejä.
+
+**Seuraus:** tämä on toinen kerta kun sanapeli ja oppiminen kytkeytyvät toisiinsa lähteen omassa
+vastauksessa. Kohta 26 avaa mitä *opeteltaviksi* teesissä tarkoittaa, ja siellä kohde on
+pelikulttuuri; tässä kohde on kieli. Kytkös on olemassa molempiin suuntiin, eikä siitä
+suunnitella tässä mitään.
+
+**Rajaus:** vastaus sanoo *kieliä* monikossa muttei mitä muita kuin englanti. Sitä ei kysytty,
+eikä opintojen ajankohtaa nimetä tarkemmin kuin *siihen aikaan*.
+
+## 41. Sääntökortin kuva on sukulaisten rasiasta, ja se otettiin uutta projektia harkittaessa
+
+Tommi 22.8.2026 (erä 14), kysyttäessä miten kohdan 7 sääntökortin kuva päätyi hänelle:
+
+> *Laiturin sääntökortilla jos tarkoitat sanamix-säännöistä otettua kuvaa, niin otin sen
+> sukulaisten pahvirasiasta kun mietin uutta projektia Jako oheen*
+
+**Kohdan 8 kysymys sulkeutuu, ja kohdan 8 luenta saa toisen korjauksen.** Kuva on otettu
+sukulaisten kappaleesta. Kohta 8 kirjaa Tommin vastauksen *sama* kysymykseen oliko kuvattu
+kappale sama peli jota Laiturilla pelattiin, ja siitä luettiin että kyse on samasta esineestä.
+Se luenta ei kestä tätä vastausta: sama tuote se on, sama esine vain jos sukulaisten rasia on
+Laiturin rasia. Vikamuoto on sama kuin kohdassa 8 kerran jo mitattu, eli tosi lähtökohta ja
+liian pitkä johtopäätös, ja se toistui saman kohdan ympärillä toisen kerran.
+
+**Avoin, ja se on yhden rivin kysymys:** onko sukulaisten kappale eri esine kuin Laiturin
+kappale. Sitä ei päätellä tässä.
+
+**Seuraus, ja se on ajoitus.** Kuva otettiin kun Tommi mietti uutta projektia Jakon oheen, eli
+Itun idean ja toteutuksen väliin: Jakon ensimmäinen commit on 6.5.2026 ja Itun 17.6.2026. Se
+selittää mitä kohdan 8 *vanha kuva* tarkoitti: vanha suhteessa haastatteluun elokuussa 2026, ei
+Laiturin aikainen.
+
+**Seuraus:** esikuva haettiin fyysisesti käsiin ennen kuin peliä alettiin rakentaa. Se on sama
+liike kuin `Superjatsi/SUBSTANSSI.md` kohdassa 17, jossa vuoden 2002 taulukko kaivettiin esiin
+ennen toteutusta. Kahden pelin kolmesta lähtökohta oli siis olemassa oleva esine eikä
+muistikuva, ja se on menetelmällinen yhtäläisyys eikä sattuma. Tämä on kirjoittajan päätelmä
+eikä Tommin lause.
