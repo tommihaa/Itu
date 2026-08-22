@@ -954,7 +954,8 @@ osuutta pysyvästi, jälkimmäinen estää huonon yksittäisen heiton. Esikuvan 
 jälkimmäisen heikompi muoto, alle kahden vokaalin uusinta.
 
 **Rajaus:** vastaus nimeää B:n ja C:n, ja `ITU.md` jättää pois myös F:n. Kolmatta kirjainta ei
-mainittu, eikä tästä päätellä haittasiko sekin. Kanonin oma perustelu (vain lainasanoissa)
+mainittu, eikä tästä päätellä haittasiko sekin. *(Sulkeutui erässä 19, ks. kohta 47: F haittasi
+lievemmin, ja neljäs kirjain G palautettiin ng-äänteen perusteella.)* Kanonin oma perustelu (vain lainasanoissa)
 kattaa kaikki kolme.
 
 **Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** Scrabble on nyt Itussa kahdessa
@@ -1001,5 +1002,70 @@ tavoittaa pöydän oman tulkinnan, ja vastaus on että hyvin muttei puhtaasti. S
 jonka kohta 37 antaa toisesta suunnasta: sanakirjan hylkäys tuntui perustellulta silloinkin kun
 sana tuntui sanalta.
 
-**Rajaus:** vastaus ei nimeä missä epäpuhtaus on, eikä sitä kysytty. Se on kysyttävissä
-myöhemmin ja olisi suoraan hyödyllistä `SANASTO.md`:n kannalta, mutta arvaus ei kelpaa tähän.
+**Rajaus:** vastaus ei nimeä missä epäpuhtaus on, eikä sitä kysytty. *(Kysytty ja vastattu
+erässä 19, ks. kohta 48: omistusliitteet ja muut sanastoa paisuttavat affiksit, eli sama kohta
+jonka `PERUSTELUT.md` kirjaa hinnakseen.)*
+
+
+## 47. Kirjainten haitallisuus on liukuva, ja G palautettiin nimetyn äänteen perusteella
+
+Tommi 22.8.2026 (erä 19), kohdan 45 rajaukseen:
+
+> *f ei ollut yhtä paha kuin b ja c, myös g oli mutta ng-äänne puhui sen puolesta*
+
+**Kohdan 45 rajaus sulkeutuu, ja vastaus on jyrkempi kuin kysymys.** Kysyin haittasiko F, ja
+vastaus kertoo että kirjaimet eivät ole kahdessa luokassa vaan janalla: B ja C pahimpina, F
+lievempänä, ja G neljäntenä joka oli samassa joukossa mutta palautettiin.
+
+**Kanoni kirjaa saman päätöksen mutta ei janaa.** `ITU.md` sanoo *Ei B/C/F-kirjaimia (vain
+lainasanoissa)* yhtenä tasaisena kieltona, ja erikseen *G lisätty 14.6.2026 (T6→T5)*
+perusteluna nk-ng-astevaihtelun tuottamat tuhannet natiivit muodot. Kaksi asiaa täsmää
+vastaukseen ja yksi puuttuu siitä: G oli tosiaan ensin ulkona ja palautettiin, ja peruste oli
+ng, mutta kanonista ei näe että B, C ja F olisivat eri vahvuisia tapauksia. Ne ovat kanonissa
+yksi rivi ja lähteen mielessä kolme eri astetta.
+
+**Seuraus, ja se koskee tulevaa harkintaa eikä nykytilaa:** jos kirjaimistoa joskus avataan
+uudelleen, F on lähin ehdokas palata ja G on ennakkotapaus siitä millä perusteella palataan.
+Peruste ei ollut yleinen yleisyys vaan **yksi nimetty suomen ilmiö** joka tuottaa natiiveja
+muotoja tuhansittain. Sama kynnys F:lle tarkoittaisi että sille pitäisi osoittaa vastaava ilmiö,
+eikä sellaista ole tässä nimetty. Tätä ei ehdoteta tehtäväksi, ja se on kirjattu jotta
+kynnys on tiedossa jos kysymys nousee.
+
+**Seuraus:** kohdan 45 havainto tarkentuu. Haitta ei ollut *vieraat kirjaimet* yleisesti vaan
+kirjainkohtainen, ja se on pelaajan kokemus eikä kielitieteellinen luokittelu. Kanonin oma
+perustelu (vain lainasanoissa) on jälkikäteinen ja pätevä muttei sama asia kuin se mikä
+pelatessa harmitti.
+
+## 48. Epäpuhtaus on nimetty, ja se on sama jonka kanoni kirjaa hinnakseen
+
+Tommi 22.8.2026 (erä 19), kohdan 46 rajaukseen siitä missä sanaston epäpuhtaus on:
+
+> *epäpuhtaus on tiedossa, omistusliitteet ja muut mitkä paisuttaa sanastoa*
+
+**Kohdan 46 rajaus sulkeutuu, ja vastaus osuu kanonin omaan hintalappuun.** `SANASTO.md` kohta 4
+luettelee sen mitä ei koskaan hyväksytä, ja siellä ovat omistusliitteet (+Px: *taloni,
+kirjamme*), liitepartikkelit (+Foc: *talokin, menisitköhän*) ja vapaat yhdyssanat (+Cmp).
+`PERUSTELUT.md` kohta 5 antaa syyn ja nimeää hinnan omalla rivillään: *Pelaaja ei voi pelata
+aidolta tuntuvaa muotoa kuten "talokin". Kompromissi rajan selkeyden hyväksi.*
+
+**Tämä on menetelmän kannalta merkille pantava kohta, ja se on tässä koko kirjauksen syy.**
+Lähde nimesi epäpuhtauden itsenäisesti, kysyttäessä vain *missä se on*, ilman että kanonin
+sanamuotoa näytettiin hänelle. Vastaus osui samaan kohtaan jonka dokumentti on kirjannut
+hinnakseen. Suunnitteludokumentin rehellisyys on siis todennettu ulkopuolelta: se ei kaunistele
+rajaansa eikä lähde koe rajaa toisin kuin dokumentti sen kuvaa.
+
+**Miksi tämä on epäpuhtaus eikä vika.** `SANASTO.md`:n periaate on *kaikki aito taivutus sisään,
+produktiivinen liimaus ulos*, ja omistusliite on suomessa aitoa taivutusta. Puhdas sovellus
+ottaisi sen mukaan. Se jätettiin ulos koska se ja liitepartikkelit voi liimata lähes mihin
+tahansa sanaan (*talo → talokin → talonikin → talossammekohan*), jolloin lähes kaikki kelpaisi
+ja pelistä katoaisi mielekkyys. Ristiriita on siis periaatteen ja pelattavuuden välillä, ja se
+ratkaistiin pelattavuuden hyväksi tietoisesti.
+
+**Sana *tiedossa* on tässä olennainen.** Vastaus ei ole valitus vaan kuittaus: epäpuhtaus
+tunnetaan ja hyväksytään, eikä siitä seuraa työtä. Kohdan 46 arvio *hyvin, ei puhtaasti* on siis
+kokonaisuudessaan myönteinen arvio, jossa varaus on nimetty eikä epämääräinen.
+
+**Seuraus:** tämä sitoo yhteen kolme kohtaa jotka on kirjattu eri aikaan. Kohta 37 kertoo että
+sanakirjan hylkäys tuntui perustellulta silloinkin kun sana tuntui sanalta, kohta 46 että
+ratkaisu on hyvä muttei puhdas, ja tämä nimeää missä epäpuhtaus asuu. Kaikki kolme kuvaavat
+samaa rajaa pelaajan puolelta, ja `PERUSTELUT.md` kuvaa sen rakentajan puolelta.
