@@ -1,0 +1,17 @@
+{
+  "heittoja": 150,
+  "pohjasanasto": 2314988,
+  "sanoja_per_heitto_nyt": {
+    "mediaani": 1248,
+    "keskiarvo": 2533.1,
+    "min": 94,
+    "max": 20688
+  },
+  "sanoja_per_heitto_affikseilla": {
+    "mediaani": 1871,
+    "keskiarvo": 4410.5,
+    "min": 114,
+    "max": 45462
+  },
+  "kerroin_mediaanista": 1.499
+}

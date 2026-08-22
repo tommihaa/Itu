@@ -14,3 +14,9 @@ build/genrun.err
 # Konekohtainen Claude Code -konfiguraatio (settings.json sisältäisi paikallisia polkuja)
 .claude/launch.json
 .claude/settings.json
+
+# Affiksimittauksen välitulokset (kohta 30): muotolistat ja ajolokit ovat
+# uudelleen tuotettavissa skripteillä; tulos-JSONit committoidaan.
+build/mittaus/forms_*.txt
+build/mittaus/per_lemma.json
+build/mittaus_*.log
