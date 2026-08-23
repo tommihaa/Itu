@@ -297,6 +297,8 @@ sanottu.
 valittu ennen nimeä: peli jossa sanat versovat kirjaimista ristikoksi. Kumpikin on lisäksi
 itse pelissä muodostettavissa oleva lyhyt suomen sana, toisin kuin työnimet SanaMix ja
 *13 kirjainta sanoiksi*. Tämä on kirjoittajan luenta eikä Tommin perustelu, ja se saa kaatua.
+*(Luennan kuvasto-osa vahvistui erässä 22, ks. kohta 53: muita kuin kasvusanoja ei ollut
+ehdolla.)*
 
 ## 17. Itua ovat pelanneet kaksi lähisukulaista, ja linkit on lähetetty Laiturin ohjaajille
 
@@ -545,7 +547,8 @@ Tommi 20.8.2026 (erä 12), kysyttäessä pelaako hän niitä yhä:
 
 > *jäi pois*
 
-Milloin ja miksi, ei kysytty, joten yhteyttä Itun valmistumiseen ei väitetä.
+Milloin ja miksi, ei kysytty, joten yhteyttä Itun valmistumiseen ei väitetä. *(Ajankohdalle
+saatiin haarukka erässä 22, ks. kohta 54, päätelmänä eikä vastauksena.)*
 
 ## 33. Scrabblea pelataan yhä
 
@@ -783,7 +786,9 @@ pelikulttuuri; tässä kohde on kieli. Kytkös on olemassa molempiin suuntiin, e
 suunnitella tässä mitään.
 
 **Rajaus:** vastaus sanoo *kieliä* monikossa muttei mitä muita kuin englanti. Sitä ei kysytty,
-eikä opintojen ajankohtaa nimetä tarkemmin kuin *siihen aikaan*.
+eikä opintojen ajankohtaa nimetä tarkemmin kuin *siihen aikaan*. *(Sulkeutui erässä 22, ks.
+kohta 54: Duolingo joulukuusta 2020 noin lokakuuhun 2023, kielinä espanja, norja, venäjä ja
+ukraina.)*
 
 ## 41. Sääntökortin kuva on sukulaisten rasiasta, ja se otettiin uutta projektia harkittaessa
 
@@ -1098,6 +1103,63 @@ luenta vahvistui, ks. kohta 51: astevaihtelu riitti D:lle.)*
 
 **Rajaus:** ei tiedetä oliko pohdintalistalla muita kirjaimia kuin nämä viisi, eikä sitä
 kysytty. *(Sulkeutui erässä 21, ks. kohta 50: listalla olivat myös Q, W, X, Z ja Å.)*
+
+## 53. Nimiehdokkaat olivat kaikki kasvusanoja
+
+Tommi 23.8.2026 (erä 22), kysyttäessä oliko nimiehdokkaiden joukossa muita kuin kasvuun
+liittyviä sanoja:
+
+> *ei*
+
+**Kohdan 16 luenta vahvistui:** kasvun kuvasto oli valittu ennen nimeä, koska koko
+ehdokasjoukko haettiin sen sisältä. Nimikilpailu (Itu vastaan Verso, ytimekkyys ratkaisi,
+kohta 19) käytiin siis kuvaston sisällä eikä kuvastojen välillä.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** nimeäminen eteni kahdessa
+kerroksessa, ensin mielikuva (sanat versovat kirjaimista) ja vasta sitten sana sille. Se on
+sama järjestys jolla peli itse syntyi: ensin pöydän kokemus, sitten toteutus. Tämä saa
+kaatua, koska kerroksia ei kysytty erikseen.
+
+**Menetelmähuomio:** toinen kysymällä vahvistunut luenta peräkkäisissä erissä (edellinen
+kohta 51). Vahvistuneiden ja kaatuneiden luentojen tase on nyt kaksi ja neljä.
+
+## 54. Kieliopintojen väline oli Duolingo, kausi joulukuusta 2020 noin lokakuuhun 2023, ja kieliä oli englannin lisäksi neljä
+
+Tommi 23.8.2026 (erä 22), kohdan 40 rajaukseen:
+
+> *duolingossa olin joulukuusta 2020 noin lokakuuhun 2023. espanja, norja, venäjä, ukraina*
+
+**Kohdan 40 rajaus sulkeutuu ja tarkentuu välineeksi asti.** Kieliopinnot olivat
+Duolingo-kausi, alku joulukuussa 2020 ja loppu noin lokakuussa 2023 (*noin* on vastauksen
+oma varaus), ja kielet englannin lisäksi espanja, norja, venäjä ja ukraina.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** kohdan 40 kytkös sanapelien
+ja kielenoppimisen välillä saa aikahaarukan. Sanapeliapit palvelivat kieliopintoja *siihen
+aikaan*, joten appikausi osuu ainakin osittain vuosien 2020 ja 2023 väliin, ja kohdan 32
+*jäi pois* asettuisi luontevasti opintokauden päättymisen yhteyteen. Tätä ei kysytty, ja
+päätelmä saa kaatua: sanapeliappeja on voitu pelata myös kauden ulkopuolella.
+
+**Seuraus:** viiden kielen lista antaa kohdan 40 havainnolle mittakaavan. Kielenoppiminen ei
+ollut englannin sivujuonne vaan oma monivuotinen harrastus, ja englanninkieliset sanapeliapit
+olivat sen yksi väline muiden joukossa. Itu ei kilpaile tämän tarpeen kanssa, kuten kohta 40
+jo totesi, ja tarve itsekin on tauolla jos kausi päättyi 2023.
+
+## 55. Kirjainarvot otettiin verkosta
+
+Tommi 23.8.2026 (erä 22), kysyttäessä otettiinko suomalaisen Scrabblen kirjainarvot omasta
+pelilaatikosta vai verkosta:
+
+> *verkosta*
+
+**Kohdan 3 seuraus tarkentuu eikä kaadu.** Pisteytys lainaa yhä pelistä jota Tommi on itse
+pelannut lautapelinä (kohta 3), mutta lainan käytännön lähde oli verkko eikä hyllyssä oleva
+laatikko. Pelikokemus valitsi mitä lainataan, verkko antoi tarkat luvut.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** tämä täydentää kohtien 41 ja
+43 kuvaa lähtökohtien konkretisoinnista. Esikuvan sääntökortti haettiin fyysisenä käsiin,
+mutta kirjainarvoihin riitti verkkolähde: konkreettinen esine haettiin siitä mistä peli on
+peräisin, ja pelkkä lukutaulukko sieltä mistä sen sai halvimmalla. Ero on työtavan eikä
+periaatteen, ja se saa kaatua.
 
 ## 50. Pohdintalistalla olivat myös Q, W, X, Z ja Å, eli lista kattoi vieraan kirjaimiston kokonaan
 
