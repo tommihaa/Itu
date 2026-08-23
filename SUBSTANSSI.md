@@ -1473,3 +1473,73 @@ saa täsmällisemmän muodon: standardi säilyi siellä missä perinnettä ei eh
 joukosta yksi, sitä pelattiin enintään noin viidellä ja harvoin, ja silti juuri se kantoi
 sovellukseksi asti. Tämä vahvistaa kohdan 21 päätelmää: pelin arvo ei näkynyt käyttötaajuudessa
 eikä hankintahinnassa vaan pöydässä silloin kun sitä pelattiin.
+
+## 67. Ennätysluvut pelattiin kertoimilla ja oletuskestolla
+
+Tommi 23.8.2026 (erä 28), kysyttäessä erikseen millä pistemoodilla ja millä kierroksen
+kestolla kohdan 64 luvut 179 ja 167 pelattiin:
+
+> *kertoimilla*
+
+> *3 minuuttia*
+
+**Kohdan 64 rajaus sulkeutuu asetusten osalta.** Luvut kuuluvat siis yhdistelmän
+(Scrabble-kertoimet × 3 min) omalle listalle. Listan pituutta ei kysytty, koska se on
+kanonissa: `src/ui/game.ts` tallentaa top-10 erikseen kullekin yhdistelmälle (pistemoodi ×
+kesto), eli 179 on kymmenen tuloksen listan kärki eikä kaikkien pelien kärki.
+
+**Kohta 62 vahvistuu teoista.** Preferenssi kertoimiin ei jäänyt lausumaksi: molemmat tiedossa
+olevat luvut on pelattu sillä kerroksella, ja tunnetut pelit ovat siis kaikki oletuksen
+ulkopuolelta.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** kesto on se kohta jossa tekijä
+pelaa oletuksella. Kohta 36 kertoo että 3 minuuttia löytyi testaamalla, ja tässä näkyy ettei
+kestoa myöskään omassa pelaamisessa siirretty siitä mihin testaus sen jätti. Pistemoodissa
+tekijä poikkeaa oletuksesta ja kestossa ei, eli oletukset eivät ole yhtä väljiä keskenään:
+kertoimet ovat maku, kesto on pelin mitta. Tämä saa kaatua, koska kestovalinnan perustetta ei
+kysytty.
+
+## 68. Apeista Ituun siirtyneet piirteet jäävät toistaiseksi vastaamatta
+
+Tommi 23.8.2026 (erä 28), kysyttäessä onko Idussa jokin piirre joka on peräisin
+englanninkielisistä apeista eikä Laiturin sanamixistä:
+
+> *en tiedä, onko keinoa louhia 3-6 vuotta sitten pelattuja appeja? google play olisi mistä
+> aloittaisin*
+
+**Kohta jää auki, ja se merkitään vastaamattomaksi eikä täytetä päättelemällä.** Kohdat 10, 12
+ja 40 kertovat mitä apit olivat (kieliopintojen väline, Words of Wonders jäi mieleen,
+ristikkomaisuus veti), mutta siitä siirtyikö jokin niistä Ituun asti ei ole tietoa. Vastaus
+*en tiedä* koskee muistia, ei asiaa.
+
+**Este on nimetty, ja se on muisti eikä haluttomuus.** Kysymys palautui kysymyksenä: apit
+pelattiin noin 2020-2023, eikä niiden nimiä ole tallessa muualla kuin Google Playn omissa
+tiedoissa. Tommi nimesi itse aloituspaikan.
+
+**Rajaus:** listan noutaminen on Tommin oma toimi hänen omalla tilillään, eikä sitä ole tehty
+tätä kirjattaessa. Jos lista syntyy, se ei vielä vastaa kysymykseen vaan palauttaa muistin
+kysyttäväksi uudelleen: nimi kerrallaan, siirtyikö siitä jotain.
+
+## 69. Pahviversiossa peli pelataan pöydässä ja sovellus lukee tuloksen valokuvasta
+
+Tommi 23.8.2026 (erä 28), kysyttäessä onko kohdan 34 pahviversio yhä elävä idea:
+
+> *peli on liveä, valokuva ja aika sovellukselle tiedoksi ja sieltä tulos*
+
+**Idea on kohtaa 34 tarkempi, ja tarkennus on työnjako.** Pahviversio ei ole sovelluksen
+korvike eikä sovellus pahviversion korvike: peli pelataan pöydässä nopilla ja kynällä, ja
+sovellus saa kaksi syötettä, valokuvan ja ajan, ja palauttaa tuloksen. Kohta 34 sanoi että
+sanat tarkistettaisiin Itun sanastosta; tässä tarkistus laajenee koko pisteytykseen ja
+syötetavaksi tulee kuva.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** rooli on sama kuin
+Sanapoliisilla (kohta 63) mutta eri paikassa. Pöydästä puuttui aina tuomari (kohta 24: ei
+sanakirjaa), ja tämä idea antaisi pöydälle sen tuomarin ilman että pöytä muuttuu ruuduksi.
+Aikatiedon antaminen käsin sopii siihen että pöydässä aika oli tiimalasi (kohta 23) ja
+sovelluksessa asetus (kohta 36): sovellus ei mittaa aikaa vaan saa sen kerrottuna. Tämä saa
+kaatua.
+
+**Avoin, ja se on yhden rivin kysymys:** tarkoittiko *liveä* sitä että idea on yhä elossa, vai
+sitä että peli pelataan reaaliajassa pöydässä sovelluksen ulkopuolella? Luin sen
+jälkimmäiseksi, koska lause jatkuu mekanismin kuvauksena. Kohdan 34 kiinnostuksen aste
+(*vähän*) jää siis voimaan siihen asti kunnes tämä on kysytty.
