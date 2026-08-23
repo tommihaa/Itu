@@ -1176,7 +1176,8 @@ havainto kuin kohdan 18 *siitä tuli valmis yllättävän nopeasti*, nyt arvioit
 eikä vain todettuna. Ja kielioppi näkyviin tarkoittaa sitä kerrosta jonka kanoni tuntee
 sijamuotonäyttönä ja Opi-moodina: se ei ole pöydän perintöä vaan sovelluksen oma lisä, ja
 juuri se ylitti odotukset. Pisteytyksen ylitys on uusi tieto, eikä vastauksesta käy ilmi
-mikä siinä ylitti; sitä ei kysytty.
+mikä siinä ylitti; sitä ei kysytty. *(Kysytty erässä 24, ks. kohta 59: Scrabble-kertoimet ja
+aikabonus.)*
 
 **Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** tämä on kolmas kerta kun
 oppiminen kytkeytyy Ituun lähteen omissa vastauksissa (kohta 26: *opeteltaviksi*, kohta 40:
@@ -1227,10 +1228,64 @@ vaan saman luvan käyttökertoja.
 Muutosluvasta ei siis seurannut muutosvimmaa, ja jokeri on esimerkki punninnasta joka päätyi
 esikuvan kannalle pelattavuussyystä.
 
-**Sanan *jäi* luenta on auki, ja se kysytään eikä arvata.** Kanoni tuntee jokerimääräasetuksen
-1–3 oletuksena yksi (kohta 28), joten *se jäi* voi tarkoittaa kahta: monijokerisuus jäi pois
-oletuksesta mutta elää asetuksena, tai ajatus jäi sikseen ja asetus on eri alkuperää. Kohta
-täydennetään kun vastaus on saatu.
+**Sanan *jäi* luenta kysyttiin ja se sulkeutui erässä 24.** Tommi 23.8.2026:
+
+> *jäi pois oletuksesta, asetus tuli samasta ideasta ja en muistanut asetuksen olemassaoloa*
+
+Monijokerisuus jäi siis pois oletuksesta, ja asetus 1–3 syntyi samasta ideasta: punninta ei
+hylännyt ajatusta vaan siirsi sen pelaajan valinnaksi. Se on sama malli jolla kanoni kohtelee
+Scrabble-pistemoodia ja Opi-moodia: kerros joka on olemassa mutta oletuksena pois.
+
+**Vastauksen loppu on oma havaintonsa: tekijä ei muistanut asetuksen olemassaoloa.** Se sopii
+kohdan 13 kuvaan (Itua ei pelata nykyään, koetin oli kehitysaikainen) ja mittaa saman asian
+toisesta suunnasta: ilman jatkuvaa pelaamista myös tekijän oma muistikuva pelistä ohenee, ja
+kanoni ja koodi muistavat sen mitä ihminen ei. Tämä on juuri se tilanne jota varten
+substanssidokumentti kirjoitetaan.
+
+## 59. Pisteytyksessä ylittivät Scrabble-kertoimet ja aikabonus, eli omat kerrokset eivätkä peritty pohja
+
+Tommi 23.8.2026 (erä 24), kohdan 56 avoimeen siitä mikä pisteytyksessä ylitti odotukset:
+
+> *scrabble-kertoimet, aikabonus*
+
+**Kohdan 56 avoin sulkeutuu, ja molemmat nimetyt ovat Itun omia kerroksia.** Pisteytyksen
+pohja (kirjainarvot) on lainaa suomalaisesta Scrabblesta (kohdat 3 ja 55) ja pisteenlaskun
+runko esikuvan kortista (kohta 7), mutta ylittäjiksi nimetyt ovat kumpikin sitä mitä Itu
+lisäsi itse: Scrabble-pistemoodin kertoimet ruutuineen ja aikabonus kynnyksineen. Odotukset
+ylitti siis se osa jota ei voinut ennalta tietää toimivaksi, koska sitä ei oltu koeteltu
+missään pöydässä.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** kohta 57 ja tämä katsovat
+samaa mekanismia eri hetkinä. Aikabonus oli kehitysvaiheessa vinouman lähde (yhden sanan
+liian kivat pisteet) ja on valmiissa pelissä toinen kahdesta pisteytyksen ylittäjästä, eli
+korjattu mekanismi ei vain lakannut haittaamasta vaan nousi onnistumiseksi. Kynnys ei
+kesyttänyt bonusta vaan teki siitä hyvän.
+
+## 60. Kielioppi näkyviin syntyi omituisista sanoista, tekijälle itselleen opiksi, ja Kotus oli valmis linkkipaikka
+
+Tommi 23.8.2026 (erä 24), kysyttäessä oliko kieliopin näyttäminen mukana alusta asti vai
+syntyikö se vasta kun sanasto-FST oli käsissä:
+
+> *syntyi kun sanastossa oli omituisia sanoja vielä omituisemmin taivutettuina, minullekin
+> opiksi, ja kotus oli jo valmiiksi paikka mihin voi linkata*
+
+**Ominaisuus ei ollut suunnitelma vaan reaktio omaan sanastoon.** Kielioppi tuli näkyviin
+kolmen valmiiksi olemassa olevan asian summana: sanasto tuotti omituisia sanoja omituisissa
+taivutuksissa, ne herättivät tarpeen ymmärtää mitä ne ovat, ja Kotus oli jo linkattavissa.
+Sovelluksessa tämä näkyy sana-analyysinä ja sanakohtaisena linkkinä Kielitoimiston
+sanakirjaan (todennettu koodista: `src/ui/game.ts`).
+
+**Sana *minullekin* on tämän kohdan painavin.** Ensimmäinen oppija oli tekijä itse: oma
+sanasto ylitti oman kielitajun, ja ominaisuus rakennettiin ensin siihen tarpeeseen. Tämä
+täydentää kohdan 26 kaksi tasoa kolmanneksi: *opeteltaviksi* tarkoitti tekijän koetta ja
+ohjaajatonta pelaajaa, ja tässä tekijä on myös oppija eikä vain kokeen suorittaja.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** sama rakenne kuin kohdassa 44
+toistuu neljättä kertaa: jokin *ilmeni* työn aikana (kirjaimisto, sanaston omituisuus) ja
+ratkaisu rakennettiin vastauksena eikä suunnitelmasta. Itun opettavat kerrokset ja sen
+kirjaimisto ovat siis samaa lajia: eivät alkuperäisen vision osia vaan matkalla kohdattujen
+löydösten seurauksia. Odotukset ylittänyt sovellus (kohta 44) on suurelta osin rakentunut
+juuri näistä, mikä sopii siihen ettei sitä osannut odottaa.
 
 ## 50. Pohdintalistalla olivat myös Q, W, X, Z ja Å, eli lista kattoi vieraan kirjaimiston kokonaan
 
