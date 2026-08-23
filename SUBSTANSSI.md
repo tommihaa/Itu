@@ -1161,6 +1161,77 @@ mutta kirjainarvoihin riitti verkkolähde: konkreettinen esine haettiin siitä m
 peräisin, ja pelkkä lukutaulukko sieltä mistä sen sai halvimmalla. Ero on työtavan eikä
 periaatteen, ja se saa kaatua.
 
+## 56. Odotukset ylittyivät kolmessa: pisteytys, etenemisnopeus ja kielioppi näkyviin
+
+Tommi 23.8.2026 (erä 23), kysyttäessä mikä valmiissa Itussa konkreettisimmin ylitti
+odotukset (kohta 44):
+
+> *pisteytys, projektin etenemisnopeus, kielioppi näkyviin*
+
+Kohdan 44 yleisarvio saa kolme nimettyä kohdetta, ja ne ovat eri lajia: pelimekaniikka
+(pisteytys), työ itse (etenemisnopeus) ja sovelluksen oma lisä (kielioppi näkyviin).
+
+**Seuraus:** kaksi kolmesta on kirjattu aiemmin toisesta suunnasta. Etenemisnopeus on sama
+havainto kuin kohdan 18 *siitä tuli valmis yllättävän nopeasti*, nyt arvioituna ylitykseksi
+eikä vain todettuna. Ja kielioppi näkyviin tarkoittaa sitä kerrosta jonka kanoni tuntee
+sijamuotonäyttönä ja Opi-moodina: se ei ole pöydän perintöä vaan sovelluksen oma lisä, ja
+juuri se ylitti odotukset. Pisteytyksen ylitys on uusi tieto, eikä vastauksesta käy ilmi
+mikä siinä ylitti; sitä ei kysytty.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** tämä on kolmas kerta kun
+oppiminen kytkeytyy Ituun lähteen omissa vastauksissa (kohta 26: *opeteltaviksi*, kohta 40:
+apit kieliopintojen välineenä), ja nyt suunta on uusi: peli ei vain opeta pelaamaan vaan
+näyttää suomen kielioppia pelaajalle. Teesin sana *opeteltaviksi* kantaa siis pidemmälle
+kuin pelisäännöt.
+
+## 57. Aikabonuksen kynnys syntyi havainnosta: yhdellä sanalla sai liian hyvät pisteet
+
+Tommi 23.8.2026 (erä 23), kysyttäessä mistä aikabonuksen 11/13-kynnys tuli:
+
+> *oli tilanteita missä yhdellä sanalla saa aikabonuksesta liian kivat pisteet tulokseen*
+
+**Kynnys tuli testaamalla, ja vastaus nimeää havaitun vikatilanteen.** Ilman kynnystä nopea
+lukitus yhden sanan jälkeen keräsi aikabonuksesta pisteitä jotka eivät vastanneet suoritusta.
+Kynnys on korjaus tähän: bonus aukeaa vasta kun vähintään 11 noppaa 13:sta on käytetty, eli
+nopeus palkitaan vain täyden ratkaisun yhteydessä.
+
+**Kanoni kirjaa säännön ja sen tarkoituksen, muttei tapausta.** `ITU.md` sanoo että kynnys
+*palkitsee nopean JA (lähes) täyden ratkaisun, ei pelkkää aikaista lukitsemista*, eli
+dokumentti tuntee torjuttavan pelitavan. Tämä kohta lisää sen minkä kanoni jättää sanomatta:
+pelitapa ei ollut teoreettinen uhka vaan pelatessa kohdattu tilanne.
+
+**Seuraus:** pelitestaamisen rooli tarkentuu kolmannen kerran. Peliaika löytyi testaamalla
+(kohta 36), aikarajoite oli vetovoiman lähde eikä peritty rakenne (kohta 46), ja nyt myös
+bonuksen kynnys jäljittyy pelattuun tilanteeseen. Kohdan 15 kyllästymispeluu ei siis vain
+vahvistanut että peli on mieleinen, se myös löysi ja korjasi ainakin yhden
+pisteytysvinouman; kohdan 18 *ei muutoksia* koski siis kokonaisuutta eikä jokaista
+yksityiskohtaa. Tämä on kirjoittajan päätelmä eikä Tommin lause, ja se saa kaatua.
+
+## 58. Kirjainten karsinta avasi luvan muuttaa kaikkea muuta, ja monijokerisuus torjuttiin liian helppona
+
+Tommi 23.8.2026 (erä 23), kysyttäessä mistä ajatus useammasta jokerista tuli:
+
+> *kun tajusin että jos valikoin kirjaimia pelistä pois, niin kaikki muukin oli
+> muutettavissa, mutta monijokerisuus helpottaa liikaa joten se jäi*
+
+Vastauksessa on kaksi kerrosta, ja ensimmäinen on isompi kuin kysymys.
+
+**Ensimmäinen kerros on suunnittelun käännekohta.** Kirjainten karsinta (kohdat 44, 45 ja
+50) ei ollut vain yksi korjaus vaan lupa: kun esikuvasta oli kerran poikettu yhdessä
+asiassa, kaikki muukin oli muutettavissa. Uskollisuus esikuvalle ei siis kaatunut päätökseen
+vaan oivallukseen, ja sen jälkeen jokainen esikuvan sääntö oli punnittavissa erikseen. Tämä
+selittää kohdan 7 listan rakenteen: Itun omat lisäykset eivät ole hajanaisia poikkeuksia
+vaan saman luvan käyttökertoja.
+
+**Toinen kerros on punninnan tulos jokerin kohdalla: monijokerisuus helpottaa liikaa.**
+Muutosluvasta ei siis seurannut muutosvimmaa, ja jokeri on esimerkki punninnasta joka päätyi
+esikuvan kannalle pelattavuussyystä.
+
+**Sanan *jäi* luenta on auki, ja se kysytään eikä arvata.** Kanoni tuntee jokerimääräasetuksen
+1–3 oletuksena yksi (kohta 28), joten *se jäi* voi tarkoittaa kahta: monijokerisuus jäi pois
+oletuksesta mutta elää asetuksena, tai ajatus jäi sikseen ja asetus on eri alkuperää. Kohta
+täydennetään kun vastaus on saatu.
+
 ## 50. Pohdintalistalla olivat myös Q, W, X, Z ja Å, eli lista kattoi vieraan kirjaimiston kokonaan
 
 Tommi 23.8.2026 (erä 21), kohdan 49 rajaukseen:
