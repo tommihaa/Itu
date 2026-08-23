@@ -32,3 +32,15 @@ Tämä tiedosto pidetään tarkoituksella ohuena. Elävä tieto asuu ylläpidety
 | Morfologia / FST-generointiputki | `build/MORFOLOGIA.md` |
 | Opi-moodin design | `OPIMOODI.md` |
 | Perustelut valinnoille | `PERUSTELUT.md` |
+
+## Lisenssi
+
+**Koodille ei ole valittu lisenssiä, ja se on tietoinen tila eikä unohdus (23.8.2026).**
+Ilman lisenssitiedostoa oletus on kaikki oikeudet pidätetään, eli tätä koodia ei toistaiseksi
+saa käyttää omissa projekteissa. Valinta odottaa yhtä avointa kysymystä: pelin sanasto on
+generoitu omorfi-morfologialla (GNU GPLv3), eikä generoidun aineiston asema ole tekijöiltä
+kysymättä ratkaistavissa. Kysymys on esitetty, ja lisenssi valitaan vastauksen jälkeen.
+
+Sanaston lähdeaineisto on eri asia ja sen ehdot ovat selvät: Kotuksen nykysuomen sanalista,
+CC BY 4.0, attribuutio [SANASTO.md](SANASTO.md#lähdeaineiston-attribuutio):ssä ja pelissä
+(Säännöt › Esittely › Sanaston lähde).
