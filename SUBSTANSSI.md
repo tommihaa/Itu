@@ -1385,6 +1385,28 @@ arvostus (kaikki kirjaimet käytettyä, kohta 11) ja pelin mekaniikka sääntök
 peli siirrettiin: säännöt ja tuntuma kantoivat, sisältö syntyy joka pelissä uudestaan. Tämä
 on kirjoittajan päätelmä eikä Tommin lause, ja se saa kaatua.
 
+## 66. Sanamixiä pelasivat kaikki, ohjaajat ja vieraatkin mukaan lukien
+
+Tommi 23.8.2026 (erä 27), kysyttäessä pelasivatko ohjaajat mukana vai oliko sanamix
+pelaajien keskinäinen peli:
+
+> *kaikki mukana, myös vieraat (tutkijoita, opiskelijoita kävi joskus vierailemassa)*
+
+Vierailijamaininnan julkaisu on kuitattu Tommilla erikseen 23.8.2026, koska se kuvaa
+Laiturin luonnetta epäsuorasti; ketään se ei yksilöi.
+
+**Seuraus:** sanamixin pöytä oli avoimempi kuin korttipöytä siinä missä sen säännöt olivat
+virallisemmat. Ohjaajat eivät olleet sanamixissä sääntöjen selittäjiä vaan kanssapelaajia,
+ja satunnainen vieraskin pääsi mukaan, mikä sopii peliin jonka säännöt luettiin joka kerta
+kortista (kohta 52): peli jossa kukaan ei ole perinteen haltija on helppo avata tulokkaalle.
+Tämä on kirjoittajan päätelmä eikä Tommin lause, ja se saa kaatua.
+
+**Seuraus:** kohdan 26 ohjaajakuva täydentyy. Ohjaaja oli korttipeleissä opettaja ja
+variaatioiden kehittäjä (`Jako-pelini/SUBSTANSSI.md`), sanamixissä tasavertainen pelaaja, eli
+rooli jousti pelin mukaan. Itu koodasi ohjaajasta opettajapuolen (säännöt ja perään
+katsominen); kanssapelaajapuolelle ei yksinpelissä ole vastinetta, ja lähin sukulainen on
+pass-and-play jonka käytöstä ei tiedetä (kohta 30).
+
 ## 50. Pohdintalistalla olivat myös Q, W, X, Z ja Å, eli lista kattoi vieraan kirjaimiston kokonaan
 
 Tommi 23.8.2026 (erä 21), kohdan 49 rajaukseen:
