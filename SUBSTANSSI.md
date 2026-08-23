@@ -198,7 +198,7 @@ ja jälkimmäinen on se jonka `SANASTO.md` koneellisti.
 vastakappale samasta pöydästä: korttipeleissä Laituri pelasi paikallisin säännöin, sanamixissä
 virallisin. Ero voi selittyä sillä että sanamix tuli laatikosta sääntökortteineen ja
 korttipelit perinteenä ilman kirjoitettua sääntöä, mutta syytä ei ole kysytty. Tämä saa
-kaatua.
+kaatua. *(Kysytty erässä 21, ks. kohta 52: arvaus osui, ja lisäsyy on pelaamisen harvuus.)*
 
 ## 10. Apeista jäi mieleen Words of Wonders
 
@@ -1093,7 +1093,75 @@ selvää säännöistä ja tehdä valintoja*), eli tekijän sama ote kahdessa er
 järjestyksen muttei perustetta. Suomessa d on t:n heikko aste (*katu → kadun*, *pöytä →
 pöydän*), joten sen poisjättö katkaisisi astevaihtelun suurelta sanajoukolta. Se olisi sama
 perustelun laji kuin G:llä (nk-ng) mutta laajempi, mikä sopisi siihen että D läpäisi
-aikaisemmin ja helpommin. Luenta saa kaatua, koska sitä ei kysytty.
+aikaisemmin ja helpommin. Luenta saa kaatua, koska sitä ei kysytty. *(Kysytty erässä 21 ja
+luenta vahvistui, ks. kohta 51: astevaihtelu riitti D:lle.)*
 
 **Rajaus:** ei tiedetä oliko pohdintalistalla muita kirjaimia kuin nämä viisi, eikä sitä
-kysytty.
+kysytty. *(Sulkeutui erässä 21, ks. kohta 50: listalla olivat myös Q, W, X, Z ja Å.)*
+
+## 50. Pohdintalistalla olivat myös Q, W, X, Z ja Å, eli lista kattoi vieraan kirjaimiston kokonaan
+
+Tommi 23.8.2026 (erä 21), kohdan 49 rajaukseen:
+
+> *Q, W, X, Z, Å*
+
+**Kohdan 49 rajaus sulkeutuu, ja lista kasvaa kymmeneen kirjaimeen.** Pohdintalistalla olivat
+siis ainakin B, C, D, F, G, Q, W, X, Z ja Å. Lopputulos luetaan kanonista eikä vastauksesta:
+`SANASTO.md`:n sallitut kirjaimet ovat 21 eikä mikään näistä viidestä ole joukossa, eli ne
+kaikki putosivat.
+
+**Kanoni kirjaa vain kiistanalaiset tapaukset, ja se näkyy tästä.** `ITU.md` nimeää B:n, C:n
+ja F:n kiellon ja G:n paluun, mutta Q:sta, W:stä, X:stä, Z:sta ja Å:sta ei ole riviäkään: ne
+putosivat ilman kirjattua päätöstä. Jana (kohta 47) selittää tämän: kirjatuiksi päätyivät ne
+tapaukset joissa oli punnittavaa, ja loput viisi olivat niin selviä ettei punnintaa syntynyt.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** lista ei ollut satunnainen vaan
+kattava. Kymmenen kirjainta ovat täsmälleen se joukko jolla suomalainen aakkosto eroaa
+kansainvälisen sanapelin kirjaimistosta, eli kohdan 49 menettely (kirjain kerrallaan, oma
+peruste kullekin) käytiin läpi koko vieraalle kirjaimistolle eikä vain harmiksi koetuille.
+Tämä saa kaatua, koska listan kokoamistapaa ei kysytty.
+
+## 51. D läpäisi astevaihtelun perusteella
+
+Tommi 23.8.2026 (erä 21), kysyttäessä millä perusteella D läpäisi:
+
+> *astevaihtelu riitti D:lle*
+
+**Kohdan 49 luenta vahvistui kysymällä.** Peruste oli astevaihtelu (t:n heikko aste: *katu →
+kadun*), eli sama perustelun laji jolla G palautettiin (nk-ng, kohta 47) mutta laajempana
+ilmiönä. Sana *riitti* sopii kohdan 49 järjestykseen: D:n tapaus oli helpompi eikä vaatinut
+G:n kaltaista erillistä puoltoa.
+
+**Seuraus:** kohdan 47 ennakkotapaus vahvistuu kahden tapauksen säännöksi. Molemmat
+pohdintalistalta palanneet kirjaimet läpäisivät samalla kynnyksellä, nimetyllä suomen
+ilmiöllä joka tuottaa natiiveja muotoja, ja kumpikaan ei yleisellä tuntumalla. Kynnys jota
+kohta 47 kuvasi F:n mahdolliselle paluulle ei siis ole yhden tapauksen varassa.
+
+**Menetelmähuomio:** tämä on dokumentin ensimmäinen kerta kun kirjoittajan luenta vahvistui
+kysymällä sen sijaan että se olisi kaatunut (kaatuneet: kohdat 8, 23, 37 ja 41). Vahvistettu
+luenta ei silti muutu vastaukseksi takautuvasti: kohdan 49 rivi jää luennaksi ja tämä kohta
+on se jossa asia on Tommin sanoma.
+
+## 52. Sanamixiä pelattiin harvoin, ja siksi säännöt luettiin kortista
+
+Tommi 23.8.2026 (erä 21), kohdan 9 avoimeen siitä miksi sanamix pelattiin virallisin
+säännöin ja korttipelit paikallisin:
+
+> *arvauksesi osui ja sanamixiä pelattiin harvoin, joten luettiin säännöt*
+
+**Kohdan 9 arvaus vahvistuu ja saa mekanismin.** Ero syntyi kahdesta syystä yhdessä: sanamix
+tuli laatikosta sääntökortteineen (arvattu osa), ja sitä pelattiin niin harvoin että säännöt
+luettiin kortista pelatessa (uusi osa). Harva pelaaminen on tässä syy eikä vain taustatieto:
+sääntö joka luetaan joka kerta ei ehdi muuntua.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** paikallissääntö syntyy
+toistosta. Korttipelit elivät Laiturilla viikoittaisessa käytössä muistinvaraisina ja
+muuntuivat paikallisiksi, sanamix pysyi kortin varassa koska se otettiin esiin harvoin.
+Virallisilla säännöillä pelaaminen ei siis ollut arvostus virallisuutta kohtaan vaan muistin
+korvike, ja Jakon teesin (*siksi ei standardia vaan vaihtoehtoja*) vastakappale kohdassa 9
+saa täsmällisemmän muodon: standardi säilyi siellä missä perinnettä ei ehtinyt syntyä.
+
+**Seuraus:** *harvoin* tarkentaa kohtien 21 ja 27 kuvaa. Sanamix oli talon halpojen pelien
+joukosta yksi, sitä pelattiin enintään noin viidellä ja harvoin, ja silti juuri se kantoi
+sovellukseksi asti. Tämä vahvistaa kohdan 21 päätelmää: pelin arvo ei näkynyt käyttötaajuudessa
+eikä hankintahinnassa vaan pöydässä silloin kun sitä pelattiin.
