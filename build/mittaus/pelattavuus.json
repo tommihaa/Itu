@@ -1,0 +1,100 @@
+{
+  "heittoja": 400,
+  "asetteluja_per_heitto": 3000,
+  "pohjasanasto": 2314988,
+  "per_pituus": {
+    "2": {
+      "asetteluja": 99406,
+      "kelpaa_nyt": 15487,
+      "kelpaa_affikseilla": 15487,
+      "osuus_nyt": 15.58,
+      "osuus_affikseilla": 15.58
+    },
+    "3": {
+      "asetteluja": 99879,
+      "kelpaa_nyt": 8501,
+      "kelpaa_affikseilla": 8501,
+      "osuus_nyt": 8.511,
+      "osuus_affikseilla": 8.511
+    },
+    "4": {
+      "asetteluja": 100258,
+      "kelpaa_nyt": 3889,
+      "kelpaa_affikseilla": 4179,
+      "osuus_nyt": 3.879,
+      "osuus_affikseilla": 4.168
+    },
+    "5": {
+      "asetteluja": 100127,
+      "kelpaa_nyt": 1267,
+      "kelpaa_affikseilla": 1479,
+      "osuus_nyt": 1.265,
+      "osuus_affikseilla": 1.477
+    },
+    "6": {
+      "asetteluja": 99717,
+      "kelpaa_nyt": 332,
+      "kelpaa_affikseilla": 438,
+      "osuus_nyt": 0.333,
+      "osuus_affikseilla": 0.439
+    },
+    "7": {
+      "asetteluja": 100023,
+      "kelpaa_nyt": 65,
+      "kelpaa_affikseilla": 99,
+      "osuus_nyt": 0.065,
+      "osuus_affikseilla": 0.099
+    },
+    "8": {
+      "asetteluja": 100171,
+      "kelpaa_nyt": 5,
+      "kelpaa_affikseilla": 22,
+      "osuus_nyt": 0.005,
+      "osuus_affikseilla": 0.022
+    },
+    "9": {
+      "asetteluja": 100404,
+      "kelpaa_nyt": 0,
+      "kelpaa_affikseilla": 1,
+      "osuus_nyt": 0.0,
+      "osuus_affikseilla": 0.001
+    },
+    "10": {
+      "asetteluja": 99775,
+      "kelpaa_nyt": 0,
+      "kelpaa_affikseilla": 1,
+      "osuus_nyt": 0.0,
+      "osuus_affikseilla": 0.001
+    },
+    "11": {
+      "asetteluja": 99628,
+      "kelpaa_nyt": 0,
+      "kelpaa_affikseilla": 0,
+      "osuus_nyt": 0.0,
+      "osuus_affikseilla": 0.0
+    },
+    "12": {
+      "asetteluja": 100254,
+      "kelpaa_nyt": 0,
+      "kelpaa_affikseilla": 0,
+      "osuus_nyt": 0.0,
+      "osuus_affikseilla": 0.0
+    },
+    "13": {
+      "asetteluja": 100358,
+      "kelpaa_nyt": 0,
+      "kelpaa_affikseilla": 0,
+      "osuus_nyt": 0.0,
+      "osuus_affikseilla": 0.0
+    }
+  },
+  "kaikki_osuus_nyt": 2.462,
+  "kaikki_osuus_affikseilla": 2.517,
+  "approksimaation_validointi": {
+    "fst_uusia_muotoja": 61171,
+    "approksimaation_muotoja": 80745,
+    "yhteisia": 48504,
+    "saanto_fst_muodoista": 0.793,
+    "tarkkuus_approksimaatiosta": 0.601
+  }
+}

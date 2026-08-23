@@ -1,0 +1,17 @@
+{
+  "base": {
+    "muotoja": 14072,
+    "solmuja": 2747,
+    "dawg_tavut": 19632,
+    "dawg_gz_tavut": 11630
+  },
+  "affix": {
+    "muotoja": 75243,
+    "solmuja": 3748,
+    "dawg_tavut": 36000,
+    "dawg_gz_tavut": 19119
+  },
+  "kerroin_muotoja": 5.347,
+  "kerroin_dawg": 1.834,
+  "kerroin_dawg_gz": 1.644
+}

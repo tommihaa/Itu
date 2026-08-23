@@ -85,6 +85,48 @@ Ne eivät ole "sanoja" vaan jatkeita, jotka pelaaja voisi aina lisätä.
 **Hinta.** Pelaaja ei voi pelata aidolta tuntuvaa muotoa kuten "talokin".
 Kompromissi rajan selkeyden hyväksi.
 
+**Mittaus 23.8.2026.** Perustelu oli tähän asti uskottava mutta mittaamaton, ja
+tämä lohko antaa sille luvun **avaamatta päätöstä uudelleen**. Mittausskriptit ovat
+`build/mittaa_affiksit.py`, `build/mittaa_dawg.ts`, `build/mittaa_pelattavuus.py` ja
+`build/mittaa_vaihtoehdot.py`, tulokset `build/mittaus/`.
+
+*Otos.* 600 lemmaa tasavälein Kotus-listalta, joista 383 tuotti FST:llä perusmuodon.
+Loput ohitettiin, ja ohitus on symmetrinen: sama lemma puuttuu molemmista luvuista.
+
+*Koko.* Kuusi omistusliitettä, neljä FST:n hyväksymää liitepartikkelia ja niiden
+yhdistelmät nostavat otoksen muotomäärän 14 072:sta 75 243:een, eli **kerroin on
+5,3**. Koko sanastoon suhteutettuna 2 314 988 muotoa olisi noin 12,4 miljoonaa.
+Luku on **13 merkin rajan leikkaama**: affiksoiduista muodoista 30 602 eli 41 %
+on tasan 13 merkkiä pitkiä, joten kasvua rajaa lauta eikä morfologia.
+
+*Pakattu koko.* Sama otos DAWG:ksi rakennettuna kasvaa **1,8-kertaiseksi** (19 632 →
+36 000 tavua, gzipattuna 11 630 → 19 119). Liite on jaettu loppuosa, jonka DAWG
+kutistaa, joten koko ei kasva muotomäärän tahdissa. Nykyinen `sanasto-fi-v1.dawg`
+on 895 400 tavua, joten arvio on noin 1,6 Mt. Arvio on otoksesta eikä täydestä
+sanastosta, ja pieni otos jakaa vähemmän rakennetta kuin suuri, joten se on
+todennäköisemmin yläraja kuin alaraja.
+
+*Pelattavuus.* 400 heittoa pelin omalla satunnaisvirralla ja 1,2 miljoonaa
+satunnaista asettelua: kelpaavuus nousee **2,462 %:sta 2,517 %:iin**. Vaikutus on
+kokonaan pituudessa. Kahdesta neljään kirjaimen asetteluissa se on nolla, kuudessa
+1,3-kertainen ja kahdeksassa 4,4-kertainen, mutta kahdeksan kirjaimen kelpaavuus on
+silloinkin 0,022 %.
+
+*Vaihtoehtojen määrä.* 150 heittoa, ja pelattavia sanoja per heitto on mediaanina
+**1248, liitteiden kanssa 1871**, eli 1,5-kertainen määrä.
+
+*Approksimaation raja, koska se muuttaa jälkimmäisten lukujen suunnan.* Kaksi
+viimeistä lukua eivät käytä FST:tä vaan merkkijonosääntöä (liite kiinnittyy
+taivutettuun muotoon sellaisenaan). Otosta vasten mitattuna se löytää 79 %
+FST:n tuottamista muodoista ja tuottaa 40 % sellaista jota FST ei tuota, eli se
+**yliarvioi** liitteiden vaikutuksen. Mitatut kelpaavuusluvut ovat siis ylärajoja.
+
+*Mitä mittaus ei sano.* Se ei kumoa eikä vahvista päätöstä, koska päätös ei ollut
+lukuun sidottu. Se kuitenkin kertoo, että perustelun kaksi puolta ovat eri
+vahvuisia: sanaston kasvu on todellinen, mutta pakattuna 1,8-kertainen, ja
+väite *tekisivät lähes kaikesta kelvollista* ei saa tukea asettelumittauksesta.
+Voimakkain räjähdys on kohdassa 6 eikä tässä.
+
 ## 6. Olemassa olevat yhdyssanat sisään, keksityt ulos
 
 **Päätös.** Kotuksen listaamat yhdyssanat taipuvat normaalisti; itse yhdistämäsi
@@ -97,6 +139,20 @@ itsestään, emme koskaan pyydä +Cmp-muotoja.
 
 **Hinta.** Jotkin oikeat mutta listaamattomat yhdyssanat jäävät ulos. Hyväksytty,
 koska vaihtoehto (kaikki produktiiviset yhdyssanat) tekisi pelistä rajattoman.
+
+**Mittaus 23.8.2026.** Tämä luku on **eksakti eikä otos**, koska vapaa yhdyssana on
+lemmaparien kombinatoriikkaa eikä vaadi FST-ajoa: yhdyssana taipuu loppuosansa
+mukaan, joten muoto on etuosa + loppuosan taivutettu muoto, ja 13 merkin raja
+sanoo mitkä loppuosan muodot mahtuvat perään. Skripti on
+`build/mittaa_yhdyssanat.py`, tulos `build/mittaus/yhdyssanat.json`.
+
+Etuosaehdokkaita on 59 765, ja vapaat yhdyssanat toisivat **2 122 586 441 muotoa
+lisää, eli 917 kertaa nykyiset 2 314 988 muotoa**. Luku on alaraja: se kattaa vain
+kaksiosaiset yhdyssanat perusmuotoisella etuosalla, joten kolmiosaiset (*sanapelinoppa*)
+ja genetiivialkuiset (*talonpoika*) jäävät sen ulkopuolelle.
+
+Sana *rajaton* yllä olevassa hinnassa on siis mitattuna oikea, ja se erottaa tämän
+kohdan kohdasta 5, jonka kerroin on 5,3.
 
 ## 7. Erisnimet ja lyhenteet pois
 
