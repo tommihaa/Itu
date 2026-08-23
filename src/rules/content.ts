@@ -262,6 +262,52 @@ export const ABOUT_PARAS: string[] = [
     "tarjota tekijälle kahvit.",
 ];
 
+// ── Sanaston lähde (CC BY 4.0 -attribuutio) ──────────────────────────────────
+// Nimeämisehto täytetään siinä mitä pelaaja saa, ei vain repon dokumentissa:
+// CC BY 4.0 kohta 3(a) vaatii tekijän, lisenssin ja muutosilmoituksen kulkemaan
+// jaettavan teoksen mukana, ja kohta 3(a)(2) sallii sen linkkinä. Peruste ja
+// luenta: Kaanon/docs/clearance-tarkistuslista.md, liite 23.8.2026.
+// Sama sisältö on SANASTO.md:ssä; jos ne eroavat, dokumentti on korjattava.
+export const CREDITS_TITLE = "Sanaston lähde";
+
+export interface CreditRow {
+  /** Rivin otsikko (Aineisto, Lisenssi, Muutokset, Morfologia). */
+  label: string;
+  /** Leipäteksti ilman linkkiä. */
+  text: string;
+  /** Valinnainen linkki rivin perään. */
+  link?: { label: string; url: string };
+}
+
+export const CREDITS_ROWS: CreditRow[] = [
+  {
+    label: "Aineisto",
+    text: "Nykysuomen sanalista 2024, Kotimaisten kielten keskus (Kotus).",
+    link: {
+      label: "Kotuksen sivu",
+      url: "https://kotus.fi/sanakirjat/kielitoimiston-sanakirja/nykysuomen-sana-aineistot/nykysuomen-sanalista/",
+    },
+  },
+  {
+    label: "Lisenssi",
+    text: "Creative Commons Nimeä 4.0 Kansainvälinen (CC BY 4.0).",
+    link: { label: "Lisenssiehdot", url: "https://creativecommons.org/licenses/by/4.0/deed.fi" },
+  },
+  {
+    label: "Muutokset",
+    text:
+      "Listaa on muutettu: erisnimet ja osa sanaluokista on karsittu, mukaan on " +
+      "otettu vain pelin kirjaimilla kirjoitettavat 2-13 merkin sanat, ja " +
+      "taivutusmuodot on generoitu koneellisesti. Kotus ei ole tehnyt tätä peliä " +
+      "eikä vastaa sen sanastosta.",
+  },
+  {
+    label: "Morfologia",
+    text: "Taivutusmuodot on generoitu omorfi-morfologialla (GNU GPLv3).",
+    link: { label: "omorfi", url: "https://github.com/flammie/omorfi" },
+  },
+];
+
 // ── Muut pelit (sisarpelinosto) ──────────────────────────────────────────────
 // Emergentti glue: kolme erillistä peliä muuttuu löydettäväksi tähdistöksi
 // ilman keskuspalvelinta. Linkit ovat pysyviä tuotanto-URLeja.

@@ -11,6 +11,16 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
 > numerolla, aiemmat numerot ovat jälkikäteisiä nimilappuja jo tuotannossa olevalle
 > koodille. Tästä eteenpäin versio bumpataan ennen pushia, kuten Superjatsissa.
 
+## [0.9.0] – 2026-08-23
+
+### Lisätty
+- **Sanaston lähde näkyy pelaajalle** (Säännöt › Esittely › Sanaston lähde). Kotuksen
+  nykysuomen sanalistan CC BY 4.0 -nimeäminen on tähän asti asunut vain `SANASTO.md`:ssä,
+  eli repon dokumentissa jota jaettava sovellus ei kuljeta mukanaan. Nyt näkyvissä ovat
+  aineisto ja sen linkki, oikeudenhaltija, lisenssi linkkinä sekä ilmoitus siitä että
+  listaa on muutettu. Peruste ja lisenssin luenta: `Kaanon/docs/clearance-tarkistuslista.md`,
+  liite 23.8.2026. Samalla nimetään käytetty morfologia (omorfi, GNU GPLv3).
+
 ## [0.8.0] – 2026-08-17
 
 ### Muutettu

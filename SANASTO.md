@@ -18,6 +18,9 @@ Pelin sanasto pohjautuu **Kotimaisten kielten keskuksen (Kotus)** nykysuomen san
 
 - **Lähde:** [Nykysuomen sanalista](https://www.kotus.fi/sanakirjat/kielitoimiston-sanakirja/nykysuomen-sana-aineistot/nykysuomen-sanalista/) (ladattu: https://kaino.kotus.fi/lataa/nykysuomensanalista2024.txt)
 - **Lisenssi:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- **Näkyy pelaajalle:** sama attribuutio on pelissä (Säännöt › Esittely › *Sanaston lähde*,
+  `src/rules/content.ts` › `CREDITS_ROWS`), koska CC BY 4.0:n nimeämisehto koskee jaettavaa
+  teosta eikä lähdekoodivarastoa. Jos tämä dokumentti ja pelin teksti eroavat, se on bugi.
 - **Muutokset:** lista on suodatettu (sanaluokka, isot alkukirjaimet pois, ks. yllä) ja taivutusmuodot on generoitu build-aikana [GiellaLT](https://giellalt.uit.no/)/uralicNLP-suomen FST:llä; alkuperäinen lemmalista on repossa sellaisenaan (`data/nykysuomensanalista2024.txt`).
 
 ## Periaate (yhdellä lauseella)

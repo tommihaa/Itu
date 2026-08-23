@@ -835,6 +835,14 @@ input, textarea {
 .sm-install-row:last-child { border-bottom: 0; }
 .sm-install-row b { display: block; }
 .sm-install-row span { color: var(--dim, var(--text)); line-height: 1.5; }
+/* Sanaston lähde (CC BY 4.0 -attribuutio): sama rivimuoto kuin asennusohjeessa,
+   hillitty mutta luettava. Tulostuu myös paperille, koska ehto koskee jakelua. */
+.sm-credits { display: flex; flex-direction: column; gap: 0.4rem; }
+.sm-credit-row { padding: 0.3rem 0; border-bottom: 1px solid var(--line); }
+.sm-credit-row:last-child { border-bottom: 0; }
+.sm-credit-row b { display: block; color: var(--gold); }
+.sm-credit-row span { color: var(--dim, var(--text)); line-height: 1.5; }
+.sm-credit-row a { color: var(--text); }
 .sm-other-games { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 .sm-other-game {
   display: flex; flex-direction: column; gap: 0.1rem;

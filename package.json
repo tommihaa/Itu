@@ -1,7 +1,7 @@
 {
   "name": "itu",
   "private": true,
-  "version": "0.8.0",
+  "version": "0.9.0",
   "type": "module",
   "description": "Web-pohjainen sananmuodostuspeli kirjainnopilla (Sana Mix -henkinen)",
   "scripts": {

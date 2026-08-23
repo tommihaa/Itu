@@ -14,6 +14,8 @@ import {
   INSTALL_TITLE,
   INSTALL_INTRO,
   INSTALL_GROUPS,
+  CREDITS_TITLE,
+  CREDITS_ROWS,
   type LetterRow,
   type RuleGroup,
   type RuleSection,
@@ -173,6 +175,18 @@ export function renderAboutContent(): string {
         ).join("")}
       </div>
     </section>`;
+  // Sanaston lähde: CC BY 4.0:n nimeämisehto pelaajalle näkyvänä, ei vain repossa.
+  const creditRows = CREDITS_ROWS.map((r) => {
+    const link = r.link
+      ? ` <a href="${r.link.url}" target="_blank" rel="noopener">${escape(r.link.label)}</a>`
+      : "";
+    return `<div class="sm-credit-row"><b>${escape(r.label)}</b><span>${escape(r.text)}${link}</span></div>`;
+  }).join("");
+  const credits = `
+    <section class="sm-rule-section">
+      <h3>${escape(CREDITS_TITLE)}</h3>
+      <div class="sm-credits">${creditRows}</div>
+    </section>`;
   const version = `<p class="sm-about-version">Itu v${escape(__APP_VERSION__)} · ${escape(__BUILD_DATE__)}</p>`;
   return `
     <div class="sm-rules-doc">
@@ -181,6 +195,7 @@ export function renderAboutContent(): string {
       ${links}
       ${otherGames}
       ${install}
+      ${credits}
       ${version}
     </div>`;
 }
