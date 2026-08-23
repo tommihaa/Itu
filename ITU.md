@@ -146,7 +146,7 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
   AdvisoryJudge (korpuslista, kolmas väri "en tunne tätä") ja HumanJudge
   (tuomarimoodi pass-and-playhin, ei kielidataa) mahdollistavat muut kielet
   myöhemmin ilman pelikoodin muutoksia.
-- Karsinta generoinnissa: vain sanat ≤ 13 kirjainta, ei B/C/F/G-kirjaimia
+- Karsinta generoinnissa: vain sanat ≤ 13 kirjainta, ei B/C/F-kirjaimia
   sisältäviä muotoja (mahdottomia muodostaa nopilla).
 - UI antaa reaaliaikaisen värikoodatun palautteen sanoista.
 
