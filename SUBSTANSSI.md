@@ -1307,7 +1307,8 @@ ajankohdasta on kirjoittajan (vastaus annettiin haastattelussa, joten peli pelat
 varten), ja jos se pitää, tämä haastattelu tuotti ensimmäisen tiedossa olevan Itu-pelin
 sitten kehitysvaiheen: kohta 13 kirjaa ettei Tommi pelaa Itua nykyään. Kysymys toimi siis
 koettimena kirjaimellisemmin kuin oli tarkoitus, ja vastauksen hinta oli yksi pelattu peli.
-Luenta saa kaatua.
+Luenta saa kaatua. *(Vahvistui erässä 26, ks. kohta 64: Tommi sanoo *äskeinen peli*, ja se
+nousi ennätyslistalle.)*
 
 ## 62. Tekijä pelaa mieluummin kertoimilla, ja oletus on silti pois päältä
 
@@ -1327,6 +1328,47 @@ pelaaja, ja hän pelaa sillä kerroksella joka on rakennettu kokeneelle. Oletus 
 tekijän makua vaan pelaajan polkua, ja sama rakenne toistui kohdassa 58: monijokerisuus jäi
 pois oletuksesta vaikka idea oli oma. Tämä saa kaatua, koska oletuksen perustetta ei kysytty
 tässä vaan se on luettu kanonista.
+
+## 63. Sanapoliisi valittiin Tarkastajan tilalle koska se kuulostaa ehdottomammalta
+
+Tommi 23.8.2026 (erä 26), kysyttäessä mistä Sanapoliisi-nimi tuli ja miksi Tarkastaja
+vaihtui:
+
+> *sanapoliisi kuulostaa ehdottomammalta kuin tarkastaja*
+
+**Nimenvaihdon peruste oli sävy, ja suunta on merkille pantava: kohti ehdottomuutta eikä
+siitä pois.** Tuomarin nimi ei pehmennä sen valtaa vaan sanoo sen ääneen.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** nimi on rehellinen kuvaus
+mekanismista. DAWG-haku on binäärinen eikä neuvottele, toisin kuin pöydän tuomari joka oli
+yhteinen kielitaju ja jolta saattoi kysyä (kohta 24). Nimi valmistaa pelaajan siihen minkä
+kohta 37 kirjaa kokemuksena: koneen hylkäys on ehdoton, ja se kestää koska perustelu on
+haettavissa. Arkikielessä *sanapoliisi* on lisäksi lievästi kielteinen sana kielen
+tiukkuudesta, ja Itu ottaa sen omakseen ilman ironiaa: tässä pelissä tiukka tuomari on
+ominaisuus eikä vika.
+
+## 64. Ennätys on 179, ja haastattelua varten pelattu peli nousi toiseksi 167 pisteellä
+
+Tommi 23.8.2026 (erä 26), kysyttäessä muistaako hän ennätyksensä suuruusluokan:
+
+> *tarkastin ja äskeinen peli 167 on toiseksi paras, ennätys 179*
+
+Luvut ovat pelin kokonaispisteitä ennätyslistalta, Tommin itse tarkastamia eikä
+muistinvaraisia. Sana *äskeinen* vahvistaa kohdan 61 luennan: esimerkkipeli pelattiin
+haastattelun aikana.
+
+**Seuraus:** kehitysvaiheen jälkeinen ensimmäinen tiedossa oleva peli nousi kaikkien aikojen
+listalle toiseksi. Tauko ei siis vienyt pelitaitoa, ja siihen sopii kohdan 62 vastaus: peli
+aloitetaan isot pisteet mielessä. Yksittäisestä pelistä ei silti päätellä tasoa pidemmälle,
+ja lista itsessään on lyhyt tekijän pelaamisen historian mittainen.
+
+**Menetelmähuomio:** vastaus on dokumentin ensimmäinen jossa lähde itse tarkasti luvun
+lähteestä ennen vastaamista (*tarkastin*), eli sama liike jota tämä dokumentti tekee
+kanonia vasten, nyt lähteen omasta aloitteesta. Vahvistuneiden luentojen tase on tämän erän
+jälkeen kolme ja neljä (kohdan 61 luenta vahvistui yllä).
+
+**Rajaus:** ei kysytty millä asetuksilla luvut syntyivät (kesto, kertoimet, jokerimäärä)
+eikä kuinka pitkä ennätyslista on.
 
 ## 50. Pohdintalistalla olivat myös Q, W, X, Z ja Å, eli lista kattoi vieraan kirjaimiston kokonaan
 
