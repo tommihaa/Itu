@@ -197,3 +197,9 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
   tarkistettaisiin Itulle generoidusta sanastosta. Kiinnostuksen aste on Tommin omin sanoin
   *vähän*, eli tämä on varasto eikä suunnitelma. Tausta, sanamuoto ja se miksi suunta on
   merkittävä: `SUBSTANSSI.md` kohta 34.
+  - **Tarkistus valokuvasta (Tommin lisäys 23.8.2026):** livepelin sanojen oikeellisuus
+    arvioitaisiin ottamalla valokuva, jonka online-Itu analysoi. Idea eikä päätös. Huomio
+    kirjattaessa: *online* tarkoittaisi ensimmäistä verkossa toimivaa Itu-komponenttia, ja
+    suhde offline-pelirauhainvarianttiin punnitaan vasta jos idea etenee (invariantti koskee
+    pelisovelluksen oletustilaa, ei välttämättä erillistä tarkistuspalvelua; rajanveto on
+    tekemättä).
