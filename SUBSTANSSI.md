@@ -1272,8 +1272,9 @@ syntyikö se vasta kun sanasto-FST oli käsissä:
 **Ominaisuus ei ollut suunnitelma vaan reaktio omaan sanastoon.** Kielioppi tuli näkyviin
 kolmen valmiiksi olemassa olevan asian summana: sanasto tuotti omituisia sanoja omituisissa
 taivutuksissa, ne herättivät tarpeen ymmärtää mitä ne ovat, ja Kotus oli jo linkattavissa.
-Sovelluksessa tämä näkyy sana-analyysinä ja sanakohtaisena linkkinä Kielitoimiston
-sanakirjaan (todennettu koodista: `src/ui/game.ts`).
+Sovelluksessa tämä näkyy sana-analyysinä ja sanakohtaisina linkkeinä sekä Kielitoimiston
+sanakirjaan että Wiktionaryyn (todennettu koodista: `src/ui/game.ts`; Wiktionary-linkin
+puuttuminen tästä kohdasta oli kirjauksen virhe jonka Tommi korjasi erässä 25).
 
 **Sana *minullekin* on tämän kohdan painavin.** Ensimmäinen oppija oli tekijä itse: oma
 sanasto ylitti oman kielitajun, ja ominaisuus rakennettiin ensin siihen tarpeeseen. Tämä
@@ -1286,6 +1287,46 @@ ratkaisu rakennettiin vastauksena eikä suunnitelmasta. Itun opettavat kerrokset
 kirjaimisto ovat siis samaa lajia: eivät alkuperäisen vision osia vaan matkalla kohdattujen
 löydösten seurauksia. Odotukset ylittänyt sovellus (kohta 44) on suurelta osin rakentunut
 juuri näistä, mikä sopii siihen ettei sitä osannut odottaa.
+
+## 61. Omituiset sanat olivat pitkiä ääkkösellisiä, ja esimerkki haettiin pelaamalla peli
+
+Tommi 23.8.2026 (erä 25), kysyttäessä muistaako hän esimerkin kohdan 60 omituisista
+sanoista:
+
+> *pitkiä ääkkösellisiä sanoja, pelasin yhden pelin ja esimerkiksi sana nyrhimän*
+
+**Omituisuuden laji on nimetty: pitkät ääkköselliset sanat.** Esimerkki on *nyrhimän*, ja se
+on tarkistettavissa sanaston putkea vasten: lemmalistalla on verbi *nyrhiä*
+(`data/nykysuomensanalista2024.txt`), ja *nyrhimän* on sen johdetun muodon taivutus, eli
+juuri sellainen generaattorin tuottama muoto jota kukaan ei kirjoittanut sanastoon käsin.
+Esimerkki osuu siis täsmälleen kohdan 60 mekanismiin: sanasto tuottaa aitoja muotoja jotka
+ylittävät pelaajan, myös tekijän, kielitajun.
+
+**Vastauksen sivulause on oma havaintonsa: esimerkki haettiin pelaamalla peli.** Luenta
+ajankohdasta on kirjoittajan (vastaus annettiin haastattelussa, joten peli pelattiin sitä
+varten), ja jos se pitää, tämä haastattelu tuotti ensimmäisen tiedossa olevan Itu-pelin
+sitten kehitysvaiheen: kohta 13 kirjaa ettei Tommi pelaa Itua nykyään. Kysymys toimi siis
+koettimena kirjaimellisemmin kuin oli tarkoitus, ja vastauksen hinta oli yksi pelattu peli.
+Luenta saa kaatua.
+
+## 62. Tekijä pelaa mieluummin kertoimilla, ja oletus on silti pois päältä
+
+Tommi 23.8.2026 (erä 25), kysyttäessä pelasiko hän kehitysvaiheessa mieluummin
+Scrabble-kertoimilla vai ilman:
+
+> *isot pisteet mielessä aloitan, joten mieluummin kertoimilla*
+
+**Preferenssi on kirkas ja sen syy on nimetty: peli aloitetaan isot pisteet mielessä**, ja
+kertoimet ovat se kerros joka tekee isoista pisteistä mahdollisia.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** tekijän oma preferenssi ja
+pelin oletus osoittavat eri suuntiin, ja se on johdonmukaista eikä ristiriitaista. Kanonin
+*ei korvaa mitään* -periaate pitää Scrabble-pistemoodin oletuksena poissa, koska oletus
+palvelee uutta pelaajaa jolle peruspeli on ensin opittava; tekijä taas on pelin kokenein
+pelaaja, ja hän pelaa sillä kerroksella joka on rakennettu kokeneelle. Oletus ei siis kuvaa
+tekijän makua vaan pelaajan polkua, ja sama rakenne toistui kohdassa 58: monijokerisuus jäi
+pois oletuksesta vaikka idea oli oma. Tämä saa kaatua, koska oletuksen perustetta ei kysytty
+tässä vaan se on luettu kanonista.
 
 ## 50. Pohdintalistalla olivat myös Q, W, X, Z ja Å, eli lista kattoi vieraan kirjaimiston kokonaan
 
