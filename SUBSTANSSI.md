@@ -1370,6 +1370,21 @@ jälkeen kolme ja neljä (kohdan 61 luenta vahvistui yllä).
 **Rajaus:** ei kysytty millä asetuksilla luvut syntyivät (kesto, kertoimet, jokerimäärä)
 eikä kuinka pitkä ennätyslista on.
 
+## 65. Yksittäisiä sanoja ei jäänyt pöydästä mieleen
+
+Tommi 23.8.2026 (erä 27), kysyttäessä muistaako hän sanamix-pöydästä yksittäistä sanaa joka
+nauratti, kiistytti tai jäi mieleen:
+
+> *en*
+
+**Seuraus:** pöydän jälki on johdonmukaisesti ohut, ja tämä on sen kolmas mittaus. Tilastoja
+ei pidetty (kohta 31), pelattiin harvoin (kohta 52), eivätkä yksittäiset sanat jääneet
+muistiin. Se mikä pöydästä säilyi, on toista lajia: käytäntö (taivutus kelpasi, kohta 1),
+arvostus (kaikki kirjaimet käytettyä, kohta 11) ja pelin mekaniikka sääntökorttia myöten
+(kohta 7). Sanamixin perintö Idulle on siis rakenne eikä muistoja, ja se sopii siihen miten
+peli siirrettiin: säännöt ja tuntuma kantoivat, sisältö syntyy joka pelissä uudestaan. Tämä
+on kirjoittajan päätelmä eikä Tommin lause, ja se saa kaatua.
+
 ## 50. Pohdintalistalla olivat myös Q, W, X, Z ja Å, eli lista kattoi vieraan kirjaimiston kokonaan
 
 Tommi 23.8.2026 (erä 21), kohdan 49 rajaukseen:
