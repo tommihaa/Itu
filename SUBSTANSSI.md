@@ -1543,3 +1543,29 @@ kaatua.
 sitä että peli pelataan reaaliajassa pöydässä sovelluksen ulkopuolella? Luin sen
 jälkimmäiseksi, koska lause jatkuu mekanismin kuvauksena. Kohdan 34 kiinnostuksen aste
 (*vähän*) jää siis voimaan siihen asti kunnes tämä on kysytty.
+
+## 70. Pahviversion idea elää, ja peruste on pöytä eikä peli
+
+Tommi 23.8.2026 (erä 29), kohdan 69 avoimeen siitä tarkoittiko *liveä* elävää ideaa vai
+pöydässä reaaliajassa pelaamista:
+
+> *kyllä - idea elää, ihmiset rakastaa pelata pöydän ääressä, se vaan pitää mahdollistaa*
+
+**Kohdan 69 avoin sulkeutuu, ja kohdan 34 kiinnostuksen aste nousee.** Kohta 34 kirjasi
+kiinnostuksen sanalla *vähän* (20.8.2026), ja kolme päivää myöhemmin sama idea on elävä ja sillä
+on peruste. Peruste ei ole pahvi eikä nostalgia vaan pöytä: ihmiset pelaavat mielellään
+kasvokkain, ja tekijän tehtäväksi jää mahdollistaminen.
+
+**Sana *mahdollistaa* on vastauksen painavin, ja se asettaa sovelluksen rooliin eikä keskiöön.**
+Pöytäpelaamisen halu on jo olemassa eikä sitä tarvitse luoda; puuttuu vain se mikä tekee siitä
+mahdollista, ja kohta 69 nimeää sen mekanismina (valokuva ja aika sisään, tulos ulos).
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** vastaus on Itun kohdalla
+lahja-invariantin kirjaimellinen muoto. `Kaanon/KÄSITTEISTÖ.md` lainaa Tommia 13.5.2026 sanalla
+*ruuduitta*: teos onnistuu kun ihmiset ovat pöydän ääressä ilman ruutua. Pahviversio veisi Itun
+täsmälleen sinne, ja sovellus jäisi tuomariksi joka ei istu pöydässä. Sama rakenne on jo
+toteutuneena Superjatsin pass-and-playssä, joka on kanonissa nimetty puhelimen détournementiksi.
+Tämä saa kaatua.
+
+**Rajaus:** ei kysytty mitä *mahdollistaa* tarkoittaa toteutuksena (painettava pdf, ostettava
+rasia, vai pelkkä sovelluksen kyky lukea kuva), eikä sitä onko idea aikataulutettu mihinkään.
