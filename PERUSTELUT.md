@@ -78,9 +78,20 @@ jotta n ja g voivat näkyä samassa heitossa → *ng* on muodostettavissa.
 omistusliitteellisiä infinitiivejä (juostakseen).
 
 **Perustelu.** Nämä ovat **produktiivista morfologiaa**, jonka voi liimata lähes
-mihin tahansa sanaan (talo→talokin→talonikin→talossammekohan…). Ne räjäyttäisivät
-sanaston ja tekisivät lähes kaikesta kelvollista, pelistä katoaisi mielekkyys.
-Ne eivät ole "sanoja" vaan jatkeita, jotka pelaaja voisi aina lisätä.
+mihin tahansa sanaan (talo→talokin→talonikin→talossammekohan…). Ne eivät ole
+"sanoja" vaan jatkeita, jotka pelaaja voisi aina lisätä, ja juuri se on peruste:
+raja vedetään kohdan 1 mukaisesti siihen mikä on äärellistä ja sanakirjamaista,
+ei siihen minkä voi aina panna perään. Peruste on siis kategorinen eikä
+määrällinen, eikä se riipu siitä kuinka paljon sanasto kasvaisi.
+
+*Sanamuoto korjattiin 23.8.2026, ja vanha jätetään näkyviin.* Tässä luki aiemmin
+että liitteet ~~räjäyttäisivät sanaston ja tekisivät lähes kaikesta kelvollista,
+pelistä katoaisi mielekkyys~~. Alla oleva mittaus ei tue jälkimmäistä puolta:
+kelpaavuus nousee satunnaisessa asettelussa 2,462 prosentista 2,517 prosenttiin.
+Ensimmäinen puoli pitää muotomäärästä (5,3-kertainen) muttei pakatusta koosta
+(1,8-kertainen), ja se sana kuuluu kohtaan 6, jonka kerroin on 917. Päätös ei
+muuttunut, koska se ei koskaan lepännyt näillä luvuilla; perustelu lepäsi, ja se
+on nyt korjattu.
 
 **Hinta.** Pelaaja ei voi pelata aidolta tuntuvaa muotoa kuten "talokin".
 Kompromissi rajan selkeyden hyväksi.
@@ -121,11 +132,13 @@ taivutettuun muotoon sellaisenaan). Otosta vasten mitattuna se löytää 79 %
 FST:n tuottamista muodoista ja tuottaa 40 % sellaista jota FST ei tuota, eli se
 **yliarvioi** liitteiden vaikutuksen. Mitatut kelpaavuusluvut ovat siis ylärajoja.
 
-*Mitä mittaus ei sano.* Se ei kumoa eikä vahvista päätöstä, koska päätös ei ollut
-lukuun sidottu. Se kuitenkin kertoo, että perustelun kaksi puolta ovat eri
-vahvuisia: sanaston kasvu on todellinen, mutta pakattuna 1,8-kertainen, ja
-väite *tekisivät lähes kaikesta kelvollista* ei saa tukea asettelumittauksesta.
-Voimakkain räjähdys on kohdassa 6 eikä tässä.
+*Mitä mittaus muutti ja mitä ei.* Päätös ei muuttunut, koska se ei ollut lukuun
+sidottu. Perustelun sanamuoto muuttui, ja se on yllä: sanaston kasvu on todellinen
+mutta pakattuna 1,8-kertainen, ja väite *tekisivät lähes kaikesta kelvollista* ei
+saanut tukea asettelumittauksesta. Voimakkain räjähdys on kohdassa 6 eikä tässä.
+Korjaus tehtiin sopimusmuutos-protokollan mukaisesti: mittaus nostettiin
+päätettäväksi, Tommi päätti korjata sanamuodon, ja korjaus kirjattiin tähän
+dokumenttiin eikä pelkkään käytäntöön.
 
 ## 6. Olemassa olevat yhdyssanat sisään, keksityt ulos
 
