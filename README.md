@@ -39,7 +39,8 @@ Tämä tiedosto pidetään tarkoituksella ohuena. Elävä tieto asuu ylläpidety
 Ilman lisenssitiedostoa oletus on kaikki oikeudet pidätetään, eli tätä koodia ei toistaiseksi
 saa käyttää omissa projekteissa. Valinta odottaa yhtä avointa kysymystä: pelin sanasto on
 generoitu omorfi-morfologialla (GNU GPLv3), eikä generoidun aineiston asema ole tekijöiltä
-kysymättä ratkaistavissa. Kysymys on esitetty, ja lisenssi valitaan vastauksen jälkeen.
+kysymättä ratkaistavissa. Kysymys on valmisteltu omorfin tekijöille, ja lisenssi valitaan
+vastauksen jälkeen.
 
 Sanaston lähdeaineisto on eri asia ja sen ehdot ovat selvät: Kotuksen nykysuomen sanalista,
 CC BY 4.0, attribuutio [SANASTO.md](SANASTO.md#lähdeaineiston-attribuutio):ssä ja pelissä
