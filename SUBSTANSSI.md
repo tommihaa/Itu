@@ -1796,3 +1796,21 @@ siilosta toiseen, ja se on ainoa muoto joka ei riko offline-invarianttia. Tämä
 **Rajaus:** ei kysytty montako siiloa todellisuudessa on, onko ennätyksiä kadonnut kokonaan
 (esim. selaimen tyhjennykseen), eikä sitä palauttiko toteutettu vienti ja tuonti innostuksen
 josta kohdan 76 lause puhui.
+
+## 79. Tutun ristikkorakenteen lähdettä ei tiedetä
+
+Tommi 25.8.2026 (erä 32), kysyttäessä toistamiseen mistä se tuttu ristikkorakenne tuli,
+jonka perusteella Words of Wonders tuntui muistetulta (kohta 72):
+
+> *en tiedä*
+
+**Kohdan 72 rajaus sulkeutuu vastauksella joka jättää asian tuntemattomaksi, ja se on eri
+asia kuin auki jääminen.** Kysymys on nyt esitetty ja vastattu: rakenne tunnistui omaksi,
+mutta sen lähdettä ei muisteta. Ketju päättyy tähän eikä sitä jatketa arvaamalla; mainos,
+toisen pelaaminen ja kaupan listaus jäävät tarjotuiksi vaihtoehdoiksi joista yhtäkään ei
+valittu.
+
+**Mitä tämä tekee aiemmille kohdille:** kohtien 10, 12 ja 72 asema ei muutu. Veto oli
+ristikkomuodossa ja se on yhä Tommin vastaus; muodon ensikohtaamisen paikka on nyt kirjattu
+tuntemattomaksi eikä odottamaan parempaa muistia. Jos lähde joskus muistuu, se kirjataan
+uutena kohtana eikä tätä korjaamalla.
