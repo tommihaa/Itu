@@ -1867,3 +1867,29 @@ Tämä saa kaatua.
 
 **Rajaus:** ei kysytty mitä *kysyntä* tässä konkreettisesti tarkoittaa (työmarkkinoiden
 kysyntä osaamiselle, pelien ostajien kysyntä vai molemmat), eikä end-gamen aikajännettä.
+*Ensimmäinen puoli sulkeutui kohdassa 82.*
+
+## 82. Kysyntä tarkoittaa molempia, ja unelma on tarjousten vastaanottaminen
+
+Tommi 25.8.2026 (erä 32), kohdan 81 rajaukseen siitä mitä kysyntää kohden hän suuntaa:
+
+> *molemmat, työmarkkinat ja pelien ostajat - tarjousten vastaanottaminen on unelma*
+
+**Kohdan 81 rajauksen ensimmäinen puoli sulkeutuu: molemmat.** Työmarkkinoiden kysyntä
+osaamiselle ja pelien ostajien kysyntä ovat saman suuntauksen kaksi haaraa, eikä niiden
+välillä valita.
+
+**Sana *unelma* on vastauksen painavin, ja se on Tommin.** Unelma ei ole tietty työpaikka
+eikä tietty myyntiluku vaan **suunnan kääntyminen**: tarjousten vastaanottaminen tarkoittaa
+tilaa jossa aloite on toisella, eli kysyntä tulee luo eikä sitä tarvitse hakea. Molemmat
+haarat taipuvat samaan muotoon: työtarjous ja ostos ovat kumpikin saapuvaa kysyntää, ja ero
+nykytilaan on juuri aloitteen suunta, koska nyt haetaan (työnhaku) ja julkaistaan (pelit)
+omasta aloitteesta.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** tämä antaa kohdan 81 lauseelle
+*suuntaan kysyntää kohden* tarkemman muodon: oppiminen ja teokset ovat sitä työtä jolla
+saapuvan kysynnän tila rakennetaan, eli julkiset repot, julkaistut pelit ja kaupallinen
+sovellus ovat kaikki saman unelman välineitä. Tämä saa kaatua.
+
+**Rajaus:** end-gamen aikajänne on yhä kysymättä, eikä kysytty onko tarjouksia jo tullut
+kumpaakaan haaraa pitkin.
