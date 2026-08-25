@@ -1814,3 +1814,20 @@ valittu.
 ristikkomuodossa ja se on yhä Tommin vastaus; muodon ensikohtaamisen paikka on nyt kirjattu
 tuntemattomaksi eikä odottamaan parempaa muistia. Jos lähde joskus muistuu, se kirjataan
 uutena kohtana eikä tätä korjaamalla.
+
+## 80. Vienti ja tuonti poisti esteen; siilojen kokoaminen ehkä joskus, pelaamisen paluu ajan kanssa
+
+Tommi 25.8.2026 (erä 32), kun kohdan 76 lause oli avattu kolmeksi erilliseksi kysymykseksi
+(poistiko toteutus esteen, aikooko koota siilot, houkuttaako pelaaminen nyt):
+
+> *1 kyllä poisti, 2 ehkä joskus, 3 katsotaan ajan kanssa*
+
+**Kohdan 76 lause on nyt luettu loppuun, ja sen kolme osaa saivat eri vastaukset.** Este
+jonka *ehkä innostun taas sitten kun ennätykset tallentuu* tarkoitti on poistunut: vienti ja
+tuonti (versio 0.10.0) oli oikea vastaus siihen. Siilojen kokoaminen on *ehkä joskus*, eli
+mahdollisuus eikä aikomus, ja pelaamisen paluu on *katsotaan ajan kanssa*. Lauseen oma *ehkä*
+piti siis paikkansa: ominaisuus poisti esteen muttei lupaa paluuta, ja sen näyttää aika.
+
+**Mitä tämä tekee aiemmille kohdille:** kohdan 78 rajauksen innostusosa sulkeutuu tällä, ja
+kohdan 76 kuva täydentyy ilman että se muuttuu: ilo oli rakentamisessa, ja tämäkin vastaus
+on rakentajan eikä pelaajan. Este poistui rakentamalla ominaisuus, ei pelaamalla.
