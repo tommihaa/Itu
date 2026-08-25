@@ -1831,3 +1831,39 @@ piti siis paikkansa: ominaisuus poisti esteen muttei lupaa paluuta, ja sen näyt
 **Mitä tämä tekee aiemmille kohdille:** kohdan 78 rajauksen innostusosa sulkeutuu tällä, ja
 kohdan 76 kuva täydentyy ilman että se muuttuu: ilo oli rakentamisessa, ja tämäkin vastaus
 on rakentajan eikä pelaajan. Este poistui rakentamalla ominaisuus, ei pelaamalla.
+
+## 81. Oma oppiminen on tärkeintä, pelit ovat ihmisille, ja end-game on tulo tekijälle
+
+Tommi 25.8.2026 (erä 32), ensin kohdan 80 vastauksen jatkoksi omin päin ja sitten
+kahden tulkinnan monivalintaan, jossa hän valitsi itseään koskevan lukutavan:
+
+> *oppiminen tärkeintä, suuntaan kysyntää kohden*
+>
+> *2, oma oppiminen on tärkeintä*
+> *pelejä ihmisille, ei pelkästää minulle, end-game tuloa minulle*
+
+**Lause oli tekijästä eikä peleistä, ja se asettaa kolme asiaa järjestykseen.** Se mitä työ
+antaa nyt on oma oppiminen, ja se on tärkeintä. Teokset itsessään ovat ihmisille, eivät
+pelkästään tekijälle. Ja päämäärä, Tommin omalla sanalla *end-game*, on tulo tekijälle.
+Kolme tasoa eivät kilpaile keskenään vaan ovat sama liike eri aikajänteillä: oppiminen
+suunnataan kysyntää kohden, jotta se lopulta tuottaa tuloa.
+
+**Torjuttu tulkinta on kirjattava, koska se olisi mennyt läpi ilman kysymystä.** Ensimmäinen
+lukutapa oli että *oppiminen tärkeintä* koskisi pelien opettavaisuutta. Tommi valitsi toisen,
+eli kohdan 74 järjestys (opettavaisuus on ominaisuus jonka peli sai, ei tarkoitus) jää
+ennalleen eikä saa tästä uutta painoa kumpaankaan suuntaan.
+
+**Mitä tämä tekee aiemmille kohdille:** kohdan 76 *ilo oli rakentamisessa* saa tästä
+selityksen jota se ei itse sanonut: rakentaminen on se paikka jossa oppiminen tapahtuu, joten
+ilo ja tärkein hyöty osuvat samaan tekoon. Ja teesin siirtolause (pelikulttuuri verkkoon,
+kohta 22) sekä tämä kohta kuvaavat saman työn kahta suuntaa: teokset kulkevat ihmisille päin
+ja oppi sekä lopulta tulo tekijälle päin.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** *end-game tuloa minulle* on
+sama päämäärä jota kaupallinen sovellus (`Kaanon/TYOJONO.md` kohta 31, pohjana Itu) nyt
+konkretisoi, ja tämä vastaus antaa sille substanssiperustan jota päätöskirjaukset eivät
+sisältäneet: kaupallinen polku ei ole poikkeama lahjalinjasta vaan suunnitelman loppupeli.
+Tämä saa kaatua.
+
+**Rajaus:** ei kysytty mitä *kysyntä* tässä konkreettisesti tarkoittaa (työmarkkinoiden
+kysyntä osaamiselle, pelien ostajien kysyntä vai molemmat), eikä end-gamen aikajännettä.
