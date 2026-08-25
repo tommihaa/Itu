@@ -1569,3 +1569,39 @@ Tämä saa kaatua.
 
 **Rajaus:** ei kysytty mitä *mahdollistaa* tarkoittaa toteutuksena (painettava pdf, ostettava
 rasia, vai pelkkä sovelluksen kyky lukea kuva), eikä sitä onko idea aikataulutettu mihinkään.
+
+## 71. Pelinimet eivät palauta muistia, eli kohdan 68 kysymys on vastattu kieltävästi
+
+Tommi 25.8.2026 (erä 30), kun kohdan 68 nimetty este oli poistunut ja Google Play -aineistosta
+louhittu lista sanapeleistä esitettiin hänelle nimi kerrallaan:
+
+> *pelinimet ovat unohtuneet täysin*
+
+**Kohta 68 sulkeutuu, mutta ei niin kuin se odotti.** Se oletti että lista palauttaisi muistin
+kysyttäväksi uudelleen; lista syntyi, ja muisti ei palannut. Vastaus koskee yhä muistia eikä
+asiaa, kuten kohdassa 68, mutta nyt se on annettu nimet edessä eikä ilman niitä, joten se on
+eri vastaus samaan kysymykseen.
+
+**Mitä aineisto näyttää, ja se on luettu eikä muistettu.** Lähde on `Lahteet/play-kauppa-2026/`,
+Google Takeout -vienti 24.8.2026. Päivättyjä hankintoja on kaksi: Wordfeud Premium 2.8.2020 ja
+Word Trip 20.10.2021, jälkimmäinen vuositilauksena ja kahtena lisäostona marraskuussa 2021.
+Ajoittamattomia, migraatioleiman `2021-09-03` takana olevia ovat BAIKOH: Word Challenges (18
+sovelluksensisäistä tuotetta, enemmän kuin millään muulla sanapelillä), Word Search ja Word
+Search Games in english, Word Breaker, String of Words: Brain Puzzles, Pics 2 Words, Fill-In
+Crosswords sekä Crossword Puzzles. Leima ei ole päivä vaan tarkoittaa *ennen tätä*
+(`Lahteet/LUE-ENSIN.md`).
+
+**Yksi poissaolo on löydös eikä aukko.** *Words of Wonders*, jonka kohta 12 kirjaa ainoana
+mieleen jääneenä, ei esiinny aineistossa kertaakaan, eivätkä Wordscapes, Ruzzle tai Wordle.
+Muistiin jäi siis se josta ei ole jälkeä, ja jälki jäi niistä joita ei muistettu.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** kysymykseen siirtyikö apeista
+piirteitä Ituun ei ole enää reittiä. Muisti ei vastaa nimilläkään, eikä arkisto voi vastata,
+koska se kertoo hankinnan eikä pelaamista saati sitä mikä pelistä jäi mieleen. Jokainen tästä
+eteenpäin kirjattu piirreyhteys olisi päättely kahden nimen välillä eikä muistettu asia, eli
+täsmälleen se keksitty substanssi jota vastaan tämä dokumentti on kirjoitettu. Kohta jää siis
+vastatuksi kieltävästi eikä avoimeksi. Tämä saa kaatua, jos muisti palaa jotain muuta kautta.
+
+**Rajaus:** aineisto kertoo hankinnan eikä käyttöä, `Installs.json` ei sisällä yhtäkään
+sanapeliä (ne on poistettu laitteilta ennen vientiä), eivätkä hintatiedot ole tässä, koska tämä
+dokumentti on julkinen ja ostohistoria on henkilökohtaista. Ne ovat luettavissa lähteestä.
