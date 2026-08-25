@@ -1605,3 +1605,33 @@ vastatuksi kieltävästi eikä avoimeksi. Tämä saa kaatua, jos muisti palaa jo
 **Rajaus:** aineisto kertoo hankinnan eikä käyttöä, `Installs.json` ei sisällä yhtäkään
 sanapeliä (ne on poistettu laitteilta ennen vientiä), eivätkä hintatiedot ole tässä, koska tämä
 dokumentti on julkinen ja ostohistoria on henkilökohtaista. Ne ovat luettavissa lähteestä.
+
+## 72. Words of Wonders oli tuttu rakenteeltaan eikä pelattuna, ja kohtien 10 ja 12 nimi on siksi epävarma
+
+Tommi 25.8.2026 (erä 30), kun kohdan 71 poissaolo esitettiin hänelle:
+
+> *words of wonders oli tutun näköinen rakenne, siksi sitä muistelin mutta näköjään se oli
+> hallusinointia*
+
+**Kohtien 10 ja 12 nimi kaatuu, mutta niiden sisältö ei.** Nimi *Words of Wonders* on peräisin
+tunnistetusta rakenteesta eikä muistosta pelaamisesta, eikä aineistossa ole siitä jälkeä (kohta
+71). Se mikä veti puoleensa oli **ristikko**, ja se on yhä Tommin vastaus (kohta 12); vain se
+mihin sovellukseen se liitettiin osoittautui väärin nimetyksi. Kohtia 10 ja 12 ei siis kirjoiteta
+uusiksi vaan luetaan tästä eteenpäin ilman nimeä: veto oli ristikkomuodossa, eikä sitä tarvitse
+sitoa mihinkään yksittäiseen appiin.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** kohdan 12 päätelmä pitää
+paremmin ilman nimeä kuin sen kanssa. Se väitti että Itun ristikkovalinta toistaa pelaajan omaa
+vetovoimakokemusta, ja väite on nyt riippumaton siitä mitä sovellusta pelattiin: rakenne veti
+niin voimakkaasti, että se tunnistettiin omaksi myös pelissä jota ei ollut pelattu. Tämä saa
+kaatua.
+
+**Menetelmällinen löydös, ja se koskee kaikkia viittä substanssidokumenttia.** Dokumenttilajin
+nimetty vikamuoto on tähän asti ollut *liian pitkä johtopäätös tosi lähtökohdasta*, eli
+kirjoittajan virhe. Tässä vika oli lähtökohdassa itsessään: haastateltava nimesi hyvässä
+uskossa kohteen jota ei ollut, ja hän nimesi sen omalla sanallaan *hallusinointia*. Ihmiskoetin
+ei siis ole erehtymätön, ja se on yhtä aikaa kohdan 10 valinnan hinta ja sen puolustus, koska
+juuri koetin itse kumosi väitteen niin pian kuin näki mitattua aineistoa vasten.
+
+**Rajaus:** ei kysytty mistä tuttu rakenne oli peräisin, eli mikä sovellus tai peli sen
+tosiasiassa tuotti. Kohdan 71 kieltävä vastaus koskee sitä yhä.
