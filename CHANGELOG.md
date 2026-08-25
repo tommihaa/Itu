@@ -11,6 +11,17 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
 > numerolla, aiemmat numerot ovat jälkikäteisiä nimilappuja jo tuotannossa olevalle
 > koodille. Tästä eteenpäin versio bumpataan ennen pushia, kuten Superjatsissa.
 
+## [0.10.0] – 2026-08-25
+
+### Lisätty
+- **Ennätysten vienti ja tuonti** (Asetukset › 🏆 Ennätysten vienti ja tuonti). Ennätykset
+  ovat laitekohtaisia, koska ne asuvat selaimen `localStorage`issa; nyt koko listan voi viedä
+  JSON-tiedostoksi ja tuoda toisella laitteella. Tuonti **yhdistää eikä pyyhi**: laitteen omat
+  ennätykset säilyvät, kaksoiskappaleet karsitaan ja kukin (pistemoodi × kesto) leikataan
+  takaisin top-10:een. Peli ei lähetä mitään mihinkään, eli offline-pelirauha säilyy: se
+  yhteinen paikka on tiedosto, jota pelaaja itse siirtää. Tausta: `ITU.md` › Ennätysten vienti
+  ja tuonti.
+
 ## [0.9.0] – 2026-08-23
 
 ### Lisätty

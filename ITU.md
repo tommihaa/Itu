@@ -190,6 +190,18 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
   joka yhdistää kestot ja vertaa puhdasta tuottavuutta. Pistettä/min käyttää **vain
   sanapisteitä** (ei aikabonusta/sakkoja) → ei kasaannu aikabonuksen kanssa. Taaksepäin­-
   yhteensopiva: laskettu tallennetusta `wordPoints`/`duration`-kentästä (vanha tietue → 3 min).
+- **Ennätysten vienti ja tuonti (päätetty 25.8.2026, näkyvissä asetuksissa):** ennätykset
+  asuvat `localStorage`issa, joten ne ovat laitekohtaisia. Asetuksista voi viedä koko listan
+  JSON-tiedostoksi ja tuoda tiedoston toisella laitteella. **Tuonti yhdistää eikä korvaa:**
+  kaksoiskappaleet karsitaan tunnuksella (siemen, aikaleima, moodi, kesto) ja kukin kategoria
+  leikataan takaisin top-10:een samalla säännöllä kuin kierroksen tallennus (`trimByCategory`).
+  Offline-invariantti pysyy koskemattomana: yhteinen paikka on tiedosto jota pelaaja itse
+  siirtää, eikä peli ota yhteyttä mihinkään. Mitattu peruste tiedostolle: täysi setti (2 moodia
+  × 4 kestoa × top-10) on noin 80 kt, joten QR-koodi (katto ~3 kt) tai linkki ei riittäisi
+  ilman että ruudukot karsitaan pois. Tausta: `SUBSTANSSI.md` kohta 76 ja
+  `Kaanon/TYOJONO.md`:n poistettu kohta 34. **Kaikkien yhteinen tulostaulu on eri asia ja se
+  kuuluu kaupalliselle puolelle** (`Kaanon/TYOJONO.md` kohta 31, päätös 25.8.2026); tässä on
+  kyse yhden pelaajan omista ennätyksistä hänen omien laitteidensa välillä.
 
 ## Jatkoideat (varasto, ei päätöksiä)
 

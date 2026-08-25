@@ -330,6 +330,91 @@ function saveRecords(recs: ScoreRecord[]): void {
   }
 }
 
+/** Leikkaa listan top-10:een PER kategoria (moodi x kesto). Odottaa että `recs` on jo
+ * järjestetty parhaasta huonoimpaan, ja säilyttää järjestyksen. Sama sääntö käytössä
+ * sekä kierroksen tallennuksessa että tuonnissa, siksi omana funktionaan. */
+function trimByCategory(recs: ScoreRecord[]): ScoreRecord[] {
+  const kept: ScoreRecord[] = [];
+  const counts = new Map<string, number>();
+  for (const r of recs) {
+    const cat = recordCategory(r);
+    const n = counts.get(cat) ?? 0;
+    if (n < MAX_RECORDS) {
+      counts.set(cat, n + 1);
+      kept.push(r);
+    }
+  }
+  return kept;
+}
+
+/** Tietueen tunnus tuonnin kaksoiskappaleiden karsintaan. Siemen ja aikaleima yhdessä
+ * yksilöivät kierroksen: sama siemen voi toistua, mutta ei samalla millisekunnilla. */
+function recordId(r: ScoreRecord): string {
+  return `${r.seed}|${r.date}|${r.mode}|${r.duration ?? DEFAULT_DURATION}`;
+}
+
+const RECORDS_FILE_KIND = "itu-records";
+
+/** Vie ennätykset JSON-tiedostoksi. Tiedosto on se yhteinen paikka, jota pelaaja itse
+ * siirtää laitteelta toiselle; peli ei ota yhteyttä mihinkään (offline-invariantti). */
+function exportRecords(): number {
+  const recs = loadRecords();
+  const payload = {
+    kind: RECORDS_FILE_KIND,
+    version: 2,
+    exported: new Date().toISOString(),
+    records: recs,
+  };
+  const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `itu-ennatykset-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  return recs.length;
+}
+
+interface ImportResult {
+  luettu: number; // tiedostossa olleet tietueet
+  uudet: number; // ne jotka eivät olleet jo laitteella
+  listalle: number; // uusista ne jotka mahtuivat top-10:een
+  yhteensa: number; // tallessa tuonnin jälkeen
+}
+
+/** Tuo ennätykset tiedostosta ja YHDISTÄÄ ne laitteen omiin: tuonti ei koskaan pyyhi
+ * mitään. Kaksoiskappaleet karsitaan tunnuksella, ja kukin kategoria leikataan takaisin
+ * top-10:een samalla säännöllä kuin kierroksen tallennus. */
+function importRecords(text: string): ImportResult {
+  let data: unknown;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    // Selaimen oma virhe on englanniksi ja puhuu merkkipaikoista; pelaajalle riittää tämä.
+    throw new Error("Tiedosto ei ole kelvollista JSONia.");
+  }
+  const box = data as { kind?: string; records?: unknown };
+  const incoming: unknown = box?.kind === RECORDS_FILE_KIND ? box.records : data;
+  if (!Array.isArray(incoming)) throw new Error("Tiedosto ei ole Itun ennätystiedosto.");
+  const valid = (incoming as ScoreRecord[]).filter(
+    (r) => r && typeof r.total === "number" && typeof r.date === "number" && typeof r.seed === "string",
+  );
+  if (valid.length === 0) throw new Error("Tiedostossa ei ollut yhtäkään ennätystä.");
+  const own = loadRecords();
+  const seen = new Set(own.map(recordId));
+  const fresh = valid.filter((r) => !seen.has(recordId(r)));
+  const merged = [...own, ...fresh].sort((a, b) => b.total - a.total || a.date - b.date);
+  const kept = trimByCategory(merged);
+  saveRecords(kept);
+  const keptIds = new Set(kept.map(recordId));
+  return {
+    luettu: valid.length,
+    uudet: fresh.length,
+    listalle: fresh.filter((r) => keptIds.has(recordId(r))).length,
+    yhteensa: kept.length,
+  };
+}
+
 function secondsLeft(): number {
   return Math.max(0, Math.ceil((roundEndsAt - Date.now()) / 1000));
 }
@@ -431,19 +516,9 @@ function recordResult(v: Validation): void {
   const recs = loadRecords();
   recs.push(rec);
   recs.sort((a, b) => b.total - a.total || a.date - b.date); // korkein ensin, tasapeli vanhin ensin
-  // Trimmaus PER kategoria (moodi × kesto): kullakin yhdistelmällä oma top-10. Kuljetetaan
-  // järjestyksessä ja pidetään kustakin kategoriasta enintään MAX_RECORDS → mikään kategoria
-  // ei syrjäytä toista listalta.
-  const kept: ScoreRecord[] = [];
-  const counts = new Map<string, number>();
-  for (const r of recs) {
-    const cat = recordCategory(r);
-    const n = counts.get(cat) ?? 0;
-    if (n < MAX_RECORDS) {
-      counts.set(cat, n + 1);
-      kept.push(r);
-    }
-  }
+  // Trimmaus PER kategoria (moodi × kesto): kullakin yhdistelmällä oma top-10, eli mikään
+  // kategoria ei syrjäytä toista listalta. Sama sääntö on käytössä tuonnissa.
+  const kept = trimByCategory(recs);
   // Sija lasketaan oman kategorian (moodi × kesto) listalla.
   const cat = recordCategory(rec);
   lastRecordRank = kept.filter((r) => recordCategory(r) === cat).indexOf(rec) + 1;
@@ -1063,6 +1138,21 @@ function renderSettings(): void {
           pois: pelirauha säilyy, ääni on valinnainen lisä.</small>
         </span>
       </label>
+      <div class="sm-setting-row sm-setting-block">
+        <span class="sm-setting-text">
+          <b>🏆 Ennätysten vienti ja tuonti</b>
+          <small>Ennätykset tallentuvat vain tälle laitteelle. Vie ne tiedostoon ja tuo
+          tiedosto toisella laitteella, niin sama lista kulkee mukanasi. Tuonti yhdistää
+          eikä pyyhi: laitteen omat ennätykset säilyvät, ja kummankin parhaat mahtuvat
+          samalle listalle. Peli ei lähetä mitään mihinkään.</small>
+        </span>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="sm-tool" id="sm-rec-export">⬇️ Vie tiedostoon</button>
+          <button class="sm-tool" id="sm-rec-import">⬆️ Tuo tiedostosta</button>
+          <input type="file" id="sm-rec-file" accept="application/json,.json" hidden />
+        </div>
+        <p class="sm-ch-note" id="sm-rec-status" role="status"></p>
+      </div>
       ${
         settings.soundEnabled
           ? `<div class="sm-setting-row">
@@ -1108,6 +1198,31 @@ function renderSettings(): void {
   root.querySelectorAll<HTMLButtonElement>("[data-try-sfx]").forEach((b) =>
     b.addEventListener("click", () => sfx[b.dataset.trySfx as keyof typeof sfx]()),
   );
+  const recStatus = (msg: string): void => {
+    const el = root.querySelector<HTMLElement>("#sm-rec-status");
+    if (el) el.textContent = msg;
+  };
+  root.querySelector<HTMLButtonElement>("#sm-rec-export")!.onclick = () => {
+    const n = exportRecords();
+    recStatus(n > 0 ? `Vietiin ${n} ennätystä tiedostoon.` : "Ei vielä yhtään ennätystä vietäväksi.");
+  };
+  const recFile = root.querySelector<HTMLInputElement>("#sm-rec-file")!;
+  root.querySelector<HTMLButtonElement>("#sm-rec-import")!.onclick = () => recFile.click();
+  recFile.onchange = () => {
+    const f = recFile.files?.[0];
+    if (!f) return;
+    f.text()
+      .then((text) => {
+        const r = importRecords(text);
+        recStatus(
+          `Luettiin ${r.luettu} ennätystä, joista ${r.uudet} oli uusia ja ${r.listalle} ylsi listalle. Tallessa nyt ${r.yhteensa}.`,
+        );
+      })
+      .catch((e) => recStatus(`Tuonti ei onnistunut: ${e instanceof Error ? e.message : String(e)}`))
+      .finally(() => {
+        recFile.value = ""; // sama tiedosto voidaan tuoda uudelleen
+      });
+  };
   root.querySelector<HTMLButtonElement>("#sm-mute-sounds")?.addEventListener("click", () => {
     setSoundEnabled(false);
     setSfxEnabled(false);

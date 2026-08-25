@@ -1747,3 +1747,25 @@ ja ne johtavat eri paikkaan: joko se viittaa `Kaanon/TYOJONO.md`:n kohtaan 34 (e
 laitekohtaisia, eli monella laitteella testattaessa ne hajoavat moneen paikkaan), tai se
 tarkoittaa että ennätykset eivät jostain syystä säily laitteella lainkaan, mikä olisi vika
 eikä puuttuva ominaisuus. Kysytty 25.8.2026, vastausta ei ole tätä kirjattaessa.
+
+## 77. Itseään vastaan kilpaileminen on eri asia kuin globaali kilpailu
+
+Tommi 25.8.2026 (erä 31), kun keskustelu oli erotellut omien laitteiden väliset ennätykset
+kaikkien yhteisestä tulostaulusta:
+
+> *eri asia kilpailla itseään vastaan kuin globaalisti*
+
+**Lause on erottelu eikä mielipide, ja se ratkaisee kysymyksen johon se vastasi.** Sama sana
+*ennätys* kattaa molemmat, mutta teot ovat eri: omaa tulosta vasten pelaava mittaa itseään
+eilistä vastaan, ja globaalilla listalla pelaava mittaa itseään tuntemattomia vastaan.
+Ensimmäinen ei tuo peliin sitä mitä `Kaanon/KÄSITTEISTÖ.md` §1 kieltää lahjateoksilta, koska
+kilpailtavaa vastapuolta ei ole.
+
+**Kohta 35:n parkitettu erottelu saa tästä perustelunsa.** `Kaanon/TYOJONO.md` kohta 35 ehdotti
+että *ennätys* on teon ominaisuus ja *rating* henkilön; tämä lause sanoo saman kokemuksena eikä
+määritelmänä, ja se on Tommin muotoilu eikä minun.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** siksi ennätysten vienti ja
+tuonti saatiin toteuttaa Ituun samana päivänä kun tulostaulu siirtyi kaupalliselle puolelle
+(`Kaanon/TYOJONO.md` kohta 31). Ne eivät ole saman ominaisuuden kaksi kokoa vaan kaksi eri
+ominaisuutta, joista vain toinen on lahjateoksen luonteen mukainen. Tämä saa kaatua.
