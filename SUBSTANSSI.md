@@ -1635,3 +1635,69 @@ juuri koetin itse kumosi väitteen niin pian kuin näki mitattua aineistoa vaste
 
 **Rajaus:** ei kysytty mistä tuttu rakenne oli peräisin, eli mikä sovellus tai peli sen
 tosiasiassa tuotti. Kohdan 71 kieltävä vastaus koskee sitä yhä.
+
+## 73. Duolingosta jäi mieleen edistyminen ja hahmot, ja lopetti toisto: siitä tuli grindausta
+
+Tommi 25.8.2026 (erä 31), kysyttäessä mikä Duolingossa piti kiinni kolme vuotta ja mikä
+lopulta lopetti sen:
+
+> *duolingo oli lopulta enemmän peli kuin opettava ohjelma, mukavaa oli edistyminen ja
+> sarjakuvamaisen hauskat hahmot ja tarinat, käytön lopetti toisto ja tylsyys, siitä tuli
+> grindausta*
+
+**Vastauksessa on kolme osaa, ja ne kannattaa lukea erikseen.** Ensimmäinen on luokitus:
+Duolingo oli lopulta enemmän peli kuin opettava ohjelma. Toinen on se mikä veti, ja se on
+kaksi asiaa eikä yksi: edistyminen ja sarjakuvamaisen hauskat hahmot ja tarinat. Kolmas on
+se mikä lopetti, ja se on toisto ja tylsyys, jotka Tommi nimeää yhdellä sanalla:
+**grindausta**.
+
+**Sana *grindaus* on vastauksen painavin, ja se on Tommin.** Se ei sano että ohjelma olisi
+ollut liian vaikea tai liian helppo, vaan että tekeminen muuttui suoritukseksi joka ei enää
+tuottanut mitään uutta. Lopettamisen syy oli siis sisällön loppuminen kokemuksena, ei
+motivaation loppuminen.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** kohdan 54 aikahaarukka saa
+syyn. Kausi ei päättynyt siihen että kielet olisi opittu tai harrastus jätetty, vaan siihen
+että väline kulutti itsensä loppuun. Tämä saa kaatua.
+
+**Toinen seuraus, ja se on erikseen kaadettavissa:** Itussa sama vaara on rakenteellisesti
+pienempi, koska kierroksen sisältö arvotaan joka kerta (`ITU.md`, determinismi koskee siementä
+eikä toistuvaa sisältöä), kun taas kurssimuotoinen ohjelma tarjoaa saman polun jokaiselle.
+Tätä ei kysytty, eikä Tommi sanonut sitä. Se on tässä siksi, että väite *sisältö toistuu*
+on mitattavissa kummastakin, jos joku joskus haluaa tarkistaa sen.
+
+**Avoin, ja se on kysytty muttei vastattu:** kysyin erikseen onko Itun *ei koukkua*
+-periaatteen ja Duolingon putki- ja muistutusrakenteen välillä yhteys, eli tuliko periaate
+osittain koetusta. Vastaus ei koskenut tätä, joten kysymys jää auki eikä sitä täytetä
+päättelemällä. Se on houkutteleva täytettävä juuri siksi, että vastaus sopisi liian hyvin.
+
+## 74. Itu on tehty tekijän omaksi iloksi, ja opettavaisuus tulee vasta pelaajan oman pohdinnan jälkeen
+
+Tommi 25.8.2026 (erä 31), kysyttäessä onko Itun tapa näyttää kielioppi vasta kierroksen
+jälkeen velkaa Duolingo-vuosille vai pikemminkin niiden vastakohta:
+
+> *Itu oli omaksi ilokseni tehty ja opettavaisuus jälkikäteen, kun pelaaja ensin itse
+> pohtinut kirjainten järjestämistä sanoiksi*
+
+**Järjestys on tarkoituksellinen, ja se on vastauksen ydin.** Pelaaja pohtii ensin itse, ja
+selitys tulee vasta sen jälkeen. Kielioppi ei siis ole oppitunti jonka päälle peli on
+rakennettu, vaan se seuraa omaa suoritusta. Tämä on `OPIMOODI.md`:n *pehmeä*-päätöksen ja
+kohdan 60 (kielioppi näkyviin omituisista sanoista) alla oleva peruste, jota kumpikaan ei
+kirjannut.
+
+**Lause *omaksi ilokseni tehty* vastaa myös siihen mitä ei kysytty.** Kohta 26 kirjaa
+*opeteltaviksi*-sanan kahdeksi asiaksi, joista ensimmäinen on tekijän oma koe. Tämä vastaus
+asettaa ne järjestykseen: oma ilo on ensin, ja opettavaisuus on ominaisuus jonka peli sai,
+ei tarkoitus jota varten se tehtiin. Sama järjestys toistuu pelaajan kohdalla, ja se on
+kohdan oma sisältö: ensin tekeminen, sitten selitys.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** kohdan 73 luokitus kääntyy
+tässä ympäri. Duolingo oli opettava ohjelma josta tuli lopulta peli; Itu on peli jonka
+opettavaisuus on jälkikäteinen eikä koskaan ollut sen tehtävä. Kumpikaan ei ole toisen
+korjausyritys, koska niitä ei tehty samasta lähtökohdasta, mutta ero selittää miksi
+Opi-moodi ei voinut olla oletus eikä pakollinen. Tämä saa kaatua.
+
+**Rajaus:** ei kysytty mitä *oma ilo* tarkoittaa pelaamisena eikä tekemisenä, eli oliko ilo
+pelin pelaamisessa vai sen rakentamisessa. Kohdat 13 ja 15 antavat siihen osittaisen
+vastauksen (kehitysvaiheessa pelattiin kyllästymiseen asti, nykyään ei pelata), mutta ne
+eivät ole tämän vastauksen selitys.
