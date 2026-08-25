@@ -1769,3 +1769,30 @@ määritelmänä, ja se on Tommin muotoilu eikä minun.
 tuonti saatiin toteuttaa Ituun samana päivänä kun tulostaulu siirtyi kaupalliselle puolelle
 (`Kaanon/TYOJONO.md` kohta 31). Ne eivät ole saman ominaisuuden kaksi kokoa vaan kaksi eri
 ominaisuutta, joista vain toinen on lahjateoksen luonteen mukainen. Tämä saa kaatua.
+
+## 78. Ennätykset eivät hajonneet vain laitteisiin vaan laite/selain-yhdistelmiin
+
+Tommi 25.8.2026 (erä 32), kohdan 76 avoimeen siitä kumpaa *ehkä innostun taas sitten kun
+ennätykset tallentuu* tarkoitti:
+
+> *ennatykset ei olleet pelkästään laite, vaan myös laite/selain-kohtaisia*
+> *siis pelasin monella selaimella selaimessa ja ilman ja laitteissa*
+
+**Kohdan 76 avoin sulkeutuu, ja oikea lukutapa oli ensimmäinen mutta liian karkeana.** Kyse ei
+ollut viasta vaan puuttuvasta ominaisuudesta, ja hajonta oli hienojakoisempaa kuin kohdan 76
+muotoilu *laitekohtaisia* antoi ymmärtää: sama laite tuotti useita erillisiä ennätyshistorioita,
+koska pelattiin monella selaimella, selaimessa ja ilman, ja eri laitteissa. Siiloja oli siis
+laite kertaa käyttötapa, ei laite per laite.
+
+**Tekninen vastine, ja se on kirjoittajan eikä Tommin:** tämä on täsmälleen `localStorage`n
+muoto. Tallennus on selainkohtainen, ja asennettu PWA voi olla selaimesta erillinen säilö,
+joten *selaimessa ja ilman* tarkoittaisi asennettua sovellusta ja selainkäyttöä eri siiloina
+samalla laitteella. Tulkinta *ilman* = asennettu PWA on minun, ja tämä saa kaatua.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** ennätysten vienti ja tuonti
+(versio 0.10.0) osuu juuri tähän: se ei korjaa siiloja vaan antaa käden joka kantaa tuloksen
+siilosta toiseen, ja se on ainoa muoto joka ei riko offline-invarianttia. Tämä saa kaatua.
+
+**Rajaus:** ei kysytty montako siiloa todellisuudessa on, onko ennätyksiä kadonnut kokonaan
+(esim. selaimen tyhjennykseen), eikä sitä palauttiko toteutettu vienti ja tuonti innostuksen
+josta kohdan 76 lause puhui.
