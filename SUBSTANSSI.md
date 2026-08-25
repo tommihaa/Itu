@@ -1701,3 +1701,49 @@ Opi-moodi ei voinut olla oletus eikä pakollinen. Tämä saa kaatua.
 pelin pelaamisessa vai sen rakentamisessa. Kohdat 13 ja 15 antavat siihen osittaisen
 vastauksen (kehitysvaiheessa pelattiin kyllästymiseen asti, nykyään ei pelata), mutta ne
 eivät ole tämän vastauksen selitys.
+
+## 75. Streakit eivät enää miellytä ja muistutus oli ärsyttävä, mutta *enää* kertoo että joskus miellyttivät
+
+Tommi 25.8.2026 (erä 31), kohdan 73 avoimeen siitä oliko Duolingon putki tai päivittäinen
+muistutus ärsyttävä, yhdentekevä vai mukava:
+
+> *en pidä enää streakeista, muistutus oli ärsyttävä*
+
+**Kohdan 73 avoin sulkeutuu, ja vastaus on kolmesta vaihtoehdosta se joka ei ollut
+yhdentekevä.** Muistutus oli ärsyttävä, eli koukun ulompi kerros koettiin haitaksi. Streakeista
+vastaus on eri lajinen: ei kielteinen väite putkista sinänsä, vaan ajassa muuttunut suhde.
+
+**Sana *enää* on vastauksen painavin, ja se on Tommin.** Se sanoo että joskus streakit
+miellyttivät, ja se sopii kohtaan 73: siellä *edistyminen* on nimetty toiseksi asiaksi joka
+piti kiinni. Putki on edistymisen näkyvin muoto, joten kohdat eivät ole ristiriidassa vaan
+kuvaavat saman asian kahta aikaa. Mikä muutti suhteen, ei ole tiedossa eikä sitä kysytty.
+
+**Mitä tämä ei todista, ja rajaus on tässä koko kohdan tärkein osa.** Yhteys Itun *ei
+koukkua* -periaatteeseen on nyt tuettu kokemuksen tasolla: koukun mekanismi on koettu ja
+koettu haitaksi. Se ei silti todista että periaate olisi peräisin siitä. Tommi ei ole
+sanonut niin, ja kysymys esitettiin kahdesti eri muodossa. Syntyperäkysymys jää siis auki,
+ja tämä kohta kirjaa vain kokemuksen.
+
+## 76. Ilo oli rakentamisessa, ei pelaamisessa
+
+Tommi 25.8.2026 (erä 31), kohdan 74 rajaukseen siitä oliko *oma ilo* pelaamisessa vai
+rakentamisessa:
+
+> *ilo oli rakentamisessa, uusia ominaisuuksia tuli ja ehkä innostun taas sitten kun
+> ennätykset tallentuu*
+
+**Kohdan 74 rajaus sulkeutuu, ja vastaus on rakentaminen.** Ilo oli uusien ominaisuuksien
+syntymisessä, ei pelin pelaamisessa. Tämä selittää kohdan 13 (Tommi ei pelaa Itua nykyään)
+ilman että siihen tarvitaan kyllästymistä: pelaaminen oli kehitysvaiheessa työtä pelin
+hyväksi (kohta 15), ja kun rakentaminen hidastui, myös pelaaminen loppui.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** kohdan 74 lause *omaksi
+ilokseni tehty* ei siis tarkoita että Itu olisi tehty pelattavaksi itselle. Se on tehty
+rakennettavaksi itselle, ja pelattavaksi muille. Tämä saa kaatua.
+
+**Avoin, ja se on yhden rivin kysymys:** vastauksen loppu sanoo *ehkä innostun taas sitten
+kun ennätykset tallentuu*, eikä sitä ole tulkittu tässä. Lauseella on ainakin kaksi lukutapaa,
+ja ne johtavat eri paikkaan: joko se viittaa `Kaanon/TYOJONO.md`:n kohtaan 34 (ennätykset ovat
+laitekohtaisia, eli monella laitteella testattaessa ne hajoavat moneen paikkaan), tai se
+tarkoittaa että ennätykset eivät jostain syystä säily laitteella lainkaan, mikä olisi vika
+eikä puuttuva ominaisuus. Kysytty 25.8.2026, vastausta ei ole tätä kirjattaessa.
