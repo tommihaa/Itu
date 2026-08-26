@@ -1949,4 +1949,30 @@ itselleen, ei hoivan välineeksi. Jos tämä suunta joskus etenee, se on oma kes
 eikä sitä johdeta tästä kohdasta. Tämä saa kaatua.
 
 **Rajaus:** ei kysytty mitä sote-kentässä on jo mietitty pidemmälle (tietty organisaatio,
-tuote vai pelkkä suunta), eikä muita tahoja joita *kuten* jättää nimeämättä.
+tuote vai pelkkä suunta), eikä muita tahoja joita *kuten* jättää nimeämättä. *Ensimmäinen
+puoli sulkeutui kohdassa 85: pelkkä suunta, ja sillä on kaksi yleisöä.*
+
+## 85. Suunta toistaiseksi ilman kohdetta, ja sillä on kaksi yleisöä: lapsille oppia, ikäihmisille pelitaitoja
+
+Tommi 26.8.2026 (erä 33), kohdan 84 rajaukseen siitä kuinka pitkälle sote-ajatus on
+mietitty:
+
+> *pelkkä suunta toistaiseksi, lapsille oppia ja ikäihmisille pelitaitoja kiinnostaa*
+
+**Kohdan 84 rajauksen ensimmäinen puoli sulkeutuu: ei organisaatiota eikä tuotetta, pelkkä
+suunta.** Mutta suunta ei ole muodoton, koska sillä on kaksi nimettyä yleisöä ja kummallekin
+oma sisältö: **lapsille oppia** ja **ikäihmisille pelitaitoja**. Sanapari on Tommin ja se
+kannattaa lukea tarkasti: lapsille annettava on *oppi* eikä peli, ja ikäihmisille annettava
+on *pelitaidot* eikä valmis peli. Kumpikin lahja on taito eikä esine.
+
+**Mitä tämä tekee aiemmille kohdille:** kohta 74 kirjasi että opettavaisuus on ominaisuus
+jonka Itu sai eikä tarkoitus, ja kohta 81 torjui lukutavan jossa *oppiminen tärkeintä* olisi
+koskenut pelien opettavaisuutta. Tämä kohta ei kumoa kumpaakaan vaan avaa kolmannen paikan:
+opettavaisuus ei ollut Itun tarkoitus, mutta se voi olla **tulevan suunnan** tarkoitus, jos
+yleisöksi valitaan lapset. Ja ikäihmisten pelitaidot osuvat teesiin (kohta 22, pelikulttuurin
+arvo ja siirto verkkoon) toisesta suunnasta: siinä missä teesi siirtää pelit sinne missä
+ihmiset ovat, tämä opettaisi ihmisiä sinne missä pelit ovat. Kytkennät ovat kirjoittajan
+päätelmiä ja saavat kaatua.
+
+**Rajaus:** ei kysytty kumpi yleisöistä kiinnostaa enemmän, eikä sitä kumpaan koriin suunta
+kuuluisi, lahjateoksiin vai tuloa tuottavaan (kohdan 81 end-game).
