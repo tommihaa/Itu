@@ -1795,7 +1795,8 @@ siilosta toiseen, ja se on ainoa muoto joka ei riko offline-invarianttia. Tämä
 
 **Rajaus:** ei kysytty montako siiloa todellisuudessa on, onko ennätyksiä kadonnut kokonaan
 (esim. selaimen tyhjennykseen), eikä sitä palauttiko toteutettu vienti ja tuonti innostuksen
-josta kohdan 76 lause puhui.
+josta kohdan 76 lause puhui. *Innostusosa sulkeutui kohdassa 80, siilot ja katoaminen
+kohdassa 88.*
 
 ## 79. Tutun ristikkorakenteen lähdettä ei tiedetä
 
@@ -2017,3 +2018,25 @@ eli tulon puolella (kohta 86), sillä on kaksi yleisöä ja kummallekin taito la
 85), tarjouksia ei ole tullut eikä yhteydenottoja tehty (kohta 84), ja muoto on auki (tämä
 kohta). Suunta on siis olemassa ja tunnistettu, ja kaikki muu on tekemättä; se on tarkka
 tila eikä puute.
+
+## 88. Siiloja oli viisi, eikä ennätyksiä kadonnut: ne eivät vain nähneet toisiaan
+
+Tommi 26.8.2026 (erä 33), kohdan 78 rajaukseen siilojen määrästä ja ennätysten
+katoamisesta:
+
+> *5 siiloa ja ennätyksiä ei kadonnut, ne vaan eivät nähneet toisiaan*
+
+**Kohdan 78 rajaus sulkeutuu kokonaan, ja vika saa tarkan nimen.** Siiloja oli viisi, ja
+mitään ei kadonnut: jokainen ennätys oli tallessa omassa laite/selain-yhdistelmässään, mutta
+yhdistelmät eivät nähneet toisiaan. Ongelma oli siis näkyvyys eikä säilyvyys, ja se on
+lievempi vika kuin katoaminen mutta pelaajalle sama kokemus: kokonaiskuvaa omista
+ennätyksistä ei ollut missään.
+
+**Mitä tämä tekee aiemmille kohdille:** kohdan 78 kirjoittajan päätelmä (vienti ja tuonti
+ei korjaa siiloja vaan antaa käden joka kantaa tuloksen siilosta toiseen) osuu nyt
+mitattuun tilanteeseen: viisi siiloa on juuri se määrä käsityötä jonka yksi vientinappi ja
+viisi tuontia kokoaa. Ja kohdan 80 *ehkä joskus* (siilojen kokoaminen) saa konkreettisen
+koon: työ on viiden siilon läpikäynti, ei arvaamattoman monen.
+
+**Rajaus:** ei kysytty mitkä viisi yhdistelmää olivat, eikä sitä missä siiloista
+nykyinen pisin ennätyshistoria asuu.
