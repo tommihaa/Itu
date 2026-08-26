@@ -1998,4 +1998,22 @@ joskus etenee, se on oma keskustelunsa*) pitää yhä: sijoitus koriin ei ole vi
 Tämä kappale on kirjoittajan jäsennys ja saa kaatua; lainattu lause on Tommin.
 
 **Rajaus:** ei kysytty missä muodossa tulo sote-haarassa syntyisi (tuote, koulutus tai
-ohjaus, työsuhde), eikä haarojen keskinäistä järjestystä tai suhdetta.
+ohjaus, työsuhde), eikä haarojen keskinäistä järjestystä tai suhdetta. *Muotokysymys
+kysyttiin ja vastaus on kohdassa 87: ei mietitty vielä.*
+
+## 87. Tulon muotoa sote-haarassa ei ole mietitty, vain suunta on olemassa
+
+Tommi 26.8.2026 (erä 33), monivalintaan tulon muodosta sote-haarassa (tuote, koulutus tai
+ohjaus, työsuhde, ei mietitty vielä), valinta oli **ei mietitty vielä**: muoto on auki,
+vain suunta on olemassa.
+
+**Kysymys on esitetty ja vastattu, eikä muotoa täytetä päättelemällä.** Tarjotut kolme
+muotoa jäävät tarjotuiksi vaihtoehdoiksi joista yhtäkään ei valittu eikä yhtäkään suljettu
+pois. Tämä on johdonmukaista kohdan 85 kanssa: *pelkkä suunta toistaiseksi* päti myös tähän
+kysymykseen, ja vastaus vahvistaa sen koskevan myös tulon muotoa eikä vain kohdetta.
+
+**Sote-haaran kuva erän 33 päättyessä, koonti eikä uutta substanssia:** haara on end-gamen
+eli tulon puolella (kohta 86), sillä on kaksi yleisöä ja kummallekin taito lahjana (kohta
+85), tarjouksia ei ole tullut eikä yhteydenottoja tehty (kohta 84), ja muoto on auki (tämä
+kohta). Suunta on siis olemassa ja tunnistettu, ja kaikki muu on tekemättä; se on tarkka
+tila eikä puute.
