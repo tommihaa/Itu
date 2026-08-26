@@ -1975,4 +1975,27 @@ ihmiset ovat, tämä opettaisi ihmisiä sinne missä pelit ovat. Kytkennät ovat
 päätelmiä ja saavat kaatua.
 
 **Rajaus:** ei kysytty kumpi yleisöistä kiinnostaa enemmän, eikä sitä kumpaan koriin suunta
-kuuluisi, lahjateoksiin vai tuloa tuottavaan (kohdan 81 end-game).
+kuuluisi, lahjateoksiin vai tuloa tuottavaan (kohdan 81 end-game). *Korikysymys sulkeutui
+kohdassa 86.*
+
+## 86. Sote-kenttä on end-gamen haara, ei lahjateos
+
+Tommi 26.8.2026 (erä 33), kohdan 85 rajaukseen siitä kumpaan koriin sote-suunta kuuluu:
+
+> *tuloa tuottavaan, sote-kenttä on end-gamen haara*
+
+**Kohdan 85 rajauksen korikysymys sulkeutuu, ja sijoitus on yksiselitteinen.** Sote-suunta
+ei ole lahjateosten jatke vaan kohdan 81 end-gamen eli tulon haara, ja sana *haara* on
+Tommin oma.
+
+**Mitä tämä tekee aiemmille kohdille:** end-gamella on nyt kaksi tunnistettavaa haaraa, ja
+ne ovat eri kypsyysasteilla. Kaupallinen sovellus (`Kaanon/TYOJONO.md` kohta 31) on päätetty
+pohjaa, alustaa ja ansaintaa myöten, ja sote-kenttä on kohdan 85 mukaan pelkkä suunta.
+Kohdan 82 unelma (tarjousten vastaanottaminen) kattaa molemmat: ostos ja työtarjous voivat
+kumpikin saapua myös sote-kentästä, ja kohta 84 kirjasi sen ensimmäiseksi paikaksi jossa
+molemmat haarat osuvat samaan tahoon. Ja kohdan 84 kirjoittajan varaus (*jos tämä suunta
+joskus etenee, se on oma keskustelunsa*) pitää yhä: sijoitus koriin ei ole vielä suunnitelma.
+Tämä kappale on kirjoittajan jäsennys ja saa kaatua; lainattu lause on Tommin.
+
+**Rajaus:** ei kysytty missä muodossa tulo sote-haarassa syntyisi (tuote, koulutus tai
+ohjaus, työsuhde), eikä haarojen keskinäistä järjestystä tai suhdetta.
