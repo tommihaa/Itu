@@ -1919,3 +1919,34 @@ kysyntä alkaa siitä kun ammatti taitoineen on olemassa, ei tietystä hetkestä
 
 **Rajaus:** ei kysytty mitä ammattia vastaus tarkoittaa, eikä sitä onko se sama asia kuin
 kohdan 82 työmarkkinahaara vai molempien haarojen yhteinen nimi.
+
+## 84. Tarjouksia ei ole vielä tullut, mutta kohde on mietitty: sote-kenttä, molemmat haarat
+
+Tommi 26.8.2026 (erä 33), kohdan 82 rajaukseen siitä onko tarjouksia jo tullut kumpaakaan
+haaraa pitkin, julkisuusmuistutuksen jälkeen:
+
+> *ei, mutta olen miettinyt tahoja joita kiinnostaa kuten sote-kenttä*
+
+Ja monivalintaan siitä kumpaa haaraa sote-kenttä koskee (pelien ostajana, osaamisen
+työnantajana vai molempina), valinta oli **molemmista**: sama taho voisi olla sekä pelien
+ostaja että työn tarjoaja.
+
+**Kohdan 82 rajaus sulkeutuu kokonaan, ja vastauksen kaksi puolta ovat eri painoisia.**
+Tarjouksia ei ole tullut kumpaakaan haaraa pitkin, eli unelman kuvaama saapuvan kysynnän
+tila ei ole vielä alkanut. Mutta suunta ei ole tyhjä odotus: mahdollisia kiinnostuneita on
+mietitty nimeltä, ja sote-kenttä on esimerkki eikä tyhjentävä lista (*kuten*).
+
+**Sote-kenttä on ensimmäinen kohta jossa kohdan 82 kaksi haaraa osuvat samaan tahoon.**
+Kohta 82 piti työmarkkinat ja pelien ostajat kahtena haarana joiden välillä ei valita, ja
+tämä vastaus näyttää miksi valinta olisi ollut väärä: sama kenttä voi kysyä molempia.
+Ajatus on suunnittelua eikä tekoja, eikä yhteydenottoja ole tehty; se erottaa tämän
+`Kaanon/YHTEYDENOTOT.md`:n kirjatuista yhteydenotoista, joissa aloite on jo otettu.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** sote-kenttä pelien käyttäjänä
+tarkoittaisi todennäköisimmin sanapelejä kuntoutuksen tai päivätoiminnan välineenä, ja se
+olisi Itulle uusi yleisö jota kanoni ei tunne: `ITU.md` on kirjoitettu yksinpelaajalle
+itselleen, ei hoivan välineeksi. Jos tämä suunta joskus etenee, se on oma keskustelunsa
+eikä sitä johdeta tästä kohdasta. Tämä saa kaatua.
+
+**Rajaus:** ei kysytty mitä sote-kentässä on jo mietitty pidemmälle (tietty organisaatio,
+tuote vai pelkkä suunta), eikä muita tahoja joita *kuten* jättää nimeämättä.
