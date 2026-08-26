@@ -1892,4 +1892,30 @@ saapuvan kysynnän tila rakennetaan, eli julkiset repot, julkaistut pelit ja kau
 sovellus ovat kaikki saman unelman välineitä. Tämä saa kaatua.
 
 **Rajaus:** end-gamen aikajänne on yhä kysymättä, eikä kysytty onko tarjouksia jo tullut
-kumpaakaan haaraa pitkin.
+kumpaakaan haaraa pitkin. *Aikajännepuoli sai vastauksen kohdassa 83: mitta ei ole aika.*
+
+## 83. End-gamen mitta ei ole aika vaan se, että oppiminen tuottaa ammatin
+
+Tommi 26.8.2026 (erä 33), kohdan 81 rajaukseen end-gamen aikajänteestä, kun kysymys tarjosi
+ajan mittoja ja nimesi kelvolliseksi vastaukseksi myös sen ettei aikaa mitata lainkaan:
+
+> *erilaisia mielenkiintoisia projekteja tekemällä oppiminen tuottaa ammatin taitoineen*
+
+**Vastaus ei aseta aikajännettä vaan korvaa mittarin.** End-gamea ei mitata kuukausissa eikä
+vuosissa vaan siinä, milloin oppiminen on tuottanut ammatin taitoineen. Kysymys on nyt
+esitetty ja vastattu, eikä ajallista mittaa jäädä odottamaan: sitä ei ole, ja se on vastaus
+eikä aukko.
+
+**Vastaus antaa myös reitin, ja se on Tommin omissa sanoissa.** Väline on *erilaisia
+mielenkiintoisia projekteja tekemällä*, eli mielenkiintoisuus on valintakriteeri eikä
+sivuseikka. Ketju kulkee näin: mielenkiintoiset projektit tuottavat oppimista, oppiminen
+ammatin taitoineen, ja ammatti sen tulon jonka kohta 81 nimesi end-gameksi.
+
+**Mitä tämä tekee aiemmille kohdille:** kohdan 81 kolme tasoa (oppiminen nyt, teokset
+ihmisille, tulo päämääränä) saavat tästä järjestyksen aikajanalle ilman kelloa: tasot eivät
+ole peräkkäisiä vaiheita joiden välissä on päivämäärä vaan sama tekeminen, jonka kypsyminen
+mitataan taidoista. Ja kohdan 82 unelma (tarjousten vastaanottaminen) tarkentuu: saapuva
+kysyntä alkaa siitä kun ammatti taitoineen on olemassa, ei tietystä hetkestä.
+
+**Rajaus:** ei kysytty mitä ammattia vastaus tarkoittaa, eikä sitä onko se sama asia kuin
+kohdan 82 työmarkkinahaara vai molempien haarojen yhteinen nimi.
