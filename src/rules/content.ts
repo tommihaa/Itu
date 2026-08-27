@@ -234,6 +234,18 @@ export const CONTROLS: RuleSection[] = [
       "• Enter lukitsee kierroksen.",
   },
   {
+    heading: "Ilmaiskirjaimet: sanaa saa jatkaa loppuun",
+    body:
+      "Sanan loppuun saa lisätä enintään 2 kirjainta, joille ei ole noppaa telineessä.\n" +
+      "Ne näkyvät himmeinä, katkoviivaisina laattoina. Niistä ei saa pisteitä:\n" +
+      "pisteet tulevat vain nopista, mutta sanan on oltava kokonaisuutena oikea sana.\n" +
+      "Ilmaiskirjain käy vain sanan perään: se ei voi olla kahden sanan risteyksessä\n" +
+      "eikä aloittaa uutta sanaa.\n" +
+      "• Näppäimistöllä: kirjoita sanaa normaalisti. Kun kirjaimelle ei ole noppaa eikä jokeria, se lisätään ilmaisena.\n" +
+      "• Kosketuksella: napauta tyhjää ruutua sanan perässä ja sitten ＋, ja valitse kirjain.\n" +
+      "• Poisto: ⌫, tai napauta ilmaiskirjainta ja valitse ✕.",
+  },
+  {
     heading: "Telineen järjestys: Äänneryhmät",
     body:
       "Teline voi järjestää nopat äänneryhmittäin: ensin konsonantit, sitten\n" +
@@ -299,7 +311,7 @@ export const CREDITS_ROWS: CreditRow[] = [
     label: "Muutokset",
     text:
       "Listaa on muutettu: erisnimet ja osa sanaluokista on karsittu, mukaan on " +
-      "otettu vain pelin kirjaimilla kirjoitettavat 2-13 merkin sanat, ja " +
+      "otettu vain pelin kirjaimilla kirjoitettavat 2-15 merkin sanat, ja " +
       "taivutusmuodot on generoitu koneellisesti. Kotus ei ole tehnyt tätä peliä " +
       "eikä vastaa sen sanastosta.",
   },

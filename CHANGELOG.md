@@ -11,6 +11,24 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
 > numerolla, aiemmat numerot ovat jälkikäteisiä nimilappuja jo tuotannossa olevalle
 > koodille. Tästä eteenpäin versio bumpataan ennen pushia, kuten Superjatsissa.
 
+## [0.11.0] – 2026-08-27
+
+### Lisätty
+- **Ilmaiskirjaimet: sanaa saa jatkaa telineen yli sen lopusta** (ITU.md › Pisteytys ›
+  Ilmaiskirjaimet, vahvistettu ja toteutettu 27.8.2026). Sanan perään saa lisätä enintään
+  2 kirjainta joille ei ole noppaa; ne eivät tuo pisteitä eikä niiden ruutubonuksia
+  lasketa, sana validoidaan kokonaisena. Ilmaiskirjain ei saa olla risteyksessä, sanan
+  alussa tai keskellä eikä irrallaan. Syöttö näppäimistöllä kirjoittamalla (kun sopivaa
+  noppaa tai jokeria ei ole) tai kursoriruudun ＋-napista aukeavalla kirjainvalitsimella.
+  Perustelut: pois jäänyt sanaston puolisko painottuu opettavimpiin johdoksiin ja
+  partisiippeihin, ja pitkien sanojen salliminen antaa telineen tyhjentyä.
+
+### Muutettu
+- **Sanasto `sanasto-fi-v2`**: pituuskatto 13 → 15 (13 noppaa + 2 ilmaiskirjainta),
+  3 367 044 muotoa (ennen 2 314 984). Katon 13 osajoukko on todennetusti sama kuin v1.
+  Analyysipaketti `forms-fi-v2.bin.gz` 9,76 Mt (ennen 6,22 Mt), DAWG 1 065 kt (ennen
+  895 kt). Vanhat haastelinkit saavat pehmeän versioerohuomautuksen kuten ennenkin.
+
 ## [0.10.1] – 2026-08-27
 
 ### Muutettu

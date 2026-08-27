@@ -1,6 +1,6 @@
 {
-  "version": "forms-fi-v1",
-  "count": 2314988,
+  "version": "forms-fi-v2",
+  "count": 3367044,
   "blockSize": 64,
   "codeWidth": 2,
   "codes": [
@@ -331,6 +331,6 @@
     "V+Pss+PrsPrc+Sg+Par",
     "V+Pss+PrsPrc+Sg+Tra"
   ],
-  "rawBytes": 28000128,
-  "gzBytes": 6218086
+  "rawBytes": 41046501,
+  "gzBytes": 9759123
 }

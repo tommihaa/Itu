@@ -347,6 +347,50 @@ button.sm-primary { background: var(--gold); border-color: var(--gold); color: #
   line-height: 1;
 }
 
+/* --- Ilmaiskirjain: nopaton laatta (0 p) --- */
+/* Ääriviivamainen ja himmeä, jottei sekoitu noppiin: pelaaja näkee heti ettei
+   kirjain tuo pisteitä. Validiusväri tulee ruudun taustasta kuten nopilla. */
+.sm-freetile {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px dashed var(--tile-edge);
+  border-radius: 0.2rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--muted);
+}
+.sm-freetile .sm-val {
+  position: absolute;
+  right: 2px;
+  bottom: 0;
+  font-size: 0.55rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+.sm-cell.sm-valid .sm-freetile { border-color: var(--valid); color: var(--text); }
+.sm-cell.sm-invalid .sm-freetile { border-color: var(--invalid); }
+.sm-cell.sm-caret .sm-freetile { outline: 2px solid var(--gold); outline-offset: -2px; }
+/* ＋-nappi kursoriruudussa: kosketuskäyttäjän reitti ilmaiskirjainvalitsimeen. */
+.sm-free-add {
+  position: absolute;
+  inset: 2px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px dashed var(--gold-dim);
+  border-radius: 0.2rem;
+  color: var(--gold);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+.sm-free-add:hover { background: rgba(216, 178, 90, 0.12); }
+
 /* --- Jokerin kirjainvalitsin (inline) --- */
 .sm-jp-backdrop {
   position: fixed;

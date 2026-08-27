@@ -48,7 +48,8 @@ TARGET = ROOT / "data" / "wordforms.txt"
 # Noppien kirjaimisto: sana on muodostettavissa vain näistä (jokeri paikkaa
 # yhden). Muut kirjaimet (b c f q w x z å š ž, väliviiva...) → muoto pois.
 # G mukana 14.6.2026 (nk→ng-astevaihtelu + natiivit ng-sanat); b/c/f pois (lainat).
-ALLOWED = re.compile(r"^[adeghijklmnoprstuvyäö]{2,13}$")
+# Pituuskatto 15 = 13 noppaa + 2 ilmaiskirjainta (ITU.md › Ilmaiskirjaimet, 27.8.2026).
+ALLOWED = re.compile(r"^[adeghijklmnoprstuvyäö]{2,15}$")
 
 CASES = ["Nom", "Gen", "Par", "Ess", "Tra", "Ine", "Ela", "Ill",
          "Ade", "Abl", "All", "Abe", "Com", "Ins"]

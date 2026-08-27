@@ -59,8 +59,15 @@ describe("challenge — legacy (ilman dv-kenttää)", () => {
     const decoded = decodeChallenge(codeOf(challengeLink(legacy, BASE)), ROUND_OPTIONS);
     expect(decoded).not.toBeNull();
     expect(decoded!.dv).toBeUndefined();
-    // Puuttuva dv ⇒ oletetaan sanasto-fi-v1 ⇒ ei mismatchia nykyversiota vasten.
+    // Puuttuva dv ⇒ oletetaan sanasto-fi-v1 ⇒ ei mismatchia v1:tä vasten.
     expect(dictMismatchOf(decoded!, V)).toBeUndefined();
+  });
+
+  it("legacy-linkki nykyistä v2-sanastoa vasten → mismatch kertoo v1:n (PEHMEÄ)", () => {
+    const legacy: ChallengePayload = {
+      v: 1, b: "seed", n: 1, a: { name: "A", s: [1], t: 1 },
+    };
+    expect(dictMismatchOf(legacy, "sanasto-fi-v2")).toBe("sanasto-fi-v1");
   });
 });
 

@@ -1,0 +1,8 @@
+{
+  "version": "sanasto-fi-v2",
+  "alphabet": "abcdefghijklmnoprstuvyäö",
+  "rootFirst": 0,
+  "wordCount": 3367044,
+  "nodeCount": 93446,
+  "edgeCount": 266283
+}

@@ -49,6 +49,6 @@ describe("ExactJudge — sanantarkistus", () => {
   });
 
   it("altistaa sanastoversion", () => {
-    expect(j.version).toBe("sanasto-fi-v1");
+    expect(j.version).toBe("sanasto-fi-v2");
   });
 });

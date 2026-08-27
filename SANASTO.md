@@ -40,7 +40,7 @@ Kotus nykysuomen sanalista 2024 (104 743 lemmaa, CC BY 4.0)
   → suodatus (sanaluokka, iso alkukirjain)
   → GiellaLT fin-FST generoi pyydetyt taivutusmuodot (build-aikana)
   → merkistö-/pituussuodatus
-  → muoto→lemma-parit → DAWG (sanasto-fi-v1)
+  → muoto→lemma-parit → DAWG (sanasto-fi-v2)
   → selaimessa isValidWord = täsmähaku, nollaviive
 ```
 
@@ -50,11 +50,13 @@ tunnemme vain ne muodot jotka FST tuotti listatuista lemmoista.
 
 ## 1. Merkistö ja pituus (koskee KAIKKEA, myös perusmuotoja)
 
-Hyväksytään vain muodot jotka täsmäävät: `^[adeghijklmnoprstuvyäö]{2,13}$`
+Hyväksytään vain muodot jotka täsmäävät: `^[adeghijklmnoprstuvyäö]{2,15}$`
 
 - **Sallitut kirjaimet (21):** a d e g h i j k l m n o p r s t u v y ä ö
 - **Pois:** b c f q w x z å š ž, yhdysviiva, välilyönti, numerot
-- **Pituus 2–13.** Yksittäiskirjaimet pois; max 13 = noppien määrä.
+- **Pituus 2–15.** Yksittäiskirjaimet pois; max 15 = 13 noppaa + 2 ilmaiskirjainta
+  (ITU.md › Ilmaiskirjaimet, vahvistettu 27.8.2026; katto oli 13 versioon
+  sanasto-fi-v1 asti).
 
 Tämä on **koherentti noppien kanssa**: mitä ei voi heittää, sitä ei hyväksytä.
 - **g on mukana** (päätös 14.6): astevaihtelu nk→ng tuottaa tuhansia natiiveja
@@ -147,8 +149,10 @@ Näitä ei pyydetä generaattorilta, joten ne eivät voi päätyä sanastoon:
 ## 8. Versiointi ja opettavuus
 
 - **Sanastoversio on osa pelin identiteettiä:** DAWG nimetään versiolla
-  (`sanasto-fi-v1`). Tuleva asynkroninen haaste kiinnittää siemenluvun LISÄKSI
-  sanastoversion, kaksi pelaajaa ei saa pelata samaa heittoa eri totuuksilla.
+  (`sanasto-fi-v2`; v1:n katto oli 13, v2 nosti sen 15:een ilmaiskirjaimia
+  varten, ja v2:n 2–13-merkkinen osajoukko on täsmälleen v1). Tuleva
+  asynkroninen haaste kiinnittää siemenluvun LISÄKSI sanastoversion, kaksi
+  pelaajaa ei saa pelata samaa heittoa eri totuuksilla.
 - **Validointi on rajapinnan takana** (`WordJudge`): `ExactJudge` (DAWG, suomi)
   nyt; `AdvisoryJudge` (kolmas väri "en tunne") ja `HumanJudge` (tuomarimoodi)
   mahdollistavat muut kielet myöhemmin ilman pelikoodin muutoksia.
@@ -156,7 +160,7 @@ Näitä ei pyydetä generaattorilta, joten ne eivät voi päätyä sanastoon:
   morfologisen analyysikoodin (sija/luku tai verbimuoto), jonka FST antoi muodon
   tuottaessaan. `gen_wordforms.py` kirjoittaa `muoto<TAB>lemma#koodi;koodi|lemma2#…`,
   ja `build_lemmas.py` pakkaa sen erilliseksi lazy-assetiksi
-  `public/dict/forms-fi-v1.{bin.gz,meta.json}` (meta sisältää kooditaulukon).
+  `public/dict/forms-fi-v2.{bin.gz,meta.json}` (meta sisältää kooditaulukon).
   Sanapoliisi (🔎, ks. ITU.md) näyttää näistä **kaikki pätevät tulkinnat**:
   perusmuodon, sijamuodon ja sen vaikutuksen selkoesimerkein. Koodi→suomi-muunto
   on kiinteä, käsin todennettu taulukko `src/dict/morph.ts` (suomen sijajärjestelmä

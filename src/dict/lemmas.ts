@@ -138,7 +138,7 @@ function buildRestarts(bytes: Uint8Array, blockSize: number, codeWidth: number):
 let cached: Promise<LemmaLookup> | null = null;
 
 /** Lataa analyysi-paketti (kerran; välimuistitettu). Heittää jos lataus epäonnistuu. */
-export function loadLemmas(version = "forms-fi-v1"): Promise<LemmaLookup> {
+export function loadLemmas(version = "forms-fi-v2"): Promise<LemmaLookup> {
   if (cached) return cached;
   cached = (async () => {
     const [metaRes, binRes] = await Promise.all([

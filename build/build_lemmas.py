@@ -29,7 +29,7 @@ BLOCK_SIZE = 64
 SAMPLE = "--sample" in sys.argv
 SRC = os.path.join("data", "wordforms.sample.txt" if SAMPLE else "wordforms.txt")
 OUT_DIR = os.path.join("public", "dict")
-VERSION = "forms-fi-sample" if SAMPLE else "forms-fi-v1"
+VERSION = "forms-fi-sample" if SAMPLE else "forms-fi-v2"
 
 
 def common_prefix(a: str, b: str) -> int:

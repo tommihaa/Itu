@@ -6,6 +6,7 @@ import {
   extractWords,
   isConnected,
   disconnectedCells,
+  freeLetterViolations,
   type PlacedTile,
 } from "../src/domain/board";
 import { JOKER } from "../src/domain/dice";
@@ -121,5 +122,89 @@ describe("disconnectedCells", () => {
       [cellKey(5, 6)]: "D",
     });
     expect(disconnectedCells(cells).size).toBe(2);
+  });
+});
+
+describe("freeLetterViolations (ilmaiskirjaimet, ITU.md › Pisteytys)", () => {
+  const free = (letter: string): PlacedTile => ({
+    dieIndex: -1,
+    face: letter,
+    letter,
+    free: true,
+  });
+
+  it("laillinen häntä: 1-2 ilmaista sanan lopussa → ei rikkomuksia", () => {
+    const cells = boardOf({
+      [cellKey(0, 0)]: "T",
+      [cellKey(0, 1)]: "A",
+      [cellKey(0, 2)]: "L",
+      [cellKey(0, 3)]: "O",
+    });
+    cells.set(cellKey(0, 4), free("T"));
+    expect(freeLetterViolations(cells, extractWords(cells)).size).toBe(0);
+    cells.set(cellKey(0, 5), free("A"));
+    expect(freeLetterViolations(cells, extractWords(cells)).size).toBe(0);
+  });
+
+  it("ilmainen keskellä sanaa → rikkomus", () => {
+    const cells = boardOf({
+      [cellKey(0, 0)]: "T",
+      [cellKey(0, 1)]: "A",
+      [cellKey(0, 3)]: "O",
+      [cellKey(0, 4)]: "T",
+    });
+    cells.set(cellKey(0, 2), free("L"));
+    const bad = freeLetterViolations(cells, extractWords(cells));
+    expect(bad.has(cellKey(0, 2))).toBe(true);
+  });
+
+  it("katto: kolme ilmaista hännässä → koko häntä rikkoo", () => {
+    const cells = boardOf({
+      [cellKey(0, 0)]: "T",
+      [cellKey(0, 1)]: "A",
+    });
+    cells.set(cellKey(0, 2), free("L"));
+    cells.set(cellKey(0, 3), free("O"));
+    cells.set(cellKey(0, 4), free("T"));
+    const bad = freeLetterViolations(cells, extractWords(cells));
+    expect(bad.size).toBe(3);
+  });
+
+  it("risteys: ilmainen kahdessa sanassa → rikkomus", () => {
+    // Vaaka: T A + ilmainen L (0,2). Pysty: L:n alle noppa A → pystysana "la".
+    const cells = boardOf({
+      [cellKey(0, 0)]: "T",
+      [cellKey(0, 1)]: "A",
+      [cellKey(1, 2)]: "A",
+    });
+    cells.set(cellKey(0, 2), free("L"));
+    const bad = freeLetterViolations(cells, extractWords(cells));
+    expect(bad.has(cellKey(0, 2))).toBe(true);
+  });
+
+  it("irrallinen ilmainen (ei missään sanassa) → rikkomus", () => {
+    const cells = boardOf({
+      [cellKey(0, 0)]: "T",
+      [cellKey(0, 1)]: "A",
+    });
+    cells.set(cellKey(5, 5), free("L"));
+    const bad = freeLetterViolations(cells, extractWords(cells));
+    expect([...bad]).toEqual([cellKey(5, 5)]);
+  });
+
+  it("kokonaan ilmaisista koostuva sana → rikkomus", () => {
+    const cells = new Map<string, PlacedTile>();
+    cells.set(cellKey(0, 0), free("T"));
+    cells.set(cellKey(0, 1), free("A"));
+    const bad = freeLetterViolations(cells, extractWords(cells));
+    expect(bad.size).toBe(2);
+  });
+
+  it("ilman ilmaisia → tyhjä joukko (nollakustannus nykypelille)", () => {
+    const cells = boardOf({
+      [cellKey(0, 0)]: "T",
+      [cellKey(0, 1)]: "A",
+    });
+    expect(freeLetterViolations(cells, extractWords(cells)).size).toBe(0);
   });
 });

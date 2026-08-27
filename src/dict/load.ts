@@ -8,7 +8,7 @@ import { ExactJudge } from "./judge";
 // Vite tarjoilee public/-tiedostot juuresta; base huomioidaan import.meta.env:llä.
 const BASE = import.meta.env.BASE_URL ?? "/";
 
-export async function loadJudge(version = "sanasto-fi-v1"): Promise<ExactJudge> {
+export async function loadJudge(version = "sanasto-fi-v2"): Promise<ExactJudge> {
   const [metaRes, dawgRes] = await Promise.all([
     fetch(`${BASE}dict/${version}.meta.json`),
     fetch(`${BASE}dict/${version}.dawg`),

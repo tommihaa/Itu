@@ -79,6 +79,6 @@ describe("ExactJudge", () => {
     expect(judge.judge("talo")).toBe("valid");
     expect(judge.judge("TALO")).toBe("valid");
     expect(judge.judge("auto")).toBe("invalid");
-    expect(judge.version).toBe("sanasto-fi-v1");
+    expect(judge.version).toBe("sanasto-fi-v2");
   });
 });

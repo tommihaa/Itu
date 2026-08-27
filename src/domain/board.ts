@@ -6,12 +6,16 @@
 import { JOKER, type Face } from "./dice";
 
 export interface PlacedTile {
-  /** Nopan indeksi (0..12) — yksilöi fyysisen nopan laudalla. */
+  /** Nopan indeksi (0..12) — yksilöi fyysisen nopan laudalla. Ilmaiskirjaimella -1. */
   dieIndex: number;
-  /** Nopan näkyvä tahko. */
+  /** Nopan näkyvä tahko. Ilmaiskirjaimella = letter. */
   face: Face;
   /** Jokerin valittu kirjain; muilla = face. Validointi käyttää tätä. */
   letter: Face;
+  /** Ilmaiskirjain: laudalle kirjoitettu kirjain ilman noppaa (ITU.md › Ilmaiskirjaimet).
+   * 0 pistettä, ei ruutubonuksia, sallittu vain sanan lopussa — säännöt vartioi
+   * freeLetterViolations. */
+  free?: boolean;
 }
 
 export type Cells = ReadonlyMap<string, PlacedTile>;
@@ -72,6 +76,41 @@ export function extractWords(cells: Cells): BoardWord[] {
   scan("H");
   scan("V");
   return words;
+}
+
+/** Ilmaiskirjainten katto per sana (ITU.md › Ilmaiskirjaimet, vahvistettu 27.8.2026). */
+export const MAX_FREE_LETTERS = 2;
+
+/**
+ * Ilmaiskirjainsääntöjä rikkovien ruutujen avaimet (ITU.md › Pisteytys › Ilmaiskirjaimet):
+ * ilmaiskirjain saa esiintyä vain YHDEN sanan yhtenäisenä loppupäänä, enintään
+ * MAX_FREE_LETTERS per sana, ei koskaan risteyksessä, ei sanan alussa/keskellä,
+ * ei koko sanana eikä irrallaan. `words` on extractWords(cells):n tulos.
+ */
+export function freeLetterViolations(cells: Cells, words: BoardWord[]): Set<string> {
+  const bad = new Set<string>();
+  const freeKeys: string[] = [];
+  for (const [k, t] of cells) if (t.free) freeKeys.push(k);
+  if (!freeKeys.length) return bad;
+
+  // Monessako sanassa kukin ilmaisruutu on: 0 = irrallinen, 2 = risteys → rikkomus.
+  const wordCount = new Map<string, number>();
+  for (const w of words)
+    for (const k of w.keys)
+      if (cells.get(k)!.free) wordCount.set(k, (wordCount.get(k) ?? 0) + 1);
+  for (const k of freeKeys) if ((wordCount.get(k) ?? 0) !== 1) bad.add(k);
+
+  for (const w of words) {
+    // Yhtenäinen loppupää: montako ilmaisruutua sanan hännässä on.
+    let tail = 0;
+    while (tail < w.keys.length && cells.get(w.keys[w.keys.length - 1 - tail])!.free) tail++;
+    const freeInWord = w.keys.reduce((n, k) => n + (cells.get(k)!.free ? 1 : 0), 0);
+    // Rikkomus: ilmaisia muualla kuin hännässä, katto ylittyy tai sana on pelkkiä ilmaisia.
+    if (freeInWord > tail || tail > MAX_FREE_LETTERS || tail >= w.keys.length) {
+      for (const k of w.keys) if (cells.get(k)!.free) bad.add(k);
+    }
+  }
+  return bad;
 }
 
 /** Yhden yhtenäisen komponentin ruudut alkaen `start`:sta (4-naapuruus, flood-fill). */

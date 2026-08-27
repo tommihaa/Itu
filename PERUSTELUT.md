@@ -43,6 +43,11 @@ selaimessa `isValidWord` on puhdas joukkohaku.
 hyväksyä. Sanakirja ja noppadata sanovat näin saman asian. Yksittäiskirjaimet
 eivät ole sanoja; 13 = noppien määrä = pisin mahdollinen muodostettava sana.
 
+**Päivitys 27.8.2026.** Ilmaiskirjaimet (ITU.md › Pisteytys) nostivat katon
+15:een: 13 noppaa + enintään 2 ilmaista kirjainta sanan lopussa. Koherenssiperiaate
+säilyy muodossa "mitä ei voi laudalle kirjoittaa, sitä ei hyväksytä"; merkistö ei
+muuttunut. Sanastoversio `sanasto-fi-v2`.
+
 **Hinta.** Osa aidoista sanoista (väärillä kirjaimilla) jää ulos, mutta niitä ei
 voisi laudalle muodostaakaan, joten poisjättö on oikein.
 

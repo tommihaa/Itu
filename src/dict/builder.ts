@@ -15,7 +15,7 @@ const CHAR_INDEX: ReadonlyMap<string, number> = new Map(
   [...ALPHABET].map((c, i) => [c, i]),
 );
 
-export const DAWG_VERSION = "sanasto-fi-v1";
+export const DAWG_VERSION = "sanasto-fi-v2";
 
 export interface DawgMeta {
   version: string;

@@ -59,7 +59,7 @@ Ota mukaan vain se, mitä keskustelu tarvitsee:
   käytetty kelvollisissa sanoissa** → palkitsee nopean JA (lähes) täyden ratkaisun,
   ei pelkkää aikaista lukitsemista. Alle kynnyksen jäänyt ratkaisu ei saa bonusta.
 
-### Ilmaiskirjaimet (VAHVISTETTU 27.8.2026, ei vielä koodissa)
+### Ilmaiskirjaimet (VAHVISTETTU 27.8.2026, toteutettu samana iltana)
 
 Sanaa saa jatkaa telineen yli sen **lopusta**: nopat kattavat sanan alkuosan, ja loput
 kirjaimet ovat ilmaisia. Sana validoidaan kokonaisena (DAWG:n prefiksikävely riittää,
@@ -77,6 +77,26 @@ koska ilmaiset ovat aina lopussa). Idean syntyhistoria ja perustelut: Jatkoideat
 - **Katto: enintään 2 ilmaiskirjainta** (Tommi vahvisti 27.8.2026), eli
   sanasto ulottuu 15 kirjaimeen. Katto estää laudan yliulottuvuuden kolmella nopalla ja
   on helpompi selittää pelaajalle kuin linkitysehto.
+- **Pelikokemusperustelu** (Tommi 27.8.2026, toteutuksen aikana): pitkien sanojen
+  salliminen ei pilko kieltä vaan sallii kirjaintelineen tyhjenemisen parantamalla
+  pelikokemusta; melkein riittävät nopat saa vietyä sanaksi loppuun asti.
+
+**Toteutus 27.8.2026** (mitä luvut laskevat: toteutuneet tiedostokoot ja -määrät):
+
+- Sanasto **`sanasto-fi-v2`**: 3 367 044 muotoa katolla 15 (v1: 2 314 984 katolla 13).
+  Lähde oli saman päivän katkaisematon generointiajo suodatettuna, ja v2:n
+  2–13-merkkinen osajoukko todennettiin rivilleen samaksi kuin v1 (mukana myös
+  v1:n neljä loppuheittomuotoa kuten *elokuvasankar*, joita uusintageneraatio ei
+  toistanut). DAWG 1 065 kt raakana (v1: 895 kt), analyysipaketti
+  `forms-fi-v2.bin.gz` 9,76 Mt levyllä (v1: 6,22 Mt).
+- Syöttö: näppäimistöllä kirjoittaminen jatkaa sanaa ilmaiskirjaimella kun
+  telineessä ei ole sopivaa noppaa eikä jokeria; kosketuksella kursoriruudun
+  ＋-nappi avaa kirjainvalitsimen (sama malli kuin jokerilla). Ilmaislaatta
+  piirretään katkoviivaisena ja arvolla 0.
+- Säännöt vartioi `src/domain/board.ts` › `freeLetterViolations` (häntäehto,
+  katto, risteyskielto, irrallisuus), pisteytys vain noppien osalta
+  `src/ui/game.ts` › `validate`. Vanhat haastelinkit (dv puuttuu tai
+  `sanasto-fi-v1`) saavat PEHMEÄN versioerohuomautuksen kuten ennenkin.
 
 **Mitatut hinnat 27.8.2026** (skriptit `build/mittaa_pituuskatto.ts` ja
 `build/mittaa_pituuskatto_lemmat.py`; lähde katkaisemattoman generointiajon lista,
@@ -181,14 +201,15 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
     keksityt yhdyssanat (noppatalo), erisnimet (Tommi)
 - Build-generointi estää keksityt yhdyssanat luonnostaan; runtime-Voikko ei estäisi.
 - **Sanastoversio on osa pelin identiteettiä**: DAWG-tiedosto nimetään versiolla
-  (esim. `sanasto-fi-v1.dawg`), ja tuleva asynkroninen haaste kiinnittää
+  (esim. `sanasto-fi-v2.dawg`), ja tuleva asynkroninen haaste kiinnittää
   siemenluvun LISÄKSI sanastoversion, kaksi pelaajaa ei saa pelata samaa
   heittoa eri totuuksilla.
 - Validointi on rajapinta (WordJudge): ExactJudge (DAWG, suomi) nyt;
   AdvisoryJudge (korpuslista, kolmas väri "en tunne tätä") ja HumanJudge
   (tuomarimoodi pass-and-playhin, ei kielidataa) mahdollistavat muut kielet
   myöhemmin ilman pelikoodin muutoksia.
-- Karsinta generoinnissa: vain sanat ≤ 13 kirjainta, ei B/C/F-kirjaimia
+- Karsinta generoinnissa: vain sanat ≤ 15 kirjainta (13 noppaa + 2
+  ilmaiskirjainta, 27.8.2026 asti 13), ei B/C/F-kirjaimia
   sisältäviä muotoja (mahdottomia muodostaa nopilla).
 - UI antaa reaaliaikaisen värikoodatun palautteen sanoista.
 

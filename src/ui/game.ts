@@ -26,6 +26,7 @@ import {
   extractWords,
   isConnected,
   disconnectedCells,
+  freeLetterViolations,
   type Cells,
   type PlacedTile,
 } from "../domain/board";
@@ -104,6 +105,9 @@ interface Tile {
 }
 
 let tiles: Tile[] = [];
+// Ilmaiskirjaimet: laudalle kirjoitetut kirjaimet ilman noppaa (ruutu → kirjain,
+// gemenana kuten näppäily). Säännöt domainissa (freeLetterViolations); 0 pistettä.
+let freeTiles = new Map<string, string>();
 // Kehystys ja vieritysasema ovat näkymätilassa (`viewstate.ts`:n `ui.currentFrame`,
 // `ui.viewScroll`).
 // Zoom pois käytöstä toistaiseksi (käyttäjän pyyntö): kiinteä koko + vieritettävä näkymä.
@@ -124,6 +128,7 @@ let endWords: string[] = []; // kierroksen kelvolliset sanat (loppunäytön peru
 let endWordScores: number[] = []; // ^samassa järjestyksessä: kunkin sanan pisteet (kertoimineen)
 // Tarkastajan tuloksen päivitys ilman renderiä on näkymätilassa (`ui.checkerRefresh`).
 let jokerPicker: number | null = null; // avoinna olevan jokerin dieIndex (kirjainvalitsin)
+let freePicker: string | null = null; // avoinna olevan ilmaiskirjainvalitsimen ruutu
 // Haastemodaali ja ottelun loppuyhteenveto ovat näkymätilassa (`ui.showChallenge`,
 // `ui.showMatchSummary`).
 
@@ -250,7 +255,12 @@ let match: Match | null = null;
 // Raahaus (`ui.drag`, tyyppi `Drag`) ja napauta-ja-aseta -nosto (`ui.lifted`) ovat
 // näkymätilassa, samoin kirjoituskursori (`ui.caret`) ja näppäilytila (`ui.kbdMode`).
 // Kumoa-pino (Ctrl+Z): viimeisimmät lautamuutokset (die + ruutu ennen muutosta).
-let history: { die: number; prevCell: string | null }[] = [];
+// Kumoa-pino: noppasiirto (die + edellinen ruutu) TAI ilmaiskirjaimen muutos
+// (ruutu + edellinen kirjain, null = ruutu oli tyhjä).
+type HistoryEntry =
+  | { die: number; prevCell: string | null }
+  | { freeCell: string; prevLetter: string | null };
+let history: HistoryEntry[] = [];
 // Napautuksen vaimennus ja tuplanapautuksen muisti ovat näkymätilassa (`viewstate.ts`:n
 // `suppressCellClickUntil`, `lastTapDie`, `lastTapAt`).
 const LONG_PRESS_MS = 450;
@@ -626,6 +636,7 @@ function newRoll(s: string): void {
   ui.kbdMode = false; // tuore heitto: kehystä raahauslogiikalla kunnes pelaaja näppäilee
   ui.lifted = null; // nostot ja kumoa-historia kuuluvat yhteen heittoon
   history = [];
+  freeTiles = new Map(); // ilmaiskirjaimet elävät yhden heiton
   ui.currentFrame = null; // uusi heitto kehystää tuoreesti (keskelle)
   ui.viewScroll = null; // keskitä näkymä uudelleen (zoom-off)
   roundDailyTargets = settings.learnMode ? dailyTargets() : null;
@@ -639,11 +650,31 @@ function buildCells(): Cells {
   for (const t of tiles) {
     if (t.cell) m.set(t.cell, { dieIndex: t.dieIndex, face: t.face, letter: t.letter });
   }
+  for (const [cell, letter] of freeTiles) {
+    m.set(cell, { dieIndex: -1, face: letter, letter, free: true });
+  }
   return m;
 }
 
 function tileAt(cell: string): Tile | undefined {
   return tiles.find((t) => t.cell === cell);
+}
+
+/** Ruutu on varattu jos siinä on noppa TAI ilmaiskirjain. */
+function cellOccupied(cell: string): boolean {
+  return freeTiles.has(cell) || tileAt(cell) !== undefined;
+}
+
+/** Ilmaiskirjaimen asetus/vaihto/poisto (letter null = poisto) kumoa-historian kera. */
+function setFreeTile(cell: string, letter: string | null): void {
+  history.push({ freeCell: cell, prevLetter: freeTiles.get(cell) ?? null });
+  if (letter === null) {
+    freeTiles.delete(cell);
+    sfx.unplace();
+  } else {
+    freeTiles.set(cell, letter);
+    sfx.place();
+  }
 }
 
 /**
@@ -717,11 +748,17 @@ function validate(): Validation {
   let wordPoints = 0;
   let invalidCount = 0;
 
-  // Tuottavat ruudut = kuuluvat ≥1 kelvolliseen sanaan (näiden nopat eivät ole sakkoa).
+  // Tuottavat ruudut = NOPAT jotka kuuluvat ≥1 kelvolliseen sanaan (eivät ole sakkoa;
+  // ilmaiskirjaimet eivät ole noppia eivätkä kerry tähän → aikabonusta ei voi kiertää).
   const productiveCells = new Set<string>();
 
+  // Ilmaiskirjainsääntöjen rikkomukset (risteys, keskellä sanaa, katto, irrallinen).
+  const freeViol = freeLetterViolations(cells, words);
+
   for (const w of words) {
-    const valid = judge ? judge.judge(w.text) === "valid" : false;
+    const valid =
+      (judge ? judge.judge(w.text) === "valid" : false) &&
+      w.keys.every((k) => !freeViol.has(k));
     if (!valid) invalidCount++;
     for (const k of w.keys) {
       const prev = cellValid.get(k);
@@ -730,16 +767,21 @@ function validate(): Validation {
     // Vain kelvolliset sanat kerryttävät pisteitä; risteysnoppa summautuu kahdesti
     // (kuuluu kahteen sanaan), mikä syntyy luonnostaan kun molemmat sanat ovat valideja.
     // Premium-moodissa kukin sana saa omat kirjain-/sanakertoimensa (Scrabblen ristipisteytys).
+    // Ilmaiskirjaimet: 0 pistettä eikä niiden ruutubonuksia lasketa → sana pisteytetään
+    // vain noppien kattamalta osalta (ITU.md › Ilmaiskirjaimet).
     let points = 0;
     if (valid) {
-      const vals = w.keys.map((k) => faceValue(cells.get(k)!.face));
-      const prem = activePremium() ? w.keys.map((k) => premiumAt(k)) : null;
+      const dieKeys = w.keys.filter((k) => !cells.get(k)!.free);
+      const vals = dieKeys.map((k) => faceValue(cells.get(k)!.face));
+      const prem = activePremium() ? dieKeys.map((k) => premiumAt(k)) : null;
       points = scoreWord(vals, prem);
       wordPoints += points;
-      for (const k of w.keys) productiveCells.add(k);
+      for (const k of dieKeys) productiveCells.add(k);
     }
     wordResults.push({ text: w.text, valid, points });
   }
+  // Sanoihin kuulumaton (irrallinen) ilmaiskirjain ei käy missään sanasilmukassa → väritä itse.
+  for (const k of freeViol) if (!cellValid.has(k)) cellValid.set(k, false);
 
   // Premium-moodi: ristikon on katettava keskiruutu (★); bingo = kaikki nopat käytetty.
   const anchored = !activePremium() || cells.has(CENTER);
@@ -866,6 +908,7 @@ function render(): void {
     ${wordsHtml(v)}
     ${judge ? "" : '<p class="sm-words pending">Ladataan sanastoa…</p>'}
     ${jokerPicker !== null ? jokerPickerHtml() : ""}
+    ${freePicker !== null ? freePickerHtml() : ""}
     ${ui.showChallenge ? challengeHtml() : ""}
     </div>
   `;
@@ -1543,7 +1586,18 @@ function boardHtml(v: Validation): string {
       const caretMark = isCaret ? `<span class="sm-caret-arrow">${ui.caret!.dir === "H" ? "→" : "↓"}</span>` : "";
       const starMark =
         activePremium() && key === CENTER ? `<span class="sm-center-star">★</span>` : "";
-      const inner = tile ? `${tileHtml(tile)}${caretMark}` : `${starMark}${caretMark}`;
+      const free = freeTiles.get(key);
+      // ＋-nappi kursoriruudussa joka jatkaa jonoa: kosketuskäyttäjän reitti
+      // ilmaiskirjaimeen (näppäimistöllä sama syntyy kirjoittamalla).
+      const addBtn =
+        isCaret && freeAddEligible(key)
+          ? `<button class="sm-free-add" data-free-add="${key}" title="Ilmaiskirjain sanan perään">＋</button>`
+          : "";
+      const inner = tile
+        ? `${tileHtml(tile)}${caretMark}`
+        : free
+          ? `${freeTileHtml(free)}${caretMark}`
+          : `${starMark}${addBtn}${caretMark}`;
       html += `<div class="sm-cell${cls}${islandCls}${premCls}${caretCls}" data-cell="${key}">${inner}</div>`;
     }
   }
@@ -2314,6 +2368,11 @@ function tileHtml(t: Tile): string {
     data-die="${t.dieIndex}">${glyph}${mark}<span class="sm-val">${faceValue(t.face) || ""}</span></div>`;
 }
 
+/** Ilmaiskirjaimen laatta: nopan näköinen mutta arvoton (0 p) ja tyyliltään erottuva. */
+function freeTileHtml(letter: string): string {
+  return `<div class="sm-freetile">${letter.toUpperCase()}<span class="sm-val">0</span></div>`;
+}
+
 function wordsHtml(v: Validation): string {
   if (!v.words.length) return "";
   const items = v.words
@@ -2419,6 +2478,17 @@ function wireEvents(): void {
     }
   });
 
+  // Ilmaiskirjainvalitsin (jos avoinna): kirjainnapit + sulkeminen taustaa klikkaamalla.
+  for (const b of root.querySelectorAll<HTMLElement>("[data-fp]")) {
+    b.addEventListener("click", () => pickFree(b.dataset.fp!));
+  }
+  root.querySelector<HTMLElement>("[data-fp-close]")?.addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) {
+      freePicker = null;
+      render();
+    }
+  });
+
   // Kierroksen päätyttyä lauta on jäässä — ei raahausta eikä jokerin valintaa.
   if (roundOver) return;
 
@@ -2448,8 +2518,22 @@ function wireEvents(): void {
         placeTile(ui.lifted, cellEl.dataset.cell!); // napauta-ja-aseta (placeTile nollaa noston)
         return;
       }
+      // Ilmaiskirjaimen napautus avaa valitsimen (vaihto/poisto kosketuksella).
+      if (freeTiles.has(cellEl.dataset.cell!)) {
+        freePicker = cellEl.dataset.cell!;
+        render();
+        return;
+      }
       const { row, col } = parseKey(cellEl.dataset.cell!);
       setCaret(row, col);
+    });
+  }
+  // ＋-nappi kursoriruudussa: avaa ilmaiskirjainvalitsimen (ei siirrä kursoria).
+  for (const b of root.querySelectorAll<HTMLElement>("[data-free-add]")) {
+    b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      freePicker = b.dataset.freeAdd!;
+      render();
     });
   }
 }
@@ -2595,6 +2679,8 @@ function onPointerCancel(): void {
 function placeTile(die: number, target: string): void {
   const dragged = tiles[die];
   recordHistory(die); // kumoa: muistiin ruutu ennen asetusta
+  // Noppa syrjäyttää ilmaiskirjaimen (oma kumoa-merkintä → Ctrl+Z palauttaa molemmat vaiheittain).
+  if (freeTiles.has(target)) setFreeTile(target, null);
   const occupant = tileAt(target);
   if (occupant && occupant.dieIndex !== dragged.dieIndex) {
     // Vaihda: kohteessa ollut noppa raahatun lähtöruutuun (tai telineeseen).
@@ -2623,6 +2709,12 @@ function undoLast(): void {
   if (roundOver) return;
   const last = history.pop();
   if (!last) return;
+  if ("freeCell" in last) {
+    if (last.prevLetter === null) freeTiles.delete(last.freeCell);
+    else freeTiles.set(last.freeCell, last.prevLetter);
+    render();
+    return;
+  }
   const t = tiles[last.die];
   // Näppäimistöllä asetettu jokeri vapautuu palatessaan telineeseen (kuten ⌫).
   if (last.prevCell === null && t.face === JOKER && t.locked) {
@@ -2666,7 +2758,7 @@ function typeAt(ch: string): void {
   // Ohita varatut ruudut → ensimmäinen tyhjä suunnassa.
   let { row, col } = ui.caret;
   const dir = ui.caret.dir;
-  while (inBounds(row, col) && tileAt(cellKey(row, col))) {
+  while (inBounds(row, col) && cellOccupied(cellKey(row, col))) {
     [row, col] = stepCell(row, col, dir);
   }
   if (!inBounds(row, col)) return;
@@ -2676,7 +2768,18 @@ function typeAt(ch: string): void {
     die = tiles.findIndex((t) => !t.cell && t.face === JOKER);
     asJoker = die >= 0;
   }
-  if (die < 0) return; // ei sopivaa noppaa telineessä
+  if (die < 0) {
+    // Ei sopivaa noppaa eikä jokeria telineessä → ilmaiskirjain, jos ruutu jatkaa
+    // olemassa olevaa jonoa (sanan perään kirjoittaminen; ITU.md › Ilmaiskirjaimet).
+    // Sääntöjen loppusijainti/katto/risteys näkyvät live-validoinnista kuten sanatkin.
+    const [pr, pc] = stepCell(row, col, dir, true);
+    if (!inBounds(pr, pc) || !cellOccupied(cellKey(pr, pc))) return;
+    setFreeTile(cellKey(row, col), ch);
+    const [fr, fc] = stepCell(row, col, dir);
+    ui.caret = inBounds(fr, fc) ? { row: fr, col: fc, dir } : { row, col, dir };
+    render();
+    return;
+  }
   if (asJoker) {
     tiles[die].letter = ch;
     tiles[die].locked = true;
@@ -2707,17 +2810,25 @@ function backspaceCaret(): void {
   ui.kbdMode = true;
   const dir = ui.caret.dir;
   // Aktiivinen ruutu varattu → tyhjennä SE; kursori jää paikalleen (intuitiivinen).
-  const here = tileAt(cellKey(ui.caret.row, ui.caret.col));
+  const hereKey = cellKey(ui.caret.row, ui.caret.col);
+  const here = tileAt(hereKey);
   if (here) {
     releaseTile(here);
+    render();
+    return;
+  }
+  if (freeTiles.has(hereKey)) {
+    setFreeTile(hereKey, null);
     render();
     return;
   }
   // Aktiivinen ruutu tyhjä → astu taakse ja poista edellinen.
   const [pr, pc] = stepCell(ui.caret.row, ui.caret.col, dir, true);
   if (!inBounds(pr, pc)) return;
-  const t = tileAt(cellKey(pr, pc));
+  const prevKey = cellKey(pr, pc);
+  const t = tileAt(prevKey);
   if (t) releaseTile(t);
+  else if (freeTiles.has(prevKey)) setFreeTile(prevKey, null);
   ui.caret = { row: pr, col: pc, dir };
   render();
 }
@@ -2747,6 +2858,11 @@ function toggleCaretDir(): void {
 function handleEscape(): boolean {
   if (jokerPicker !== null) {
     jokerPicker = null;
+    render();
+    return true;
+  }
+  if (freePicker !== null) {
+    freePicker = null;
     render();
     return true;
   }
@@ -2791,7 +2907,8 @@ function onKeyDown(e: KeyboardEvent): void {
     ui.panel !== null ||
     ui.showMatchSummary ||
     ui.showChallenge ||
-    jokerPicker !== null
+    jokerPicker !== null ||
+    freePicker !== null
   )
     return;
 
@@ -2872,6 +2989,73 @@ function jokerPickerHtml(): string {
       <p class="sm-jp-hint">${hint}</p>
       <div class="sm-jp-grid">${btns}</div>
       <button class="sm-jp-clear" data-jp="">◇ Tyhjennä, anna pelin valita</button>
+    </div>
+  </div>`;
+}
+
+// --- Ilmaiskirjaimet: valitsin kosketuskäyttöön (näppäimistöllä typeAt hoitaa saman) ---
+
+/** Voiko ruutuun lisätä ilmaiskirjaimen: tyhjä ruutu joka jatkaa jonoa vasemmalta
+ * TAI ylhäältä. Suuntariippumaton, koska kosketuskursorin suunta voi osoittaa
+ * muualle kuin sanan jatkoon; valitsin (freeCandidates) validoi joka tapauksessa
+ * kaikki ruudun kautta kulkevat sanat. */
+function freeAddEligible(key: string): boolean {
+  if (cellOccupied(key)) return false;
+  const { row, col } = parseKey(key);
+  return (["H", "V"] as const).some((d) => {
+    const [pr, pc] = stepCell(row, col, d, true);
+    return inBounds(pr, pc) && cellOccupied(cellKey(pr, pc));
+  });
+}
+
+/** Kirjaimet jotka tekevät ruudun kautta kulkevista sanoista kelvollisia sääntöjä rikkomatta. */
+function freeCandidates(key: string): string[] {
+  if (!judge) return [];
+  const out: string[] = [];
+  for (const L of PLAY_LETTERS) {
+    const cells = new Map(buildCells());
+    cells.set(key, { dieIndex: -1, face: L, letter: L, free: true });
+    const words = extractWords(cells);
+    const through = words.filter((w) => w.keys.includes(key));
+    if (!through.length) continue;
+    if (freeLetterViolations(cells, words).has(key)) continue;
+    if (through.every((w) => judge!.judge(w.text) === "valid")) out.push(L);
+  }
+  return out;
+}
+
+/** Pelaajan valinta valitsimesta: "" = poista ilmaiskirjain. */
+function pickFree(letter: string): void {
+  if (freePicker !== null) {
+    if (letter === "" && freeTiles.has(freePicker)) setFreeTile(freePicker, null);
+    else if (PLAY_LETTERS.includes(letter)) setFreeTile(freePicker, letter);
+  }
+  freePicker = null;
+  render();
+}
+
+function freePickerHtml(): string {
+  if (freePicker === null) return "";
+  const valid = new Set(freeCandidates(freePicker));
+  const cur = freeTiles.get(freePicker) ?? null;
+  const btns = PLAY_LETTERS.map(
+    (L) =>
+      `<button class="sm-jp-letter${valid.has(L) ? " sm-jp-valid" : ""}${
+        cur === L ? " sm-jp-cur" : ""
+      }" data-fp="${L}">${L.toUpperCase()}</button>`,
+  ).join("");
+  const hint = valid.size
+    ? "Korostetut kirjaimet jatkavat sanaa kelvollisesti. Ilmaiskirjain ei tuo pisteitä."
+    : "Mikään kirjain ei tee sanoista kelvollisia tässä ruudussa.";
+  const removeBtn = cur
+    ? `<button class="sm-jp-clear" data-fp="">✕ Poista ilmaiskirjain</button>`
+    : "";
+  return `<div class="sm-jp-backdrop" data-fp-close="1">
+    <div class="sm-jp">
+      <h3>Ilmaiskirjain sanan perään</h3>
+      <p class="sm-jp-hint">${hint}</p>
+      <div class="sm-jp-grid">${btns}</div>
+      ${removeBtn}
     </div>
   </div>`;
 }

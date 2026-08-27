@@ -103,7 +103,7 @@ export const TERMS: TermEntry[] = [
     term: "sanakirja",
     match: ["sanakirja*"],
     selitys:
-      "Pelin tuomari: pakattu sanasto (Kotus-pohjainen, versio sanasto-fi-v1), jossa sanat " +
+      "Pelin tuomari: pakattu sanasto (Kotus-pohjainen, versio sanasto-fi-v2), jossa sanat " +
       "ovat taivutusmuotoineen. Jos muoto ei ole sanakirjassa, se ei kelpaa. Sama lähde myös " +
       "selittää muodot Sanapoliisissa: hyväksyjä ja selittäjä eivät voi olla eri mieltä.",
   },
