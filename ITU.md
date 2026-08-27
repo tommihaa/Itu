@@ -215,3 +215,36 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
     suhde offline-pelirauhainvarianttiin punnitaan vasta jos idea etenee (invariantti koskee
     pelisovelluksen oletustilaa, ei välttämättä erillistä tarkistuspalvelua; rajanveto on
     tekemättä).
+
+- **Ilmaiskirjaimet eli sanaa saa jatkaa telineen yli (Tommin idea 27.8.2026, varasto):**
+  pelaaja saisi kirjoittaa sanan joka on pidempi kuin teline antaa myöten. Nopilla katetut
+  kirjaimet pisteyttäisiin normaalisti, ylimääräiset olisivat ilmaisia: nolla pistettä eikä
+  niiden koskemia ruutubonuksia lasketa. Sana siis pisteytetään vain siihen asti kuin
+  kirjaimista on voinut muodostaa.
+  - **Miksi kiinnostava.** 27.8.2026 mitattiin ajamalla generointi ilman 13 kirjaimen rajaa
+    (`build/gen_wordforms.py`, ALLOWED löysättynä): suomi tuottaa **4 813 874 muotoa**, joista
+    13 kirjaimen katto pudottaa **51,9 %**. Katkaisematon lista toisti tuotantosanaston
+    tarkalleen neljää muotoa lukuun ottamatta, joten mittaus on luotettava. Pois jäävä puolisko
+    painottuu pitkiin johdoksiin, partisiippeihin sijataivutuksessa ja teonnimiin, eli juuri
+    niihin joissa opetettavaa on eniten.
+  - **Ei pisteinflaatiota.** Ilmaiskirjaimista ei saa pisteitä, joten pidemmän kirjoittamisesta
+    ei hyödy. Aikabonus on sidottu käytettyihin **noppiin** (`TIME_BONUS_MIN_LETTERS_USED`),
+    eivätkä ilmaiskirjaimet ole noppia, joten sitäkään ei voi kiertää.
+  - **Kaksi muotoa, eri hinta.** Jos ilmaiset ovat vain sanan lopussa, nopat kattavat sanan
+    alkuosan ja DAWG kelpaa sellaisenaan: prefiksikävely kertoo onko jatkoa. Jos ilmaisia saa
+    olla myös alussa (Tommin lisäys samana päivänä), nopat kattavat yhtenäisen pätkän sanan
+    keskeltä, ja kysymys muuttuu osajonohauksi jota DAWG ei tee. Se vaatisi eri hakurakenteen
+    ja koskisi myös kierroksen lopun ratkaisijaa. **Loppupää on halpa, molemmat päät kallis.**
+  - **Avoin: katto ilmaisten määrälle.** Rajattomana kolmella nopalla voisi kirjoittaa
+    kahdenkymmenen kirjaimen sanan ja yltää laudalla minne tahansa. Ehdotettu suoja on katto,
+    esimerkiksi enintään kaksi ilmaiskirjainta; se on myös helpompi selittää pelaajalle kuin
+    linkitysehto. Tommi ehdotti lisäksi vaatimusta ettei ilmaisista synny laudalle erillisiä
+    sanoja; tulkinta on kirjattu mutta ei vahvistettu.
+  - **Vaikeus leikkaa kahtia.** Vaihtoehtoja tulee lisää (helpottaa), mutta sanan tunnistaminen
+    keskeltä on vaikeampi ajatusliike kuin sen jatkaminen (vaikeuttaa). Kumpi voittaa on
+    pelitestikysymys.
+  - **Hinta.** Sanasto 2,3 M → 4,8 M muotoa. Nyt `sanasto-fi-v1.dawg` on 895 kt ja
+    `forms-fi-v1.bin.gz` 6,2 Mt; Itu on asennettava PWA, joten kasvu on käyttäjän latauskuorma.
+  - **Menettely.** Tämä muuttaa pisteytys- ja hyväksymissääntöjä eli tämän dokumentin
+    kanonia. Jos idea etenee, muutos kirjataan ensin `## Pisteytys`-osioon ja vahvistetaan,
+    vasta sitten koodiin.
