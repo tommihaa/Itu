@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // DAWG-lukija: nollaviiveinen jäsenyyskysely litteästä kaaritaulukosta
 // (rakenne: ks. builder.ts encode/packEdge). Ei riippuvuuksia fs:ään.
 import type { BuiltDawg, DawgMeta } from "./builder";

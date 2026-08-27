@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2026 Tommi Haanranta
 # Mittaus: montako muotoa vapaat yhdyssanat (+Cmp) toisivat Itun sanastoon.
 #
 # Tämä ei ole FST-ajo vaan lemmaparien kombinatoriikkaa, ja se on siksi

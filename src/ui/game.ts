@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Ruudukko-UI: nopat raahataan telineestä lautaan ja toisiinsa ristikoksi.
 // Live-validointi värittää sanat DAWG-tuomarilla. Pelilogiikka on domainissa
 // (board.ts, scoring.ts); tämä on ohut näkymä- ja raahauskerros.

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Selkokielinen sääntöilmaisu — YKSI lähde, jota sekä pelin sisäinen
 // "Säännöt"-näkymä että tulostettava referenssi käyttävät.
 // Sisältö on [SANASTO.md](../../SANASTO.md):n pelaajaystävällinen käännös:

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Selainpuolen DAWG-lataus: hakee pakatun binäärin + metan ja rakentaa
 // ExactJudgen. Erillinen asset (ei JS-bundleen) → host gzippaa, lataus on laiska.
 import type { BuiltDawg, DawgMeta } from "./builder";

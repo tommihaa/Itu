@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 import { LETTER_VALUES, type Face } from "./dice";
 import type { PremiumCell } from "./premium";
 

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 import { describe, expect, it } from "vitest";
 import { countsAsConsonant, countsAsVowel, diceWithJokers, JOKER } from "../src/domain/dice";
 import { MIN_CONSONANTS, MIN_VOWELS, rollDice } from "../src/domain/roll";

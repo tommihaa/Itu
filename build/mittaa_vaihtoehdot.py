@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2026 Tommi Haanranta
 # Mittaus: montako sanaa yhdestä heitosta on pelattavissa, nyt ja affiksien kanssa.
 #
 # Tämä on kohdan 30 toinen pelattavuusluku ja eri kysymys kuin

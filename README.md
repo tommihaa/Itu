@@ -35,12 +35,14 @@ Tämä tiedosto pidetään tarkoituksella ohuena. Elävä tieto asuu ylläpidety
 
 ## Lisenssi
 
-**Koodille ei ole valittu lisenssiä, ja se on tietoinen tila eikä unohdus (23.8.2026).**
-Ilman lisenssitiedostoa oletus on kaikki oikeudet pidätetään, eli tätä koodia ei toistaiseksi
-saa käyttää omissa projekteissa. Valinta odottaa yhtä avointa kysymystä: pelin sanasto on
-generoitu omorfi-morfologialla (GNU GPLv3), eikä generoidun aineiston asema ole tekijöiltä
-kysymättä ratkaistavissa. Kysymys on esitetty omorfin tekijöille 25.8.2026, ja lisenssi
-valitaan vastauksen jälkeen.
+**GNU GPL v3 tai myöhempi**, ks. [LICENSE](LICENSE). Copyright (C) 2026 Tommi Haanranta.
+
+Valinta odotti yhtä avointa kysymystä: pelin sanasto on generoitu omorfi-morfologialla
+(GNU GPLv3), eikä generoidun aineiston asema ollut tekijöiltä kysymättä ratkaistavissa.
+Kysymys esitettiin omorfin tekijöille 25.8.2026 ja vastaus tuli 27.8.2026: lähtökohta on
+GPL:n hengen mukainen käyttö, ja toivottavaa on että omorfia hyödyntävät sovellukset ovat
+samalla lisenssillä ja että parannukset dataan palaavat GPL:n alle. Lisenssi valittiin sen
+mukaisesti.
 
 Sanaston lähdeaineisto on eri asia ja sen ehdot ovat selvät: Kotuksen nykysuomen sanalista,
 CC BY 4.0, attribuutio [SANASTO.md](SANASTO.md#lähdeaineiston-attribuutio):ssä ja pelissä

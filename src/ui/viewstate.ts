@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Näkymän oma tila: se osa `ui/game.ts`:n moduulitilasta joka kuvaa mitä ruudulla on
 // esillä ja mitä pelaaja on parhaillaan tekemässä. Kertyi kuudessa erässä, ja raja johon
 // se on kerätty on se johon loput näkymätila voi siirtyä yksi muuttuja kerrallaan.

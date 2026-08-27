@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Opi-moodi (adaptiivinen kielioppihaaste) — puhdas domain, ei DOM/localStorage.
 //
 // Teema = predikaatti FST-analyysikoodin yli (esim. "sisältääkö koodi tagin +Ine").

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Renderöi selkosäännöt HTML:ksi src/rules/content.ts:stä. Samaa tulostetta
 // käyttää sekä pelin sisäinen näkymä että tuloste (@media print, ks. styles.css).
 import {

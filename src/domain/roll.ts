@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 import { countsAsConsonant, countsAsVowel, diceWithJokers, type Face, type JokerCount } from "./dice";
 import { createRng, type Rng } from "./rng";
 

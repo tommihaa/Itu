@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Termimoduulin testit: moottorin kontrakti (TERMIMODUULI.md) + datan eheys.
 import { describe, expect, it } from "vitest";
 import {

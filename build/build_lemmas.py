@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2026 Tommi Haanranta
 # Analyysi-assetin paketointi Tarkastajaa varten (muoto -> [(lemma, [koodit])]).
 #
 # Lukee data/wordforms.txt (muoto<TAB>lemma#koodi;koodi|lemma2#koodi, lajiteltu

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 import { describe, it, expect } from "vitest";
 import { buildDawg } from "../src/dict/builder";
 import { Dawg } from "../src/dict/dawg";

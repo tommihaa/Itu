@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2026 Tommi Haanranta
 # Mittaus: nousisiko kelpaavuus niin, että ristikon rakentaminen lakkaa olemasta
 # valinta, jos affiksit otettaisiin mukaan?
 #

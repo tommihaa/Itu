@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Tarkistin: SANASTO.md <-> build/gen_wordforms.py.
 //
 // SANASTO.md sanoo itse: "Tämä dokumentti ja gen_wordforms.py pidetään yhtenevinä;

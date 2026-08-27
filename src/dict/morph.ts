@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Morfologisen analyysikoodin (FST:n tag+suffix, esim. "N+Sg+Ine") muunto
 // selkokieliseksi suomeksi Tarkastajaa varten.
 //

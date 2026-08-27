@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Noppadata — lukittu 12.6.2026, ks. ITU.md. Älä muuta ilman designpäätöstä:
 // jakauma (78 tahkoa = 37V + 40K + 1 jokeri) ja per-noppa-poissulkevuus
 // (Ö nopalla 11, D+jokeri nopalla 13, A:t kahdeksalla nopalla) ovat testien vartioimia.

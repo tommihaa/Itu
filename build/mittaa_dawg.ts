@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Mittaus: paljonko affiksit kasvattaisivat pakattua DAWG:ia.
 // Rakentaa DAWG:n otoksen kahdesta muotolistasta EIKÄ kirjoita public/dict/:iin,
 // koska tuotantosanastoa ei saa ylikirjoittaa mittauksen vuoksi.

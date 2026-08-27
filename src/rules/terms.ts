@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Termimoduuli — Itun vendoroitu kopio Lahja-kokoelman jaetusta termiskeemasta.
 // Speksi: TERMIMODUULI.md (Projects-juuri) · sisarkopio: Jako src/shared/glossary.js.
 // Skeema jaetaan, DATA ei: termistö on pelin omaa (KÄSITTEISTÖ §0).

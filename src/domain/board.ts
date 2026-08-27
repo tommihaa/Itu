@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Lautadomain: nopat asetetaan ruudukkoon, ja tästä poimitaan vaaka- ja
 // pystysuuntaiset sanat (yhtenäiset ≥2 ruudun jonot). Puhdas logiikka,
 // erillään UI:sta — sama poiminta ajaa sekä live-validoinnin että pisteytyksen.

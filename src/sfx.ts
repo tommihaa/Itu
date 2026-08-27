@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Kevyt SFX-moduuli. Torvi & kantele -teema (7.7.2026 jälkeen) käyttää kahta
 // oikeaa äänitiedostoa (ks. `public/sfx/CREDITS.md`) — synteesiversio (sahalaita+
 // alipäästö / Karplus-Strong) kuulosti käyttäjän mukaan "80-luvun tietokonepelin

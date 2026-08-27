@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Minimoivan DAWG:n (Daciuk, "Incremental Construction of Minimal Acyclic
 // Finite-State Automata") rakentaja. Syötteen ON oltava aakkostettu ja uniikki.
 // Tämä moduuli on puhdas (ei fs:ää), jotta sekä build-skripti että testit

@@ -11,6 +11,20 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
 > numerolla, aiemmat numerot ovat jälkikäteisiä nimilappuja jo tuotannossa olevalle
 > koodille. Tästä eteenpäin versio bumpataan ennen pushia, kuten Superjatsissa.
 
+## [0.10.1] – 2026-08-27
+
+### Muutettu
+- **Lisenssi valittu: GNU GPL v3 tai myöhempi** ([LICENSE](LICENSE)). Repo oli tähän asti
+  julkinen mutta lisenssitön, mikä tarkoittaa oletuksena kaikkien oikeuksien pidättämistä.
+  Tila oli tietoinen: pelin sanasto generoidaan omorfi-morfologialla (GNU GPLv3), eikä
+  generoidun aineiston asema ollut tekijöiltä kysymättä ratkaistavissa. Kysymys esitettiin
+  omorfin tekijöille 25.8.2026 ja vastaus tuli 27.8.2026: lähtökohta on GPL:n hengen
+  mukainen käyttö, ja toivottavaa on että omorfia hyödyntävät sovellukset ovat samalla
+  lisenssillä ja että parannukset dataan palaavat GPL:n alle. Lisenssi valittiin sen mukaisesti.
+- Lähdetiedostoihin (46 kpl) lisätty SPDX-merkintä ja tekijänoikeusrivi. README:n
+  lisenssiosio ja `package.json`in `license`-kenttä vastaavat nyt LICENSE-tiedostoa.
+  Pelin toiminta ei muutu.
+
 ## [0.10.0] – 2026-08-25
 
 ### Lisätty

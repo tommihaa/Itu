@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2026 Tommi Haanranta
 # Integraatiotesti: importtaa KORJATUN gen_wordforms.py:n ja varmistaa että
 # generate_forms tuottaa nyt verbien perusmuodon + infinitiivit + 4. inf -minen.
 # Ajo: python -X utf8 build/audit_morph.py

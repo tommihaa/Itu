@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Deterministinen siemenpohjainen satunnaisuus: sama siemen → sama heitto,
 // laitteesta riippumatta. Tämä on tulevan asynkronisen haasteen perusta.
 

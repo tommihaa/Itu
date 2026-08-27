@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Pakkaa muotolistan minimoiduksi DAWG:ksi, jonka selain lataa.
 // Ajo:  npx vite-node build/build_dawg.ts [lähdetiedosto]
 //   - oletus: data/wordforms.txt (valmis ajo)

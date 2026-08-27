@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Premium-pistemoodi (valinnainen): Scrabble-tyyliset kertoimet kiinteällä,
 // symmetrisellä layoutilla + bingo. Puhdas domain, ei UI-riippuvuutta.
 //

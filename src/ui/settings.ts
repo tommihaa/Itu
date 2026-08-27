@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Pelaajan valinnat ja niiden levytallennus. Yksi koti kaikelle mikä on pelaajan valinta
 // ja säilyy sivulatausten yli: pistemoodi, aikabonus, kierroksen kesto, Opi-moodin kytkin,
 // äänet, telineen järjestys ja nimimerkki.

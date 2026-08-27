@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2026 Tommi Haanranta
 # Mittaus: mitä omistusliitteiden (+Px) ja liitepartikkelien (+Foc) mukaan
 # ottaminen maksaisi Itun sanastolle. EI muuta tuotantoputkea: tämä skripti
 # lukee saman lemmalistan ja saman tagiston kuin gen_wordforms.py, mutta

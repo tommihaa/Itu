@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2026 Tommi Haanranta
 # Laskee approksimaation osuvuuden uudelleen tuoreesta FST-otoksesta ja
 # päivittää sen pelattavuus.json:iin. Erillinen skripti, koska pelattavuusajo
 # kestää minuutteja eikä sitä kannata toistaa pelkän validoinnin vuoksi.

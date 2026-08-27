@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Sanan kelvollisuuden arviointi rajapinnan takana, jotta muut kielet (ja
 // tuomarimoodi) voidaan lisätä myöhemmin ilman pelikoodin muutoksia.
 // Ks. ITU.md: ExactJudge nyt; AdvisoryJudge / HumanJudge myöhemmin.

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Muoto -> analyysit -haku Tarkastajaa varten ("talossa" -> [{lemma:"talo",
 // code:"N+Sg+Ine"}]). Itsenäinen, front-coded + lohkoindeksoitu paketti
 // (ks. build/build_lemmas.py): binäärihaku, LAZY-ladattu (vain kun Tarkastaja

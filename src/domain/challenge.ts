@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Tommi Haanranta
 // Haastekoodaus: base64url-JSON URL-hashiin (#c=…). Puhdas domain-moduuli
 // (ei DOM-viittauksia): koodaus/dekoodaus ja sanastoversiovertailu erotettu
 // ui/game.ts:stä testattavuuden vuoksi. UI antaa location-arvot ja ROUND_OPTIONS

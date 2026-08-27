@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2026 Tommi Haanranta
 # Sanamuotojen build-aikainen generointi Itu-peliin.
 #
 # Lähde: Kotuksen nykysuomen sanalista 2024 (CC BY 4.0, Kotimaisten kielten
