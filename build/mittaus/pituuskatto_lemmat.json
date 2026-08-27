@@ -1,0 +1,34 @@
+{
+  "p13": {
+    "katto": 13,
+    "entryja": 2314984,
+    "koodeja": 326,
+    "codeWidth": 2,
+    "raw_tavut": 28000077,
+    "gz_tavut": 6218120
+  },
+  "p14": {
+    "katto": 14,
+    "entryja": 2878972,
+    "koodeja": 326,
+    "codeWidth": 2,
+    "raw_tavut": 34963835,
+    "gz_tavut": 8066505
+  },
+  "p15": {
+    "katto": 15,
+    "entryja": 3367040,
+    "koodeja": 326,
+    "codeWidth": 2,
+    "raw_tavut": 41046087,
+    "gz_tavut": 9758341
+  },
+  "kerroin_p14_vs_p13": {
+    "entryja": 1.244,
+    "gz": 1.297
+  },
+  "kerroin_p15_vs_p13": {
+    "entryja": 1.454,
+    "gz": 1.569
+  }
+}

@@ -59,6 +59,48 @@ Ota mukaan vain se, mitä keskustelu tarvitsee:
   käytetty kelvollisissa sanoissa** → palkitsee nopean JA (lähes) täyden ratkaisun,
   ei pelkkää aikaista lukitsemista. Alle kynnyksen jäänyt ratkaisu ei saa bonusta.
 
+### Ilmaiskirjaimet (VAHVISTETTU 27.8.2026, ei vielä koodissa)
+
+Sanaa saa jatkaa telineen yli sen **lopusta**: nopat kattavat sanan alkuosan, ja loput
+kirjaimet ovat ilmaisia. Sana validoidaan kokonaisena (DAWG:n prefiksikävely riittää,
+koska ilmaiset ovat aina lopussa). Idean syntyhistoria ja perustelut: Jatkoideat-osio.
+
+- **Pisteet:** ilmaiskirjaimista 0 pistettä eikä niiden koskemia ruutubonuksia lasketa;
+  sana pisteytetään vain noppien kattamalta osalta. Aikabonus on sidottu käytettyihin
+  noppiin ennallaan, joten ilmaisilla ei voi kiertää mitään.
+- **Vain loppupää** (Tommi vahvisti 27.8.2026): alkupää toisi uuden tason peliin ja
+  vaatisi osajonohaun jota DAWG ei tee. Alkupään lisääminen olisi myöhemmin oma päätös.
+- **Risteysehto** (Tommi vahvisti 27.8.2026): risteyskohdassa on aina telineen noppa,
+  ilmaiskirjain ei koskaan risteä eikä siitä saa syntyä laudalle uutta sanaa. Perustelu
+  Tommin sanoin: ei kierouksia, vaan luontihetki muistetaan tai harhakuva sanaristikosta
+  hajoaa.
+- **Katto: enintään 2 ilmaiskirjainta** (Tommi vahvisti 27.8.2026), eli
+  sanasto ulottuu 15 kirjaimeen. Katto estää laudan yliulottuvuuden kolmella nopalla ja
+  on helpompi selittää pelaajalle kuin linkitysehto.
+
+**Mitatut hinnat 27.8.2026** (skriptit `build/mittaa_pituuskatto.ts` ja
+`build/mittaa_pituuskatto_lemmat.py`; lähde katkaisemattoman generointiajon lista,
+4 813 874 uniikkia muotoa; luvut ovat gzipattuja siirtokokoja eli pelaajan latauskuormaa):
+
+| Mitä luku laskee | katto 13 (nykytila) | katto 14 | katto 15 |
+| --- | --- | --- | --- |
+| muotoja sanastossa | 2 314 984 | 2 878 972 (+24 %) | 3 367 040 (+45 %) |
+| DAWG (validointi), gz | 547 kt | 610 kt (+62 kt) | 655 kt (+108 kt) |
+| analyysipaketti (Tarkastaja), gz | 6,22 Mt | 8,07 Mt (+1,85 Mt) | 9,76 Mt (+3,54 Mt) |
+
+Menetelmän todennus: katolla 13 uudelleenrakennettu DAWG on tavulleen sama kuin tuotannon
+`sanasto-fi-v1.dawg`, ja analyysipaketti on 34 tavun päässä tuotannosta (ero on lähteen
+neljä duplikaattiriviä). DAWG:n hinta on siis pieni, koska pitkien muotojen yhteiset loput
+pakkautuvat; analyysipaketti kasvaa muotojen tahdissa, koska analyysit eivät jaa rakennetta.
+
+**Tarkastajan kattavuus: analyysi kattaa 15 kirjaimeen asti** (Tommi valitsi 27.8.2026,
+omin sanoin *oppi maksaa mitä maksaa*). Hinta on +3,54 Mt lazy-ladattavaa. Hylätty
+vaihtoehto oli jättää analyysi 13:een ja näyttää pitkille sanoille tyhjää; "ei
+hallusinaatiota" -invariantti olisi sallinut sen, mutta pois jäävä osa painottuu juuri
+muotoihin joissa opetettavaa on eniten, ja oppi meni edelle.
+
+Osio on vahvistettu kokonaan 27.8.2026; toteutus on tekemättä ja se on oma askeleensa.
+
 ### Scrabble-pistemoodi (asetus, oletus POIS)
 
 Valinnainen kerros nykyisen pisteytyksen **päälle**, ei korvaa mitään (aikabonus ja
@@ -216,7 +258,10 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
     pelisovelluksen oletustilaa, ei välttämättä erillistä tarkistuspalvelua; rajanveto on
     tekemättä).
 
-- **Ilmaiskirjaimet eli sanaa saa jatkaa telineen yli (Tommin idea 27.8.2026, varasto):**
+- **Ilmaiskirjaimet eli sanaa saa jatkaa telineen yli (Tommin idea 27.8.2026):**
+  **Siirtynyt 27.8.2026 illalla Pisteytys-osioon ja vahvistettu samana iltana** (loppupää,
+  risteysehto, katto ja mittaukset siellä); alla oleva jää syntyhistoriaksi, ja sen
+  hinta-arvio on korvautunut mitatuilla luvuilla.
   pelaaja saisi kirjoittaa sanan joka on pidempi kuin teline antaa myöten. Nopilla katetut
   kirjaimet pisteyttäisiin normaalisti, ylimääräiset olisivat ilmaisia: nolla pistettä eikä
   niiden koskemia ruutubonuksia lasketa. Sana siis pisteytetään vain siihen asti kuin

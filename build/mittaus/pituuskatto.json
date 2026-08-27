@@ -1,0 +1,30 @@
+{
+  "p13": {
+    "muotoja": 2314984,
+    "solmuja": 73591,
+    "dawg_tavut": 895360,
+    "dawg_gz_tavut": 547296
+  },
+  "p14": {
+    "muotoja": 2878972,
+    "solmuja": 84607,
+    "dawg_tavut": 992320,
+    "dawg_gz_tavut": 609678
+  },
+  "p15": {
+    "muotoja": 3367040,
+    "solmuja": 93437,
+    "dawg_tavut": 1065092,
+    "dawg_gz_tavut": 655430
+  },
+  "kerroin_p14_vs_p13": {
+    "muotoja": 1.244,
+    "dawg": 1.108,
+    "dawg_gz": 1.114
+  },
+  "kerroin_p15_vs_p13": {
+    "muotoja": 1.454,
+    "dawg": 1.19,
+    "dawg_gz": 1.198
+  }
+}
