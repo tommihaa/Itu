@@ -2203,3 +2203,26 @@ tarkemmin sanottuna työkalu valmiina, ei kolmasosa tarkoituksesta.
 onnistui, eikä sitä kysytty. Kohdan 37 vaatimus (riviä koodia ei kirjoiteta ennen kuin joku
 kieltä osaava on sanonut kantansa) on tämän kanssa samansuuntainen: vahvistaminen jota
 yhteisö ei ole pyytänyt olisi tekijän oma projekti eikä vahvistamista.
+
+
+## 93. Kieltä voi oppia pelaamalla
+
+Tommi 29.8.2026 (erä 34), kohdan 92 jatkoksi:
+
+> *kieltä voi oppia pelaamalla*
+
+**Tämä nostaa aiemman kirjoittajan päätelmän Tommin omaksi väitteeksi.** Kohdassa 56 on
+merkitty päätelmäksi se, että peli ei vain opeta pelaamaan vaan näyttää kielioppia
+pelaajalle. Nyt väite on lähteen oma ja laajempi: oppimisen kohde on **kieli**, ei pelin
+säännöt eikä yksin kielioppinäyttö. Kohdan 26 *opeteltaviksi* koski pelin sääntöjä, tämä
+koskee kieltä, ja ne ovat eri asia.
+
+**Tämä on kohdan 92 mekanismi.** Pienten kielten vahvistaminen on tarkoitus, ja tämä lause
+kertoo millä se tapahtuisi: peli ei ole kielelle mainos eikä muistomerkki vaan väline jolla
+kieltä käytetään. Se selittää miksi sanasto on Itussa totuusväite eikä koriste
+(`Kaanon/KÄSITTEISTÖ.md` löydös L4) ja miksi tarkistajaa tarvitaan: väärä sana opettaisi
+väärin.
+
+**Rajaus:** vastaus ei sano kuinka paljon tai minkä tasoista oppimista tarkoitetaan, eikä
+sitä kysytty. Itun oma Opi-moodi on suunniteltu suomea jo osaavalle (sijamuodot näkyviin),
+ja karjalaa pelaava voi olla kielessä eri kohdassa; tästä ei päätellä kumpaa tarkoitetaan.
