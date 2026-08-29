@@ -2109,3 +2109,49 @@ koska agglutinoivaan kieleen siirtyy eri asia kuin muihin.
 **Rajaus:** vastaus koskee englantia. Sitä ei kysytty eikä tässä päätellä, miten esimerkiksi
 viro tai turkki asettuisivat; ne on punnittu erikseen kohdassa 36 ja siellä este on lisenssi
 ja koetin eikä kielen rakenne.
+
+
+## 91. Unelma oli kotimaisista kielistä oppia lisäävä peli, ja agglutinaatio jakoi sen
+
+Tommi 29.8.2026 (erä 34), kysyttäessä miksi ruotsi ja suomenruotsi jäivät pois:
+
+> *oli idea tai unelma kotimaisista kielistä oppia lisäävä peli, mutta agglutinoivat kielet
+> hyötyvät toisistaan aivan eri tasolla*
+
+ja heti perään, tarkennuksena:
+
+> *niillä on oma taso*
+
+**Tämä on ensimmäinen kerta kun Itun kieliavaruudelle on kirjattu tavoite.** Aiemmat
+kohdat kertovat mistä peli tuli ja miksi se on suomeksi; tämä kertoo mihin sitä oli
+ajateltu vietäväksi. Rajaus oli **kotimaiset kielet**, eli suomi, ruotsi, saame ja
+karjala, ja tavoite oli oppimisen lisääminen eikä levikki.
+
+**Ruotsi ei pudonnut kelpaamattomana vaan unelman sisällä tehtynä valintana.** Kotimaisuus
+oli alkuperäinen rajaus, ja sen sisältä löytyi vahvempi jakaja: agglutinaatio (kohta 90).
+Suomi, karjala ja saame ovat agglutinoivia, ruotsi ei ole, ja siksi kolme ensimmäistä
+hyötyvät toisistaan tavalla jolla neljäs ei hyödy niistä eivätkä ne siitä.
+
+**Tarkennus *niillä on oma taso* kertoo minkä muotoinen jakaja on, ja se on tason raja
+eikä asteikko.** Ruotsi ei siis ole samalla akselilla heikompi tapaus vaan toisen tason
+kieli, ja agglutinoivat kielet muodostavat oman ryhmänsä johon kuulutaan tai ei kuuluta.
+Sama muoto kuin kohdassa 90: englanti ei ole huonompi kohde vaan **eri peli**. Rajan
+käytännön merkitys on että ryhmän sisällä työ kumuloituu ja rajan yli ei: neljäs
+agglutinoiva kieli on halvempi kuin kolmas, mutta ensimmäinen germaaninen kieli olisi
+yhtä kallis kuin ensimmäinen kieli koskaan.
+
+**Missä hyöty on, ja tämä on kirjoittajan päätelmä eikä Tommin lause.** Se on ainakin
+kolmessa kerroksessa. *Putki:* sama uralicNLP- ja GiellaLT-ketju kattaa suomen, livvin ja
+saamen, joten kolmas kieli maksaa vähemmän kuin ensimmäinen. *Peli:* taivutusmuotojen
+kerros siirtyy sellaisenaan, eli Tarkastajalla ja Opi-moodilla on kohde jokaisessa. *Ja
+pelaaja:* sijajärjestelmän oppiminen yhdessä kielessä auttaa seuraavassa, mikä on juuri se
+oppimisen lisääminen jota unelma tarkoitti. Ruotsissa yksikään kolmesta ei toteudu.
+
+**Kysymyksen muoto selittyy tällä.** Tommi kysyi *suomenruotsin ja ruotsin* pohdintaa
+erikseen. Kotimaisuuden akselilla ne ovat eri asia (suomenruotsi on kotimainen kieli ja
+lahjateoksen kohteena sama ele kuin karjala), agglutinaation akselilla sama. Kaksi akselia
+antaa siis eri vastauksen, ja jälkimmäinen voitti.
+
+**Rajaus:** vastaus ei sano onko unelma yhä voimassa vai korvautuiko se karjalan ja saamen
+järjestyksellä (`Kaanon/TYOJONO.md` kohta 37), eikä sitä kysytty. Eikä siitä seuraa että
+suomenruotsi olisi suljettu pois lopullisesti; se on jätetty pois tästä työjärjestyksestä.
