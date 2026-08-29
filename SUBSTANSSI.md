@@ -2152,6 +2152,24 @@ erikseen. Kotimaisuuden akselilla ne ovat eri asia (suomenruotsi on kotimainen k
 lahjateoksen kohteena sama ele kuin karjala), agglutinaation akselilla sama. Kaksi akselia
 antaa siis eri vastauksen, ja jälkimmäinen voitti.
 
-**Rajaus:** vastaus ei sano onko unelma yhä voimassa vai korvautuiko se karjalan ja saamen
-järjestyksellä (`Kaanon/TYOJONO.md` kohta 37), eikä sitä kysytty. Eikä siitä seuraa että
-suomenruotsi olisi suljettu pois lopullisesti; se on jätetty pois tästä työjärjestyksestä.
+**Unelman tila kysyttiin, ja vastaus tuli samassa erässä:**
+
+> *karjala ja saame ja suomi, omanlaisensa unelma sekin*
+
+**Unelma ei siis raunioitunut vaan vaihtoi muotoa, ja uusi muoto on nimetty unelmaksi
+eikä jäännökseksi.** Se on tämän kohdan tärkein erottelu: kolmen kielen joukko olisi
+helppo lukea siksi mitä neljästä jäi jäljelle, ja Tommi sanoo sen olevan oma
+kokonaisuutensa. Alkuperäinen rajaus oli hallinnollinen (kotimaiset kielet), uusi on
+kielitieteellinen (agglutinoivat kotimaiset kielet), ja jälkimmäinen on se joka kantaa
+oppimisen siirtymisen kielestä toiseen.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** kolmikko on täydellinen
+eikä keskeneräinen. Kotimaisia agglutinoivia kieliä ei ole neljättä, joten unelmalla on
+tässä muodossa **saavutettavissa oleva loppupiste**, toisin kuin kotimaisuuden rajauksella
+jonka neljäs jäsen olisi jäänyt aina puuttumaan. Sama koskee järjestystä: kohdan 37 kaksi
+kirjettä eivät ole kaksi ensimmäistä askelta vaan kaksi kolmesta, ja kolmas on jo tehty.
+
+**Rajaus:** vastaus ei sano mitä unelman toteutuminen tarkoittaisi käytännössä, eli
+kolmea erillistä peliä, yhtä kolmikielistä vai jotain siltä väliltä, eikä sitä kysytty.
+Eikä siitä seuraa että suomenruotsi olisi suljettu pois lopullisesti; se on jätetty
+tämän unelman ulkopuolelle, mikä on eri asia.
