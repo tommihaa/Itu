@@ -2074,3 +2074,38 @@ ei kelpaa. Ero aiempiin on se, että kolme ensimmäistä on korjattu ja tämä o
 **Rajaus:** vastaus nimeää puutteen muttei sitä mikä sanapituus olisi riittävä, eikä sitä
 kysytty. Karjalan versiossa noppamäärän kasvattaminen on pohdinnassa (Kondien kirje
 29.8.2026), mutta suomenkielisen Itun osalta mitään ei ole päätetty.
+
+
+## 90. Englanti olisi tyystin eri peli, ja syy on agglutinaatio
+
+Tommi 29.8.2026 (erä 34), kohdan 89 mittausten jälkeen:
+
+> *miksi englanti olisi tyystin eri peli, agglutinaatio*
+
+**Termi ensin, koska se on hankala muistaa.** Agglutinoivassa kielessä sanan perään
+liimautuu jono päätteitä, joista kukin kantaa yhden merkityksen, ja vartalo pysyy
+tunnistettavana: *talo, taloissani, taloissanikin*. Suomi ja karjala ovat tällaisia.
+Englanti merkitsee samat asiat erillisillä sanoilla (*in my houses too*) ja sen
+taivutus loppuu muutamaan päätteeseen.
+
+**Mitä väite sanoo Itusta.** Pelin sisältö ei ole kirjaimet vaan se, että kirjaimista
+syntyy taivutusmuotoja: Tarkastaja kertoo mikä muoto sana on, Opi-moodi opettaa sen, ja
+kohdan 89 kattoluku mittaa kuinka suuri osa muodoista ylipäätään mahtuu laudalle.
+Englannissa tuota kerrosta ei ole. Peli ei siis kääntyisi vaan se pitäisi keksiä uusiksi
+jonkin muun ympärille, ja lopputulos olisi eri peli samalla laudalla.
+
+**Tämä tarkentaa jo kirjattua eikä kumoa sitä.** `Kaanon/TYOJONO.md` kohta 36 mittasi
+25.8.2026 mitä englanninkielinen versio maksaisi ja päätyi siihen että mekaniikka siirtyy
+halvalla, `morph.ts` ja `lemmas.ts` katoavat säästönä ja Tarkastajalle ei jää rakennettavaa.
+Mittaus näki siis saman asian kustannuksena. **Tommin lause nimeää sen lajina:** kyse ei ole
+siitä että jotain jää pois vaan siitä että jäljelle jäävä on eri peli.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** tämä antaa karjalalle
+perusteen jota kohta 37 ei maininnut. Karjala ei ole vain kieli jolle putki sattuu
+ylettymään, vaan kieli jossa **Itun erottuvin kerros siirtyy mukana**. Sama seuraus toiseen
+suuntaan: `ITU.md`:n *ei monikielisyyttä* on kielikohtainen valinta eikä yleinen kielto,
+koska agglutinoivaan kieleen siirtyy eri asia kuin muihin.
+
+**Rajaus:** vastaus koskee englantia. Sitä ei kysytty eikä tässä päätellä, miten esimerkiksi
+viro tai turkki asettuisivat; ne on punnittu erikseen kohdassa 36 ja siellä este on lisenssi
+ja koetin eikä kielen rakenne.

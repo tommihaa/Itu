@@ -147,6 +147,18 @@ korjannut. Ilmaiskirjaimet nostavat efektiivisen katon viiteentoista eli suomen 
 noppamäärää**, ja lukittu noppaosio on ennallaan; mittaus on tässä siksi, että hinta
 tiedetään jos asia joskus otetaan esiin.
 
+**Miksi taulukossa on suomi ja karjala muttei englanti.** Molemmat ovat *agglutinoivia*
+kieliä: sanan perään liimautuu jono päätteitä, joista kukin kantaa yhden merkityksen, ja
+vartalo pysyy tunnistettavana (*talo, taloissani, taloissanikin*). Juuri siksi kattoluku
+on niissä mielekäs mittari: pituus on se rajoite joka päättää kuinka suuri osa kielen
+muodoista on pelattavissa. Englanti ei ole agglutinoiva vaan merkitsee samat asiat
+erillisillä sanoilla (*in my houses too*), ja sen taivutusmuodot loppuvat muutamaan
+päätteeseen. **Englanninkielinen versio ei siis olisi käännös vaan tyystin eri peli**:
+Tarkastajalla ei olisi mitä selittää, Opi-moodilla ei mitä opettaa, ja mittari joka tässä
+taulukossa mittaa kielen kattavuutta menettäisi kohteensa. Tämä on peruste sille miksi
+`Esittely`n *ei monikielisyyttä* on kielikohtainen valinta eikä laiskuus, ja se erottaa
+karjalan englannista: karjalaan sama peli siirtyisi, englantiin se pitäisi keksiä uusiksi.
+
 ### Scrabble-pistemoodi (asetus, oletus POIS)
 
 Valinnainen kerros nykyisen pisteytyksen **päälle**, ei korvaa mitään (aikabonus ja
