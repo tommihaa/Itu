@@ -121,6 +121,32 @@ muotoihin joissa opetettavaa on eniten, ja oppi meni edelle.
 
 Osio on vahvistettu kokonaan 27.8.2026; toteutus on tekemättä ja se on oma askeleensa.
 
+**Kattavuus katon mukaan, mitattu 29.8.2026** (`Kaanon/tyokalut/mittaa_kirjainkatto.py`;
+lähde uralicNLP:n sanakirja-artefaktit ja GiellaLT-mallit, suomi 94 610 lemmaa ja
+1 079 284 uniikkia muotoa, livvinkarjala 10 704 lemmaa ja 278 374 muotoa). Yllä oleva
+taulukko laskee latauskuormaa, tämä laskee **osuutta muodoista**, ja luvut ovat
+kumulatiivisia eli katto 13 sisältää myös lyhyemmät:
+
+| katto | suomi | livvinkarjala |
+| --- | --- | --- |
+| 13 (noppien määrä) | 59,8 % | 65,7 % |
+| 14 | 69,7 % | 73,7 % |
+| 15 (ilmaiskirjaimet) | 77,7 % | 80,3 % |
+| 16 | 84,4 % | 86,0 % |
+
+Pisin muoto on suomessa 34 ja livvissä 33 kirjainta. **Suomi on joka katolla ahtaammalla
+kuin livvi**, ja ero kapenee ylöspäin mentäessä (5,9 yksikköä katolla 13, 1,6 katolla 16).
+Luvut eivät ole vertailukelpoisia yllä olevan taulukon muotomäärien kanssa, koska tämä ajo
+käyttää kapeampaa tagijoukkoa ja eri lemmalähdettä; ne ovat vertailukelpoisia keskenään,
+mikä on koko mittauksen tarkoitus.
+
+*Mitä tämä sanoo pelistä:* noppien määrä on peritty esikuvalta eikä valittu, ja se on
+`SUBSTANSSI.md` kohdan 89 mukaan ainoa Tommin nimeämä esikuvan puute jota Itu ei ole
+korjannut. Ilmaiskirjaimet nostavat efektiivisen katon viiteentoista eli suomen osuuden
+59,8:sta 77,7 prosenttiin, mutta noppia on yhä kolmetoista. **Tämä ei ole ehdotus muuttaa
+noppamäärää**, ja lukittu noppaosio on ennallaan; mittaus on tässä siksi, että hinta
+tiedetään jos asia joskus otetaan esiin.
+
 ### Scrabble-pistemoodi (asetus, oletus POIS)
 
 Valinnainen kerros nykyisen pisteytyksen **päälle**, ei korvaa mitään (aikabonus ja

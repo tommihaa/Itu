@@ -2040,3 +2040,37 @@ koon: työ on viiden siilon läpikäynti, ei arvaamattoman monen.
 
 **Rajaus:** ei kysytty mitkä viisi yhdistelmää olivat, eikä sitä missä siiloista
 nykyinen pisin ennätyshistoria asuu.
+
+
+## 89. Esikuvan toinen puute oli sanapituus, ja se on yhä korjaamatta
+
+Tommi 29.8.2026 (erä 34), kysyttäessä mitkä puutteet Sana Mixissä näkyivät suomen kannalta:
+
+> *puutteet olivat kirjainjakauma ja sanapituus*
+
+**Toinen puolisko on jo dokumentissa, toinen on uusi.** Kirjainjakauma on kohdat 44 ja 45:
+esikuvan noppiin kuuluivat B ja C ja vokaaleja oli liian vähän, ja Itu korjasi molemmat
+kirjaimistollaan ja tahkojakaumallaan. **Sanapituutta ei ole tässä dokumentissa ennen tätä
+kohtaa**, ja se on merkille pantava, koska se on ainoa nimetty puute jota Itu ei ole
+korjannut: noppia on kolmetoista, sama määrä kuin esikuvassa (kohta 7:n sääntökortti), eikä
+pidempi sana mahdu laudalle.
+
+**Puute on nyt mitattu, ja mittaus on tämän kohdan uutta tietoa.** Samalla mittarilla ajettuna
+(`Kaanon/tyokalut/mittaa_kirjainkatto.py`) kolmentoista kirjaimen kattoon mahtuu suomessa
+59,8 prosenttia generoiduista taivutusmuodoista ja livvinkarjalassa 65,7. Neljäntoista
+katossa luvut ovat 69,7 ja 73,7, viidentoista katossa 77,7 ja 80,3. Suomi on siis joka
+katolla ahtaammalla kuin livvi, eli puute on suurempi juuri siinä kielessä jonka kohdalla
+se huomattiin.
+
+**Ilmaiskirjaimet ovat osittainen korjaus, eivät koko korjaus.** `ITU.md`:n ilmaiskirjaimet
+(27.8.2026) nostavat efektiivisen katon viiteentoista, mikä nostaa suomen osuuden 59,8:sta
+77,7 prosenttiin. Noppien määrä on silti yhä kolmetoista, eli laudalle mahtuvien sanojen
+määrä kasvoi mutta itse rajoite on ennallaan.
+
+**Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** tämä on neljäs kerta kun
+sama rakenne toistuu (kohdat 5, 40, 44), eli suomen kieli on se kohta jossa valmis ratkaisu
+ei kelpaa. Ero aiempiin on se, että kolme ensimmäistä on korjattu ja tämä on auki.
+
+**Rajaus:** vastaus nimeää puutteen muttei sitä mikä sanapituus olisi riittävä, eikä sitä
+kysytty. Karjalan versiossa noppamäärän kasvattaminen on pohdinnassa (Kondien kirje
+29.8.2026), mutta suomenkielisen Itun osalta mitään ei ole päätetty.
