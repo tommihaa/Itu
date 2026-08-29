@@ -2173,3 +2173,33 @@ kirjettä eivät ole kaksi ensimmäistä askelta vaan kaksi kolmesta, ja kolmas 
 kolmea erillistä peliä, yhtä kolmikielistä vai jotain siltä väliltä, eikä sitä kysytty.
 Eikä siitä seuraa että suomenruotsi olisi suljettu pois lopullisesti; se on jätetty
 tämän unelman ulkopuolelle, mikä on eri asia.
+
+
+## 92. Unelman tarkoitus on pienten kielten vahvistaminen
+
+Tommi 29.8.2026 (erä 34), kohdan 91 jatkoksi, kysyttäessä mitä kolmen kielen unelma tavoittelee:
+
+> *pienten kielten vahvistaminen*
+
+**Tämä nimeää tarkoituksen, ja se on eri asia kuin kohdan 91 rajaus.** Kohta 91 kertoo mitkä
+kielet ja miksi juuri ne; tämä kertoo mitä varten. Tarkoitus ei ole levikki, ei markkina eikä
+edes oppiminen sinänsä, vaan se että kieli jolla on vähän puhujia saa yhden välineen lisää.
+
+**Kolme asiaa asettuu tämän myötä paikalleen, ja ne olivat kirjattuina eri paikkoihin.**
+Ensinnäkin *isänmaallisuus*, jonka Tommi sanoi karjalasta ja saamesta 25.8.2026
+(`Kaanon/TYOJONO.md` kohta 37): sana ei tarkoittanut kansallistunnetta vaan tätä. Toiseksi
+`Kaanon/KÄSITTEISTÖ.md`:n *Lönnrot, Agricola ja Torvalds* ja sen keskimmäinen osa **anna
+väline omalla kielellä**: suomessa se on tehty moneen kertaan, karjalassa ja saamessa ei, ja
+tämä kohta sanoo että juuri se on työn kohde. Kolmanneksi lahjateosluonne: peli annetaan
+ilmaiseksi, koska vahvistaminen ei toimi maksumuurin takaa.
+
+**Suomi on kolmikossa eri roolissa kuin kaksi muuta, ja tämä on kirjoittajan päätelmä eikä
+Tommin lause.** Suomea ei tarvitse vahvistaa samassa mielessä: se on kolmikon suurin kieli ja
+sillä on välineitä. Suomen osuus on siis se joka rakensi putken ja osoitti että malli toimii,
+ja kaksi muuta ovat ne joita varten unelma on olemassa. Kohdan 91 kolmasosa valmiina on siis
+tarkemmin sanottuna työkalu valmiina, ei kolmasosa tarkoituksesta.
+
+**Rajaus:** vastaus ei sano mitä vahvistaminen mitattaisiin tai miten tiedettäisiin että se
+onnistui, eikä sitä kysytty. Kohdan 37 vaatimus (riviä koodia ei kirjoiteta ennen kuin joku
+kieltä osaava on sanonut kantansa) on tämän kanssa samansuuntainen: vahvistaminen jota
+yhteisö ei ole pyytänyt olisi tekijän oma projekti eikä vahvistamista.
