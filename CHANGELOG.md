@@ -11,6 +11,14 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
 > numerolla, aiemmat numerot ovat jälkikäteisiä nimilappuja jo tuotannossa olevalle
 > koodille. Tästä eteenpäin versio bumpataan ennen pushia, kuten Superjatsissa.
 
+## [0.11.1] – 2026-08-30
+
+### Muutettu
+- **Huutomerkit pois seitsemästä UI-tekstistä** (Tommin kirjoitustyylilinjaus 30.8.2026,
+  `Kaanon/TYÖTAVAT.md`: Clauden kirjoittama käskylause tai kehote ei pääty huutomerkkiin).
+  Kohteet: tilarivin bingo-merkki, ennätysbanneri, ennätyslistojen kaksi tyhjätekstiä,
+  kaksi Kopioitu-nappia ja teemahaastebanneri. Piste tai ei välimerkkiä tilalle.
+
 ## [0.11.0] – 2026-08-27
 
 ### Lisätty
