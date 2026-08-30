@@ -11,6 +11,27 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
 > numerolla, aiemmat numerot ovat jälkikäteisiä nimilappuja jo tuotannossa olevalle
 > koodille. Tästä eteenpäin versio bumpataan ennen pushia, kuten Superjatsissa.
 
+## [0.12.0] – 2026-08-31
+
+### Lisätty
+- **Pituuspalkinto perusmoodiin** (ITU.md › Pisteytys › Pituuspalkinto, vahvistettu
+  31.8.2026): vähintään 8 noppaa kattava sana antaa +5 lisäpistettä ja vähintään 11
+  noppaa kattava +15. Lasketaan sanan kattamien noppien määrästä, joten ilmaiskirjaimet
+  eivät kartuta porrasta; jokeri on noppa ja kartuttaa. Scrabble-pistemoodissa porrasta
+  ei lasketa, koska sanakertoimet ja bingo ovat siellä jo pituuden vastapaino.
+  Loppunäytön erittelyyn oma rivi joka nimeää sanan ja noppamäärän, ja Termit-välilehdelle
+  termi *pituuspalkinto*. **Perustelu ja miksi suora muutos ilman asetusta:** perusmoodi
+  palkitsi rakenteellisesti pituutta vastaan (risteysnoppa lasketaan kahdesti, joten samat
+  nopat tuottivat enemmän moneksi lyhyeksi sanaksi järjestettynä), vaikka Esittely lupaa
+  pisteitä pitkistä sanoista. Suora peruspisteytyksen muutos on Tommin päätös 30.8.2026:
+  suojattavaa ennätyskantaa ei ole, ja vanhat ennätykset jäävät voimaan vaikka ne on
+  tehty ilman porrasta.
+
+### Korjattu
+- Sanat-välilehden pituusväite päivitetty: sana on 2–15 kirjainta (nopilla 13,
+  ilmaiskirjaimilla kaksi pidemmälle); teksti sanoi yhä 2–13 vaikka ilmaiskirjaimet
+  toteutuivat 0.11.0:ssa.
+
 ## [0.11.1] – 2026-08-30
 
 ### Muutettu
