@@ -352,3 +352,34 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
   - **Menettely.** Tämä muuttaa pisteytys- ja hyväksymissääntöjä eli tämän dokumentin
     kanonia. Jos idea etenee, muutos kirjataan ensin `## Pisteytys`-osioon ja vahvistetaan,
     vasta sitten koodiin.
+
+- **Pituuspalkinto perusmoodiin (Tommin idea 30.8.2026, analysoitu samana iltana):**
+  perusmoodin pitäisi palkita sanan pituus, ei vain Scrabble-kerroksen.
+  - **Risteyslaskennan vinouma, eli miksi idea on perusteltu.** Perusmoodissa sanan
+    pisteet ovat noppien arvojen summa ja risteysnoppa lasketaan kahdesti, joten samat
+    nopat tuottavat enemmän pisteitä moneksi lyhyeksi risteileväksi sanaksi järjestettynä
+    kuin yhdeksi pitkäksi sanaksi. Perusmoodi siis palkitsee rakenteellisesti pituutta
+    vastaan; Scrabble-moodissa sanakertoimet ja bingo kääntävät tämän. Nurinkurisuus
+    korostui 27.8.2026, kun ilmaiskirjaimet avasivat pitkät sanat (katto 15) ja niiden
+    opetusarvo todettiin suurimmaksi.
+  - **Lupaus on jo annettu.** Esittely sanoo: *Pisteet tulevat kirjaimista ja pitkistä
+    sanoista* (`src/rules/content.ts`, ABOUT_PARAS). Muutos toteuttaisi lupauksen jonka
+    peli jo antaa. Tommin ohje 30.8.2026: muutos kerrotaan pelin lupauksessa, eli
+    Esittelyn sanamuoto tarkistetaan toteutuksen yhteydessä vastaamaan uutta tilaa.
+  - **Noppapohjainen laskenta.** Bonus lasketaan sanan kattamien noppien määrästä eikä
+    merkkijonon pituudesta, jotta ilmaiskirjaimilla ei voi farmata sitä (27.8.2026
+    lukittu periaate: ilmaisilla ei voi kiertää mitään).
+  - **Porrasehdotus.** Esimerkiksi vähintään 8 noppaa käyttävä sana antaa +5 ja
+    vähintään 11 noppaa käyttävä +15. Rajat ja summat ovat pelitestikysymys; porras on
+    valittu kaavan sijaan koska sen voi selittää yhdellä lauseella kuten aikabonuksen.
+    Mitoituksen ohjenuora: portaan on oltava risteyskaksoislaskennan vastapaino, ei sen
+    korvaaja.
+  - **Kaksi toteutustietä, ja valinta on tehty.** Vaihtoehto a: aikabonuksen kaltainen
+    asetuskerros, joka ei muuttaisi perus-ennätysten vertailukelpoisuutta. Vaihtoehto b:
+    suora peruspisteytyksen muutos. **Tommin päätös 30.8.2026: b on sallittu**, koska
+    peliä ei ole julkaistu laajalle vaan linkkejä on jaettu pyrkimyksille suotuisille
+    tahoille, eli suojattavaa ennätyskantaa ei ole. Ehto: muutos kirjataan
+    `CHANGELOG.md`:hen perusteluineen.
+  - **Menettely.** Muutos kirjataan ensin `## Pisteytys`-osioon ja vahvistetaan, vasta
+    sitten koodiin (sama menettely kuin ilmaiskirjaimissa). Tämä kirjaus on idea ja
+    reunaehdot, ei vielä pisteytyskanonia.
