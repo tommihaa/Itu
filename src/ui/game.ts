@@ -894,7 +894,7 @@ function render(): void {
         }${v.invalidCount ? ` · ${v.invalidCount} kelvotonta` : ""}${
           !v.connected ? " · ristikko ei yhtenäinen" : ""
         }${activePremium() && !roundOver && anyPlaced && !v.anchored ? ' · aloita <span class="sm-star">★</span>-ruudusta' : ""}${
-          v.bingo ? " · ⚡ bingo!" : ""
+          v.bingo ? " · ⚡ bingo" : ""
         }</span>
       </div>
     </div>
@@ -938,7 +938,7 @@ function resultHtml(): string {
   const banner = lastRecordRank
     ? `<p class="sm-record-banner">🏆 ${
         lastRecordRank === 1
-          ? "Uusi paras tulos!"
+          ? "Uusi paras tulos."
           : `Ennätyslistalle, sija ${lastRecordRank}.`
       }</p>`
     : "";
@@ -1443,8 +1443,8 @@ function renderRecords(): void {
     `<button class="sm-tab${key === ui.recordsSort ? " sm-tab-active" : ""}" data-recsort="${key}">${label}</button>`;
   const modeName = ui.recordsTab === "scrabble" ? "Scrabble-moodin " : "Itu-";
   const empty = rateMode
-    ? `Ei vielä ${modeName}ennätyksiä. Pelaa kierros ja lukitse tulos! Pistettä/min vertaa eri kestoja keskenään.`
-    : `Ei vielä ${modeName}ennätyksiä kestolla ${durationLabel(ui.recordsDurationTab)}. Pelaa kierros tällä asetuksella ja lukitse tulos!`;
+    ? `Ei vielä ${modeName}ennätyksiä. Pelaa kierros ja lukitse tulos. Pistettä/min vertaa eri kestoja keskenään.`
+    : `Ei vielä ${modeName}ennätyksiä kestolla ${durationLabel(ui.recordsDurationTab)}. Pelaa kierros tällä asetuksella ja lukitse tulos.`;
   const list = recs.length
     ? recs.map((r, i) => recordHtml(r, i + 1, rateMode)).join("")
     : `<p class="sm-words pending">${empty}</p>`;
@@ -2220,7 +2220,7 @@ function renderMatchSummary(): void {
     const btn = e.currentTarget as HTMLButtonElement;
     copyToClipboard(link());
     const o = btn.textContent;
-    btn.textContent = "Kopioitu!";
+    btn.textContent = "Kopioitu";
     setTimeout(() => (btn.textContent = o), 1500);
   });
 }
@@ -2272,7 +2272,7 @@ function renderThemeMatchSummary(): void {
       banner = `<p class="sm-record-banner">${w === "a" ? "🏆 " : ""}${escapeHtml(winLabel)} osui useampaan teemaan: ${wc}/${n} vastaan ${lc}/${n}.</p>`;
     }
   } else {
-    banner = `<p class="sm-record-banner">Osuit ${myCov}/${themes.length} teemaan. Lähetä haaste kaverille!</p>`;
+    banner = `<p class="sm-record-banner">Osuit ${myCov}/${themes.length} teemaan. Lähetä haaste kaverille.</p>`;
   }
 
   let share = "";
@@ -2323,7 +2323,7 @@ function renderThemeMatchSummary(): void {
     const btn = e.currentTarget as HTMLButtonElement;
     copyToClipboard(link());
     const o = btn.textContent;
-    btn.textContent = "Kopioitu!";
+    btn.textContent = "Kopioitu";
     setTimeout(() => (btn.textContent = o), 1500);
   });
 }
