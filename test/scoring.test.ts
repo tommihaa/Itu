@@ -5,6 +5,7 @@ import { JOKER } from "../src/domain/dice";
 import {
   faceValue,
   finalScore,
+  lengthBonus,
   scoreWord,
   sumValues,
   timeBonus,
@@ -59,8 +60,44 @@ describe("pisteytys", () => {
       unusedPenalty: 10,
       timeBonus: 5,
       bingo: 0,
+      lengthBonus: 0,
       total: 25,
     });
+  });
+
+  it("pituuspalkinnon porras: alle 8 noppaa 0, 8-10 noppaa +5, 11+ noppaa +15", () => {
+    expect(lengthBonus(0)).toBe(0);
+    expect(lengthBonus(7)).toBe(0);
+    expect(lengthBonus(8)).toBe(5);
+    expect(lengthBonus(10)).toBe(5);
+    expect(lengthBonus(11)).toBe(15);
+    expect(lengthBonus(13)).toBe(15);
+  });
+
+  it("pituuspalkinto summautuu loppupisteisiin", () => {
+    const score = finalScore({
+      wordPoints: 20,
+      unusedFaces: ["U"], // 3
+      secondsRemaining: 0,
+      lettersUsed: 8,
+      timeBonusEnabled: false,
+      lengthBonus: lengthBonus(8),
+    });
+    expect(score.lengthBonus).toBe(5);
+    expect(score.total).toBe(22); // 20 - 3 + 5
+  });
+
+  it("pituuspalkinto oletuksena 0 kun sitä ei anneta (Scrabble-pistemoodi)", () => {
+    const score = finalScore({
+      wordPoints: 20,
+      unusedFaces: [],
+      secondsRemaining: 0,
+      lettersUsed: 13,
+      timeBonusEnabled: false,
+      bingo: 20,
+    });
+    expect(score.lengthBonus).toBe(0);
+    expect(score.total).toBe(40);
   });
 
   it("loppupisteet: aikabonus jää pois kun käytettyjä kirjaimia liian vähän", () => {

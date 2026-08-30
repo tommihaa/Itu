@@ -59,6 +59,39 @@ Ota mukaan vain se, mitä keskustelu tarvitsee:
   käytetty kelvollisissa sanoissa** → palkitsee nopean JA (lähes) täyden ratkaisun,
   ei pelkkää aikaista lukitsemista. Alle kynnyksen jäänyt ratkaisu ei saa bonusta.
 
+### Pituuspalkinto (VAHVISTETTU 31.8.2026)
+
+Perusmoodin pisteytys saa porrasbonuksen pitkistä sanoista. Tausta ja analyysi:
+Jatkoideat-osio (Tommin idea 30.8.2026). Peruste lyhyesti: risteysnoppa lasketaan
+kahdesti, joten samat nopat tuottavat enemmän pisteitä moneksi lyhyeksi sanaksi
+järjestettynä kuin yhdeksi pitkäksi, eli perusmoodi palkitsi rakenteellisesti
+pituutta vastaan vaikka Esittely lupaa pisteitä pitkistä sanoista.
+
+- **Porras, selitettävissä yhdellä lauseella:** vähintään 8 noppaa kattava sana
+  antaa +5 lisäpistettä ja vähintään 11 noppaa kattava +15. Rajat ja summat ovat
+  pelitestikysymys; mitoituksen ohjenuora on olla risteyskaksoislaskennan
+  vastapaino, ei sen korvaaja.
+- **Noppapohjainen:** lasketaan sanan kattamien noppien määrästä, ei merkkijonon
+  pituudesta. Ilmaiskirjaimet eivät ole noppia eivätkä kartuta porrasta (27.8.2026
+  lukittu periaate: ilmaisilla ei voi kiertää mitään). Jokeri on noppa ja kartuttaa.
+- **Bonus on sanakohtainen**, ja käytännössä portaalle yltää enintään yksi sana
+  per ratkaisu: kaksi 8 nopan sanaa vaatisi vähintään 14 noppaa (kaksi sanaa voi
+  jakaa enintään yhden nopan), ja noppia on 13.
+- **Vain perusmoodissa** (Tommin valinta 31.8.2026): Scrabble-pistemoodissa
+  porrasta ei lasketa, koska sanakertoimet ja bingo ovat siellä jo pituuden
+  vastapaino ja porras niiden päällä palkitsisi pituuden kahdesti. Porras on siis
+  perusmoodin ominaisuus eikä jaetun peruspisteytyksen osa, ja tämä on nimetty
+  rajaus kerrossääntöön ("ei korvaa mitään"): Scrabble-kerros ei poista mitään
+  jaettua, porras vain ei kuulu jaettuun.
+- **Suora peruspisteytyksen muutos** (b-tie, Tommin päätös 30.8.2026): ei
+  asetusta, koska suojattavaa ennätyskantaa ei ole. Ehto: muutos kirjataan
+  `CHANGELOG.md`:hen perusteluineen, ja vanhat ennätykset jäävät voimaan vaikka
+  ne on tehty ilman porrasta.
+- **Aikabonus ennallaan.** Porras ei muuta aikabonuksen kynnystä eikä laskentaa.
+- **Esittelyn lupaus tarkistetaan toteutuksen yhteydessä** (Tommin ohje
+  30.8.2026): ABOUT_PARAS sanoo jo *pisteet tulevat kirjaimista ja pitkistä
+  sanoista*, ja sanamuodon riittävyys katsotaan kun muutos on koodissa.
+
 ### Ilmaiskirjaimet (VAHVISTETTU 27.8.2026, toteutettu samana iltana)
 
 Sanaa saa jatkaa telineen yli sen **lopusta**: nopat kattavat sanan alkuosan, ja loput
@@ -383,3 +416,7 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
   - **Menettely.** Muutos kirjataan ensin `## Pisteytys`-osioon ja vahvistetaan, vasta
     sitten koodiin (sama menettely kuin ilmaiskirjaimissa). Tämä kirjaus on idea ja
     reunaehdot, ei vielä pisteytyskanonia.
+  - **31.8.2026: idea eteni kanoniksi**, ks. Pisteytys › Pituuspalkinto. Tommin
+    valinnat vahvistuksessa: porras 8/+5 ja 11/+15 sekä vain perusmoodi, eli
+    Scrabble-pistemoodissa porrasta ei lasketa koska pituuden vastapaino on siellä
+    jo sisäänrakennettu.

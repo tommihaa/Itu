@@ -34,6 +34,24 @@ export function scoreWord(
   return sum * wordMult;
 }
 
+/**
+ * Pituuspalkinnon portaat (ITU.md › Pisteytys › Pituuspalkinto, vahvistettu 31.8.2026).
+ * Lasketaan sanan kattamien NOPPIEN määrästä (ilmaiskirjaimet eivät kartuta; jokeri on
+ * noppa ja kartuttaa). Vain perusmoodissa: Scrabble-pistemoodissa sanakertoimet ja bingo
+ * ovat jo pituuden vastapaino, joten kutsuja jättää portaan sinne laskematta.
+ * Järjestys korkein kynnys ensin: ensimmäinen täyttyvä porras voittaa.
+ */
+export const LENGTH_BONUS_TIERS: readonly { minDice: number; bonus: number }[] = [
+  { minDice: 11, bonus: 15 },
+  { minDice: 8, bonus: 5 },
+];
+
+/** Yhden sanan pituuspalkinto sen kattamien noppien määrästä; 0 jos porras ei täyty. */
+export function lengthBonus(diceCount: number): number {
+  for (const t of LENGTH_BONUS_TIERS) if (diceCount >= t.minDice) return t.bonus;
+  return 0;
+}
+
 export const TIME_BONUS_SECONDS_PER_POINT = 5;
 export const GAME_DURATION_SECONDS = 180;
 /** Aikabonus aukeaa vasta kun vähintään näin moni noppa on käytetty kelvollisissa sanoissa. */
@@ -65,6 +83,8 @@ export interface ScoreInput {
   timeBonusEnabled: boolean;
   /** Bingo-bonus (premium-moodi: kaikki nopat käytetty + keskusankkuri); 0 jos ei sovellu. */
   bingo?: number;
+  /** Pituuspalkinto (perusmoodi: sanojen porrasbonukset summattuna); 0 jos ei sovellu. */
+  lengthBonus?: number;
 }
 
 export interface ScoreBreakdown {
@@ -72,6 +92,7 @@ export interface ScoreBreakdown {
   unusedPenalty: number;
   timeBonus: number;
   bingo: number;
+  lengthBonus: number;
   total: number;
 }
 
@@ -81,11 +102,13 @@ export function finalScore(input: ScoreInput): ScoreBreakdown {
     ? timeBonus(input.secondsRemaining, input.lettersUsed)
     : 0;
   const bingo = input.bingo ?? 0;
+  const lengthB = input.lengthBonus ?? 0;
   return {
     wordPoints: input.wordPoints,
     unusedPenalty,
     timeBonus: bonus,
     bingo,
-    total: input.wordPoints - unusedPenalty + bonus + bingo,
+    lengthBonus: lengthB,
+    total: input.wordPoints - unusedPenalty + bonus + bingo + lengthB,
   };
 }

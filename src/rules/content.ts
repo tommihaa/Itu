@@ -198,7 +198,7 @@ export const RULES: RuleSection[] = [
       "Peli hyväksyy joskus vain toisen. Älä hämmenny, kokeile toista.\n" +
       "• Lukusanat (kaksi) ja minä-sanat (minä, sinä, hän) kelpaavat tässä " +
       "versiossa vain perusmuodossa.\n" +
-      "• Sana on 2–13 kirjainta pitkä.\n" +
+      "• Sana on 2–15 kirjainta pitkä: nopilla pääsee 13:een ja ilmaiskirjaimilla kaksi pidemmälle.\n" +
       "• Olemassa olevat yhdyssanat kelpaavat (jääkiekko), mutta itse " +
       "yhdistämäsi uusi sana ei.",
   },

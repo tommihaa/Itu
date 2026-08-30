@@ -100,6 +100,16 @@ export const TERMS: TermEntry[] = [
   },
   {
     kategoria: "peli",
+    term: "pituuspalkinto",
+    match: ["pituuspalkin*"],
+    selitys:
+      "Vähintään 8 noppaa kattava sana antaa +5 lisäpistettä ja vähintään 11 noppaa " +
+      "kattava +15. Lasketaan nopista: ilmaiskirjaimet eivät kartuta, jokeri kartuttaa. " +
+      "Ei käytössä Scrabble-pistemoodissa, jossa sanakertoimet ja bingo palkitsevat " +
+      "pituuden jo.",
+  },
+  {
+    kategoria: "peli",
     term: "sanakirja",
     match: ["sanakirja*"],
     selitys:

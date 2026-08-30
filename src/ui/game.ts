@@ -7,6 +7,7 @@ import { JOKER, LETTER_VALUES, type Face } from "../domain/dice";
 import {
   faceValue,
   finalScore,
+  lengthBonus,
   scoreWord,
   TIME_BONUS_MIN_LETTERS_USED,
   type ScoreBreakdown,
@@ -126,6 +127,9 @@ let lemmas: LemmaLookup | null = null;
 // Lemmapaketin latauslippu on näkymätilassa (`ui.lemmasLoading`).
 let endWords: string[] = []; // kierroksen kelvolliset sanat (loppunäytön perusmuodot)
 let endWordScores: number[] = []; // ^samassa järjestyksessä: kunkin sanan pisteet (kertoimineen)
+// Pituuspalkinnon saaneet sanat lukitushetkellä (erittelyrivin selitettä varten;
+// käytännössä enintään yksi, ks. ITU.md › Pituuspalkinto).
+let endLengthWords: { text: string; dice: number; bonus: number }[] = [];
 // Tarkastajan tuloksen päivitys ilman renderiä on näkymätilassa (`ui.checkerRefresh`).
 let jokerPicker: number | null = null; // avoinna olevan jokerin dieIndex (kirjainvalitsin)
 let freePicker: string | null = null; // avoinna olevan ilmaiskirjainvalitsimen ruutu
@@ -466,7 +470,9 @@ function endRound(): void {
     lettersUsed: v.lettersUsed, // ≥11 → aikabonus aukeaa
     timeBonusEnabled: settings.timeBonusEnabled,
     bingo: v.bingo, // premium-moodi: kaikki nopat käytetty + keskusankkuri
+    lengthBonus: v.lengthBonus, // perusmoodi: porras ≥8 noppaa (ITU.md › Pituuspalkinto)
   });
+  endLengthWords = v.lengthWords;
   computeSuggestions();
   recordResult(v);
   const validWords = v.words.filter((w) => w.valid);
@@ -737,6 +743,10 @@ interface Validation {
   anchored: boolean;
   /** Premium-moodin bingo-bonus (kaikki nopat käytetty + ankkuri); 0 muuten. */
   bingo: number;
+  /** Pituuspalkinto (vain perusmoodi): kelvollisten sanojen porrasbonukset summattuna. */
+  lengthBonus: number;
+  /** Pituuspalkinnon saaneet sanat noppamäärineen (käytännössä enintään yksi). */
+  lengthWords: { text: string; dice: number; bonus: number }[];
 }
 
 function validate(): Validation {
@@ -747,6 +757,10 @@ function validate(): Validation {
   const wordResults: { text: string; valid: boolean; points: number }[] = [];
   let wordPoints = 0;
   let invalidCount = 0;
+  // Pituuspalkinto vain perusmoodissa (ITU.md › Pituuspalkinto, Tommin valinta 31.8.2026):
+  // Scrabble-pistemoodissa sanakertoimet ja bingo ovat jo pituuden vastapaino.
+  let lengthBonusTotal = 0;
+  const lengthWords: { text: string; dice: number; bonus: number }[] = [];
 
   // Tuottavat ruudut = NOPAT jotka kuuluvat ≥1 kelvolliseen sanaan (eivät ole sakkoa;
   // ilmaiskirjaimet eivät ole noppia eivätkä kerry tähän → aikabonusta ei voi kiertää).
@@ -777,6 +791,13 @@ function validate(): Validation {
       points = scoreWord(vals, prem);
       wordPoints += points;
       for (const k of dieKeys) productiveCells.add(k);
+      if (!activePremium()) {
+        const lb = lengthBonus(dieKeys.length);
+        if (lb > 0) {
+          lengthBonusTotal += lb;
+          lengthWords.push({ text: w.text, dice: dieKeys.length, bonus: lb });
+        }
+      }
     }
     wordResults.push({ text: w.text, valid, points });
   }
@@ -801,6 +822,7 @@ function validate(): Validation {
     lettersUsed: productiveCells.size,
     timeBonusEnabled: false,
     bingo,
+    lengthBonus: lengthBonusTotal,
   });
 
   return {
@@ -815,6 +837,8 @@ function validate(): Validation {
     islandCells: disconnectedCells(cells),
     anchored,
     bingo,
+    lengthBonus: lengthBonusTotal,
+    lengthWords,
   };
 }
 
@@ -960,6 +984,13 @@ function resultHtml(): string {
     ${learnHtml}
     <table class="sm-breakdown">
       <tr><td>Sanapisteet</td><td>${b.wordPoints}</td></tr>
+      ${
+        b.lengthBonus
+          ? `<tr><td>Pituuspalkinto (${endLengthWords
+              .map((lw) => `${lw.text}, ${lw.dice} noppaa`)
+              .join(" · ")})</td><td>+${b.lengthBonus}</td></tr>`
+          : ""
+      }
       <tr><td>Käyttämättä jääneet nopat</td><td>−${b.unusedPenalty}</td></tr>
       <tr><td>Aikabonus${endRemaining > 0 ? ` (${endRemaining} s säästöön)` : ""}${
         b.timeBonus === 0 && endRemaining > 0 && endLettersUsed < TIME_BONUS_MIN_LETTERS_USED
