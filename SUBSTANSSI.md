@@ -2194,6 +2194,16 @@ Eikä siitä seuraa että suomenruotsi olisi suljettu pois lopullisesti; se on j
 tämän unelman ulkopuolelle, mikä on eri asia.
 
 
+**Täydennys 1.9.2026: kattokäsite on vähemmistökielet, ei kotimaiset kielet.** Tommi
+Kondien vastauskirjeen viimeistelyssä:
+
+> *suomenruotsi kun ei ole mukana, niin vähemmistökielet on mielestäni parempi kattokäsite*
+
+Otsikon sana *kotimaisista* on 29.8. lause eikä sitä muutettu; kokoelmasta puhuttaessa
+sana on tästä lähtien vähemmistökielet. Rajaus on kielen valintaa koskeva eikä muuta
+kohdan sisältöä: karjala ja saame ovat molemmissa käsitteissä, suomenruotsi vain
+ensimmäisessä.
+
 ## 92. Unelman tarkoitus on pienten kielten vahvistaminen
 
 Tommi 29.8.2026 (erä 34), kohdan 91 jatkoksi, kysyttäessä mitä kolmen kielen unelma tavoittelee:
