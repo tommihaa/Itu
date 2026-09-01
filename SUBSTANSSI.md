@@ -2075,6 +2075,25 @@ ei kelpaa. Ero aiempiin on se, että kolme ensimmäistä on korjattu ja tämä o
 kysytty. Karjalan versiossa noppamäärän kasvattaminen on pohdinnassa (Kondien kirje
 29.8.2026), mutta suomenkielisen Itun osalta mitään ei ole päätetty.
 
+**Täydennys 1.9.2026: heikkouksia oli enemmän kuin kaksi, eikä niitä lasketa vaan
+luetellaan.** Tommi Kondien kirjeen viimeistelyssä, kun kirje sanoi "kaksi puutetta":
+
+> *Sana Mixistä uutta ideaa hioessani aloin nähdä siinä kolme puutetta nimenomaan suomen
+> kannalta: kirjainjakauma eli 13 noppaa ja 78 tahkoa jätti paljon ulkopuolelle ja
+> sanapituudesta ei saanut bonuksia*
+
+ja kysyttäessä olivatko ne kolme erillistä vai kaksi:
+
+> *näin siinä heikkouksia, ei tarvita laskea vaan luetella*
+
+Luettelo on siis kirjainjakauma (kohdat 44 ja 45), noppien ja tahkojen katto joka jättää
+sanoja ulkopuolelle (tämän kohdan mittaus) ja pituusbonuksen puute. **Viimeinen on uusi
+tässä dokumentissa ja se on jo korjattu:** pituuspalkinto tuli versioon 0.12.0 31.8.2026
+(`CHANGELOG.md`, `ITU.md` › Pisteytys › Pituuspalkinto). Otsikon jälkiosa *yhä korjaamatta*
+on 1.9.2026 alkaen kapeampi kuin se kirjoitettiin: korjaamatta on noppien määrä, ei
+pituuden palkitseminen. Otsikkoa ei muutettu, koska kohtaan viitataan numerolla ja
+alkuperäinen lause kertoo mitä 29.8. tiedettiin.
+
 
 ## 90. Englanti olisi tyystin eri peli, ja syy on agglutinaatio
 
