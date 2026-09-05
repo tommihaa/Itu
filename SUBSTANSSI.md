@@ -8,7 +8,7 @@ mitä alla on.
 Se on kokoelmatasolla nimetty kolmas akseli: `Kaanon/KÄSITTEISTÖ.md` kertoo mitä teokset
 pitävät totena ja `Kaanon/TYÖTAVAT.md` miten niiden parissa työskennellään, mutta kumpikaan ei
 kanna sitä mitä maailmasta tiedetään. Sisardokumentit ovat `DGAndroid/SUBSTANSSI.md` ja
-`Jako-pelini/SUBSTANSSI.md`, ja ne on kirjoitettu ensin.
+`Jako/SUBSTANSSI.md`, ja ne on kirjoitettu ensin.
 
 **Lukija on malli, ja tiedosto noudetaan kun aihe tulee vastaan.** Muoto on siksi väitelauseita
 eikä proosaa.
@@ -39,7 +39,7 @@ vastaus kaatuu sen mukana.
 
 **Jo kirjattua ei kysytä uudelleen.** Laiturin sanamixin luonne (pieni matkapeli, kirjainnopat,
 määräaika) ja se että se innoitti tämän projektin ovat `ITU.md`:n alkuperäosiossa ja
-`Jako-pelini/SUBSTANSSI.md`:n kohdassa 15; Laituri itse on kuvattu saman tiedoston kohdassa 1.
+`Jako/SUBSTANSSI.md`:n kohdassa 15; Laituri itse on kuvattu saman tiedoston kohdassa 1.
 
 Repo on julkinen, joten tämä tiedosto on ulospäin näkyvää tekstiä. Se on tiedossa ja se on
 päätöksen sisältö eikä sen sivuvaikutus, sama valinta kuin Jakossa.
@@ -355,7 +355,7 @@ Tommi 20.8.2026 (erä 7), kysyttäessä lähetettiinkö vain Itu vai myös muita
 
 **Seuraus:** kohdan 17 kehä on isompi kuin yksi peli. Laiturille palasi koko pelikolmikko,
 mukaan lukien Jako jonka yhdeksästä pelistä viisi on opittu juuri siellä
-(`Jako-pelini/SUBSTANSSI.md` kohta 1). Ohjaajat saivat siis sekä oman pöytänsä pelit
+(`Jako/SUBSTANSSI.md` kohta 1). Ohjaajat saivat siis sekä oman pöytänsä pelit
 sovelluksena että sen pelin jälkeläisen jota pöydässä pelattiin nopilla.
 
 ## 21. Sanamix oli talon peli, ja talon pelit olivat halpoja ja vuosien mittaan kertyneitä
@@ -386,7 +386,7 @@ päätökseksi 20.8.2026 (erä 9): jätetään pois julkisesta.**
 
 **Tämä rajaus oli 21.8.2026 asti tiukempi kuin Jakon, ja ero ratkaistiin tämän hyväksi.** Rivi
 sanoi että laji on rajattu *samalla varovaisuudella* kuin Laiturin osallistumisen muoto Jakon
-dokumentissa, ja se oli väärin kirjoitushetkellä: `Jako-pelini/SUBSTANSSI.md` rajasi ulos vain
+dokumentissa, ja se oli väärin kirjoitushetkellä: `Jako/SUBSTANSSI.md` rajasi ulos vain
 osallistumisen muodon ja sen osapuolet, ja nimesi toiminnan lajin kohdassaan 1. Kokoelmassa oli
 siis kaksi eri tasoista rajausta samasta asiasta. Tommi päätti 21.8.2026 että **tämän
 dokumentin rajaus on se joka jää**, ja laji poistettiin Jakosta. Lause on nyt tosi, muttei ollut
@@ -468,7 +468,7 @@ suunnitteluratkaisuja täsmällisemmin kuin mikään aiemmin kirjattu vaatimus. 
 esimerkkivetoiset säännöt, termimoduuli ja Sanapoliisi selityksineen, Jakossa Mestarin neuvo
 ja vuoro-opaste ovat kaikki ohjaajan kaksi tehtävää koodattuna: selittää säännöt ja katsoa
 perään. Ohjaaja on lisäksi todellinen rooli eikä kielikuva: Laiturin pelikulttuurissa
-ohjaaja kehitti variaatioita ja laati tietokilpailuja (`Jako-pelini/SUBSTANSSI.md`).
+ohjaaja kehitti variaatioita ja laati tietokilpailuja (`Jako/SUBSTANSSI.md`).
 
 **Seuraus:** *pystynkö, osaanko* asettaa projektit myös tekijän oman kyvyn mittariksi, eli
 sama työ on yhtä aikaa kulttuurin säilytystä ja sen tekijän koe. Tämä saa kaatua.
@@ -485,7 +485,7 @@ Sanamixin pöytä oli enintään noin viisi pelaajaa (*taisi* on muistinvarainen
 sallii kahdeksan. Vastauksen jälkiosa on korttipelien substanssia: iso porukka ei jakanut
 pöytää vaan kaksinkertaisti pakan.
 
-**Seuraus:** jälkiosan koti on `Jako-pelini/SUBSTANSSI.md`, koska se kertoo miten pöytä
+**Seuraus:** jälkiosan koti on `Jako/SUBSTANSSI.md`, koska se kertoo miten pöytä
 skaalasi korttipelit pelaajamäärään, ja Jakon sovellus tuntee vain 2–4 pelaajaa ja yhden
 pakan. Sitä ei viedä sinne ilman kuittausta.
 
@@ -516,7 +516,7 @@ tehtiin siis viikkojen sisällä kodin päättymisestä ja tuoreesta muistista, 
 kaipuusta. Ja viimeinen oma Laituri-päivä oli itsessään tallennus, eli päättymispäivänäkin
 kulttuuria pantiin talteen, eri välineellä.
 
-*Kohdan 27 jälkiosa vietiin `Jako-pelini/SUBSTANSSI.md`:hen kohdaksi 43 Tommin kuittauksella
+*Kohdan 27 jälkiosa vietiin `Jako/SUBSTANSSI.md`:hen kohdaksi 43 Tommin kuittauksella
 20.8.2026 (erä 11).*
 
 ## 30. Onko pass-and-playta pelattu, ei tiedetä
@@ -539,7 +539,7 @@ eivät kumuloituneet mihinkään, ja vaihtuva pelaajisto olisi tehnyt tilastosta
 merkityksettömänkin. Itun ennätyslista on siis uusi kerros eikä perintöä: se tuo pysyvän
 vertailun jota pöydässä ei ollut, ja yksinpelissä se on ainoa vastustaja (kohta 2:n
 seuraus). Kortti- ja sanamix-kulttuurin ero toistuu tässäkin: korttipelien turnaussarjan
-pisteet kirjattiin paperille (`Jako-pelini/SUBSTANSSI.md` kohta 41), sanamixin ei mitään.
+pisteet kirjattiin paperille (`Jako/SUBSTANSSI.md` kohta 41), sanamixin ei mitään.
 
 ## 32. Englanninkieliset apit jäivät pois
 
@@ -723,7 +723,7 @@ harvemmin kuin radionkuunteluhetkiä.
 
 **Laiturin korttipöytä oli samaa muotoa kuin apit, ja se laajentaa tämän kohdan koskemaan
 koko taustaa** *(kirjoittajan yhteys Jakon haastattelusta, ei Tommin lause; viety tänne Tommin
-kuittauksella 21.8.2026)*. `Jako-pelini/SUBSTANSSI.md` kertoo (kohdat 73, 74, 90 ja 91) että
+kuittauksella 21.8.2026)*. `Jako/SUBSTANSSI.md` kertoo (kohdat 73, 74, 90 ja 91) että
 Laiturilla korttia pelattiin kahdessa puolen tunnin ikkunassa ja muun tekemisen lomassa
 samassa pöydässä jossa syötiin ja tehtiin ryhmän jutut, eli toissijaisena tekemisenä
 ensisijaisen rinnalla. Molemmat Itun taustalla olevat peliympäristöt, englanninkieliset apit
@@ -754,7 +754,7 @@ eli valinta tehtiin oman kokoelman sisällä. Se ei kerro Itusta vikaa vaan maku
 ensimmäinen mitattu vihje siitä että kokoelman pelit kilpailevat keskenään samasta pelaajasta.
 
 **Projektiraja:** havainto koskee myös Jakoa, koska Ristiseiska on sen yhdeksästä pelistä yksi.
-Sitä ei kirjoitettu `Jako-pelini/SUBSTANSSI.md`:hen tässä erässä, koska projektirajan ylitys
+Sitä ei kirjoitettu `Jako/SUBSTANSSI.md`:hen tässä erässä, koska projektirajan ylitys
 tehdään kuittauksella eikä oletuksella.
 
 
@@ -845,7 +845,7 @@ peliin ei kuulu erillistä alustaa eikä pöytää ole pakko olla. Se tekee matk
 käytännössä eikä vain pakkauksena.
 
 **Seuraus, ja se on kirjoittajan päätelmä eikä Tommin lause:** matkapelimuoto sopii Laiturin
-yhteisen puolen tunnin peliaikaan (`Jako-pelini/SUBSTANSSI.md` kohdat 25 ja 26) paremmin kuin
+yhteisen puolen tunnin peliaikaan (`Jako/SUBSTANSSI.md` kohdat 25 ja 26) paremmin kuin
 lautapeli sopisi. Peli oli
 suunniteltu liikkumaan ja mahtumaan pieneen tilaan, ja Itu on saman ominaisuuden toinen muoto:
 puhelin on sekin alusta joka kulkee mukana. Yhtäläisyys ei ole suunniteltu vaan havaittu, eikä
@@ -1091,7 +1091,7 @@ kummastakin olisi käyty erillinen keskustelu.
 **Seuraus:** kirjainvalinta oli menettely eikä yksi päätös. Kohta 44 sanoo että ongelma *ilmeni*
 työn aikana, ja tämä näyttää miltä ilmeneminen näytti käytännössä: lista jota käytiin läpi
 kirjain kerrallaan, ja jokainen tapaus ratkaistiin erikseen omalla perusteellaan. Se on sama
-työtapa jonka kohta 97 `Jako-pelini/SUBSTANSSI.md`:ssä kuvaa Kasinosta (*vei aikaa ottaa tarkasti
+työtapa jonka kohta 97 `Jako/SUBSTANSSI.md`:ssä kuvaa Kasinosta (*vei aikaa ottaa tarkasti
 selvää säännöistä ja tehdä valintoja*), eli tekijän sama ote kahdessa eri projektissa.
 
 **Miksi D läpäisi ensin, on kirjoittajan luenta eikä Tommin lause.** Vastaus kertoo
@@ -1402,7 +1402,7 @@ kortista (kohta 52): peli jossa kukaan ei ole perinteen haltija on helppo avata 
 Tämä on kirjoittajan päätelmä eikä Tommin lause, ja se saa kaatua.
 
 **Seuraus:** kohdan 26 ohjaajakuva täydentyy. Ohjaaja oli korttipeleissä opettaja ja
-variaatioiden kehittäjä (`Jako-pelini/SUBSTANSSI.md`), sanamixissä tasavertainen pelaaja, eli
+variaatioiden kehittäjä (`Jako/SUBSTANSSI.md`), sanamixissä tasavertainen pelaaja, eli
 rooli jousti pelin mukaan. Itu koodasi ohjaajasta opettajapuolen (säännöt ja perään
 katsominen); kanssapelaajapuolelle ei yksinpelissä ole vastinetta, ja lähin sukulainen on
 pass-and-play jonka käytöstä ei tiedetä (kohta 30).

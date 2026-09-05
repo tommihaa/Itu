@@ -9,7 +9,7 @@ domain/ui-erotus, ei Reactia). Dev-portti 5177.
 Alkuperäinen työnimi SanaMix tulee yllä mainitusta matkapelistä, jota Tommi pelasi
 Laiturilla yhteisissä pelituokioissa: kirjainnopat heitettiin ja sanoja muodostettiin
 määräajassa. Tommi vahvisti 20.8.2026 että juuri se innoitti projektin. Laajempi konteksti
-ja lähde: korttipelihaastattelu, `Jako-pelini/SUBSTANSSI.md` kohta 15 (Laituri kuvattu
+ja lähde: korttipelihaastattelu, `Jako/SUBSTANSSI.md` kohta 15 (Laituri kuvattu
 saman tiedoston kohdassa 1). Pelin nimi vaihtui Ituksi myöhemmin, ja repo-kansion nimi
 `SanaMix` kantaa yhä työnimeä.
 
