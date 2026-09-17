@@ -43,11 +43,9 @@ Dokumentit ovat kanonisia ja koodia vasten todennettuja. Avaa relevantti ennen k
   (`sanasto-fi-v1`) tulevaa asynkronista haastetta varten, älä riko siemen/versio-kiinnitystä.
 - Nopat ja sanaston säännöt on merkitty **LUKITTU** ITU.md:ssä: muutos vaatii eksplisiittisen päätöksen.
 
-## Sopimusmuutos-protokolla
-Jos tilanne (bugi, pelitestilöytö, ideakysymys) rikkoo kanonisen dokumentin sääntöä, älä oleta
-kumpaakaan osapuolta automaattisesti oikeaksi. Nosta eksplisiittisesti pohdittavaksi: korjataanko
-koodi dokumentin mukaiseksi VAI muutetaanko dokumenttia? Dokumenttimuutos kirjataan ensin
-(ITU.md/SANASTO.md/ym.) ja vahvistetaan käyttäjällä, vasta sitten koodiin.
+## Sopimusmuutos
+Kokoelman sääntö (`TYÖTAVAT.md`, "korjataanko koodi vai kaanoni") pätee sellaisenaan, ja
+kaanoni on tässä projektissa `ITU.md`, `SANASTO.md` ja `OPIMOODI.md`.
 
 ## Komennot
 - `npm run dev`: devpalvelin (portti 5177, strictPort).
