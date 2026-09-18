@@ -503,3 +503,7 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
     ja saman sanan sisällä), suunnanvalinta UI:ssa ja leveä laatta jossa kirjain piirretään
     molempiin puoliskoihin. Sanapoiminta, yhtenäisyys ja kerroinlaskenta toimivat ruutu
     kerrallaan kuten nyt.
+  - **Tommin päätös 18.9.2026: toinen ruutu ottaa sanakertoimen (DW, TW) muttei
+    kirjainkerrointa (DL, TL).** Kahdennus siis auttaa kertoimiin ulottumisessa, mikä oli
+    idean alkuperäinen toive, eikä kerro nollaa. Kohdista jää auki kaksi: pisteet
+    risteyksessä (ehdotus yllä, arvo ensimmäisessä ruudussa) ja katto (pelitestikysymys).
