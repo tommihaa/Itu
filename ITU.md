@@ -209,6 +209,39 @@ muodostaa ("mahdollisuuksien maksimointi"). Domain: `src/domain/premium.ts` (puh
 **Ei** muuta sanaston validointia (DAWG), noppia eikä heittoa, puhdas pistemekaniikka.
 **Ei** Scrabble-suomen pelitoteutus (ei vastustajaa, ei kuratoitua sanalistaa, ei b/c/f).
 
+**Kerroinruutujen ulottuvuus, mitattu 18.9.2026** (`build/mittaa_premium_ulottuvuus.ts`,
+tulokset `build/mittaus/premium_ulottuvuus_{A,B,C}.json`). Tausta oli Tommin toive saada
+ristikkoon useita pitempiä sanoja jotka osuvat kertoimiin, ja ehdokkaana oli noppamäärän
+kasvattaminen. Mittari on rajattu ratkaisija (enintään kolme sanaa, sana A vaakaan keskustan
+kautta), joka etsii parhaan pistesaaliin ristikon sadalle siemenelle. Luvut ovat siis
+ratkaisijan parhaan ristikon keskiarvoja eivätkä ihmisen peliä, ja kerroinosumat ovat
+pistemaksimoinnin sivutuote. Sama raja koskee kaikkia kolmea vaihtoehtoa, mikä on vertailun
+tarkoitus. Vaihtoehto C:n heitto ei ole sama heitto kuin A:n, koska kaksi lisänoppaa
+(nopat 1 ja 4 kahdennettuina sijaisina) muuttavat satunnaisvirran.
+
+| Mitä luku laskee (keskiarvo, 100 siementä) | A: 13 noppaa, nykyinen layout | B: 13 noppaa, layout ruudun sisemmäs | C: 15 noppaa, nykyinen layout |
+| --- | --- | --- | --- |
+| pisteet | 386 | 481 | 506 |
+| kerroinruutuja ristikossa (ilman keskustaa) | 4,1 | 4,3 | 4,2 |
+| TW-osumia | 1,85 | 2,01 | 1,96 |
+| heittoja joissa TW osuu | 100 % | 100 % | 100 % |
+| heittoja joissa lävistäjän DW osuu | 8 % | 6 % | 4 % |
+| TL-osumia | 0,05 | 0,01 | 0,04 |
+| sanoja ristikossa | 1,37 | 1,20 | 1,15 |
+| bingo | 28 % | 17 % | 9 % |
+
+*Mitä tämä sanoo pelistä.* Lisänopat eivät tuota toivetta. Kerroinruutujen määrä ei liiku
+ja sanojen määrä laskee kohti yhtä. Pisteet nousevat, koska 15 nopalla löytyy useammin yksi
+11 kirjaimen sana keskustan läpi, joka ottaa molemmat akselin TW:t ja saa sanakertoimen 9.
+Sama mekanismi selittää miksi TW osuu jo 13 nopalla joka heitossa: kuuden kirjaimen sana
+keskustasta riittää. Kompromissi jota osio yllä lupaa ("eivät ylety kaikkiin premiumeihin")
+ei ole TW:ssä vaan lävistäjän DW:ssä ja TL:ssä, jotka jäävät paras-ristikossa käyttämättä
+kaikissa vaihtoehdoissa, koska yksi pitkä akselisana on ylivoimainen. **Löydös koskee
+layoutia eikä noppia**, ja lukittu noppaosio on ennallaan. Jos toive halutaan toteuttaa,
+vipu on `premium.ts`:n siemenissä, koska kaksi TW:tä samalla akselilla ei saa kertautua 3×3. Joko toinen TW pois akselilta tai TW:n ja lävistäjän DW:n paikat vaihtavat lajia, jolloin
+toinen sana on se joka tuo ison kertoimen. Tämä on mittaus eikä layoutin muutosehdotus;
+muutos kirjattaisiin ensin tähän osioon ja vahvistettaisiin, vasta sitten koodiin.
+
 ### Opi-moodi (asetus, oletus POIS): adaptiivinen kielioppi-päivähaaste
 
 Valinnainen oppimiskerros: päivän muutama kielioppiteema (sija/luku/aikamuoto/vertailu/
@@ -420,3 +453,31 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
     valinnat vahvistuksessa: porras 8/+5 ja 11/+15 sekä vain perusmoodi, eli
     Scrabble-pistemoodissa porrasta ei lasketa koska pituuden vastapaino on siellä
     jo sisäänrakennettu.
+
+- **Kahdennusnoppa eli tahko luetaan kahtena peräkkäisenä samana kirjaimena (Tommin idea
+  18.9.2026, mitattu samana päivänä):** yhden nopan saisi lukea kahdennettuna (K → kk,
+  A → aa), jolloin 13 noppaa kantaisi 14–15 kirjaimen sanoja ilman lisänoppia. Idea syntyi
+  noppamääräkeskustelussa (ks. Scrabble-pistemoodi › Kerroinruutujen ulottuvuus), ja se on
+  suomen oma piirre eikä Scrabblesta lainattu. Idea eikä päätös.
+  - **Miksi kiinnostava, mitattu `sanasto-fi-v2`:n 3 367 040 muodosta** (grep
+    `build/mittaus/forms_p15.txt`): kahdennus (kk, tt, aa, ii…) on 2 378 183 muodossa eli
+    70,6 prosentissa, konsonantin kahdennus 58,3 prosentissa, pitkä vokaali 27,6
+    prosentissa, kaksi kahdennusta samassa muodossa 27,7 prosentissa. Juuri niistä
+    14–15-kirjaimisista muodoista joita nopat eivät tavoita kahdennus on 77,4 prosentissa
+    (1 056 750 / 1 365 903). Idea osuu siis siihen osaan sanastoa jota noppamäärä rajaa.
+  - **Kolme avointa kysymystä ennen kuin idea voi edetä.** *Yksi ruutu vai kaksi:* yhden
+    ruudun laatta jonka peli lukee kahtena kirjaimena rikkoo risteysehdon perustelun 27.8.2026
+    (harhakuva sanaristikosta hajoaa), kahden ruudun levyinen laatta pitää
+    ristikon luettavana mutta risteys kahdennuksen kohdalla tarkoittaa että pystysanassakin
+    on sama kirjain kahdesti. *Pisteet:* tuplaako kahdennus kirjainarvon; kirjainarvot on
+    viritetty yksittäisille kirjaimille, ja ilmaiskirjainten linja (0 pistettä lisäosasta)
+    olisi johdonmukainen valinta. *Katto:* rajaton kahdennus antaisi 13 nopalla 26
+    kirjainta, ja esimerkiksi "yksi per sana" leikkaisi 27,7 % muodoista.
+  - **Hylätty rinnakkaisidea samassa keskustelussa: G-tahko äng-äänteenä (ng).** Se veisi
+    loppuun sen logiikan jolla G otettiin nopalle 14.6.2026, mutta ng-yhtymä on vain
+    24 144 muodossa (0,7 %) ja lainasanojen g ilman n:ää edellä 40 518 muodossa (1,2 %),
+    jotka putoaisivat pois. Lisäksi N ja G eri nopilla tuottaisivat "nng". Tommi kuittasi
+    perustelun 18.9.2026.
+  - **Menettely.** Muuttaa noppien lukutapaa ja hyväksymissääntöjä eli lukittuja osioita.
+    Jos idea etenee, muutos kirjataan ensin `## Nopat`- ja `## Pisteytys`-osioihin ja
+    vahvistetaan, vasta sitten koodiin (sama menettely kuin ilmaiskirjaimissa).
