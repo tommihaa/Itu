@@ -481,3 +481,25 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
   - **Menettely.** Muuttaa noppien lukutapaa ja hyväksymissääntöjä eli lukittuja osioita.
     Jos idea etenee, muutos kirjataan ensin `## Nopat`- ja `## Pisteytys`-osioihin ja
     vahvistetaan, vasta sitten koodiin (sama menettely kuin ilmaiskirjaimissa).
+  - **Tommin päätös 18.9.2026: kaksi ruutua.** Kahdennettu noppa vie kaksi vierekkäistä
+    ruutua sanan suunnassa ja kummassakin ruudussa on sama kirjain, joten ristikko näyttää
+    joka ruudussa sen mikä hyväksytään. Ensimmäinen avoin kysymys on tällä suljettu.
+  - **Risteys kahden ruudun mallissa (pohdittu 18.9.2026 Tommin pyynnöstä).** Risteävä
+    sana kulkee yhden ruudun läpi ja näkee yhden kirjaimen, joten yllä kirjattu huoli
+    "pystysanassakin sama kirjain kahdesti" oli yhden ruudun mallin huoli ja raukeaa.
+    Kolme kohtaa seuraa nykysäännöistä ilman uutta sääntöä: molempia ruutuja saa
+    risteyttää (kaksi vierekkäistä pystysanaa muodostaa kahden kirjaimen vaakajonoja, jotka
+    on jo nyt oltava sanoja); kahdennus on yhdessä suunnassa eikä 2×2-lohko, eli pystysanan
+    oma kk tulee toisesta nopasta; kahdennettu noppa ilman omaa sanaa hylkäytyy, koska sen
+    kaksi ruutua ovat "kk"-jono jota poiminta ei hyväksy. Kolme kohtaa on valintoja, ja ne
+    ovat auki: *pisteet risteyksessä* (ehdotus: nopan arvo asuu ensimmäisessä ruudussa ja
+    toinen on 0 molempiin suuntiin, muuten kahdesta suunnasta risteytetty noppa laskettaisiin
+    kolmesti); *kerroinruutu toisen ruudun alla* (ehdotus: toinen ruutu ottaa sanakertoimen
+    muttei kirjainkerrointa, koska sanakerroin on se mitä toive kertoimiin osumisesta koskee
+    ja kirjainkerroin kertoisi nollaa); *katto* (kevyempi kuin ilmaiskirjaimissa, koska
+    kahdennus kuluttaa nopan eikä yliulottuvuutta synny, joten pelitestikysymys eikä
+    ennakkosuoja). Tekninen malli: yksi noppa, kaksi `PlacedTile`-alkiota samalla
+    `dieIndex`:llä ja merkinnällä kumpi on ensimmäinen; uutta on vartija (ruudut vierekkäin
+    ja saman sanan sisällä), suunnanvalinta UI:ssa ja leveä laatta jossa kirjain piirretään
+    molempiin puoliskoihin. Sanapoiminta, yhtenäisyys ja kerroinlaskenta toimivat ruutu
+    kerrallaan kuten nyt.
