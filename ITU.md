@@ -558,3 +558,7 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
     Clauden suositus on 3: se kattaa 98,5 % pitkistä muodoista, tuo 97 % mitatusta
     pistehyödystä ja jättää yhden kahdennuksen varaan toiselle sanalle 15-kirjaimisen
     rinnalle. Suositus on Clauden eikä Tommin, ja luku on auki.
+  - **Tommin päätös 18.9.2026: katto on 3 kahdennusta per ristikko.** Kolmesta valinnasta
+    on nyt päätetty kaikki. Idea on yhä Jatkoideoissa eikä kanonia: jos se etenee
+    toteutukseen, Nopat- ja Pisteytys-osiot kirjoitetaan ensin ja vahvistetaan, kuten
+    Menettely-kohta sanoo.
