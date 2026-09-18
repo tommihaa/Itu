@@ -1,0 +1,25 @@
+{
+  "siemenia": 100,
+  "huomautus": "ratkaisija on rajattu haku (enintaan 3 sanaa), luvut ovat alarajoja; sama raja kaikissa vaihtoehdoissa",
+  "B: 13 noppaa, layout sisemmas": {
+    "keskipisteet": 481.34,
+    "kerroinruutuja_per_ristikko": 4.28,
+    "osumat_per_ristikko": {
+      "DL": 2.16,
+      "TL": 0.01,
+      "DW_ei_keskusta": 0.1,
+      "TW": 2.01
+    },
+    "osuus_heitoista_joissa_TW": 1,
+    "osuus_heitoista_joissa_DW": 0.06,
+    "noppia_kaytetty": 11,
+    "noppia_yhteensa": 13,
+    "bingo_osuus": 0.17,
+    "sanoja_per_ristikko": 1.2,
+    "esimerkit": [
+      "AUMKVUKOUOSR* -> varmuuslukko = 612",
+      "OTSKNHKOLÄSÄO -> lohkoko+sä+tähän+so = 216",
+      "NTETNSEOYTHLO -> tehotonten+hys = 394"
+    ]
+  }
+}
