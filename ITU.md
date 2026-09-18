@@ -505,5 +505,8 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
     kerrallaan kuten nyt.
   - **Tommin päätös 18.9.2026: toinen ruutu ottaa sanakertoimen (DW, TW) muttei
     kirjainkerrointa (DL, TL).** Kahdennus siis auttaa kertoimiin ulottumisessa, mikä oli
-    idean alkuperäinen toive, eikä kerro nollaa. Kohdista jää auki kaksi: pisteet
-    risteyksessä (ehdotus yllä, arvo ensimmäisessä ruudussa) ja katto (pelitestikysymys).
+    idean alkuperäinen toive, eikä kerro nollaa.
+  - **Tommin päätös 18.9.2026: risteyspisteet ehdotuksen mukaan.** Nopan arvo asuu
+    ensimmäisessä ruudussa ja toinen ruutu on 0 pistettä molempiin suuntiin, joten
+    kahdesta suunnasta risteytetty kahdennettu noppa ei kertaudu kolmesti. Kolmesta
+    valinnasta on auki enää katto, ja se on pelitestikysymys.
