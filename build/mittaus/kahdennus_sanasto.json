@@ -1,0 +1,161 @@
+{
+  "muotoja": 3367040,
+  "kahdennuksia_per_muoto": {
+    "0": {
+      "muotoja": 938698,
+      "osuus": 27.88
+    },
+    "1": {
+      "muotoja": 1438914,
+      "osuus": 42.74
+    },
+    "2": {
+      "muotoja": 779251,
+      "osuus": 23.14
+    },
+    "3": {
+      "muotoja": 188583,
+      "osuus": 5.6
+    },
+    "4": {
+      "muotoja": 20570,
+      "osuus": 0.61
+    },
+    "5": {
+      "muotoja": 1009,
+      "osuus": 0.03
+    },
+    "6": {
+      "muotoja": 15,
+      "osuus": 0.0
+    }
+  },
+  "kahdennuksia_per_muoto_14_15": {
+    "0": {
+      "muotoja": 204178,
+      "osuus": 19.41
+    },
+    "1": {
+      "muotoja": 424315,
+      "osuus": 40.33
+    },
+    "2": {
+      "muotoja": 309816,
+      "osuus": 29.45
+    },
+    "3": {
+      "muotoja": 98669,
+      "osuus": 9.38
+    },
+    "4": {
+      "muotoja": 14190,
+      "osuus": 1.35
+    },
+    "5": {
+      "muotoja": 873,
+      "osuus": 0.08
+    },
+    "6": {
+      "muotoja": 15,
+      "osuus": 0.0
+    }
+  },
+  "kahdennukset_kirjaimittain": {
+    "t": {
+      "muotoja": 931253,
+      "osuus_kahdennuksista": 25.51
+    },
+    "l": {
+      "muotoja": 627335,
+      "osuus_kahdennuksista": 17.18
+    },
+    "a": {
+      "muotoja": 331357,
+      "osuus_kahdennuksista": 9.08
+    },
+    "s": {
+      "muotoja": 281881,
+      "osuus_kahdennuksista": 7.72
+    },
+    "i": {
+      "muotoja": 236542,
+      "osuus_kahdennuksista": 6.48
+    },
+    "e": {
+      "muotoja": 219288,
+      "osuus_kahdennuksista": 6.01
+    },
+    "m": {
+      "muotoja": 197271,
+      "osuus_kahdennuksista": 5.4
+    },
+    "n": {
+      "muotoja": 177192,
+      "osuus_kahdennuksista": 4.85
+    },
+    "k": {
+      "muotoja": 166592,
+      "osuus_kahdennuksista": 4.56
+    },
+    "u": {
+      "muotoja": 151376,
+      "osuus_kahdennuksista": 4.15
+    },
+    "ä": {
+      "muotoja": 118239,
+      "osuus_kahdennuksista": 3.24
+    },
+    "p": {
+      "muotoja": 64683,
+      "osuus_kahdennuksista": 1.77
+    },
+    "y": {
+      "muotoja": 52066,
+      "osuus_kahdennuksista": 1.43
+    },
+    "o": {
+      "muotoja": 46080,
+      "osuus_kahdennuksista": 1.26
+    },
+    "r": {
+      "muotoja": 37056,
+      "osuus_kahdennuksista": 1.02
+    },
+    "ö": {
+      "muotoja": 11049,
+      "osuus_kahdennuksista": 0.3
+    },
+    "g": {
+      "muotoja": 625,
+      "osuus_kahdennuksista": 0.02
+    },
+    "d": {
+      "muotoja": 451,
+      "osuus_kahdennuksista": 0.01
+    },
+    "h": {
+      "muotoja": 235,
+      "osuus_kahdennuksista": 0.01
+    },
+    "v": {
+      "muotoja": 9,
+      "osuus_kahdennuksista": 0.0
+    }
+  },
+  "maksimi_per_pituus": {
+    "2": 1,
+    "3": 1,
+    "4": 1,
+    "5": 2,
+    "6": 3,
+    "7": 3,
+    "8": 3,
+    "9": 4,
+    "10": 4,
+    "11": 4,
+    "12": 5,
+    "13": 5,
+    "14": 5,
+    "15": 6
+  }
+}

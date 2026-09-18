@@ -1,0 +1,31 @@
+{
+  "siemenia": 100,
+  "huomautus": "katto = kahdennuksia per ristikko, R = rajaton; ratkaisija on rajattu haku (enintaan 3 sanaa), luvut ovat alarajoja; sama raja kaikilla katoilla; katto 0 on nykypeli",
+  "katto 0": {
+    "keskipisteet": 385.51,
+    "kerroinruutuja_per_ristikko": 4.1,
+    "osumat_per_ristikko": {
+      "DL": 2.06,
+      "TL": 0.05,
+      "DW_ei_keskusta": 0.14,
+      "TW": 1.85
+    },
+    "osuus_heitoista_joissa_TW": 1,
+    "osuus_heitoista_joissa_DW": 0.08,
+    "noppia_kaytetty": 11.67,
+    "kirjaimia_laudalla": 11.67,
+    "bingo_osuus": 0.28,
+    "sanoja_per_ristikko": 1.37,
+    "pisin_sana_keskim": 10.15,
+    "osuus_heitoista_joissa_14plus": 0,
+    "kahdennuksia_kaytetty_keskim": 0,
+    "kahdennusten_jakauma": {
+      "0": 100
+    },
+    "esimerkit": [
+      "AUMKVUKOUOSR* -> varmuuslukko = 612 (kahdennuksia 0)",
+      "OTSKNHKOLÄSÄO -> lohkoko+lätsän+so = 205 (kahdennuksia 0)",
+      "NTETNSEOYTHLO -> heltynet+estoon = 188 (kahdennuksia 0)"
+    ]
+  }
+}

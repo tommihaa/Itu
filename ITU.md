@@ -510,3 +510,51 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
     ensimmäisessä ruudussa ja toinen ruutu on 0 pistettä molempiin suuntiin, joten
     kahdesta suunnasta risteytetty kahdennettu noppa ei kertaudu kolmesti. Kolmesta
     valinnasta on auki enää katto, ja se on pelitestikysymys.
+  - **Tommin päätös 18.9.2026: katto on ristikon eikä sanan ominaisuus, ja se mitataan
+    ennen kuin luku valitaan.** Tommin sanoin katto on *kimurantti pulma, sitä ei voi jättää
+    palautteenkaan varaan, on liian vähän ja liikaa*, ensireaktio 2–6. Tämä kumoaa yllä
+    olevan "pelitestikysymys"-luonnehdinnan. Kaksi yksikköä eroteltiin ennen mittausta:
+    katto per sana rajaa mitkä sanat ovat muodostettavissa ja ratkeaa sanastosta, katto per
+    ristikko rajaa kirjainten kokonaismäärää (13 + n) ja ratkeaa vain ratkaisijalla.
+  - **Sanasto (`build/mittaa_kahdennus_sanasto.py`, tulos `build/mittaus/kahdennus_sanasto.json`,
+    3 367 040 muotoa).** Kahdennuksia per muoto: 0 kahdennusta 27,9 %, yksi 42,7 %, kaksi
+    23,1 %, kolme 5,6 %, neljä 0,6 %, viisi tai kuusi 0,03 %. Pitkistä (14–15 kirjainta)
+    muodoista kaksi kattaa 89,1 % ja kolme 98,5 %. Sanaston maksimi on kuusi (15 muotoa).
+    Kirjaimittain t 25,5 % ja l 17,2 % kahdennuksista, ja tahkokirjaimista j ei kahdennu
+    koskaan, v yhdeksässä muodossa, h 235:ssä, d 451:ssä, g 625:ssä (Tommin päättely g, h,
+    j, v osui, d puuttui). Sana-katto olisi siis sääntönä lähes turha, koska sanasto rajaa
+    saman: kolmen ylitys on alle prosentin.
+  - **Ristikko (`build/mittaa_kahdennus.ts`, tulokset `build/mittaus/kahdennus_katto_*.json`,
+    100 siementä, sama sarja kuin kerroinruutumittauksessa).** Ratkaisija on eilinen
+    rajattu haku (enintään kolme sanaa) laajennettuna kahdennuksin ja 18.9. päätöksillä
+    (toinen ruutu 0 pistettä, sanakerroin kyllä, kirjainkerroin ei). Ehdokassanat ovat
+    nykytelineen ja kahdennetun telineen parhaiden yhdiste, koska pelkkä kahdennettu teline
+    pudotti nykypelin parhaat pois ja katto 2 mittasi huonommin kuin katto 0 (koeajo 338
+    vastaan 370). Katto 0 toistaa eilisen A-vaihtoehdon täsmälleen (385,5 pistettä).
+
+    | katto | pisteet | kirjaimia laudalla | noppia | bingo | pisin sana | 14+ osuus | kahdennuksia käytetty |
+    |---|---|---|---|---|---|---|---|
+    | 0 | 385,5 | 11,67 | 11,67 | 28 % | 10,2 | 0 % | 0 |
+    | 1 | 421,7 | 11,85 | 11,54 | 24 % | 10,8 | 2 % | 0,31 |
+    | 2 | 442,9 | 12,07 | 11,38 | 21 % | 11,4 | 7 % | 0,69 |
+    | 3 | 452,7 | 12,26 | 11,34 | 20 % | 11,7 | 10 % | 0,92 |
+    | 4 | 454,6 | 12,47 | 11,36 | 20 % | 11,8 | 12 % | 1,11 |
+    | 6 ja rajaton | 454,6 | 12,47 | 11,36 | 20 % | 11,8 | 12 % | 1,11 |
+
+    Kerroinruutuosumat eivät muutu (4,1 ruutua per ristikko, TW joka heitossa jo katolla 0).
+    **Kolme löydöstä.** Ensiksi, katto lakkaa vaikuttamasta neljässä: kuusi ja rajaton
+    tuottavat saman tuloksen kuin neljä, eikä ratkaisija käytä koskaan yli neljää
+    kahdennusta vaikka saisi. "Liikaa" ei siis toteudu mitatussa pelissä, ja syy on 18.9.
+    pistepäätös: toinen ruutu on 0 pistettä ja kahdennus kuluttaa nopan, joten kahdennus
+    kannattaa vain kun se avaa pitemmän sanan tai kertoimen. Kirjaimia laudalla on
+    rajattomanakin 12,5 eikä 26. Toiseksi, hyöty kertyy alkupäässä: katto 2 tuo 83 %
+    pistehyödystä (442,9 / 454,6 suhteessa 385,5:een) ja katto 3 tuo 97 %. Kolmanneksi,
+    puolet heitoista (51 %) ei käytä kahdennusta lainkaan edes rajattomana. Rajaus:
+    ratkaisija on alaraja ja enintään kolme sanaa, joten ihmispelaaja voisi käyttää
+    useampaa kahdennusta useammassa sanassa; luvut vertaavat kattoja toisiinsa, eivät
+    ennusta pelaajan tulosta.
+  - **Mitä mittaus jättää päätettäväksi.** Yksi luku väliltä 2–4, koska 1 leikkaa
+    15-kirjaimiset sanat (vaativat kaksi) ja 4:n yläpuolella ei ole mitattavaa eroa.
+    Clauden suositus on 3: se kattaa 98,5 % pitkistä muodoista, tuo 97 % mitatusta
+    pistehyödystä ja jättää yhden kahdennuksen varaan toiselle sanalle 15-kirjaimisen
+    rinnalle. Suositus on Clauden eikä Tommin, ja luku on auki.
