@@ -61,6 +61,6 @@ kaanoni on tässä projektissa `ITU.md`, `SANASTO.md` ja `OPIMOODI.md`.
 - Versio näkyy pelaajalle Tietoja-välilehdellä (`Itu v… · päiväys`). Leima tulee
   `package.json`ista build-aikana (`vite.config.ts` → `__APP_VERSION__`, `__BUILD_DATE__`),
   joten `package.json` on ainoa totuuden lähde, ei kovakoodattu merkkijono.
-- `git push origin main` → Vercelin git-integraatio auto-deployaa tuotantoon. EI erillistä
+- `git -C SanaMix push origin main` → Vercelin git-integraatio auto-deployaa tuotantoon. EI erillistä
   CLI-deployta. Odota ~30–60 s, todenna tarvittaessa bundle-grepillä. (Universaali
   `julkaise`-skill kattaa tämän.)
