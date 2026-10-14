@@ -58,13 +58,13 @@ header.sm-head .sm-seed { color: var(--muted); font-size: 0.85rem; }
 .sm-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
 /* Ryhmät: toiminnot | näkymät | tila. Sisäinen väli tiivis, ryhmien väli erottimella. */
 .sm-bar-group { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
-/* "Lisää"-valikko (checkbox-hack, ei JS-tilaa): työpöydällä näkymänapit näkyvät rivissä
-   ja ☰ on piilossa; puhelimessa napit menevät ☰:n taakse (ks. mobiili-media query).
-   Miksi ei <details>: suljettu <details> piilottaa sisältönsä Chromiumissa display:flexistä
-   huolimatta, joten työpöydän "aina näkyvä" tila rikkoutui. Checkbox + label + sisarus-div
-   on tavallinen virtaus, jonka :checked ~ -valitsin paljastaa vain mobiilissa. */
+/* "Lisää"-valikko: työpöydällä näkymänapit näkyvät rivissä ja ☰ on piilossa; puhelimessa
+   napit menevät ☰:n taakse (ks. mobiili-media query). ☰ on <button aria-expanded> (APG:n
+   disclosure-malli, docs/AUDITOINTI-RUUDUNLUKIJA.md › I-1), ja sen tila paljastaa sisaruksen.
+   Aiempi checkbox-hack ei auennut ruudunlukijalla eikä näppäimistöllä. Miksi ei <details>:
+   suljettu <details> piilottaa sisältönsä Chromiumissa display:flexistä huolimatta, joten
+   työpöydän "aina näkyvä" tila rikkoutui. */
 .sm-menu { display: flex; position: relative; }
-.sm-menu-cb { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; }
 .sm-menu-btn {
   display: none;
   list-style: none;
@@ -979,7 +979,7 @@ input, textarea {
   /* Puhelin: näkymänapit ☰-valikon taakse → palkki lyhenee (vain 🎲 🔒 ☰ + tila). */
   .sm-menu-btn { display: inline-flex; align-items: center; }
   .sm-menu > .sm-bar-views { display: none; }
-  .sm-menu-cb:checked ~ .sm-bar-views {
+  .sm-menu-btn[aria-expanded="true"] ~ .sm-bar-views {
     display: flex;
     flex-direction: column;
     align-items: stretch;

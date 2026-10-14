@@ -20,7 +20,12 @@ käyttävät `aria-pressed`-tilaa niin kuin APG:n toggle button -malli neuvoo.
 
 ## Löydökset
 
-**I-1. Lisää-valikko ei aukea ruudunlukijalla eikä näppäimistöllä.** Tila: avoin.
+**I-1. Lisää-valikko ei aukea ruudunlukijalla eikä näppäimistöllä.** Tila: korjattu
+14.10.2026 Tommin pyynnöstä APG:n disclosure-mallilla: `<button aria-expanded aria-controls>`,
+avoin tila `ui.menuOpen`issa ja CSS lukee sen `aria-expanded`-attribuutista. Valikon nappi
+sulkee valikon, ja Esc sulkee sen ja palauttaa kohdistuksen ☰:ään. Renderin jälkeen kohdistus
+palautetaan id:llä, joten ☰ ja ⓘ pitävät kohdistuksen. Todennettu selaimessa kapealla ruudulla,
+ei kuunneltu. Alkuperäinen havainto:
 `game.ts:1011–1012`: valikon avaa piilotettu checkbox, jolla on `aria-hidden="true"` ja
 `tabindex="-1"`. Näkyvä osa on `<label>`, joka ei ole kohdistettava eikä ruudunlukijalle
 painike. Kapealla ruudulla (`styles.css:971–973`) Säännöt, Sanapoliisi, Ennätykset ja

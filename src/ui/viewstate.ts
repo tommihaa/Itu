@@ -75,6 +75,9 @@ export interface ViewState {
   rulesTab: RulesTab;
   /** Opi-moodin teemapalkin ⓘ-toggle: kuvaukset auki/kiinni. */
   learnDescOpen: boolean;
+  /** Kapean ruudun ☰ Lisää -valikko auki/kiinni (APG:n disclosure-malli). Leveällä ruudulla
+   * napit näkyvät aina eikä tällä ole vaikutusta. */
+  menuOpen: boolean;
   /** 🏆-näkymän aktiivinen pistemoodi-välilehti. */
   recordsTab: RecordMode;
   /** 🏆-näkymän aktiivinen kesto-välilehti (s). */
@@ -120,6 +123,7 @@ export const ui: ViewState = {
   showMatchSummary: false,
   rulesTab: "words",
   learnDescOpen: false,
+  menuOpen: false,
   recordsTab: "itu",
   recordsDurationTab: DEFAULT_DURATION,
   recordsSort: "total",

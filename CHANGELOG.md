@@ -33,6 +33,9 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
 ### Muutettu
 - **Sarkain siirtää kohdistusta** eikä enää vaihda kirjoitussuuntaa. Ennen näppäimistöllä ei
   päässyt pelinäkymässä sarkaimella yhteenkään nappiin. Suunnan vaihtaa välilyönti.
+- **☰ Lisää -valikko on oikea nappi.** Kapealla ruudulla Säännöt, Sanapoliisi, Ennätykset,
+  Asetukset ja Haaste ovat valikon takana, eikä valikko auennut ruudunlukijalla eikä
+  näppäimistöllä. Nyt nappi kertoo onko valikko auki, ja Esc sulkee sen.
 
 ### Korjattu
 - Ennätys kirjataan pelatun keston mukaan. Ennen kesken kierroksen vaihdettu asetus

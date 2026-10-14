@@ -1015,6 +1015,8 @@ function render(): void {
   // Lauta rakennetaan uusiksi, joten kohdistus palautetaan uuteen lautaan. Muuten
   // ruudunlukija putoaisi pois lomaketilasta jokaisen kirjaimen jälkeen.
   const boardFocused = !!document.activeElement?.closest(".sm-board");
+  // Sama napille, jolla on id (☰ Lisää, ⓘ): ilman tätä avaus pudottaisi kohdistuksen sivun alkuun.
+  const focusedId = !boardFocused ? document.activeElement?.id : "";
   root.innerHTML = `
     <div class="sm-game">
     <header class="sm-head">
@@ -1030,9 +1032,8 @@ function render(): void {
       </div>
       ${hasActions ? `<span class="sm-bar-sep" aria-hidden="true"></span>` : ""}
       <div class="sm-menu">
-        <input type="checkbox" id="sm-menu-cb" class="sm-menu-cb" aria-hidden="true" tabindex="-1" />
-        <label for="sm-menu-cb" class="sm-menu-btn" title="Lisää" aria-label="Lisää valikko">☰ Lisää</label>
-        <div class="sm-bar-group sm-bar-views">
+        <button id="sm-menu-btn" class="sm-menu-btn" aria-expanded="${ui.menuOpen}" aria-controls="sm-bar-views"><span aria-hidden="true">☰</span> Lisää</button>
+        <div class="sm-bar-group sm-bar-views" id="sm-bar-views">
           <button id="sm-rules">📜 Säännöt</button>
           <button id="sm-checker">🔎 Sanapoliisi</button>
           <button id="sm-records">🏆 Ennätykset</button>
@@ -1068,6 +1069,7 @@ function render(): void {
   `;
   wireEvents();
   if (boardFocused) root.querySelector<HTMLElement>(".sm-board")?.focus({ preventScroll: true });
+  else if (focusedId) document.getElementById(focusedId)?.focus({ preventScroll: true });
   frameBoard(); // automaattinen zoom/keskitys käytetyn alueen mukaan
 }
 
@@ -2570,6 +2572,19 @@ function wordsHtml(v: Validation): string {
 }
 
 function wireEvents(): void {
+  root.querySelector<HTMLButtonElement>("#sm-menu-btn")?.addEventListener("click", () => {
+    ui.menuOpen = !ui.menuOpen;
+    render();
+  });
+  // Valikon nappi avaa paneelin, joten valikko sulkeutuu. Kaappausvaiheessa, jotta tila on
+  // kiinni ennen napin omaa renderiä.
+  root.querySelector<HTMLElement>("#sm-bar-views")?.addEventListener(
+    "click",
+    (e) => {
+      if ((e.target as HTMLElement).closest("button")) ui.menuOpen = false;
+    },
+    true,
+  );
   root.querySelector<HTMLButtonElement>("#sm-new")?.addEventListener("click", () =>
     newRoll(randomSeed()),
   );
@@ -3067,6 +3082,12 @@ function handleEscape(): boolean {
   if (ui.panel) {
     ui.panel = null;
     render();
+    return true;
+  }
+  if (ui.menuOpen) {
+    ui.menuOpen = false;
+    render();
+    document.getElementById("sm-menu-btn")?.focus({ preventScroll: true });
     return true;
   }
   if (ui.lifted !== null) {
