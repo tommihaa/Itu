@@ -28,8 +28,13 @@ Asetukset ovat valikon takana, joten ne jäävät tavoittamatta. APG:n
 [disclosure-malli](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/): `<button aria-expanded>`
 joka näyttää ja piilottaa listan.
 
-**I-2. Tyhjät ruudut ovat nimettömiä ja lauta on rakenteeton.** Tila: avoin, sama kohta kuin
-`ITU.md` › Ruudunlukija. `game.ts:1713` ja `1744`: 441 `<div>`iä ilman roolia ja nimeä.
+**I-2. Tyhjät ruudut ovat nimettömiä ja lauta on rakenteeton.** Tila: korjattu 14.10.2026,
+todennettu Chromen saavutettavuuspuusta (`gridcell "K11 tyhjä"`, nosto ja pudotus ruudun
+nimen kautta), ei kuunneltu. Toteutus poikkeaa APG:stä yhdessä kohdassa: kohdistus on
+laudassa (`role="grid"`, `tabindex="0"`) eikä kulje ruudusta ruutuun, koska kursorin siirto
+kuuluu jo live-alueelta ja ruudun kohdistus sanoisi saman kahdesti. Rivit ovat subgrid eikä
+`display: contents`, joka on pudottanut roolin saavutettavuuspuusta osassa selaimia.
+Alkuperäinen havainto: `game.ts:1713` ja `1744`: 441 `<div>`iä ilman roolia ja nimeä.
 Virallinen malli on APG:n [grid](https://www.w3.org/WAI/ARIA/apg/patterns/grid/):
 `role="grid"`, rivit `role="row"`, ruudut `role="gridcell"` nimellä (K11), ja yksi
 kohdistettava ruutu kerrallaan (roving tabindex). Nuolinäppäimet siirtävät jo kursoria, joten
@@ -49,3 +54,10 @@ tai sama `aria-pressed` kuin kestovalinnassa.
 **I-5. `aria-label` roolittomassa `<div>`issä.** Tila: avoin, vähäinen. `game.ts:1169` ja
 `1200`: ARIA 1.2 kieltää nimen `generic`-roolilta, ja ruudunlukijat ohittavat sen. Korjaus on
 `role="group"` (kuten `1281`) tai nimi pois.
+
+**I-6. Sarkain ei siirrä kohdistusta pelinäkymässä.** Tila: avoin, löytyi I-2:n korjauksessa.
+`game.ts` `onKeyDown`: pelinäkymässä sarkain vaihtaa kirjoitussuunnan ja estää oletuksen,
+myös kun kohdistus on napissa. Näppäimistöllä ei siis pääse sarkaimella mihinkään nappiin eikä
+pois laudalta (WCAG 2.1.2 No Keyboard Trap). APG:n grid-mallissa sarkain vie pois ruudukosta.
+Suunnan vaihtaa myös välilyönti, mutta sarkaimen vapautus muuttaa dokumentoitua ohjausta
+(Säännöt › Ohjaus), joten se on Tommin päätös.

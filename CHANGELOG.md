@@ -26,6 +26,9 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
   sijainti sanotaan ennen sisältöä. Tilanne-nappi (näkyy vain ruudunlukijalle ja
   näppäinkohdistuksella) tai Vaihto+H kertoo telineen, laudan sanat ja pisteet kerralla.
   Telineen ja laudan nopilla on puhuttava nimi. Säännöt › Ohjaus sai Ruudunlukija-osion.
+- **Lauta on ruudunlukijalle taulukko** (WAI-ARIA:n grid-malli). Jokaisella ruudulla on
+  nimi, myös tyhjällä, joten kosketusruudunlukijalla voi nostaa nopan ja valita ruudun.
+  Pistemoodissa tyhjä ruutu kertoo kertoimensa. Kohdistus pysyy laudassa kirjoitettaessa.
 
 ### Korjattu
 - Ennätys kirjataan pelatun keston mukaan. Ennen kesken kierroksen vaihdettu asetus

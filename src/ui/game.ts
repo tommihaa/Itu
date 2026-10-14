@@ -639,6 +639,25 @@ function cellSpoken(key: string): string {
   return `${coord(key)} ${content}`;
 }
 
+const PREM_SPOKEN: Record<PremiumKind, string> = {
+  DL: "kirjain kahdesti",
+  TL: "kirjain kolmesti",
+  DW: "sana kahdesti",
+  TW: "sana kolmesti",
+};
+
+/** Laudan ruudun nimi: sijainti ensin, sitten sisältö. Tyhjä ruutu kertoo pistemoodissa
+ * kertoimensa, koska väri on sen ainoa näkyvä merkki. */
+function cellLabel(key: string): string {
+  const t = tileAt(key);
+  if (t) return tileSpoken(t);
+  const base = cellSpoken(key);
+  if (freeTiles.has(key) || !activePremium()) return base;
+  const kind = premiumKindAt(key);
+  if (kind) return `${base}, ${PREM_SPOKEN[kind]}`;
+  return key === CENTER ? `${base}, aloitus` : base;
+}
+
 /** Tilanne-komento: koko pöytä yhdellä kertaa (Villen kohta 4, bridge-esimerkki). */
 function statusSpoken(): string {
   if (roundOver && endBreakdown) return `Kierros päättyi. Yhteensä ${pointsWord(endBreakdown.total)}.`;
@@ -993,6 +1012,9 @@ function render(): void {
       ? "Aikabonus auki"
       : `Aikabonus aukeaa kun ≥${TIME_BONUS_MIN_LETTERS_USED} noppaa on käytetty`;
   const usedChip = `<span class="sm-used${bonusReady ? " sm-used-ready" : ""}" title="${usedTitle}">Kirjaimia: <b>${v.lettersUsed}</b>/${tiles.length}${bonusReady ? " ⚡" : ""}</span>`;
+  // Lauta rakennetaan uusiksi, joten kohdistus palautetaan uuteen lautaan. Muuten
+  // ruudunlukija putoaisi pois lomaketilasta jokaisen kirjaimen jälkeen.
+  const boardFocused = !!document.activeElement?.closest(".sm-board");
   root.innerHTML = `
     <div class="sm-game">
     <header class="sm-head">
@@ -1045,6 +1067,7 @@ function render(): void {
     </div>
   `;
   wireEvents();
+  if (boardFocused) root.querySelector<HTMLElement>(".sm-board")?.focus({ preventScroll: true });
   frameBoard(); // automaattinen zoom/keskitys käytetyn alueen mukaan
 }
 
@@ -1710,8 +1733,13 @@ function controlsHintHtml(): string {
 }
 
 function boardHtml(v: Validation): string {
-  let html = `<div class="sm-board" style="grid-template-columns:repeat(${BOARD},var(--cell))">`;
+  // Ruudunlukijalle APG:n grid-malli (docs/AUDITOINTI-RUUDUNLUKIJA.md › I-2): rivit ja
+  // nimetyt ruudut, jotta kosketusruudunlukija löytää myös tyhjän ruudun. Kohdistus pysyy
+  // laudassa eikä seuraa kursoria ruutu ruudulta, koska kursorin siirto kuuluu jo
+  // live-alueelta, ja ruudun kohdistus sanoisi saman toiseen kertaan.
+  let html = `<div class="sm-board" role="grid" aria-label="Lauta" tabindex="0" style="grid-template-columns:repeat(${BOARD},var(--cell))">`;
   for (let r = 0; r < BOARD; r++) {
+    html += `<div class="sm-row" role="row">`;
     for (let c = 0; c < BOARD; c++) {
       const key = cellKey(r, c);
       const tile = tileAt(key);
@@ -1726,9 +1754,9 @@ function boardHtml(v: Validation): string {
       const isCaret = !roundOver && ui.caret !== null && ui.caret.row === r && ui.caret.col === c;
       const caretCls = isCaret ? " sm-caret" : "";
       // Kursorinuoli piirretään myös asetetun nopan PÄÄLLE, jotta sanan päällä näkee missä mennään.
-      const caretMark = isCaret ? `<span class="sm-caret-arrow">${ui.caret!.dir === "H" ? "→" : "↓"}</span>` : "";
+      const caretMark = isCaret ? `<span class="sm-caret-arrow" aria-hidden="true">${ui.caret!.dir === "H" ? "→" : "↓"}</span>` : "";
       const starMark =
-        activePremium() && key === CENTER ? `<span class="sm-center-star">★</span>` : "";
+        activePremium() && key === CENTER ? `<span class="sm-center-star" aria-hidden="true">★</span>` : "";
       const free = freeTiles.get(key);
       // ＋-nappi kursoriruudussa joka jatkaa jonoa: kosketuskäyttäjän reitti
       // ilmaiskirjaimeen (näppäimistöllä sama syntyy kirjoittamalla).
@@ -1737,12 +1765,13 @@ function boardHtml(v: Validation): string {
           ? `<button class="sm-free-add" data-free-add="${key}" title="Ilmaiskirjain sanan perään">＋</button>`
           : "";
       const inner = tile
-        ? `${tileHtml(tile)}${caretMark}`
+        ? `${tileHtml(tile, true)}${caretMark}`
         : free
           ? `${freeTileHtml(free)}${caretMark}`
           : `${starMark}${addBtn}${caretMark}`;
-      html += `<div class="sm-cell${cls}${islandCls}${premCls}${caretCls}" data-cell="${key}">${inner}</div>`;
+      html += `<div class="sm-cell${cls}${islandCls}${premCls}${caretCls}" role="gridcell" aria-label="${cellLabel(key)}" data-cell="${key}">${inner}</div>`;
     }
+    html += `</div>`; // sm-row
   }
   html += `</div>`; // sulje sm-board (avattiin html:n alussa) — ettei sulku mene väärään diviin
   // Tyhjän laudan aloitusopaste: kutsuu ensisiirtoon ilman ohjekappaleen lukemista.
@@ -2498,7 +2527,16 @@ function fallbackCopy(text: string): void {
   ta.remove();
 }
 
-function tileHtml(t: Tile): string {
+/** Laudan noppa: sama nimi kuin ruudulla, joka kantaa sen (`cellLabel`). */
+function tileSpoken(t: Tile): string {
+  return `${t.cell ? coord(t.cell) + " " : ""}${spokenLetter(t)}, ${pointsWord(faceValue(t.face))}${
+    t.dieIndex === ui.lifted ? ", nostettu" : ""
+  }`;
+}
+
+/** `onBoard`: ruutu kantaa nimen, joten noppa piilotetaan ruudunlukijalta, ettei sama
+ * sisältö kuulu kahdesti. Telineessä noppa on itse painike. */
+function tileHtml(t: Tile, onBoard = false): string {
   const isJoker = t.face === JOKER;
   const assigned = isJoker && t.letter !== JOKER;
   const glyph = isJoker ? (assigned ? t.letter.toUpperCase() : "◇") : t.face;
@@ -2507,16 +2545,14 @@ function tileHtml(t: Tile): string {
   const liftedCls = t.dieIndex === ui.lifted ? " sm-lifted" : "";
   // Jalometalli: arvoluokka väritystä varten (puu → kulta). Jokeri (arvo 0) jää neutraaliksi.
   const valCls = isJoker ? "" : ` sm-tval-${faceValue(t.face)}`;
-  const label = `${t.cell ? coord(t.cell) + " " : ""}${spokenLetter(t)}, ${pointsWord(faceValue(t.face))}${
-    t.dieIndex === ui.lifted ? ", nostettu" : ""
-  }`;
+  const a11y = onBoard ? `aria-hidden="true"` : `role="button" aria-label="${tileSpoken(t)}"`;
   return `<div class="sm-tile${isJoker ? " sm-joker" : ""}${valCls}${liftedCls}"
-    role="button" aria-label="${label}" data-die="${t.dieIndex}">${glyph}${mark}<span class="sm-val">${faceValue(t.face) || ""}</span></div>`;
+    ${a11y} data-die="${t.dieIndex}">${glyph}${mark}<span class="sm-val">${faceValue(t.face) || ""}</span></div>`;
 }
 
 /** Ilmaiskirjaimen laatta: nopan näköinen mutta arvoton (0 p) ja tyyliltään erottuva. */
 function freeTileHtml(letter: string): string {
-  return `<div class="sm-freetile">${letter.toUpperCase()}<span class="sm-val">0</span></div>`;
+  return `<div class="sm-freetile" aria-hidden="true">${letter.toUpperCase()}<span class="sm-val">0</span></div>`;
 }
 
 function wordsHtml(v: Validation): string {

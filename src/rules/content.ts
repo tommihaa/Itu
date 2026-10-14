@@ -238,6 +238,7 @@ export const CONTROLS: RuleSection[] = [
     body:
       "• Peli kertoo itse uuden heiton, laudalle asetetun kirjaimen ja sen ruudun, valmiit sanat pisteineen, ajan loppumisen ja kierroksen tuloksen.\n" +
       "• Ruudut nimetään kuten shakissa: sarake kirjaimella A–U, rivi numerolla 1–21. Keskiruutu on K11.\n" +
+      "• Lauta on taulukko, jonka jokaisella ruudulla on nimi, myös tyhjällä. Kosketuksella nosta noppa telineestä ja valitse sitten ruutu.\n" +
       "• Tilanne-nappi tai Vaihto+H kertoo telineen, laudan sanat ja pisteet kerralla.\n" +
       "• Jos aika ei riitä, valitse asetuksista kestoksi Ei aikarajaa.",
   },
