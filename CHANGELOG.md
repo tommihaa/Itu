@@ -11,7 +11,7 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
 > numerolla, aiemmat numerot ovat jälkikäteisiä nimilappuja jo tuotannossa olevalle
 > koodille. Tästä eteenpäin versio bumpataan ennen pushia, kuten Superjatsissa.
 
-## [Unreleased]
+## [0.13.1] – 2026-10-14
 
 ### Muutettu
 - **Telineen nopat ovat näppäimistön nappeja.** Sarkain pysähtyy jokaiseen telineen noppaan,
