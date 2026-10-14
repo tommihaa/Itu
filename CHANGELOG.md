@@ -19,6 +19,13 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
   vie moninkertaisen ajan. Valinta on kaikille. Aikabonusta ei makseta, ennätyksillä on oma
   välilehti, Pistettä/min jättää ajattomat kierrokset pois ja haastelinkki lukitsee
   ajattomuuden.
+- **Ruudunlukijatuki** (Näkövammaisten liiton Ville Lammisen neljä kohtaa,
+  `DGAndroid/docs/YHTEYDENOTTO_NKL.md` › Grillaus 14.10.2026). Peli ilmoittaa itse uuden
+  heiton, asetetun kirjaimen ruutuineen, valmiit sanat pisteineen, ajan loppumisen (60, 30
+  ja 10 s) ja kierroksen tuloksen. Ruudut nimetään shakin tapaan (keskiruutu K11), ja
+  sijainti sanotaan ennen sisältöä. Tilanne-nappi (näkyy vain ruudunlukijalle ja
+  näppäinkohdistuksella) tai Vaihto+H kertoo telineen, laudan sanat ja pisteet kerralla.
+  Telineen ja laudan nopilla on puhuttava nimi. Säännöt › Ohjaus sai Ruudunlukija-osion.
 
 ### Korjattu
 - Ennätys kirjataan pelatun keston mukaan. Ennen kesken kierroksen vaihdettu asetus

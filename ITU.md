@@ -360,6 +360,13 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
   kuten muissa kahdessa pelissä, koska Itussa ei ollut ääntä ennestään, vain päälle/pois.
   Päätetty 7.7.2026: pelirauha-periaate (ks. yllä) tarkennettiin koskemaan oletustilaa,
   ei ääntä kokonaan kieltäväksi.
+- **Ruudunlukija (14.10.2026):** live-alue ilmoittaa heiton, asetetun kirjaimen, valmiit
+  sanat, ajan varoitukset (60, 30, 10 s) ja tuloksen. Ruudun nimi on sarake A–U ja rivi
+  1–21 (keskiruutu K11), ja sijainti sanotaan ennen sisältöä. Tilanne-nappi tai Vaihto+H
+  lukee telineen, laudan sanat ja pisteet kerralla (pelkkä H on pelikirjain). Mittari on
+  Näkövammaisten liiton Ville Lammisen vastaus (`DGAndroid/docs/YHTEYDENOTTO_NKL.md`).
+  Auki: kosketusruudunlukijalla tyhjän ruudun valinta 441 ruudun laudalta, koska tyhjät
+  ruudut ovat nimettömiä.
 - **Ennätykset (🏆):** top-10 per (pistemoodi × kesto). Lajittelu **Kokonaispisteet**
   (valitulla kestolla, reilu sama-aika-vertailu) tai **⚡ Pistettä/min** = sanapisteet ÷ kesto,
   joka yhdistää kestot ja vertaa puhdasta tuottavuutta. Pistettä/min käyttää **vain

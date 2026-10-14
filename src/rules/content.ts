@@ -234,6 +234,14 @@ export const CONTROLS: RuleSection[] = [
       "• Enter lukitsee kierroksen.",
   },
   {
+    heading: "Ruudunlukija",
+    body:
+      "• Peli kertoo itse uuden heiton, laudalle asetetun kirjaimen ja sen ruudun, valmiit sanat pisteineen, ajan loppumisen ja kierroksen tuloksen.\n" +
+      "• Ruudut nimetään kuten shakissa: sarake kirjaimella A–U, rivi numerolla 1–21. Keskiruutu on K11.\n" +
+      "• Tilanne-nappi tai Vaihto+H kertoo telineen, laudan sanat ja pisteet kerralla.\n" +
+      "• Jos aika ei riitä, valitse asetuksista kestoksi Ei aikarajaa.",
+  },
+  {
     heading: "Ilmaiskirjaimet: sanaa saa jatkaa loppuun",
     body:
       "Sanan loppuun saa lisätä enintään 2 kirjainta, joille ei ole noppaa telineessä.\n" +
@@ -268,8 +276,8 @@ export const ABOUT_PARAS: string[] = [
   "Itu on suomen kielen sanapeli. Saat kirjainnopat. Teet niistä sanoja ja ristikon.",
   "Pelaat yksin ja omassa tahdissasi. Aikaa on rajallisesti, ellet valitse " +
     "asetuksista Ei aikarajaa. Pisteet tulevat kirjaimista ja pitkistä sanoista.",
-  "Peli toimii näppäimistöllä, hiirellä ja kosketuksella. Voit myös tulostaa " +
-    "säännöt paperille.",
+  "Peli toimii näppäimistöllä, hiirellä ja kosketuksella. Ruudunlukija kuulee " +
+    "pelin tapahtumat. Voit myös tulostaa säännöt paperille.",
   "Peli ei kerää sinusta mitään. Ei tiliä, ei mainoksia. Tulokset tallentuvat " +
     "vain sinun selaimeesi.",
   "Peli on ilmainen ja tehty jaettavaksi. Voit lähettää palautetta. Voit myös " +

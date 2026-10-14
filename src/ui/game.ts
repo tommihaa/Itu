@@ -64,6 +64,7 @@ import {
   wireTermClicks,
 } from "../rules/view";
 import { setSfxEnabled, sfx } from "../sfx";
+import { announce, announceNow, clearAnnouncements, mountAnnouncer } from "./announce";
 import {
   settings,
   setPremiumMode,
@@ -459,11 +460,21 @@ function startRound(): void {
   timerHandle = untimed() ? undefined : setInterval(tick, 500);
 }
 
+// Ajastin ei puhu joka sekunti. Kolme varoitusta riittää ruudunlukijalle.
+const TIME_WARNINGS = [60, 30, 10];
+let timeWarned = new Set<number>();
+
 function tick(): void {
   if (roundOver) return;
   const left = secondsLeft();
   const el = root.querySelector<HTMLElement>("#sm-timer");
   if (el) el.textContent = fmtTime(left);
+  for (const w of TIME_WARNINGS) {
+    if (left <= w && left > 0 && !timeWarned.has(w) && activeDuration() > w) {
+      timeWarned.add(w);
+      announce(w === 60 ? "Minuutti jäljellä" : `${w} sekuntia jäljellä`);
+    }
+  }
   if (left <= 0) endRound();
 }
 
@@ -522,6 +533,13 @@ function endRound(): void {
   else if (lastLearnAchieved.size > 0) sfx.learnGoal();
   else sfx.lock();
   render();
+  if (wordsTimer) clearTimeout(wordsTimer);
+  clearAnnouncements();
+  const why = endRemaining > 0 || untimed() ? "lukittu" : "aika loppui";
+  announce(
+    `Kierros päättyi, ${why}. Yhteensä ${pointsWord(endBreakdown.total)}` +
+      (lastRecordRank === 1 ? ". Uusi paras tulos" : lastRecordRank ? `. Ennätyslistalle, sija ${lastRecordRank}` : ""),
+  );
 }
 
 /** Tallentaa tuloksen ennätyslistalle (top-10) jos pisteet > 0; asettaa sijan. */
@@ -587,8 +605,78 @@ function computeSuggestions(): void {
   };
 }
 
+// --- Ruudunlukija (DGAndroid/docs/YHTEYDENOTTO_NKL.md › Grillaus 14.10.2026) ---
+// Villen neljä kohtaa: sijainti ennen sisältöä, lyhyys, koko tilanne yhdellä komennolla
+// ja automaattinen ilmoitus tapahtumista. Ilmoitukset kulkevat live-alueen kautta
+// (announce.ts), eikä niiden tarvitse näkyä näkevälle.
+
+/** Ruudun nimi shakin tapaan: sarake kirjaimena A–U, rivi numerona 1–21 (keskiruutu K11). */
+function coord(key: string): string {
+  const { row, col } = parseKey(key);
+  return `${String.fromCharCode(65 + col)}${row + 1}`;
+}
+
+/** Nopan kirjain puhuttavaksi: jokeri sanana, muuten iso kirjain. */
+function spokenLetter(t: Tile): string {
+  if (t.face === JOKER) return t.letter === JOKER ? "jokeri" : `jokeri ${t.letter.toUpperCase()}`;
+  return t.face.toUpperCase();
+}
+
+function pointsWord(n: number): string {
+  return n === 1 ? "1 piste" : `${n} pistettä`;
+}
+
+function rackSpoken(): string {
+  const order = ui.rackOrder.length === tiles.length ? ui.rackOrder : [...tiles.keys()];
+  const rack = order.filter((die) => !tiles[die].cell).map((die) => spokenLetter(tiles[die]));
+  return rack.length ? `Teline ${rack.length}: ${rack.join(", ")}` : "Teline tyhjä";
+}
+
+function cellSpoken(key: string): string {
+  const t = tileAt(key);
+  const free = freeTiles.get(key);
+  const content = t ? spokenLetter(t) : free ? `${free.toUpperCase()} ilmainen` : "tyhjä";
+  return `${coord(key)} ${content}`;
+}
+
+/** Tilanne-komento: koko pöytä yhdellä kertaa (Villen kohta 4, bridge-esimerkki). */
+function statusSpoken(): string {
+  if (roundOver && endBreakdown) return `Kierros päättyi. Yhteensä ${pointsWord(endBreakdown.total)}.`;
+  const v = validate();
+  const words = extractWords(buildCells()).map((w) => {
+    const r = v.words.find((x) => x.text === w.text);
+    const verdict = r?.valid ? pointsWord(r.points) : "ei kelpaa";
+    return `${coord(w.keys[0])} ${w.dir === "H" ? "oikealle" : "alas"} ${w.text.toUpperCase()}, ${verdict}`;
+  });
+  const board = words.length ? `Sanat: ${words.join("; ")}` : "Laudalla ei sanoja";
+  const time = untimed()
+    ? "Ei aikarajaa"
+    : `Aikaa ${Math.floor(secondsLeft() / 60)} min ${secondsLeft() % 60} s`;
+  return `${rackSpoken()}. ${board}. Pisteet ${v.total}. ${time}.`;
+}
+
+// Sanojen ilmoitus odottaa näppäilyn tauon, jottei sanan jokainen välivaihe (TA, TAL)
+// kuulu omana viestinään. Ilmoitetaan vain muuttuneet: uusi sana tai uusi tuomio.
+const WORDS_SETTLE_MS = 900;
+let wordsTimer: ReturnType<typeof setTimeout> | undefined;
+let announcedWords = new Set<string>();
+function scheduleWordAnnouncement(v: Validation): void {
+  if (wordsTimer) clearTimeout(wordsTimer);
+  wordsTimer = setTimeout(() => {
+    const now = new Set(v.words.map((w) => `${w.text}|${w.valid}|${w.points}`));
+    for (const w of v.words) {
+      const id = `${w.text}|${w.valid}|${w.points}`;
+      if (!announcedWords.has(id)) {
+        announce(`${w.text.toUpperCase()} ${w.valid ? pointsWord(w.points) : "ei kelpaa"}`);
+      }
+    }
+    announcedWords = now;
+  }, WORDS_SETTLE_MS);
+}
+
 export function mountGame(el: HTMLElement): void {
   root = el;
+  mountAnnouncer();
   // Ikkunan koon muuttuessa kehystä uudelleen (responsiivinen zoom).
   window.addEventListener("resize", () => {
     // Säännöt-paneeli on ainoa jonka aikana ei kehystetä (tuloste käyttää samaa DOMia);
@@ -660,7 +748,11 @@ function newRoll(s: string): void {
   roundDailyTargets = settings.learnMode ? dailyTargets() : null;
   startRound();
   sfx.roll();
+  clearAnnouncements();
+  announcedWords = new Set();
+  timeWarned = new Set();
   render();
+  announce(`Uusi heitto. ${rackSpoken()}`);
 }
 
 function buildCells(): Cells {
@@ -871,6 +963,7 @@ function render(): void {
     return;
   }
   const v = validate();
+  if (!roundOver) scheduleWordAnnouncement(v);
   // Opi-moodi: mitkä päivän teemat laudan kelvolliset sanat jo toteuttavat (reaaliaikainen
   // sirujen syttyminen). Vaatii ladatun analyysipaketin; muuten tyhjä → sirut näkyvät himmeinä.
   const themeMatch = !!(match && match.themes); // kaveri-teemahaaste: jaettu tavoitesetti
@@ -911,6 +1004,7 @@ function render(): void {
       <div class="sm-bar-group sm-bar-actions">
         ${match ? "" : `<button id="sm-new" class="sm-primary">🎲 Heitä uudet</button>`}
         ${roundOver ? "" : `<button id="sm-lock">🔒 Lukitse</button>`}
+        <button id="sm-status" class="sm-sr-only sm-sr-focusable" title="Vaihto+H">Tilanne</button>
       </div>
       ${hasActions ? `<span class="sm-bar-sep" aria-hidden="true"></span>` : ""}
       <div class="sm-menu">
@@ -2413,8 +2507,11 @@ function tileHtml(t: Tile): string {
   const liftedCls = t.dieIndex === ui.lifted ? " sm-lifted" : "";
   // Jalometalli: arvoluokka väritystä varten (puu → kulta). Jokeri (arvo 0) jää neutraaliksi.
   const valCls = isJoker ? "" : ` sm-tval-${faceValue(t.face)}`;
+  const label = `${t.cell ? coord(t.cell) + " " : ""}${spokenLetter(t)}, ${pointsWord(faceValue(t.face))}${
+    t.dieIndex === ui.lifted ? ", nostettu" : ""
+  }`;
   return `<div class="sm-tile${isJoker ? " sm-joker" : ""}${valCls}${liftedCls}"
-    data-die="${t.dieIndex}">${glyph}${mark}<span class="sm-val">${faceValue(t.face) || ""}</span></div>`;
+    role="button" aria-label="${label}" data-die="${t.dieIndex}">${glyph}${mark}<span class="sm-val">${faceValue(t.face) || ""}</span></div>`;
 }
 
 /** Ilmaiskirjaimen laatta: nopan näköinen mutta arvoton (0 p) ja tyyliltään erottuva. */
@@ -2445,6 +2542,9 @@ function wireEvents(): void {
     render();
   };
   root.querySelector<HTMLButtonElement>("#sm-lock")?.addEventListener("click", endRound);
+  root.querySelector<HTMLButtonElement>("#sm-status")?.addEventListener("click", () =>
+    announceNow(statusSpoken()),
+  );
   root.querySelector<HTMLButtonElement>("#sm-learn-info")?.addEventListener("click", () => {
     ui.learnDescOpen = !ui.learnDescOpen;
     render();
@@ -2739,13 +2839,16 @@ function placeTile(die: number, target: string): void {
   ui.lifted = null; // asetus kuluttaa mahdollisen noston
   sfx.place();
   render();
+  announceNow(cellSpoken(target));
 }
 
 function unplaceTile(die: number): void {
+  const from = tiles[die].cell;
   recordHistory(die); // kumoa: muistiin ruutu ennen poistoa
   tiles[die].cell = null;
   sfx.unplace();
   render();
+  if (from) announceNow(`${coord(from)} ${spokenLetter(tiles[die])} telineeseen`);
 }
 
 /** Tallenna nopan nykyinen ruutu kumoa-pinoon ennen muutosta. */
@@ -2797,6 +2900,7 @@ function setCaret(row: number, col: number): void {
       ? { row, col, dir: ui.caret.dir === "H" ? "V" : "H" }
       : { row, col, dir: ui.caret?.dir ?? "H" };
   render();
+  announceNow(`${cellSpoken(cellKey(row, col))}, ${ui.caret.dir === "H" ? "oikealle" : "alas"}`);
 }
 
 /** Kirjoita kirjain kursorin kohdalle (telineestä; jokeri jos kirjainta ei ole). */
@@ -2827,6 +2931,7 @@ function typeAt(ch: string): void {
     const [fr, fc] = stepCell(row, col, dir);
     ui.caret = inBounds(fr, fc) ? { row: fr, col: fc, dir } : { row, col, dir };
     render();
+    announceNow(cellSpoken(cellKey(row, col)));
     return;
   }
   if (asJoker) {
@@ -2839,6 +2944,7 @@ function typeAt(ch: string): void {
   ui.caret = inBounds(nr, nc) ? { row: nr, col: nc, dir } : { row, col, dir };
   sfx.place();
   render();
+  announceNow(cellSpoken(cellKey(row, col)));
 }
 
 /** Poistaa nopan laudalta telineeseen: kumoa-historia + näppäinjokerin vapautus. */
@@ -2892,6 +2998,7 @@ function arrowCaret(dir: Dir, back: boolean): void {
     ui.caret = inBounds(nr, nc) ? { row: nr, col: nc, dir } : { ...ui.caret, dir };
   }
   render();
+  announceNow(cellSpoken(cellKey(ui.caret.row, ui.caret.col)));
 }
 
 function toggleCaretDir(): void {
@@ -2901,6 +3008,7 @@ function toggleCaretDir(): void {
     ? { ...ui.caret, dir: ui.caret.dir === "H" ? "V" : "H" }
     : { row: BOARD_MID, col: BOARD_MID, dir: "H" };
   render();
+  announceNow(ui.caret.dir === "H" ? "Oikealle" : "Alas");
 }
 
 /** Esc: sulje avoin modaali/näkymä tai peru pelinäkymän valinta. true = jotain tehtiin. */
@@ -2969,6 +3077,12 @@ function onKeyDown(e: KeyboardEvent): void {
   }
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   const k = e.key;
+  // Tilanne: Vaihto+H, koska pelkkä H on pelikirjain ja kirjoittaa laudalle.
+  if (e.shiftKey && (k === "H" || k === "h")) {
+    e.preventDefault();
+    announceNow(statusSpoken());
+    return;
+  }
   if (k === "Enter") {
     e.preventDefault();
     endRound(); // Lukitse

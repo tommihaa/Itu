@@ -988,3 +988,27 @@ input, textarea {
   /* Ohjeteksti ei enää työnny laudan päälle (negatiivinen ylämarginaali pois). */
   .sm-game .sm-kbd-hint { margin-top: 0; }
 }
+
+/* Ruudunlukijalle tarkoitettu: näkymätön näkevälle, mutta ruudunlukija löytää sen.
+   Tilanne-nappi tulee näkyviin kun näppäimistö kohdistaa siihen, jottei kohdistus
+   katoa näkymättömään. */
+.sm-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.sm-sr-focusable:focus-visible {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
