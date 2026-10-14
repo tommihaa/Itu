@@ -1720,11 +1720,11 @@ function controlsHintHtml(): string {
     );
   }
   // Suunnanvaihto, vain kun kirjoituskohta on auki. Kosketuslaitteella EI näppäimistöä →
-  // näytä napautusohje (napauta valittua ruutua = setCaret vaihtaa suunnan), ei väli/sarkain.
+  // näytä napautusohje (napauta valittua ruutua = setCaret vaihtaa suunnan), ei välilyöntiä.
   if (ui.caret) {
     parts.push(
       fine
-        ? `Kirjoita: väli tai sarkain vaihtaa suunnan ${arrow}.`
+        ? `Kirjoita: välilyönti vaihtaa suunnan ${arrow}.`
         : `Napauta valittua ruutua vaihtaaksesi suunnan ${arrow}.`,
     );
   }
@@ -3140,7 +3140,9 @@ function onKeyDown(e: KeyboardEvent): void {
   } else if (k === "ArrowUp") {
     e.preventDefault();
     arrowCaret("V", true);
-  } else if (k === " " || k === "Tab") {
+  } else if (k === " ") {
+    // Sarkain ei vaihda suuntaa vaan siirtää kohdistusta, jottei näppäimistö jää
+    // pelinäkymään loukkuun (docs/AUDITOINTI-RUUDUNLUKIJA.md › I-6, Tommin päätös 14.10.2026).
     e.preventDefault();
     toggleCaretDir();
   }

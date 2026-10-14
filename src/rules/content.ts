@@ -229,7 +229,8 @@ export const CONTROLS: RuleSection[] = [
     heading: "Näppäimistö",
     body:
       "• Valitse kirjoituskohta napauttamalla ruutua ja kirjoita sana.\n" +
-      "• Väli tai sarkain vaihtaa suunnan (vaaka → / pysty ↓); nuolinäppäimet siirtävät kohtaa.\n" +
+      "• Välilyönti vaihtaa suunnan (vaaka → / pysty ↓); nuolinäppäimet siirtävät kohtaa.\n" +
+      "• Sarkain siirtyy laudalta nappeihin ja takaisin.\n" +
       "• ⌫ poistaa edellisen kirjaimen. Ctrl+Z kumoaa viimeisimmän. Esc peruuttaa valinnan.\n" +
       "• Enter lukitsee kierroksen.",
   },

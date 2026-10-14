@@ -55,7 +55,10 @@ tai sama `aria-pressed` kuin kestovalinnassa.
 `1200`: ARIA 1.2 kieltää nimen `generic`-roolilta, ja ruudunlukijat ohittavat sen. Korjaus on
 `role="group"` (kuten `1281`) tai nimi pois.
 
-**I-6. Sarkain ei siirrä kohdistusta pelinäkymässä.** Tila: avoin, löytyi I-2:n korjauksessa.
+**I-6. Sarkain ei siirrä kohdistusta pelinäkymässä.** Tila: korjattu 14.10.2026 Tommin
+päätöksellä (*"suunnan vaihtaa vain välilyönti, ja sarkain siirtää kohdistusta normaalisti"*).
+Säännöt › Ohjaus ja laudan alla oleva vihje päivitettiin samassa commitissa. Löytyi I-2:n
+korjauksessa.
 `game.ts` `onKeyDown`: pelinäkymässä sarkain vaihtaa kirjoitussuunnan ja estää oletuksen,
 myös kun kohdistus on napissa. Näppäimistöllä ei siis pääse sarkaimella mihinkään nappiin eikä
 pois laudalta (WCAG 2.1.2 No Keyboard Trap). APG:n grid-mallissa sarkain vie pois ruudukosta.

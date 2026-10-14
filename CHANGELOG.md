@@ -30,6 +30,10 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
   nimi, myös tyhjällä, joten kosketusruudunlukijalla voi nostaa nopan ja valita ruudun.
   Pistemoodissa tyhjä ruutu kertoo kertoimensa. Kohdistus pysyy laudassa kirjoitettaessa.
 
+### Muutettu
+- **Sarkain siirtää kohdistusta** eikä enää vaihda kirjoitussuuntaa. Ennen näppäimistöllä ei
+  päässyt pelinäkymässä sarkaimella yhteenkään nappiin. Suunnan vaihtaa välilyönti.
+
 ### Korjattu
 - Ennätys kirjataan pelatun keston mukaan. Ennen kesken kierroksen vaihdettu asetus
   siirsi tuloksen väärän keston listalle.
