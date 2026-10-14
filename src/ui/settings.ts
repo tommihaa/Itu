@@ -24,8 +24,12 @@ const SOUND_KEY = "itu:sound:v1";
 const SORT_KEY = "itu:sort:v1";
 const NAME_KEY = "itu:name";
 
+/** Ajaton kierros: päättyy vain lukitsemalla (Tommin päätös 14.10.2026, ITU.md ›
+ * Ydinmekaniikka). Nolla eikä Infinity, koska arvo kulkee haastelinkin JSONissa ja
+ * localStoragessa sellaisenaan. */
+export const UNTIMED = 0;
 /** Kesto-presetit sekunteina; muu arvo ei ole valittavissa eikä kelpaa levyltä. */
-export const DURATION_OPTIONS: number[] = [60, 120, 180, 300];
+export const DURATION_OPTIONS: number[] = [60, 120, 180, 300, UNTIMED];
 export const DEFAULT_DURATION = GAME_DURATION_SECONDS; // 180 s = 3 min
 /** Sallittu kesto tai oletus (saapuva haastelinkki + rikki/tuntematon storage). */
 export function coerceDuration(n: unknown): number {
@@ -58,8 +62,8 @@ export interface Settings {
    * (`scoring.ts` TIME_BONUS_MIN_LETTERS_USED) → palkitsee nopean JA täyden ratkaisun.
    * Pois → ajastin näkyy yhä, mutta jäljellä oleva aika ei tuo bonuspisteitä. */
   timeBonusEnabled: boolean;
-  /** Kierroksen kesto sekunteina, aina jokin `DURATION_OPTIONS`in arvo. Pelkkä
-   * aikaraamikerros: ei kosketa lautaa, siementä eikä noppia. */
+  /** Kierroksen kesto sekunteina, aina jokin `DURATION_OPTIONS`in arvo (`UNTIMED` = ei
+   * aikarajaa). Pelkkä aikaraamikerros: ei kosketa lautaa, siementä eikä noppia. */
   gameDuration: number;
   /** Opi-moodi (oletus POIS): adaptiivinen kielioppi-päivähaaste. PEHMEÄ, eli ei muuta
    * pisteytystä, sanastoa eikä lautaa. Edistymä itse on kerättyä dataa eikä asetus. */
@@ -76,7 +80,11 @@ export interface Settings {
 export const settings: Settings = {
   premiumMode: read(PREMIUM_KEY) === "1",
   timeBonusEnabled: read(TIME_BONUS_KEY) !== "0", // oletus päällä
-  gameDuration: coerceDuration(Number(read(DURATION_KEY))),
+  // Puuttuva avain on null, ja Number(null) olisi 0 eli ajaton. Siksi null ohitetaan erikseen.
+  gameDuration: (() => {
+    const raw = read(DURATION_KEY);
+    return raw === null || raw === "" ? DEFAULT_DURATION : coerceDuration(Number(raw));
+  })(),
   learnMode: read(LEARN_MODE_KEY) === "1",
   soundEnabled: read(SOUND_KEY) === "1",
   rackSort: (() => {

@@ -38,7 +38,15 @@ Ota mukaan vain se, mitä keskustelu tarvitsee:
 
 - 13 kirjainnoppaa heitetään kerralla; pelaaja muodostaa nopista ristikon
   (sanat liittyvät toisiinsa kuten sanaristikossa) ennen kuin aika loppuu.
-- Peliaika **oletuksena 3 min ja asetuksesta säädettävissä** (1/2/3/5 min, ks. Asetukset).
+- Peliaika **oletuksena 3 min ja asetuksesta säädettävissä** (1/2/3/5 min tai ei aikarajaa,
+  ks. Asetukset).
+- **Ei aikarajaa (Tommin päätös 14.10.2026).** Kierros päättyy vain lukitsemalla. Valinta on
+  kaikille eikä piilotettu saavutettavuusasetus. Syy on ruudunlukija: ristikon rakentaminen
+  kuulemalla vie moninkertaisen ajan. Aikaraja sulkisi pelaajan pois
+  (`DGAndroid/docs/YHTEYDENOTTO_NKL.md` › Grillaus 14.10.2026). Aikabonusta ei makseta, koska
+  aikaa ei mitata. Ennätyksillä on oma välilehti kuten muillakin kestoilla. Pistettä/min
+  jättää ajattomat kierrokset pois, koska jakajaa ei ole. Haastelinkki lukitsee ajattomuuden
+  kuten minkä tahansa muun keston.
   Pelaaja voi lukita laudan aiemmin. *Oletus löytyi pelitestaamalla eikä esikuvasta:*
   *Laiturin sanamixin tiimalasi oli 2–3 minuuttia, ja samankaltaisuus on yhteensattuma*
   *(`SUBSTANSSI.md` kohta 36, kirjattu 21.8.2026).*
@@ -342,7 +350,7 @@ Tahkomäärät: A8 I7 E6 O5 U4 Ä4 Y2 Ö1 / T5 N6 S5 K5 L4 M3 R3 H2 V2 J2 P1 D1 
   kiinteästä, käsin todennetusta sijataulukosta (`src/dict/morph.ts`); tuntematon
   → ei näytetä mitään. Data: `public/dict/forms-fi-v1` (lazy, ks. SANASTO.md).
 - **Asetukset (⚙️):** kevyt paneeli (nappipalkki › ⚙️ Asetukset). Nyt: **kierroksen kesto**
-  (1/2/3/5 min, `itu:duration:v1`), **aikabonus** on/off (`itu:timebonus:v1`), **Opi-moodi**
+  (1/2/3/5 min tai ei aikarajaa, `itu:duration:v1`, ajaton tallentuu arvona 0), **aikabonus** on/off (`itu:timebonus:v1`), **Opi-moodi**
   (`itu:learnmode:v1`), **Scrabble-pistemoodi** (premium-ruudut + bingo + keskusankkuri,
   `itu:premium:v1`) ja **äänet** (`itu:sound:v1`, oletus POIS). Kaikki tallennetaan localStorageen.
 - **Äänet (torvi & kantele, oletus POIS):** valinnainen kevyt äänimaisema Web Audiolla

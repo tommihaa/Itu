@@ -266,8 +266,8 @@ export const ABOUT_TITLE = "Tietoja Itusta";
  *  Sisältää saavutettavuusrivin (millä laitteilla peli toimii). */
 export const ABOUT_PARAS: string[] = [
   "Itu on suomen kielen sanapeli. Saat kirjainnopat. Teet niistä sanoja ja ristikon.",
-  "Pelaat yksin ja omassa tahdissasi. Aikaa on rajallisesti. Pisteet tulevat " +
-    "kirjaimista ja pitkistä sanoista.",
+  "Pelaat yksin ja omassa tahdissasi. Aikaa on rajallisesti, ellet valitse " +
+    "asetuksista Ei aikarajaa. Pisteet tulevat kirjaimista ja pitkistä sanoista.",
   "Peli toimii näppäimistöllä, hiirellä ja kosketuksella. Voit myös tulostaa " +
     "säännöt paperille.",
   "Peli ei kerää sinusta mitään. Ei tiliä, ei mainoksia. Tulokset tallentuvat " +

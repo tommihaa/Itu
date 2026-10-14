@@ -75,6 +75,7 @@ import {
   setMyName,
   coerceDuration,
   DURATION_OPTIONS,
+  UNTIMED,
   DEFAULT_DURATION,
 } from "./settings";
 import {
@@ -216,6 +217,7 @@ let lastLearnAchieved: Set<string> = new Set();
 // jäljellä olevasta ajasta riippumatta kestosta (lyhyt kesto ≠ enemmän bonusta).
 /** Kesto-presetin lyhyt suomenkielinen otsikko (60 → "1 min", muuten "N s"). */
 function durationLabel(s: number): string {
+  if (s === UNTIMED) return "Ei aikarajaa";
   return s % 60 === 0 ? `${s / 60} min` : `${s} s`;
 }
 
@@ -431,7 +433,16 @@ function importRecords(text: string): ImportResult {
   };
 }
 
+// Kierroksen kesto lukitaan alussa. Asetuksen vaihto kesken kierroksen koskee vasta
+// seuraavaa, kuten ajastetuillakin kestoilla (roundEndsAt ei muutu).
+let roundDuration = DEFAULT_DURATION;
+function untimed(): boolean {
+  return roundDuration === UNTIMED;
+}
+
+/** Ajattomassa kierroksessa aikaa ei mitata, joten säästöä ei ole eikä aikabonusta synny. */
 function secondsLeft(): number {
+  if (untimed()) return 0;
   return Math.max(0, Math.ceil((roundEndsAt - Date.now()) / 1000));
 }
 
@@ -440,11 +451,12 @@ function fmtTime(s: number): string {
 }
 
 function startRound(): void {
-  roundEndsAt = Date.now() + activeDuration() * 1000;
+  roundDuration = activeDuration();
+  roundEndsAt = Date.now() + roundDuration * 1000;
   roundOver = false;
   endBreakdown = null;
   if (timerHandle) clearInterval(timerHandle);
-  timerHandle = setInterval(tick, 500);
+  timerHandle = untimed() ? undefined : setInterval(tick, 500);
 }
 
 function tick(): void {
@@ -524,7 +536,7 @@ function recordResult(v: Validation): void {
     date: Date.now(),
     seed,
     mode,
-    duration: activeDuration(), // kategorisointi: oma top-10 per (moodi × kesto)
+    duration: roundDuration, // kategorisointi: pelattu kesto, ei kesken vaihdettu asetus
     words: v.words.filter((w) => w.valid).map((w) => w.text),
     wordScores: v.words.filter((w) => w.valid).map((w) => w.points),
     placed: tiles
@@ -879,8 +891,10 @@ function render(): void {
   const hasActions = !match || !roundOver;
   // Elävä kirjainmittari: tekee aikabonuksen piilokynnyksen (≥11/13) näkyväksi maaliksi
   // jo pelin aikana, ei vasta tulosruudussa. "Auki" = kynnys täynnä ja bonus käytössä.
-  const bonusReady = settings.timeBonusEnabled && v.lettersUsed >= TIME_BONUS_MIN_LETTERS_USED;
-  const usedTitle = !settings.timeBonusEnabled
+  const bonusReady = settings.timeBonusEnabled && !untimed() && v.lettersUsed >= TIME_BONUS_MIN_LETTERS_USED;
+  const usedTitle = untimed()
+    ? "Ei aikarajaa eikä aikabonusta. Käytä mahdollisimman monta noppaa"
+    : !settings.timeBonusEnabled
     ? "Aikabonus pois käytöstä. Käytä silti mahdollisimman monta noppaa"
     : bonusReady
       ? "Aikabonus auki"
@@ -911,7 +925,7 @@ function render(): void {
         </div>
       </div>
       <div class="sm-bar-status">
-        ${roundOver ? "" : `<span class="sm-timer" id="sm-timer">${fmtTime(secondsLeft())}</span>`}
+        ${roundOver ? "" : untimed() ? `<span class="sm-timer sm-timer-untimed" id="sm-timer">Ei aikarajaa</span>` : `<span class="sm-timer" id="sm-timer">${fmtTime(secondsLeft())}</span>`}
         ${roundOver ? "" : usedChip}
         <span class="sm-score">${
           roundOver ? "Kierros päättyi" : `Pisteet: <b>${v.total}</b>`
@@ -943,7 +957,7 @@ function render(): void {
 function resultHtml(): string {
   if (!endBreakdown) return "";
   const b = endBreakdown;
-  const reason = endRemaining > 0 ? "lukittu" : "aika loppui";
+  const reason = endRemaining > 0 || untimed() ? "lukittu" : "aika loppui";
   const s = endSuggestions;
   const sugHtml =
     s && (s.withLeftover.length || s.best.length)
@@ -992,11 +1006,11 @@ function resultHtml(): string {
           : ""
       }
       <tr><td>Käyttämättä jääneet nopat</td><td>−${b.unusedPenalty}</td></tr>
-      <tr><td>Aikabonus${endRemaining > 0 ? ` (${endRemaining} s säästöön)` : ""}${
+      ${untimed() ? "" : `<tr><td>Aikabonus${endRemaining > 0 ? ` (${endRemaining} s säästöön)` : ""}${
         b.timeBonus === 0 && endRemaining > 0 && endLettersUsed < TIME_BONUS_MIN_LETTERS_USED
           ? ` <span class="sm-bonus-note">· vaatii ≥${TIME_BONUS_MIN_LETTERS_USED} käytettyä kirjainta (käytit ${endLettersUsed})</span>`
           : ""
-      }</td><td>+${b.timeBonus}</td></tr>
+      }</td><td>+${b.timeBonus}</td></tr>`}
       ${b.bingo ? `<tr><td>Bingo (kaikki nopat) ⚡</td><td>+${b.bingo}</td></tr>` : ""}
       <tr class="sm-total"><td>Yhteensä</td><td>${b.total}</td></tr>
     </table>
@@ -1167,7 +1181,8 @@ function renderSettings(): void {
           <small>Kuinka kauan aikaa per heitto. Oletus 3 min. Aikabonus lasketaan jäljellä
           olevasta ajasta riippumatta kestosta, joten lyhyt kesto ei tuo enempää bonusta.
           Haasteessa kesto lukitaan linkkiin, jotta molemmat pelaavat saman ajan.
-          <b>Kullakin kestolla on oma ennätyslistansa</b> (sama aika kaikille = reilu vertailu).</small>
+          <b>Kullakin kestolla on oma ennätyslistansa</b> (sama aika kaikille = reilu vertailu).
+          <b>Ei aikarajaa:</b> kierros päättyy vasta kun lukitset sen, eikä aikabonusta tule.</small>
         </span>
         <div class="sm-duration-opts" role="group" aria-label="Kierroksen kesto">
           ${DURATION_OPTIONS.map(
@@ -1181,8 +1196,9 @@ function renderSettings(): void {
         <span class="sm-setting-text">
           <b>⏱️ Aikabonus</b>
           <small>Nopeasta ja täydestä ratkaisusta lisäpisteitä: jäljellä oleva aika palkitaan,
-          kun käytät ≥${TIME_BONUS_MIN_LETTERS_USED} noppaa. Pois päältä ajastin näkyy yhä, mutta
-          aika ei tuo bonuspisteitä, voit pohtia rauhassa.</small>
+          kun käytät ≥${TIME_BONUS_MIN_LETTERS_USED} noppaa. Pois päältä ajastin näkyy ja kierros
+          päättyy yhä, mutta aika ei tuo bonuspisteitä. Jos haluat pohtia rauhassa, valitse
+          kestoksi Ei aikarajaa.</small>
         </span>
       </label>
       <label class="sm-setting-row">
@@ -1462,7 +1478,7 @@ function renderRecords(): void {
   // suodattaa valitulla kestolla (sama aika kaikille = reilu vertailu).
   const recs = rateMode
     ? modeRecs
-        .slice()
+        .filter((r) => r.duration !== UNTIMED) // ajattomalla ei ole jakajaa
         .sort((a, b) => wordRate(b) - wordRate(a) || b.wordPoints - a.wordPoints || a.date - b.date)
         .slice(0, MAX_RECORDS)
     : modeRecs.filter((r) => (r.duration ?? DEFAULT_DURATION) === ui.recordsDurationTab);
@@ -1475,6 +1491,8 @@ function renderRecords(): void {
   const modeName = ui.recordsTab === "scrabble" ? "Scrabble-moodin " : "Itu-";
   const empty = rateMode
     ? `Ei vielä ${modeName}ennätyksiä. Pelaa kierros ja lukitse tulos. Pistettä/min vertaa eri kestoja keskenään.`
+    : ui.recordsDurationTab === UNTIMED
+    ? `Ei vielä ${modeName}ennätyksiä ilman aikarajaa. Pelaa kierros tällä asetuksella ja lukitse tulos.`
     : `Ei vielä ${modeName}ennätyksiä kestolla ${durationLabel(ui.recordsDurationTab)}. Pelaa kierros tällä asetuksella ja lukitse tulos.`;
   const list = recs.length
     ? recs.map((r, i) => recordHtml(r, i + 1, rateMode)).join("")
@@ -1487,7 +1505,7 @@ function renderRecords(): void {
     <div class="sm-tabs">${modeTab("itu", "Itu")}${modeTab("scrabble", "🟦 Scrabble")}</div>
     <div class="sm-tabs sm-tabs-sort">${sortTab("total", "Kokonaispisteet")}${sortTab("rate", "⚡ Pistettä/min")}</div>
     ${rateMode ? "" : `<div class="sm-tabs sm-tabs-dur">${DURATION_OPTIONS.map(durTab).join("")}</div>`}
-    ${rateMode ? `<p class="sm-ch-note sm-rate-note">Sanapisteet jaettuna kierroksen kestolla (min). Aikabonus ja sakot eivät vaikuta → vertaa puhdasta tuottavuutta eri kestojen yli.</p>` : ""}
+    ${rateMode ? `<p class="sm-ch-note sm-rate-note">Sanapisteet jaettuna kierroksen kestolla (min). Aikabonus ja sakot eivät vaikuta → vertaa puhdasta tuottavuutta eri kestojen yli. Kierrokset ilman aikarajaa eivät ole mukana.</p>` : ""}
     <div class="sm-records">${list}</div>
   `;
   root.querySelector<HTMLButtonElement>("#sm-records-close")!.onclick = () => {

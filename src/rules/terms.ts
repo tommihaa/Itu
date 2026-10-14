@@ -96,7 +96,8 @@ export const TERMS: TermEntry[] = [
     match: ["aikabonu*"],
     selitys:
       "Kun lukitset ennen ajan loppua, saat +1 pisteen jokaisesta 5 säästetystä sekunnista " +
-      "(enintään +6), mutta vain jos vähintään 11 noppaa 13:sta on kelvollisissa sanoissa.",
+      "(enintään +6), mutta vain jos vähintään 11 noppaa 13:sta on kelvollisissa sanoissa. " +
+      "Kierroksessa ilman aikarajaa aikabonusta ei ole.",
   },
   {
     kategoria: "peli",

@@ -80,6 +80,7 @@ header.sm-head .sm-seed { color: var(--muted); font-size: 0.85rem; }
 .sm-bar-sep { width: 1px; align-self: stretch; min-height: 1.6rem; background: var(--line); margin: 0 0.35rem; }
 .sm-bar .sm-score { font-size: 1.05rem; color: var(--gold); }
 .sm-bar .sm-score b { color: var(--text); }
+.sm-timer-untimed { font-size: 0.85rem; font-weight: 600; }
 .sm-timer {
   font-variant-numeric: tabular-nums;
   font-weight: 700;

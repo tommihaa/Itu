@@ -11,6 +11,21 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
 > numerolla, aiemmat numerot ovat jälkikäteisiä nimilappuja jo tuotannossa olevalle
 > koodille. Tästä eteenpäin versio bumpataan ennen pushia, kuten Superjatsissa.
 
+## [0.13.0] – 2026-10-14
+
+### Lisätty
+- **Kierroksen kesto: Ei aikarajaa** (ITU.md › Ydinmekaniikka, Tommin päätös 14.10.2026).
+  Kierros päättyy vasta lukitsemalla. Syy on ruudunlukija: ristikon rakentaminen kuulemalla
+  vie moninkertaisen ajan. Valinta on kaikille. Aikabonusta ei makseta, ennätyksillä on oma
+  välilehti, Pistettä/min jättää ajattomat kierrokset pois ja haastelinkki lukitsee
+  ajattomuuden.
+
+### Korjattu
+- Ennätys kirjataan pelatun keston mukaan. Ennen kesken kierroksen vaihdettu asetus
+  siirsi tuloksen väärän keston listalle.
+- Aikabonuksen selite lupasi *"voit pohtia rauhassa"*, vaikka kierros päättyy ajan
+  loputtua myös bonuksen ollessa pois. Selite ohjaa nyt valintaan Ei aikarajaa.
+
 ## [0.12.0] – 2026-08-31
 
 ### Lisätty
