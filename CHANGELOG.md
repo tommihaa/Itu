@@ -11,6 +11,18 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
 > numerolla, aiemmat numerot ovat jälkikäteisiä nimilappuja jo tuotannossa olevalle
 > koodille. Tästä eteenpäin versio bumpataan ennen pushia, kuten Superjatsissa.
 
+## [Unreleased]
+
+### Muutettu
+- **Telineen nopat ovat näppäimistön nappeja.** Sarkain pysähtyy jokaiseen telineen noppaan,
+  ja Enter tai välilyönti nostaa sen. Laudalla Enter asettaa nostetun nopan kirjoituskohtaan
+  ja lukitsee kierroksen vain kun mitään ei ole nostettu. Ennen noppa oli ruudunlukijalle
+  painike, johon ei päässyt näppäimistöllä (`docs/AUDITOINTI-RUUDUNLUKIJA.md` › I-3, Tommin
+  valinta 14.10.2026). Säännöt › Ohjaus päivitettiin.
+- Säännöt-, Ennätykset- ja telineen järjestysnapit kertovat ruudunlukijalle mikä on valittu
+  (`aria-pressed`, I-4). Napit on ryhmitelty nimettyihin ryhmiin, ja Opi-moodin teemarivin
+  sekä pistemoodin kerroinselitteen nimi kuuluu nyt (I-5).
+
 ## [0.13.0] – 2026-10-14
 
 ### Lisätty

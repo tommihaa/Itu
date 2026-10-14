@@ -244,6 +244,7 @@ button.sm-primary { background: var(--gold); border-color: var(--gold); color: #
 }
 .sm-board:focus { outline: none; }
 .sm-board:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.sm-rack .sm-tile:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .sm-cell {
   width: var(--cell);
   height: var(--cell);

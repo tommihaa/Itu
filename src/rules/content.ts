@@ -230,9 +230,10 @@ export const CONTROLS: RuleSection[] = [
     body:
       "• Valitse kirjoituskohta napauttamalla ruutua ja kirjoita sana.\n" +
       "• Välilyönti vaihtaa suunnan (vaaka → / pysty ↓); nuolinäppäimet siirtävät kohtaa.\n" +
-      "• Sarkain siirtyy laudalta nappeihin ja takaisin.\n" +
+      "• Sarkain siirtyy laudalta nappeihin ja telineen noppiin ja takaisin.\n" +
+      "• Telineen nopan voi nostaa Enterillä tai välilyönnillä. Laudalla Enter asettaa nostetun nopan kirjoituskohtaan.\n" +
       "• ⌫ poistaa edellisen kirjaimen. Ctrl+Z kumoaa viimeisimmän. Esc peruuttaa valinnan.\n" +
-      "• Enter lukitsee kierroksen.",
+      "• Enter lukitsee kierroksen, kun yhtään noppaa ei ole nostettu.",
   },
   {
     heading: "Ruudunlukija",

@@ -1141,7 +1141,7 @@ function resultHtml(): string {
 /** Selkosäännöt + ohjaus eri välilehdillä — sama sisältö pelissä ja tulosteessa (@media print). */
 function renderRules(): void {
   const tab = (key: RulesTab, label: string) =>
-    `<button class="sm-tab${key === ui.rulesTab ? " sm-tab-active" : ""}" data-rtab="${key}">${label}</button>`;
+    `<button class="sm-tab${key === ui.rulesTab ? " sm-tab-active" : ""}" data-rtab="${key}" aria-pressed="${key === ui.rulesTab}">${label}</button>`;
   const content =
     ui.rulesTab === "controls"
       ? renderControlsContent()
@@ -1155,7 +1155,7 @@ function renderRules(): void {
       <button id="sm-rules-close">← Takaisin peliin</button>
       <button id="sm-rules-print" class="sm-primary">Tulosta</button>
     </div>
-    <div class="sm-tabs sm-no-print">${tab("words", "Sanat")}${tab("controls", "Ohjaus")}${tab("terms", "Termit")}${tab("about", "Esittely")}</div>
+    <div class="sm-tabs sm-no-print" role="group" aria-label="Sääntöjen osio">${tab("words", "Sanat")}${tab("controls", "Ohjaus")}${tab("terms", "Termit")}${tab("about", "Esittely")}</div>
     ${content}
   `;
   wireTermClicks(root);
@@ -1191,7 +1191,7 @@ function premLegendHtml(game = false): string {
         `<span class="sm-prem-chip sm-prem sm-prem-${k.toLowerCase()}" title="${PREM_TITLE[k]}">${PREM_FI[k]}</span>`,
     )
     .join("");
-  return `<div class="sm-prem-legend${game ? " sm-prem-legend-game" : ""}" aria-label="Pistemoodin kertoimet">
+  return `<div class="sm-prem-legend${game ? " sm-prem-legend-game" : ""}" role="group" aria-label="Pistemoodin kertoimet">
     ${chips}
     <span class="sm-prem-chip"><span class="sm-star">★</span> aloitus</span>
   </div>`;
@@ -1222,7 +1222,7 @@ function learnTargetsHtml(hits: Set<string>, forced?: string[]): string {
   // tieto näkyviin ennen peliä). Tila näkymätilassa (ui.learnDescOpen) → säilyy renderin yli.
   const info = `<button id="sm-learn-info" class="sm-learn-info" aria-expanded="${ui.learnDescOpen}" aria-label="${ui.learnDescOpen ? "Piilota teemojen kuvaukset" : "Näytä mitä teemat tarkoittavat"}" title="Mitä teemat tarkoittavat?">ⓘ</button>`;
   const descs = ui.learnDescOpen ? learnDescListHtml(targets, hits) : "";
-  return `<div class="sm-learn-bar" aria-label="Opi-moodin teemat">
+  return `<div class="sm-learn-bar" role="group" aria-label="Opi-moodin teemat">
     <span class="sm-learn-title">${title}</span>
     ${chips}${loading}
     ${info}
@@ -1602,11 +1602,11 @@ function renderRecords(): void {
         .slice(0, MAX_RECORDS)
     : modeRecs.filter((r) => (r.duration ?? DEFAULT_DURATION) === ui.recordsDurationTab);
   const modeTab = (key: RecordMode, label: string) =>
-    `<button class="sm-tab${key === ui.recordsTab ? " sm-tab-active" : ""}" data-rectab="${key}">${label}</button>`;
+    `<button class="sm-tab${key === ui.recordsTab ? " sm-tab-active" : ""}" data-rectab="${key}" aria-pressed="${key === ui.recordsTab}">${label}</button>`;
   const durTab = (s: number) =>
-    `<button class="sm-tab${s === ui.recordsDurationTab ? " sm-tab-active" : ""}" data-recdur="${s}">${durationLabel(s)}</button>`;
+    `<button class="sm-tab${s === ui.recordsDurationTab ? " sm-tab-active" : ""}" data-recdur="${s}" aria-pressed="${s === ui.recordsDurationTab}">${durationLabel(s)}</button>`;
   const sortTab = (key: RecordsSort, label: string) =>
-    `<button class="sm-tab${key === ui.recordsSort ? " sm-tab-active" : ""}" data-recsort="${key}">${label}</button>`;
+    `<button class="sm-tab${key === ui.recordsSort ? " sm-tab-active" : ""}" data-recsort="${key}" aria-pressed="${key === ui.recordsSort}">${label}</button>`;
   const modeName = ui.recordsTab === "scrabble" ? "Scrabble-moodin " : "Itu-";
   const empty = rateMode
     ? `Ei vielä ${modeName}ennätyksiä. Pelaa kierros ja lukitse tulos. Pistettä/min vertaa eri kestoja keskenään.`
@@ -1621,9 +1621,9 @@ function renderRecords(): void {
       <button id="sm-records-close">← Takaisin peliin</button>
       <h2 class="sm-records-title">🏆 Ennätykset</h2>
     </div>
-    <div class="sm-tabs">${modeTab("itu", "Itu")}${modeTab("scrabble", "🟦 Scrabble")}</div>
-    <div class="sm-tabs sm-tabs-sort">${sortTab("total", "Kokonaispisteet")}${sortTab("rate", "⚡ Pistettä/min")}</div>
-    ${rateMode ? "" : `<div class="sm-tabs sm-tabs-dur">${DURATION_OPTIONS.map(durTab).join("")}</div>`}
+    <div class="sm-tabs" role="group" aria-label="Pistemoodi">${modeTab("itu", "Itu")}${modeTab("scrabble", "🟦 Scrabble")}</div>
+    <div class="sm-tabs sm-tabs-sort" role="group" aria-label="Lajittelu">${sortTab("total", "Kokonaispisteet")}${sortTab("rate", "⚡ Pistettä/min")}</div>
+    ${rateMode ? "" : `<div class="sm-tabs sm-tabs-dur" role="group" aria-label="Kesto">${DURATION_OPTIONS.map(durTab).join("")}</div>`}
     ${rateMode ? `<p class="sm-ch-note sm-rate-note">Sanapisteet jaettuna kierroksen kestolla (min). Aikabonus ja sakot eivät vaikuta → vertaa puhdasta tuottavuutta eri kestojen yli. Kierrokset ilman aikarajaa eivät ole mukana.</p>` : ""}
     <div class="sm-records">${list}</div>
   `;
@@ -1988,8 +1988,8 @@ function rackHeadHtml(remaining: number): string {
 
 function rackToolsHtml(): string {
   const b = (key: string, label: string) =>
-    `<button class="sm-tool${key === settings.rackSort ? " sm-tool-active" : ""}" data-sort="${key}">${label}</button>`;
-  return `<div class="sm-rack-tools">
+    `<button class="sm-tool${key === settings.rackSort ? " sm-tool-active" : ""}" data-sort="${key}" aria-pressed="${key === settings.rackSort}">${label}</button>`;
+  return `<div class="sm-rack-tools" role="group" aria-label="Telineen järjestys">
     <span class="sm-tools-label">Järjestys:</span>
     ${b("abc", "Aakkoset")}${b("aanne", "Äänneryhmät")}
   </div>`;
@@ -2547,7 +2547,11 @@ function tileHtml(t: Tile, onBoard = false): string {
   const liftedCls = t.dieIndex === ui.lifted ? " sm-lifted" : "";
   // Jalometalli: arvoluokka väritystä varten (puu → kulta). Jokeri (arvo 0) jää neutraaliksi.
   const valCls = isJoker ? "" : ` sm-tval-${faceValue(t.face)}`;
-  const a11y = onBoard ? `aria-hidden="true"` : `role="button" aria-label="${tileSpoken(t)}"`;
+  // Telineen noppa on kohdistettava painike (APG button: Tab + Enter/väli), id palauttaa
+  // kohdistuksen renderin yli (docs/AUDITOINTI-RUUDUNLUKIJA.md › I-3).
+  const a11y = onBoard
+    ? `aria-hidden="true"`
+    : `id="sm-die-${t.dieIndex}" role="button" tabindex="${roundOver ? -1 : 0}" aria-label="${tileSpoken(t)}"`;
   return `<div class="sm-tile${isJoker ? " sm-joker" : ""}${valCls}${liftedCls}"
     ${a11y} data-die="${t.dieIndex}">${glyph}${mark}<span class="sm-val">${faceValue(t.face) || ""}</span></div>`;
 }
@@ -3140,9 +3144,20 @@ function onKeyDown(e: KeyboardEvent): void {
     announceNow(statusSpoken());
     return;
   }
+  // Telineen kohdistettu noppa: Enter/väli nostaa sen kuten napautus.
+  const tileEl = (e.target as HTMLElement | null)?.closest<HTMLElement>(".sm-rack .sm-tile");
+  if (tileEl && (k === "Enter" || k === " ")) {
+    e.preventDefault();
+    onTileTap(Number(tileEl.dataset.die));
+    return;
+  }
   if (k === "Enter") {
     e.preventDefault();
-    endRound(); // Lukitse
+    // Nostettu noppa odottaa: Enter asettaa sen kursoriin eikä lukitse kierrosta.
+    if (ui.lifted !== null) {
+      if (ui.caret) placeTile(ui.lifted, cellKey(ui.caret.row, ui.caret.col));
+      else announceNow("Valitse ensin ruutu nuolinäppäimillä.");
+    } else endRound(); // Lukitse
   } else if (k.length === 1 && PLAY_LETTERS.includes(k.toLowerCase())) {
     e.preventDefault();
     typeAt(k.toLowerCase());
