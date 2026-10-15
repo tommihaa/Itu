@@ -11,6 +11,14 @@ Kaikki merkittävät muutokset kirjataan tähän. Muoto noudattaa löyhästi
 > numerolla, aiemmat numerot ovat jälkikäteisiä nimilappuja jo tuotannossa olevalle
 > koodille. Tästä eteenpäin versio bumpataan ennen pushia, kuten Superjatsissa.
 
+## [0.13.2] – 2026-10-15
+
+### Korjattu
+- **Telineen noppa nousee ruudunlukijan kaksoisnapautuksella.** TalkBackin kaksoisnapautus
+  lähettää selaimelle pelkän napsautuksen ilman kosketustapahtumia, ja noppa kuunteli vain
+  kosketusta, joten nosto ei toiminut. Löytyi Tommin TalkBack-kuuntelussa Pixelillä
+  (`docs/AUDITOINTI-RUUDUNLUKIJA.md` › I-7).
+
 ## [0.13.1] – 2026-10-14
 
 ### Muutettu

@@ -86,6 +86,8 @@ export interface ViewState {
   recordsSort: RecordsSort;
   /** Napautuksen jälkeen tuleva synteettinen ruutuklikkaus vaimennetaan tähän hetkeen asti. */
   suppressCellClickUntil: number;
+  /** Nopan pointer-napautuksen jälkeinen click ohitetaan tähän hetkeen asti (pointerup hoiti sen jo). */
+  suppressTileClickUntil: number;
   /** Tuplanapautus (kosketus/hiiri): viimeisin napautettu noppa. */
   lastTapDie: number;
   /** Tuplanapautus: viimeisimmän napautuksen hetki. */
@@ -128,6 +130,7 @@ export const ui: ViewState = {
   recordsDurationTab: DEFAULT_DURATION,
   recordsSort: "total",
   suppressCellClickUntil: 0,
+  suppressTileClickUntil: 0,
   lastTapDie: -1,
   lastTapAt: 0,
   currentFrame: null,

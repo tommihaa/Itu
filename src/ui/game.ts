@@ -2701,6 +2701,13 @@ function wireEvents(): void {
   }
   for (const tileEl of root.querySelectorAll<HTMLElement>(".sm-tile")) {
     tileEl.addEventListener("pointerdown", (e) => onTilePointerDown(e, tileEl));
+    // Ruudunlukijan aktivointi (TalkBackin kaksoisnapautus) lähettää pelkän clickin ilman
+    // pointer-tapahtumia, joten nosto ei toiminut sillä (kuunneltu 15.10.2026). Tavallisen
+    // napautuksen click tulee pointerupin perään, ja pointerup hoiti sen jo.
+    tileEl.addEventListener("click", () => {
+      if (ui.drag || performance.now() < ui.suppressTileClickUntil) return;
+      onTileTap(Number(tileEl.dataset.die));
+    });
     // Hiiren oikea klikkaus laudalle asetetun nopan päällä poistaa sen telineeseen.
     tileEl.addEventListener("contextmenu", (e) => {
       const die = Number(tileEl.dataset.die);
@@ -2824,6 +2831,7 @@ function onPointerUp(e: PointerEvent): void {
   const y = e.clientY;
   teardownDrag();
   ui.drag = null;
+  ui.suppressTileClickUntil = performance.now() + 500;
   if (consumed) return; // pitkä painallus jo hoiti
   if (!moved) {
     onTileTap(die);

@@ -81,3 +81,18 @@ myös kun kohdistus on napissa. Näppäimistöllä ei siis pääse sarkaimella m
 pois laudalta (WCAG 2.1.2 No Keyboard Trap). APG:n grid-mallissa sarkain vie pois ruudukosta.
 Suunnan vaihtaa myös välilyönti, mutta sarkaimen vapautus muuttaa dokumentoitua ohjausta
 (Säännöt › Ohjaus), joten se on Tommin päätös.
+
+## Kuuntelu 15.10.2026
+
+Tommi kuunteli tuotantoversion 0.13.1 TalkBackilla Pixelillä.
+
+**I-7. Telineen noppa ei nouse TalkBackin kaksoisnapautuksella.** Tila: korjattu 15.10.2026,
+0.13.2. Kaksoisnapautus lähettää selaimelle pelkän clickin ilman pointer-tapahtumia, ja
+telineen noppa kuunteli vain `pointerdown`/`pointerup`-paria (raahaus). Ruudun klikkaus toimi,
+koska ruudulla on click-käsittelijä. Korjaus: nopalle click-käsittelijä, joka ohittaa
+tavallisen napautuksen perään tulevan clickin (`ui.suppressTileClickUntil`). Todennettu
+dev-previewissä: pelkkä click nostaa, ruudun click asettaa ("K11 A."), ja pointer-napautus ja
+sen click nostavat vain kerran. Kuuntelu korjauksen jälkeen on tekemättä.
+
+**Havainto: vaakatilassa lauta ei mahdu puhelimen näytölle.** Itulla ei ole vaakatilan
+asettelua. Kuunneltiin pystyasennossa.
