@@ -96,3 +96,14 @@ sen click nostavat vain kerran. Kuuntelu korjauksen jälkeen on tekemättä.
 
 **Havainto: vaakatilassa lauta ei mahdu puhelimen näytölle.** Itulla ei ole vaakatilan
 asettelua. Kuunneltiin pystyasennossa.
+
+**Kuuntelu korjauksen jälkeen (0.13.2, pystytila, *Ei aikarajaa*):**
+- *Nosto:* kaksoisnapautus nostaa, ja TalkBack sanoo "A, yksi piste, nostettu". Kohdistus
+  jää nostettuun noppaan eikä hyppää sivun alkuun. Klo 22 merkinnän pelko ei toteutunut.
+- *Tyhjä ruutu:* kosketuksella kuuluu "C11 tyhjä" (I-2 toimii kosketusruudunlukijalla).
+- *Asetus:* kaksoisnapautus tyhjässä ruudussa asettaa, ilmoitus "G14 A" kuuluu, ja kohdistus
+  jää ruutuun. TalkBack lukee perään rivin ja sarakkeen ruudukon rakenteesta, mutta vain kun
+  ne vaihtuvat edellisestä ruudusta. Havainto: sijainti kuuluu kahdesti (G14 nimessä ja
+  "rivi 14, sarake 7" rakenteesta). Ei korjattu, ratkaisua ei ole päätetty.
+- *Tilanne:* löytyy pyyhkäisemällä Lukitse-napin jälkeen ("Tilanne, painike, Vaihto plus H"),
+  ja se lukee telineen, laudan sanat, pisteet ja keston.
